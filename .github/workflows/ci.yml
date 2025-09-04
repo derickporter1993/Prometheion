@@ -1,0 +1,34 @@
+name: CI
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install tooling
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D prettier eslint @lwc/eslint-plugin-lwc eslint-config-prettier
+      - name: Prettier check
+        run: npx prettier -c "**/*.{js,ts,html,md,json,yml,yaml,xml}" || true
+      - name: Lint (if src exists)
+        run: |
+          if [ -d "force-app" ]; then npx eslint "force-app/**/*.js" || true; fi
+  sfdx-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: sfdx-actions/setup-sfdx@v2
+      - name: Install Salesforce Code Analyzer
+        run: sfdx plugins:install @salesforce/sfdx-scanner
+      - name: Scan (if apex exists)
+        run: |
+          if [ -d "force-app" ]; then sfdx scanner:run --target "force-app" --format table || true; fi

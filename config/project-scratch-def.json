@@ -1,0 +1,6 @@
+{
+  "orgName": "Command Center X",
+  "edition": "Enterprise",
+  "features": ["EnableSetPasswordInApi", "PlatformEncryption"],
+  "settings": { "lightningExperienceSettings": { "enableS1DesktopEnabled": true } }
+}
