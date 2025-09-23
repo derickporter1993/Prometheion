@@ -237,5 +237,3 @@ Compliance Artifacts
 	•	/docs/compliance/encryption.md – Shield/TLS details
 	•	/docs/compliance/incident-response.md – Triage & escalation policy
 	•	/docs/compliance/deletion-policy.md – Data deletion procedures
-
-e **`/docs/compliance/` templates** (data-flow diagram, encryption doc, etc.) so your repo actually has the artifacts the README promises?
