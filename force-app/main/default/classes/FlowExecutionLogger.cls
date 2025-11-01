@@ -23,6 +23,13 @@ public with sharing class FlowExecutionLogger {
     }
     @AuraEnabled
     public static void log(String flowName, Id primaryRecordId, String status, Integer cpu, Integer soql, Integer dml) {
-        logInvocable(new List<LogInput>{ new LogInput(flowName=flowName, primaryRecordId=primaryRecordId, status=status, cpu=cpu, soql=soql, dml=dml) });
+        LogInput input = new LogInput();
+        input.flowName = flowName;
+        input.primaryRecordId = primaryRecordId;
+        input.status = status;
+        input.cpu = cpu;
+        input.soql = soql;
+        input.dml = dml;
+        logInvocable(new List<LogInput>{ input });
     }
 }

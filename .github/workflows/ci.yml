@@ -18,10 +18,10 @@ jobs:
           npm init -y >/dev/null 2>&1 || true
           npm i -D prettier eslint @lwc/eslint-plugin-lwc eslint-config-prettier
       - name: Prettier check
-        run: npx prettier -c "**/*.{js,ts,html,md,json,yml,yaml,xml}" || true
+        run: npx prettier -c "**/*.{js,ts,html,md,json,yml,yaml,xml}"
       - name: Lint (if src exists)
         run: |
-          if [ -d "force-app" ]; then npx eslint "force-app/**/*.js" || true; fi
+          if [ -d "force-app" ]; then npx eslint "force-app/**/*.js"; fi
   sfdx-scan:
     runs-on: ubuntu-latest
     steps:
@@ -31,4 +31,4 @@ jobs:
         run: sfdx plugins:install @salesforce/sfdx-scanner
       - name: Scan (if apex exists)
         run: |
-          if [ -d "force-app" ]; then sfdx scanner:run --target "force-app" --format table || true; fi
+          if [ -d "force-app" ]; then sfdx scanner:run --target "force-app" --format table; fi

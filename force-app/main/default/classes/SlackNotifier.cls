@@ -7,9 +7,18 @@ public with sharing class SlackNotifier {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setBody(JSON.serialize(new Map<String, Object>{ 'text' => text }));
-            new Http().send(req);
+            HttpResponse res = new Http().send(req);
+            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
+                System.debug(
+                    LoggingLevel.ERROR,
+                    'Slack notify failed with status ' +
+                        res.getStatusCode() +
+                        ': ' +
+                        res.getStatus()
+                );
+            }
         } catch (Exception e) {
-            System.debug('Slack notify failed: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'Slack notify exception: ' + e.getMessage());
         }
     }
 
