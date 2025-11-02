@@ -1,17 +1,17 @@
-import { LightningElement, track } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getSnapshots from '@salesforce/apex/ApiUsageDashboardController.recent';
+import { LightningElement, track } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import getSnapshots from "@salesforce/apex/ApiUsageDashboardController.recent";
 
 export default class ApiUsageDashboard extends LightningElement {
   @track rows = [];
   timer = null;
 
   columns = [
-    { label: 'Taken On', fieldName: 'takenOn', type: 'date' },
-    { label: 'Used', fieldName: 'used', type: 'number' },
-    { label: 'Limit', fieldName: 'limit', type: 'number' },
-    { label: 'Percent', fieldName: 'percent', type: 'percent' },
-    { label: 'Projected Exhaustion', fieldName: 'projected', type: 'date' }
+    { label: "Taken On", fieldName: "takenOn", type: "date" },
+    { label: "Used", fieldName: "used", type: "number" },
+    { label: "Limit", fieldName: "limit", type: "number" },
+    { label: "Percent", fieldName: "percent", type: "percent" },
+    { label: "Projected Exhaustion", fieldName: "projected", type: "date" },
   ];
 
   connectedCallback() {
@@ -33,7 +33,7 @@ export default class ApiUsageDashboard extends LightningElement {
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e);
-      this.showError('Failed to load API usage data', e.body?.message || e.message);
+      this.showError("Failed to load API usage data", e.body?.message || e.message);
     }
   }
 
@@ -42,7 +42,7 @@ export default class ApiUsageDashboard extends LightningElement {
       new ShowToastEvent({
         title: title,
         message: message,
-        variant: 'error'
+        variant: "error",
       })
     );
   }

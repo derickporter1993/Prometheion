@@ -9,6 +9,7 @@ OpsGuardian™ is a Salesforce-native monitoring and compliance framework that g
 ---
 
 ## Table of Contents
+
 1. [Overview](#1-overview)
 2. [What It Does](#2-what-it-does)
 3. [Use Cases & Personas](#3-use-cases--personas)
@@ -41,12 +42,14 @@ OpsGuardian™ is a Salesforce-native monitoring and compliance framework that g
 ---
 
 ## 1. Overview
-- Distribution: Second-Generation Managed Package (2GP) targeted for AppExchange  
-- API Version: 62.0+  
-- Supported Orgs: Scratch, Sandbox, Developer Edition, Production  
+
+- Distribution: Second-Generation Managed Package (2GP) targeted for AppExchange
+- API Version: 62.0+
+- Supported Orgs: Scratch, Sandbox, Developer Edition, Production
 - Status: Production-ready; AppExchange submission in progress
 
 OpsGuardian provides:
+
 - Real-time monitoring of governor limits, Flows, transactions, and API calls
 - AI-assisted diagnostics (Einstein + external LLM)
 - Policy-driven rules via Custom Metadata (CMDT)
@@ -55,6 +58,7 @@ OpsGuardian provides:
 ---
 
 ## 2. What It Does
+
 - Captures operational events in `OpsGuardian_History__c`
 - Analyzes performance and compliance risks in real time
 - Publishes alerts via Platform Events for downstream actions
@@ -66,11 +70,13 @@ OpsGuardian provides:
 ## 3. Use Cases & Personas
 
 ### Personas
+
 - Salesforce Admin (Ops): needs live limits, failing flows, rapid remediation
 - Security/Compliance: needs tamper-evident logs, retention, audits
 - Engineering/DevOps: needs multi-org telemetry, CI gates, APIs
 
 ### Representative Use Cases
+
 - Prevent Flow outages: detect spike in Flow faults, auto-create Jira, trigger rollback Flow
 - Prove compliance: export encrypted `OpsGuardian_History__c` for audit in minutes
 - Centralize telemetry: aggregate many orgs into one hub; alert teams by severity
@@ -78,6 +84,7 @@ OpsGuardian provides:
 ---
 
 ## 4. Core Features
+
 - Governance: detects Flow faults, governor overages, API misuse
 - Compliance: Shield Platform Encryption plus full CRUD/FLS enforcement
 - AI Diagnostics: GPT + Einstein hybrid scoring with remediation guidance
@@ -91,29 +98,35 @@ OpsGuardian provides:
 ## 5. Tech Stack
 
 **Salesforce Platform**
+
 - Apex, Lightning Web Components (LWC), Platform Events
 - Custom Metadata Types (CMDT) for policies (`OG_Policy__mdt`)
 - Shield Platform Encryption
 
 **AI Integration**
+
 - Einstein Prediction Builder / Next Best Action
 - External LLM via OAuth Named Credentials (JWT/Client Credentials)
 
 **DevOps**
+
 - Salesforce DX (SFDX), GitHub Actions CI
 - PMD + `sf-scanner` for static analysis
 - Jest for LWC tests; Apex coverage via CLI
 
 **Integrations**
+
 - MuleSoft (multi-cloud ingestion)
 - Plugin framework: Slack, Jira, webhooks
 
 **Compliance**
+
 - GDPR, SOC 2, HIPAA-ready implementation patterns
 
 ---
 
 ## 6. Architecture
+
 ```mermaid
 flowchart TD
   subgraph Salesforce Org
@@ -418,11 +431,11 @@ Enable Prediction Builder model and grant user permission set license.
 26. Quality Gates
 
 (Enable these when your pipeline emits artifacts.)
-	•	Build: 
+	•	Build:
 
-	•	Coverage: 
+	•	Coverage:
 
-	•	Security Scan: 
+	•	Security Scan:
 
 
 ⸻
@@ -471,3 +484,4 @@ References
 	•	Salesforce Shield: https://www.salesforce.com/platform/shield/
 	•	Security best practices: https://security.salesforce.com/security-best-practices
 	•	Event Monitoring overview: https://help.salesforce.com/s/articleView?id=xcloud.real_time_event_monitoring_overview.htm&type=
+```
