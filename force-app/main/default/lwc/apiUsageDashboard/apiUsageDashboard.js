@@ -1,7 +1,6 @@
 import { LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getSnapshots from "@salesforce/apex/ApiUsageDashboardController.recent";
-import { PollingManager } from "c/pollingManager";
 import PollingManager from "c/pollingManager";
 
 export default class ApiUsageDashboard extends LightningElement {
@@ -21,14 +20,10 @@ export default class ApiUsageDashboard extends LightningElement {
   ];
 
   connectedCallback() {
-    this.pollingManager = new PollingManager(this.currentInterval, () => this.load());
-    this.pollingManager.setupVisibilityHandling();
-    this.load();
-    this.pollingManager.start();
     this.pollingManager = new PollingManager(() => this.load(), this.currentInterval);
+    this.pollingManager.setupVisibilityHandling();
     this.load();
     this.pollingManager.start();
-    this.pollingManager.setupVisibilityHandling();
   }
 
   disconnectedCallback() {
