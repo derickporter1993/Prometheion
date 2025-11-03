@@ -34,8 +34,8 @@ export class PollingManager {
 
     if (wasRunning) {
       // Clear existing timer and restart with new interval
-      this.stop();
-      this.start();
+      this._clearTimer();
+      this._startTimer();
     }
   }
 
@@ -43,9 +43,17 @@ export class PollingManager {
    * Starts polling if not already running and the page is visible.
    */
   start() {
-    if (!this.timer && document.visibilityState === "visible") {
+    this.isRunning = true;
+    this._startTimer();
+  }
+
+  /**
+   * Internal method to start the timer if the page is visible.
+   * @private
+   */
+  _startTimer() {
+    if (!this.timer && this.isRunning && document.visibilityState === "visible") {
       this.timer = setInterval(() => this.callback(), this.intervalMs);
-      this.isRunning = true;
     }
   }
 
@@ -53,10 +61,18 @@ export class PollingManager {
    * Stops polling by clearing the interval timer.
    */
   stop() {
+    this.isRunning = false;
+    this._clearTimer();
+  }
+
+  /**
+   * Internal method to clear the timer.
+   * @private
+   */
+  _clearTimer() {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
-      this.isRunning = false;
     }
   }
 
@@ -69,11 +85,11 @@ export class PollingManager {
     if (!this.visibilityHandler) {
       this.visibilityHandler = () => {
         if (document.visibilityState === "visible") {
-          this.start();
+          this._startTimer();
           // Trigger an immediate poll when becoming visible
           this.callback();
         } else {
-          this.stop();
+          this._clearTimer();
         }
       };
       document.addEventListener("visibilitychange", this.visibilityHandler);
