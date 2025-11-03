@@ -13,14 +13,14 @@ export default class DeploymentMonitorDashboard extends LightningElement {
   ];
   timer;
   
-  connectedCallback(){ 
-    this.load(); 
+  connectedCallback() {
+    this.load();
     this.startPolling();
     // Pause polling when tab is hidden
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
   }
-  
-  disconnectedCallback(){ 
+
+  disconnectedCallback() {
     this.stopPolling();
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
   }
@@ -47,12 +47,12 @@ export default class DeploymentMonitorDashboard extends LightningElement {
     }
   }
   
-  async load(){ 
-    try { 
-      this.rows = await recent({ limitSize: 20 }); 
-    } catch(e){ 
-      /* eslint-disable no-console */ 
+  async load() {
+    try {
+      this.rows = await recent({ limitSize: 20 });
+    } catch (e) {
+      /* eslint-disable no-console */
       console.error(e);
-    } 
+    }
   }
 }

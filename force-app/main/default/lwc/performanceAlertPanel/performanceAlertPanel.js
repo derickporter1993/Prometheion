@@ -18,10 +18,16 @@ export default class PerformanceAlertPanel extends LightningElement {
     { label: 'Created', fieldName: 'createdDate', type: 'date' }
   ];
 
-  async connectedCallback(){
-    this.rows = (await recent({ limitSize: 25 })).map((r, idx)=> ({ key: `${r.createdDate}-${idx}`, ...r }));
+  async connectedCallback() {
+    this.rows = (await recent({ limitSize: 25 })).map((r, idx) => ({
+      key: `${r.createdDate}-${idx}`,
+      ...r
+    }));
     this.handleSubscribe();
-    onError(error => { /* eslint-disable no-console */ console.error('EMP API error: ', error); });
+    onError((error) => {
+      /* eslint-disable no-console */
+      console.error('EMP API error: ', error);
+    });
   }
 
   disconnectedCallback() {
@@ -56,7 +62,9 @@ export default class PerformanceAlertPanel extends LightningElement {
         this.flushPendingEvents();
       }, 250);
     };
-    subscribe(this.channelName, -1, messageCallback).then(resp => { this.subscription = resp; });
+    subscribe(this.channelName, -1, messageCallback).then((resp) => {
+      this.subscription = resp;
+    });
   }
 
   flushPendingEvents() {
