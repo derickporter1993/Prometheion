@@ -20,7 +20,7 @@ export default class PollingManager {
    * Safe to call multiple times - will not create duplicate timers.
    */
   start() {
-    if (!this.timer && document.visibilityState === 'visible') {
+    if (!this.timer && document.visibilityState === "visible") {
       this.timer = setInterval(() => this.callback(), this.intervalMs);
     }
   }
@@ -43,7 +43,7 @@ export default class PollingManager {
    */
   updateInterval(newIntervalMs) {
     this.intervalMs = newIntervalMs;
-    
+
     // If currently running, restart with new interval
     if (this.timer) {
       this.stop();
@@ -59,13 +59,13 @@ export default class PollingManager {
   setupVisibilityHandling() {
     if (!this.visibilityHandler) {
       this.visibilityHandler = () => {
-        if (document.visibilityState === 'visible') {
+        if (document.visibilityState === "visible") {
           this.start();
         } else {
           this.stop();
         }
       };
-      document.addEventListener('visibilitychange', this.visibilityHandler);
+      document.addEventListener("visibilitychange", this.visibilityHandler);
     }
   }
 
@@ -76,7 +76,7 @@ export default class PollingManager {
   cleanup() {
     this.stop();
     if (this.visibilityHandler) {
-      document.removeEventListener('visibilitychange', this.visibilityHandler);
+      document.removeEventListener("visibilitychange", this.visibilityHandler);
       this.visibilityHandler = null;
     }
   }
