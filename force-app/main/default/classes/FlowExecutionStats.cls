@@ -1,12 +1,21 @@
 public with sharing class FlowExecutionStats {
-    public class ExecAgg {
+    private class ExecAgg {
         @AuraEnabled public String flowName;
         @AuraEnabled public Integer runs;
         @AuraEnabled public Integer faults;
         @AuraEnabled public Datetime lastRun;
+        
+        public ExecAgg(AggregateResult ar) {
+            this.flowName = (String) ar.get('fn');
+            this.runs = (Integer) ar.get('runs');
+            this.faults = (Integer) ar.get('faults');
+            this.lastRun = (Datetime) ar.get('lastRun');
+        }
     }
+    
     @AuraEnabled(cacheable=true)
     public static List<ExecAgg> topFlows(Integer limitSize) {
+        Integer limit = Math.max(1, limitSize);
         List<AggregateResult> ars = [
             SELECT Flow_Name__c fn,
                    COUNT(Id) runs,
@@ -15,16 +24,11 @@ public with sharing class FlowExecutionStats {
             FROM Flow_Execution__c
             GROUP BY Flow_Name__c
             ORDER BY runs DESC
-            LIMIT :Math.max(1, limitSize)
+            LIMIT :limit
         ];
         List<ExecAgg> out = new List<ExecAgg>();
         for (AggregateResult ar : ars) {
-            ExecAgg e = new ExecAgg();
-            e.flowName = (String) ar.get('fn');
-            e.runs = (Integer) ar.get('runs');
-            e.faults = (Integer) ar.get('faults');
-            e.lastRun = (Datetime) ar.get('lastRun');
-            out.add(e);
+            out.add(new ExecAgg(ar));
         }
         return out;
     }

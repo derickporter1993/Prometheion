@@ -1,5 +1,5 @@
 public with sharing class ApiUsageDashboardController {
-    public class Row {
+    private class Row {
         @AuraEnabled
         public Datetime takenOn;
         @AuraEnabled
@@ -10,11 +10,21 @@ public with sharing class ApiUsageDashboardController {
         public Decimal percent;
         @AuraEnabled
         public Datetime projected;
+        
+        public Row(API_Usage_Snapshot__c snapshot) {
+            this.takenOn = snapshot.Taken_On__c;
+            this.used = (Integer) snapshot.Daily_Used__c;
+            this.limit = (Integer) snapshot.Daily_Limit__c;
+            this.percent = snapshot.Percent_Used__c;
+            this.projected = snapshot.Projected_Exhaustion__c;
+        }
     }
 
     @AuraEnabled(cacheable = true)
     public static List<Row> recent(Integer limitSize) {
         List<Row> out = new List<Row>();
+        Integer limit = Math.max(1, limitSize);
+        
         for (API_Usage_Snapshot__c r : [
             SELECT
                 Taken_On__c,
@@ -24,15 +34,9 @@ public with sharing class ApiUsageDashboardController {
                 Projected_Exhaustion__c
             FROM API_Usage_Snapshot__c
             ORDER BY Taken_On__c DESC
-            LIMIT :Math.max(1, limitSize)
+            LIMIT :limit
         ]) {
-            Row x = new Row();
-            x.takenOn = r.Taken_On__c;
-            x.used = (Integer) r.Daily_Used__c;
-            x.limit = (Integer) r.Daily_Limit__c;
-            x.percent = r.Percent_Used__c;
-            x.projected = r.Projected_Exhaustion__c;
-            out.add(x);
+            out.add(new Row(r));
         }
         return out;
     }
