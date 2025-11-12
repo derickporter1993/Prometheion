@@ -32,8 +32,21 @@ export default [
       lwc,
     },
     rules: {
+      // Standard JavaScript rules
       "no-console": "warn",
       "no-unused-vars": "warn",
+
+      // LWC specific rules
+      "lwc/consistent-component-name": "error",
+      "lwc/no-api-reassignments": "error",
+      "lwc/no-deprecated": "warn",
+      "lwc/no-document-query": "error",
+      "lwc/no-inner-html": "error",
+      "lwc/no-async-await": "off",
+      "lwc/no-leading-uppercase-api-name": "error",
+      "lwc/valid-api": "error",
+      "lwc/valid-track": "error",
+      "lwc/valid-wire": "error",
     },
   },
   prettier,
