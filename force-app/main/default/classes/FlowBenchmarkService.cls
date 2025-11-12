@@ -44,7 +44,9 @@ public with sharing class FlowBenchmarkService {
         ];
 
         if (executions.isEmpty()) {
-            return null;
+            BenchmarkStats emptyStats = new BenchmarkStats();
+            emptyStats.sampleSize = 0;
+            return emptyStats;
         }
 
         BenchmarkStats stats = new BenchmarkStats();
