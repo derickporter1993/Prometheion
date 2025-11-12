@@ -1,34 +1,47 @@
 name: CI
+
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+
 jobs:
   lint-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
       - name: Node setup
         uses: actions/setup-node@v6
         with:
           node-version: "20"
-      - name: Install tooling
-        run: |
-          npm init -y >/dev/null 2>&1 || true
-          npm i -D prettier eslint @lwc/eslint-plugin-lwc eslint-config-prettier
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Prettier check
-        run: npx prettier -c "**/*.{js,ts,html,md,json,yml,yaml,xml}"
-      - name: Lint (if src exists)
-        run: |
-          if [ -d "force-app" ]; then npx eslint "force-app/**/*.js"; fi
+        run: npm run fmt:check
+
+      - name: ESLint check
+        run: npm run lint
+
   sfdx-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: sfdx-actions/setup-sfdx@v2
+
+      - name: Setup Salesforce CLI
+        uses: sfdx-actions/setup-sfdx@v2
+
       - name: Install Salesforce Code Analyzer
         run: sfdx plugins:install @salesforce/sfdx-scanner
-      - name: Scan (if apex exists)
+
+      - name: Run Salesforce Code Analyzer
         run: |
-          if [ -d "force-app" ]; then sfdx scanner:run --target "force-app" --format table; fi
+          if [ -d "force-app" ]; then
+            sfdx scanner:run --target "force-app" --format table
+          else
+            echo "No force-app directory found, skipping scan"
+          fi
