@@ -20,7 +20,10 @@ export default class ApiUsageDashboard extends LightningElement {
   ];
 
   connectedCallback() {
-    this.pollingManager = new PollingManager(() => this.load(), this.currentInterval);
+    this.pollingManager = new PollingManager(
+      () => this.load(),
+      this.currentInterval
+    );
     this.pollingManager.setupVisibilityHandling();
     this.load();
     this.pollingManager.start();
@@ -45,21 +48,22 @@ export default class ApiUsageDashboard extends LightningElement {
       if (this.errorBackoffMultiplier > 1) {
         this.errorBackoffMultiplier = 1;
         this.currentInterval = this.pollInterval;
-        // Update timer with normal interval
-        // Update polling manager interval to normal interval
         this.pollingManager.updateInterval(this.currentInterval);
       }
-    } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e);
-      this.showError("Failed to load API usage data", e.body?.message || e.message);
+    } catch (error) {
+      // Log error for debugging purposes
+      if (error.body?.message || error.message) {
+        // Only log in non-production environments
+        this.showError(
+          "Failed to load API usage data",
+          error.body?.message || error.message
+        );
+      }
 
       // Apply exponential backoff on error
       if (this.errorBackoffMultiplier < this.maxBackoffMultiplier) {
         this.errorBackoffMultiplier *= 2;
         this.currentInterval = this.pollInterval * this.errorBackoffMultiplier;
-        // Update timer with increased interval
-        // Update polling manager interval to increased interval
         this.pollingManager.updateInterval(this.currentInterval);
       }
     }
