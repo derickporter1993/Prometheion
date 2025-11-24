@@ -33,19 +33,19 @@ Modern Salesforce programs need **reliable telemetry** (limits, flows, APIs), **
 
 ## Architecture
 
-```mermaid
-flowchart TB
-  subgraph "Salesforce Org"
-    LWC[OpsGuardian App]
-    APEX[Apex Services]
-    DATA[(OpsGuardian Data)]
-    EVENTS[Platform Events]
-    CMDT[OG_Policy__mdt]
-    LWC --> APEX
-    APEX --> DATA
-    APEX --> EVENTS
-    APEX --> CMDT
-  end
+  ```mermaid
+  flowchart TB
+    subgraph "Salesforce Org"
+      LWC[OpsGuardian LWCs]
+      APEX[Apex Services]
+      DATA[(OpsGuardian Data)]
+      EVENTS[Platform Events]
+      CMDT[OG_Policy__mdt]
+      LWC --> APEX
+      APEX --> DATA
+      APEX --> EVENTS
+      APEX --> CMDT
+    end
 
   subgraph "External Systems"
     AI[AI Services]
@@ -129,7 +129,7 @@ Tip: create a “Default” record and org/BU-specific overrides as needed.
 
 ## Using OpsGuardian
 
-### Dashboards (Lightning App)
+### Dashboards (via tabs/App Launcher)
 - API Usage
 - Flow Health
 - System Performance
