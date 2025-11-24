@@ -88,14 +88,16 @@ sf org create scratch \
 # 3) Deploy the project
 sf project deploy start
 
-# 4) Assign admin permset and open app
-sf org assign permset --name OpsGuardian_Admin
-sf org open --path /lightning/app/OpsGuardian
+# 4) Assign admin permset and open the org
+sf org assign permset --name Command_Center_Admin
+sf org open
 ```
+
+After opening the org, use the App Launcher to pin the API Usage, Flow Execution, Deployment Job, and Performance Alert History tabs (no managed Lightning app is packaged yet).
 
 **B) Sandbox / Production**
 - Install the managed package (coming soon). Until then, deploy via `sf project deploy start` to a sandbox.
-- Assign `OpsGuardian_Admin`.
+- Assign `Command_Center_Admin`.
 - Configure policies under Setup → Custom Metadata Types → `OG_Policy__mdt`.
 - (Optional) Set up Named Credentials for Slack/Webhooks/AI.
 
