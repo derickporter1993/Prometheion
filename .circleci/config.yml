@@ -9,12 +9,6 @@ executors:
     resource_class: medium # Configurable resource class (small, medium, large, xlarge)
     working_directory: ~/repo
 
-  sfdx-executor:
-    docker:
-      - image: cimg/node:20.11
-    resource_class: medium
-    working_directory: ~/repo
-
 # Define reusable commands
 commands:
   restore-dependencies:
@@ -64,18 +58,24 @@ jobs:
   # Job to run ESLint
   eslint-check:
     executor: node-executor
-    parallelism: 2 # Demonstrating parallelism feature - adjust based on codebase size
+    parallelism: 2 # Split files across containers for faster linting
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
       - run:
           name: Run ESLint
-          command: npm run lint
+          command: |
+            TESTFILES=$(circleci tests glob "force-app/**/*.js" | circleci tests split --split-by=filesize)
+            if [ -n "$TESTFILES" ]; then
+              npx eslint $TESTFILES --max-warnings=0
+            else
+              echo "No JS files to lint in this container."
+            fi
 
   # Job to run Salesforce Code Analyzer
   sfdx-scan:
-    executor: sfdx-executor
+    executor: node-executor
     steps:
       - checkout
       - attach_workspace:
@@ -97,11 +97,8 @@ jobs:
               echo "No force-app directory found, skipping scan"
             fi
 
-
 # Define workflows
 workflows:
-  version: 2
-
   # Main workflow for CI/CD
   build-and-test:
     jobs:
