@@ -262,8 +262,7 @@ cd Ops-Guardian
 # Node deps (LWC/Jest/Eslint)
 npm install
 
-# Run tests & linters
-npm test
+# Run linters & formatters
 npm run lint
 npm run fmt
 
