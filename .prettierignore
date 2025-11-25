@@ -1,0 +1,4 @@
+# Salesforce metadata files without parser
+**/*-meta.xml
+**/objects/**/*.xml
+**/permissionsets/**/*.xml

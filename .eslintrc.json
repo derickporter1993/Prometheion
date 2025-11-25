@@ -1,7 +1,0 @@
-{
-  "root": true,
-  "env": { "es2021": true },
-  "extends": ["eslint:recommended", "plugin:lwc/recommended", "prettier"],
-  "plugins": ["lwc"],
-  "rules": { "no-console": "warn", "no-unused-vars": "warn" }
-}

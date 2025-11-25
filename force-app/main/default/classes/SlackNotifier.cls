@@ -23,7 +23,7 @@ public with sharing class SlackNotifier {
     }
 
     public static void notifyPerformanceEvent(Performance_Alert__e evt) {
-        String msg = '\u26a0\ufe0f *CCX Performance Alert*' +
+        String msg = '\u26a0\ufe0f *Sentinel Performance Alert*' +
             '\nMetric: ' + evt.Metric__c +
             '\nValue: ' + String.valueOf(evt.Value__c) +
             '\nThreshold: ' + String.valueOf(evt.Threshold__c) +
