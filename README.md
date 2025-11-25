@@ -65,7 +65,7 @@ Modern Salesforce programs need **reliable telemetry** (limits, flows, APIs), **
 ⸻
 
 ## Requirements
-- Salesforce API 63.0+ (tested through 65.0, Winter ’26)
+- Salesforce API 60.0+ (configured; update sfdx-project.json if you require newer features)
 - Salesforce CLI (sf), Dev Hub enabled
 - Node.js 18+ (for LWC tests/linting)
 - (Recommended) Shield Platform Encryption in production orgs
