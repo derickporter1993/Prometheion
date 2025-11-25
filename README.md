@@ -60,7 +60,7 @@ Modern Salesforce programs need **reliable telemetry** (limits, flows, APIs), **
   APEX <-. REST .-> HUB
 ```
 
-Optional static fallback image: docs/images/architecture.png
+![Architecture Diagram](docs/images/architecture.png)
 
 ⸻
 
