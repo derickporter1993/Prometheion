@@ -62,7 +62,7 @@ Modern Salesforce programs need **reliable telemetry** (limits, flows, APIs), **
 
 ![Architecture Diagram](docs/images/architecture.png)
 
-⸻
+---
 
 ## Requirements
 - Salesforce API 60.0+ (configured; update sfdx-project.json if you require newer features)
@@ -70,7 +70,7 @@ Modern Salesforce programs need **reliable telemetry** (limits, flows, APIs), **
 - Node.js 18+ (for LWC tests/linting)
 - (Recommended) Shield Platform Encryption in production orgs
 
-⸻
+---
 
 Quick Start
 
@@ -101,7 +101,7 @@ After opening the org, use the App Launcher to pin the API Usage, Flow Execution
 - Configure policies under Setup → Custom Metadata Types → `OG_Policy__mdt`.
 - (Optional) Set up Named Credentials for Slack/Webhooks/AI.
 
-⸻
+---
 
 ## Configuration
 
@@ -125,7 +125,7 @@ Tip: create a “Default” record and org/BU-specific overrides as needed.
    - URL: Incoming webhook URL
 2. Use the provided notifier (see Plugins) or your own.
 
-⸻
+---
 
 ## Using OpsGuardian
 
@@ -173,7 +173,7 @@ curl -X POST "$SF_URL/services/apexrest/og/v1/ingest" \
 
 Responses: 201 OK • 400 Invalid • 401 Unauthorized • 429 Rate limited (with Retry-After)
 
-⸻
+---
 
 ## Plugin SDK
 
@@ -214,7 +214,7 @@ public class SlackPlugin implements OG_Plugin {
 
 Register via `OG_Plugin_Config__mdt` with `Class_Name__c = SlackPlugin`.
 
-⸻
+---
 
 ## Security & Compliance
 
@@ -236,7 +236,7 @@ Register via `OG_Plugin_Config__mdt` with `Class_Name__c = SlackPlugin`.
 
 Report security issues via GitHub Security Advisories. Please do not open public issues for vulnerabilities.
 
-⸻
+---
 
 ## Performance (reference env)
 
@@ -248,7 +248,7 @@ Report security issues via GitHub Security Advisories. Please do not open public
 
 Test org: Enterprise Edition, ~1M history rows, ~10k events/hour.
 
-⸻
+---
 
 ## Development
 
@@ -279,7 +279,7 @@ sf scanner run --target force-app --format table
 - Feature branches: `feat/<key>-short-desc`
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`…)
 
-⸻
+---
 
 ## Roadmap
 - AppExchange listing (managed package)
@@ -289,14 +289,14 @@ sf scanner run --target force-app --format table
 - Custom report builder
 - Mobile (Salesforce Mobile SDK)
 
-⸻
+---
 
 ## Support
 - Bugs/requests: GitHub Issues
 - Security: Security Advisories
 - Discussions: GitHub Discussions (if enabled)
 
-⸻
+---
 
 ## License & Notices
 
