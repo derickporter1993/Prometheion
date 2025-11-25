@@ -1,5 +1,5 @@
 {
-  "orgName": "Command Center X",
+  "orgName": "Sentinel",
   "edition": "Enterprise",
   "features": ["EnableSetPasswordInApi", "PlatformEncryption"],
   "settings": { "lightningExperienceSettings": { "enableS1DesktopEnabled": true } }

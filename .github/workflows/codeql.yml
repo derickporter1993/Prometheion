@@ -1,10 +1,34 @@
 name: CodeQL
+
 on:
-  push: { branches: [main] }
-  pull_request: { branches: [main] }
-  schedule: [{ cron: "0 2 * * 1" }]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+
 jobs:
   analyze:
-    uses: github/codeql-action/.github/workflows/codeql.yml@v3
-    with:
-      languages: javascript
+    name: Analyze
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'apex' ]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

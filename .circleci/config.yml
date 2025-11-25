@@ -1,0 +1,145 @@
+version: 2.1
+
+# Define orbs for easier configuration
+# Define reusable executors with configurable resource classes
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.11
+    resource_class: medium # Configurable resource class (small, medium, large, xlarge)
+    working_directory: ~/repo
+
+# Define reusable commands
+commands:
+  restore-dependencies:
+    description: "Restore npm dependencies from cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+
+  save-dependencies:
+    description: "Save npm dependencies to cache"
+    steps:
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+# Define jobs
+jobs:
+  # Job to install dependencies
+  install-dependencies:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore-dependencies
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save-dependencies
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - node_modules
+
+  # Job to check code formatting
+  prettier-check:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Check code formatting
+          command: npm run fmt:check
+
+  # Job to run ESLint
+  eslint-check:
+    executor: node-executor
+    parallelism: 2 # Split files across containers for faster linting
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Run ESLint
+          command: |
+            TESTFILES=$(circleci tests glob "force-app/**/*.js" | circleci tests split --split-by=filesize)
+            if [ -n "$TESTFILES" ]; then
+              npx eslint "$TESTFILES" --max-warnings=0
+            else
+              echo "No JS files to lint in this container."
+            fi
+
+  # Job to run Salesforce Code Analyzer
+  sfdx-scan:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Setup Salesforce CLI
+          command: |
+            npm install -g @salesforce/cli
+      - run:
+          name: Install Salesforce Code Analyzer
+          command: |
+            sf plugins install @salesforce/sfdx-scanner
+      - run:
+          name: Run Salesforce Code Analyzer
+          command: |
+            if [ -d "force-app" ]; then
+              sf scanner run --target "force-app" --format table
+            else
+              echo "No force-app directory found, skipping scan"
+            fi
+
+# Define workflows
+workflows:
+  # Main workflow for CI/CD
+  build-and-test:
+    jobs:
+      # Install dependencies first
+      - install-dependencies
+
+      # Run checks in parallel after dependencies are installed
+      - prettier-check:
+          requires:
+            - install-dependencies
+
+      - eslint-check:
+          requires:
+            - install-dependencies
+
+      - sfdx-scan:
+          requires:
+            - install-dependencies
+
+      # Uncomment when additional checks are implemented
+      # - additional-checks:
+      #     requires:
+      #       - install-dependencies
+
+  # Nightly workflow (optional - runs on a schedule)
+  nightly-build:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *" # Run at midnight every day
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - install-dependencies
+      - prettier-check:
+          requires:
+            - install-dependencies
+      - eslint-check:
+          requires:
+            - install-dependencies
+      - sfdx-scan:
+          requires:
+            - install-dependencies
