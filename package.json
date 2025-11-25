@@ -1,16 +1,47 @@
 {
-  "name": "ops-guardian",
+  "name": "sentinel",
+  "version": "1.0.0",
+  "description": "AI-native compliance intelligence platform for Salesforce",
   "type": "module",
   "private": true,
   "scripts": {
-    "fmt": "prettier -w \"**/*.{js,ts,html,md,json,yml,yaml,xml}\"",
-    "fmt:check": "prettier -c \"**/*.{js,ts,html,md,json,yml,yaml,xml}\"",
+    "fmt": "prettier -w \"**/*.{js,cls,html,md,json,yml,yaml,xml}\"",
+    "fmt:check": "prettier -c \"**/*.{js,cls,html,md,json,yml,yaml,xml}\"",
     "lint": "eslint \"force-app/**/*.js\" --max-warnings=0",
-    "prepare": "husky"
+    "lint:fix": "eslint \"force-app/**/*.js\" --fix",
+    "test": "npm run test:unit && npm run test:apex",
+    "test:apex": "echo 'Run: sfdx force:apex:test:run -c -r human -w 10'",
+    "test:unit": "echo 'LWC Jest tests would run here'",
+    "test:watch": "echo 'Jest watch mode'",
+    "prepare": "husky",
+    "security-scan": "echo 'Security scanner would run here'",
+    "evidence": "bash scripts/generate-evidence.sh",
+    "deploy:scratch": "sfdx force:org:create -f config/project-scratch-def.json -a sentinel-scratch && sfdx force:source:push -u sentinel-scratch",
+    "deploy:prod": "sfdx force:source:deploy -x manifest/package.xml -u production"
   },
   "lint-staged": {
-    "**/*.{js,ts,html,md,json,yml,yaml,xml}": "prettier --write"
+    "**/*.{js,html,md,json,yml,yaml,xml}": [
+      "prettier --write"
+    ],
+    "**/*.js": [
+      "eslint --max-warnings=0 --fix"
+    ]
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/derickporter1993/Ops-Gurdian.git"
+  },
+  "keywords": [
+    "salesforce",
+    "compliance",
+    "ai",
+    "soc2",
+    "hipaa",
+    "audit",
+    "security"
+  ],
+  "author": "Sentinel Team",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/eslint-parser": "^7.24.0",

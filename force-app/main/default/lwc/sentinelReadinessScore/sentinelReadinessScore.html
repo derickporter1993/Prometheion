@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title="Compliance Readiness Score" icon-name="custom:custom61">
+        <div class="slds-p-around_medium">
+            <lightning-layout>
+                <lightning-layout-item flexibility="grow" class="slds-text-align_center">
+                    <div class="score-container">
+                        <div class="score-gauge">
+                            <span class="score-value">{score}</span>
+                            <span class="score-max">/100</span>
+                        </div>
+                        <p class={scoreStatusClass}>{scoreStatus}</p>
+                    </div>
+                </lightning-layout-item>
+
+                <lightning-layout-item flexibility="grow">
+                    <dl class="slds-list_horizontal slds-wrap">
+                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Access Governance:</dt>
+                        <dd class={accessClass}>{accessScore}%</dd>
+
+                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Config Health:</dt>
+                        <dd class={configClass}>{configScore}%</dd>
+
+                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Automation Safety:</dt>
+                        <dd class={automationClass}>{automationScore}%</dd>
+
+                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Evidence:</dt>
+                        <dd class={evidenceClass}>{evidenceScore}%</dd>
+                    </dl>
+                </lightning-layout-item>
+            </lightning-layout>
+
+            <div class="slds-m-top_medium">
+                <lightning-button
+                    label="Generate Evidence Pack"
+                    variant="brand"
+                    onclick={handleGenerateEvidence}
+                    disabled={isGenerating}>
+                </lightning-button>
+
+                <lightning-button
+                    label="Refresh Score"
+                    variant="neutral"
+                    onclick={handleRefresh}
+                    class="slds-m-left_small">
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

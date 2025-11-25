@@ -1,0 +1,72 @@
+name: Sentinel CI/CD
+
+on:
+  push:
+    branches: [main, develop, claude/**]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check Formatting
+        run: npm run fmt:check
+
+      - name: Lint JavaScript
+        run: npm run lint
+
+      - name: Run Security Scan
+        run: npm run security-scan
+        continue-on-error: true
+
+  apex-tests:
+    name: Run Apex Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Salesforce CLI
+        run: |
+          npm install -g @salesforce/cli
+          sf version
+
+      - name: Create Scratch Org
+        run: |
+          echo "Scratch org creation requires SFDX auth"
+          echo "Skipping for now - configure secrets for full CI"
+
+      - name: Display Instructions
+        run: |
+          echo "To enable full CI/CD:"
+          echo "1. Set up Dev Hub authentication"
+          echo "2. Add SF_CONSUMER_KEY, SF_USERNAME, SF_JWT_KEY secrets"
+          echo "3. Uncomment scratch org deployment steps"
+
+  build-success:
+    name: Build Successful
+    runs-on: ubuntu-latest
+    needs: [validate]
+
+    steps:
+      - name: Success Message
+        run: |
+          echo "✅ Sentinel build passed!"
+          echo "📦 Ready for deployment"

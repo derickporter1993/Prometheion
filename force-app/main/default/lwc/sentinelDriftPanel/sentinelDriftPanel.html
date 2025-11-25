@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Active Drift Alerts" icon-name="custom:custom14">
+        <div slot="actions">
+            <lightning-badge label={alertCountLabel}></lightning-badge>
+        </div>
+
+        <div class="slds-p-around_small">
+            <template if:true={hasAlerts}>
+                <lightning-datatable
+                    key-field="id"
+                    data={alerts}
+                    columns={columns}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={hasAlerts}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-icon icon-name="utility:check" size="large" variant="success"></lightning-icon>
+                    <p class="slds-m-top_small slds-text-color_success">
+                        No active drift alerts. Your org is compliant!
+                    </p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

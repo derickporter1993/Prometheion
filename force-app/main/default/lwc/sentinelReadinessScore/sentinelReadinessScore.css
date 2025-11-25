@@ -1,0 +1,29 @@
+.score-container {
+    padding: 1rem;
+}
+
+.score-gauge {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.score-value {
+    color: var(--lwc-brandPrimary);
+}
+
+.score-max {
+    font-size: 1.5rem;
+    color: var(--lwc-colorTextWeak);
+}
+
+dl.slds-list_horizontal dd {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+dl.slds-list_horizontal dt {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
