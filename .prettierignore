@@ -1,13 +1,4 @@
-# Salesforce metadata XML files
-*.cls-meta.xml
-*.trigger-meta.xml
-*.js-meta.xml
-*.object-meta.xml
-*.permissionset-meta.xml
-*.event-meta.xml
-
-# Other generated or external files
-node_modules/
-.sfdx/
-coverage/
-*.log
+# Salesforce metadata files without parser
+**/*-meta.xml
+**/objects/**/*.xml
+**/permissionsets/**/*.xml
