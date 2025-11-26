@@ -107,7 +107,6 @@ public with sharing class SentinelDriftDetector {
      * @description Publishes alerts to platform event for real-time notifications
      * @param alerts List of alerts to publish
      */
-    @future(callout=false)
     public static void publishAlerts(List<Id> alertIds) {
         // Will publish to Sentinel_Alert_Event__e when platform event is deployed
         System.debug('Publishing ' + alertIds.size() + ' alerts');
