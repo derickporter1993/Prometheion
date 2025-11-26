@@ -1,6 +1,20 @@
 {
-  "packageDirectories": [{ "path": "force-app", "default": true }],
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true,
+      "package": "sentinel",
+      "versionName": "v3.0 Enterprise",
+      "versionNumber": "3.0.0.NEXT",
+      "definitionFile": "config/sentinel-scratch-def.json"
+    }
+  ],
+  "name": "Sentinel Enterprise",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "63.0"
+  "sourceApiVersion": "62.0",
+  "packageAliases": {
+    "sentinel": "0HoXXXXXXXXXXXX"
+  },
+  "plugins": {}
 }
