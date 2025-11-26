@@ -20,10 +20,7 @@ export default class ApiUsageDashboard extends LightningElement {
   ];
 
   connectedCallback() {
-    this.pollingManager = new PollingManager(
-      () => this.load(),
-      this.currentInterval
-    );
+    this.pollingManager = new PollingManager(() => this.load(), this.currentInterval);
     this.pollingManager.setupVisibilityHandling();
     this.load();
     this.pollingManager.start();
@@ -54,10 +51,7 @@ export default class ApiUsageDashboard extends LightningElement {
       // Log error for debugging purposes
       if (error.body?.message || error.message) {
         // Only log in non-production environments
-        this.showError(
-          "Failed to load API usage data",
-          error.body?.message || error.message
-        );
+        this.showError("Failed to load API usage data", error.body?.message || error.message);
       }
 
       // Apply exponential backoff on error
