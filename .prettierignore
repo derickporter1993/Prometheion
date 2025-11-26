@@ -1,4 +1,11 @@
-# Salesforce metadata files without parser
+# Salesforce metadata XML files (not supported by Prettier)
+**/*.xml
 **/*-meta.xml
-**/objects/**/*.xml
-**/permissionsets/**/*.xml
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Salesforce
+.sfdx/
+.sf/
