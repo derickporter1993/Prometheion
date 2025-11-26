@@ -92,7 +92,7 @@
                     </div>
                   </div>
                   <div class="slds-col slds-size_1-of-3 slds-text-align_right">
-                    <div class={getSeverityClass}>
+                    <div class={getSeverityClass(cpuClass.severity)}>
                       <div class="slds-text-heading_medium">{cpuClass.avgValue}ms</div>
                       <div class="slds-text-body_small">
                         {cpuClass.percentOfLimit}% of limit
