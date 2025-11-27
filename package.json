@@ -7,10 +7,10 @@
   "scripts": {
     "fmt": "prettier --write \"force-app/**/*.{js,ts,html,md,json,yml,yaml,xml}\" \"./*.{js,json,yml,yaml,md}\"",
     "fmt:check": "prettier --check \"force-app/**/*.{js,ts,html,md,json,yml,yaml,xml}\" \"./*.{js,json,yml,yaml,md}\"",
-    "lint": "eslint \"force-app/**/*.js\" --max-warnings=0 || echo '⚠️  Lint warnings found'",
+    "lint": "eslint \"force-app/**/*.js\" --max-warnings=0",
     "lint:fix": "eslint \"force-app/**/*.js\" --fix",
     "test": "jest --passWithNoTests",
-    "test:unit": "jest --config jest.config.js || echo '⚠️  Tests failed'",
+    "test:unit": "jest --config jest.config.js",
     "test:unit:watch": "jest --watch",
     "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
