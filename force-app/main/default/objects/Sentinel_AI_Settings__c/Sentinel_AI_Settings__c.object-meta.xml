@@ -19,8 +19,8 @@
         <type>Number</type>
     </fields>
     <fields>
-        <fullName>Blacklisted_Users__c</fullName>
-        <label>Blacklisted Users (Comma-separated IDs)</label>
+        <fullName>Blocked_Users__c</fullName>
+        <label>Blocked Users (Comma-separated IDs)</label>
         <length>1000</length>
         <type>Text</type>
     </fields>
