@@ -36,11 +36,15 @@
                 class="slds-m-bottom_medium">
             </lightning-input>
 
+            <div id="blacklistedUsersHelp" class="slds-text-body_small slds-m-bottom_xx-small">
+                Enter one or more Salesforce User IDs, separated by commas. Example: 005xx000001Sv6z, 005xx000001Sv70
+            </div>
             <lightning-textarea
                 label="Blacklisted Users (User IDs, comma-separated)"
                 value={blacklistedUsers}
                 onchange={handleBlacklistChange}
                 placeholder="005xx000001Sv6z, 005xx000001Sv70"
+                aria-describedby="blacklistedUsersHelp"
                 class="slds-m-bottom_medium">
             </lightning-textarea>
 
