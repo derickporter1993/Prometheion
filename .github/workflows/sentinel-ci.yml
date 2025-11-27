@@ -47,7 +47,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run LWC Tests
-        run: npm run test:unit || echo "⚠️  LWC tests failed"
+        run: npm run test:unit
 
   validate-metadata:
     runs-on: ubuntu-latest
