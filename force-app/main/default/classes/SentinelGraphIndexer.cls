@@ -62,7 +62,8 @@ public with sharing class SentinelGraphIndexer {
     }
 
     private static Decimal calculateRiskScore(Map<String, Object> metadata, String framework) {
-        if (FeatureManagement.checkPermission('EinsteinGPTEnabled')) {
+        Sentinel_AI_Settings__c aiSettings = Sentinel_AI_Settings__c.getOrgDefaults();
+        if (aiSettings != null && aiSettings.Enable_AI_Reasoning__c) {
             return callEinsteinPrediction(metadata, framework);
         }
         return calculateFallbackRiskScore(metadata, framework);
