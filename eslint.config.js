@@ -17,16 +17,21 @@ const sharedLanguageOptions = {
   },
 };
 
+const lwcRecommended = lwc.configs.recommended ?? {};
+
 export default [
   {
     ignores: ["**/node_modules/**", "**/*.zip", "**/coverage/**"],
   },
   js.configs.recommended,
   {
+    ...lwcRecommended,
     files: ["force-app/**/*.js"],
     languageOptions: {
+      ...(lwcRecommended.languageOptions ?? {}),
       ...sharedLanguageOptions,
       globals: {
+        ...(lwcRecommended.languageOptions?.globals ?? {}),
         console: "readonly",
         document: "readonly",
         setInterval: "readonly",
@@ -38,21 +43,13 @@ export default [
       },
     },
     plugins: {
+      ...(lwcRecommended.plugins ?? {}),
       lwc,
     },
     rules: {
-      ...js.configs.recommended.rules,
+      ...(lwcRecommended.rules ?? {}),
       "no-console": "warn",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
-      "lwc/consistent-component-name": "error",
-      "lwc/no-api-reassignments": "error",
-      "lwc/no-deprecated": "warn",
-      "lwc/no-document-query": "error",
-      "lwc/no-inner-html": "error",
-      "lwc/no-leading-uppercase-api-name": "error",
-      "lwc/valid-api": "error",
-      "lwc/valid-track": "error",
-      "lwc/valid-wire": "error",
     },
   },
   prettier,
