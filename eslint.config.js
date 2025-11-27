@@ -23,7 +23,14 @@ export default [
   {
     ignores: ["**/node_modules/**", "**/*.zip", "**/coverage/**"],
   },
-  js.configs.recommended,
+  {
+    ...js.configs.recommended,
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    languageOptions: {
+      ...(js.configs.recommended.languageOptions ?? {}),
+      ...sharedLanguageOptions,
+    },
+  },
   {
     ...lwcRecommended,
     files: ["force-app/**/*.js"],
