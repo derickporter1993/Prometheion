@@ -2,7 +2,10 @@ public without sharing class SentinelReasoningEngine {
     private static final Decimal MIN_CONFIDENCE = 0.85;
 
     private static Decimal getConfidenceThreshold(Sentinel_AI_Settings__c settings) {
-        return settings.Confidence_Threshold__c != null ? settings.Confidence_Threshold__c : MIN_CONFIDENCE;
+        if (settings == null || settings.Confidence_Threshold__c == null) {
+            return MIN_CONFIDENCE;
+        }
+        return settings.Confidence_Threshold__c;
     }
 
     public static ReasoningResult explainViolation(String nodeHash, String framework) {
