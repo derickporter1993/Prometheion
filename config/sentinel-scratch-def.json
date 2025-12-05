@@ -1,0 +1,18 @@
+{
+  "orgName": "Sentinel Enterprise Scratch Org",
+  "edition": "Developer",
+  "features": ["EinsteinGPT", "MultiCurrency", "Communities"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "securitySettings": {
+      "sessionSettings": {
+        "enforceIpRangesEveryRequest": false
+      }
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  }
+}
