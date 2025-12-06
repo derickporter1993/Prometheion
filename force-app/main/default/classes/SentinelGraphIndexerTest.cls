@@ -1,45 +1,76 @@
-@IsTest
+/**
+ * SentinelGraphIndexerTest - Tests for the Graph Indexer Stub
+ * 
+ * @author Solentra
+ * @version 1.0
+ */
+@isTest
 private class SentinelGraphIndexerTest {
-    @TestSetup
-    static void setup() {
-        PermissionSet ps = new PermissionSet(Name='TestPS', Label='Test PS');
-        insert ps;
-    }
-
-    @IsTest
-    static void testIndexChange_CreatesImmutableNode() {
-        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'TestPS' LIMIT 1];
+    
+    @isTest
+    static void testIndexEvent() {
         Test.startTest();
-        String nodeHash = SentinelGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
+        String nodeId = SentinelGraphIndexer.indexEvent(
+            SolentraConstants.ENTITY_PERMISSION_SET,
+            '0PS000000000001',
+            'created',
+            SolentraConstants.FRAMEWORK_HIPAA,
+            7.5
+        );
         Test.stopTest();
-
-        System.assertNotEquals(null, nodeHash, 'Should return node hash');
-
-        List<Sentinel_Compliance_Graph__b> nodes = [
-            SELECT Graph_Node_Id__c, Risk_Score__c, Entity_Type__c
-            FROM Sentinel_Compliance_Graph__b
-            WHERE Graph_Node_Id__c = :nodeHash
-        ];
-        System.assertEquals(1, nodes.size(), 'Should create one node');
-        System.assertEquals('PERMISSION_SET', nodes[0].Entity_Type__c);
+        
+        System.assertNotEquals(null, nodeId, 'Node ID should not be null');
+        System.assert(nodeId.startsWith('node-'), 'Node ID should start with node-');
     }
-
-    @IsTest
-    static void testGenerateDeterministicHash_IsUnique() {
-        String hash1 = SentinelGraphIndexer.generateDeterministicHash('FLOW', '123', 'SOC2');
-        String hash2 = SentinelGraphIndexer.generateDeterministicHash('FLOW', '456', 'SOC2');
-        System.assertNotEquals(hash1, hash2, 'Hash should be unique for different entities');
-    }
-
-    @IsTest
-    static void testIndexChange_InvalidEntity() {
+    
+    @isTest
+    static void testGetDriftCategory() {
         Test.startTest();
-        try {
-            SentinelGraphIndexer.indexChange('INVALID', 'badid', null, 'SOC2');
-            System.assert(false, 'Should have thrown exception');
-        } catch (Exception e) {
-            System.assert(true, 'Expected exception for invalid entity');
-        }
+        
+        // High risk - policy violation
+        String highRisk = SentinelGraphIndexer.getDriftCategory(8.5);
+        System.assertEquals(SolentraConstants.DRIFT_POLICY_VIOLATION, highRisk);
+        
+        // Medium risk - pending review
+        String mediumRisk = SentinelGraphIndexer.getDriftCategory(7.5);
+        System.assertEquals(SolentraConstants.DRIFT_PENDING_REVIEW, mediumRisk);
+        
+        // Low risk - approved
+        String lowRisk = SentinelGraphIndexer.getDriftCategory(5.0);
+        System.assertEquals(SolentraConstants.DRIFT_HUMAN_APPROVED, lowRisk);
+        
         Test.stopTest();
+    }
+    
+    @isTest
+    static void testQueryRecentNodes() {
+        Test.startTest();
+        List<Map<String, Object>> nodes = SentinelGraphIndexer.queryRecentNodes(30, 'HIPAA');
+        Test.stopTest();
+        
+        System.assertNotEquals(null, nodes, 'Should return a list');
+        System.assertEquals(0, nodes.size(), 'Stub should return empty list');
+    }
+    
+    @isTest
+    static void testGetNodeById() {
+        Test.startTest();
+        Map<String, Object> node = SentinelGraphIndexer.getNodeById('node-123');
+        Test.stopTest();
+        
+        System.assertEquals(null, node, 'Stub should return null');
+    }
+    
+    @isTest
+    static void testMarkNodeReviewed() {
+        Test.startTest();
+        Boolean result = SentinelGraphIndexer.markNodeReviewed(
+            'node-123', 
+            UserInfo.getUserId(), 
+            'Reviewed and approved'
+        );
+        Test.stopTest();
+        
+        System.assertEquals(true, result, 'Should return true');
     }
 }

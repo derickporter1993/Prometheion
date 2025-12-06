@@ -1,177 +1,75 @@
-@IsTest
+/**
+ * SentinelReasoningEngineTest - Tests for the AI Reasoning Engine Stub
+ * 
+ * @author Solentra
+ * @version 1.0
+ */
+@isTest
 private class SentinelReasoningEngineTest {
-    @TestSetup
-    static void setup() {
-        // Create a test permission set for entity testing
-        PermissionSet ps = new PermissionSet(
-            Name = 'TestReasoningPS',
-            Label = 'Test Reasoning Permission Set'
-        );
-        insert ps;
-    }
-
-    @IsTest
-    static void testReasoningResult_Constructor() {
+    
+    @isTest
+    static void testAnalyzeNode() {
         Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
-            true,
-            0.95,
-            'TEST_POLICY',
-            'SOC2-1.1',
-            'Test explanation',
-            'audit123',
-            false
-        );
+        SentinelReasoningEngine.ReasoningResult result = 
+            SentinelReasoningEngine.analyzeNode('test-node-123');
         Test.stopTest();
-
-        System.assertEquals(true, result.isViolation, 'isViolation should be true');
-        System.assertEquals(0.95, result.confidence, 'confidence should match');
-        System.assertEquals('TEST_POLICY', result.policy, 'policy should match');
-        System.assertEquals('SOC2-1.1', result.legalCitation, 'legalCitation should match');
-        System.assertEquals('Test explanation', result.explanation, 'explanation should match');
-        System.assertEquals('audit123', result.auditTrailId, 'auditTrailId should match');
-        System.assertEquals(false, result.requiresHumanReview, 'requiresHumanReview should be false');
-    }
-
-    @IsTest
-    static void testReasoningResult_RequiresHumanReview() {
-        Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
-            true,
-            0.50,
-            'LOW_CONFIDENCE_POLICY',
-            'GDPR-2.3',
-            'Low confidence explanation',
-            'audit456',
-            true
-        );
-        Test.stopTest();
-
+        
+        System.assertNotEquals(null, result, 'Result should not be null');
+        System.assertEquals('test-node-123', result.nodeId, 'Node ID should match');
+        System.assertNotEquals(null, result.riskScore, 'Risk score should be set');
         System.assertEquals(true, result.requiresHumanReview, 'Should require human review');
-        System.assertEquals(0.50, result.confidence, 'Low confidence value should be preserved');
     }
-
-    @IsTest
-    static void testPredictionResult_Constructor() {
+    
+    @isTest
+    static void testAnalyzeNodes() {
+        List<String> nodeIds = new List<String>{'node-1', 'node-2', 'node-3'};
+        
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
-            true,
-            0.88,
-            'POLICY_001'
-        );
+        List<SentinelReasoningEngine.ReasoningResult> results = 
+            SentinelReasoningEngine.analyzeNodes(nodeIds);
         Test.stopTest();
-
-        System.assertEquals(true, prediction.isViolation, 'isViolation should be true');
-        System.assertEquals(0.88, prediction.confidence, 'confidence should match');
-        System.assertEquals('POLICY_001', prediction.policyId, 'policyId should match');
+        
+        System.assertEquals(3, results.size(), 'Should return 3 results');
     }
-
-    @IsTest
-    static void testPredictionResult_NoViolation() {
+    
+    @isTest
+    static void testGetExplanation() {
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
-            false,
-            0.0,
-            null
-        );
+        String explanation = SentinelReasoningEngine.getExplanation('node-123', 'HIPAA');
         Test.stopTest();
-
-        System.assertEquals(false, prediction.isViolation, 'isViolation should be false');
-        System.assertEquals(0.0, prediction.confidence, 'confidence should be zero');
-        System.assertEquals(null, prediction.policyId, 'policyId should be null');
+        
+        System.assert(explanation.contains('HIPAA'), 'Explanation should mention framework');
     }
-
-    @IsTest
-    static void testReasoningException() {
+    
+    @isTest
+    static void testCalculateRiskScore() {
         Test.startTest();
-        try {
-            throw new SentinelReasoningEngine.ReasoningException('Test error message');
-        } catch (SentinelReasoningEngine.ReasoningException e) {
-            System.assertEquals('Test error message', e.getMessage(), 'Exception message should match');
-        }
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void testExplainViolation_NodeNotFound() {
-        Test.startTest();
-        try {
-            SentinelReasoningEngine.explainViolation('nonexistent_hash', 'SOC2');
-            System.assert(false, 'Should have thrown ReasoningException');
-        } catch (SentinelReasoningEngine.ReasoningException e) {
-            System.assertEquals('Node not found', e.getMessage(), 'Should throw node not found error');
-        }
+        
+        // Test permission set (high risk)
+        Decimal permScore = SentinelReasoningEngine.calculateRiskScore(
+            SolentraConstants.ENTITY_PERMISSION_SET, 'created', 'HIPAA');
+        System.assert(permScore >= 7.0, 'Permission set should have high risk');
+        
+        // Test delete action (high risk)
+        Decimal deleteScore = SentinelReasoningEngine.calculateRiskScore(
+            'OBJECT', 'deleted record', 'SOC2');
+        System.assert(deleteScore >= 7.0, 'Delete action should have high risk');
+        
+        // Test normal action
+        Decimal normalScore = SentinelReasoningEngine.calculateRiskScore(
+            'FIELD', 'modified', 'NIST');
+        System.assert(normalScore <= 6.0, 'Normal action should have moderate risk');
+        
         Test.stopTest();
     }
-
-    @IsTest
-    static void testReasoningResult_AuraEnabled() {
-        // Verify that ReasoningResult properties are properly exposed for Lightning components
-        Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
-            false,
-            0.75,
-            'AURA_TEST_POLICY',
-            'HIPAA-4.5',
-            'Aura enabled test',
-            'auraAudit789',
-            true
-        );
-        Test.stopTest();
-
-        // Access all AuraEnabled properties to ensure they're properly exposed
-        System.assertNotEquals(null, result.isViolation);
-        System.assertNotEquals(null, result.confidence);
-        System.assertNotEquals(null, result.policy);
-        System.assertNotEquals(null, result.legalCitation);
-        System.assertNotEquals(null, result.explanation);
-        System.assertNotEquals(null, result.auditTrailId);
-        System.assertNotEquals(null, result.requiresHumanReview);
-    }
-
-    @IsTest
-    static void testPredictionResult_ZeroConfidence() {
-        Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
-            false,
-            0.0,
-            'NO_VIOLATION_POLICY'
-        );
-        Test.stopTest();
-
-        System.assertEquals(false, prediction.isViolation, 'No violation expected');
-        System.assertEquals(0.0, prediction.confidence, 'Zero confidence expected');
-    }
-
-    @IsTest
-    static void testPredictionResult_HighConfidence() {
-        Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
-            true,
-            1.0,
-            'HIGH_RISK_POLICY'
-        );
-        Test.stopTest();
-
-        System.assertEquals(true, prediction.isViolation, 'Violation expected');
-        System.assertEquals(1.0, prediction.confidence, 'Maximum confidence expected');
-    }
-
-    @IsTest
-    static void testReasoningResult_NoViolation() {
-        Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
-            false,
-            0.90,
-            'COMPLIANT_POLICY',
-            'ISO-27001',
-            'No violation detected',
-            'compliantAudit',
-            false
-        );
-        Test.stopTest();
-
-        System.assertEquals(false, result.isViolation, 'Should indicate no violation');
-        System.assertEquals(false, result.requiresHumanReview, 'Should not require human review');
+    
+    @isTest
+    static void testReasoningResultDefaults() {
+        SentinelReasoningEngine.ReasoningResult result = 
+            new SentinelReasoningEngine.ReasoningResult();
+        
+        System.assertEquals(5.0, result.riskScore, 'Default risk score should be 5.0');
+        System.assertEquals(0.7, result.confidence, 'Default confidence should be 0.7');
+        System.assertEquals(true, result.requiresHumanReview, 'Should require human review by default');
     }
 }

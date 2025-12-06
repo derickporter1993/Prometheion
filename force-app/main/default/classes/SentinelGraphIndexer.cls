@@ -1,99 +1,81 @@
+/**
+ * SentinelGraphIndexer - Compliance Graph Indexer (Stub)
+ * 
+ * This is a stub implementation that provides the interface for indexing
+ * compliance data without requiring the Big Object.
+ * 
+ * Full implementation requires:
+ * - Sentinel_Compliance_Graph__b (Big Object)
+ * 
+ * @author Solentra
+ * @version 1.0 (Stub)
+ */
 public with sharing class SentinelGraphIndexer {
-    private static final String GRAPH_VERSION = 'v3.0';
-
-    public static String indexChange(String entityType, String entityId, String parentNodeId, String framework) {
-        String nodeHash = generateDeterministicHash(entityType, entityId, framework);
-        Map<String, Object> metadata = queryEntityMetadata(entityType, entityId);
-        Decimal riskScore = calculateRiskScore(metadata, framework);
-
-        Sentinel_Compliance_Graph__b node = new Sentinel_Compliance_Graph__b(
-            Graph_Node_Id__c = nodeHash,
-            Parent_Node_Id__c = parentNodeId,
-            Timestamp__c = System.now(),
-            Entity_Type__c = entityType,
-            Entity_Record_Id__c = entityId,
-            Compliance_Framework__c = framework,
-            Risk_Score__c = riskScore,
-            Drift_Category__c = determineDriftCategory(riskScore, metadata),
-            Node_Metadata__c = JSON.serialize(metadata),
-            AI_Confidence__c = 0.0,
-            Human_Adjudicated__c = false,
-            Graph_Version__c = GRAPH_VERSION
-        );
-
-        try {
-            insert node;
-            return nodeHash;
-        } catch (Exception e) {
-            throw new SentinelException('Graph indexing failed: ' + e.getMessage());
+    
+    /**
+     * Index a compliance event
+     * Stub implementation - logs the event but doesn't persist to Big Object
+     */
+    public static String indexEvent(
+        String entityType,
+        String entityId,
+        String action,
+        String framework,
+        Decimal riskScore
+    ) {
+        // Generate a unique node ID
+        String nodeId = 'node-' + String.valueOf(Datetime.now().getTime()) + '-' + 
+                        entityType.substring(0, Math.min(3, entityType.length()));
+        
+        System.debug(LoggingLevel.INFO, '[SentinelGraphIndexer] Indexed event: ' + 
+            JSON.serialize(new Map<String, Object>{
+                'nodeId' => nodeId,
+                'entityType' => entityType,
+                'entityId' => entityId,
+                'action' => action,
+                'framework' => framework,
+                'riskScore' => riskScore
+            }));
+        
+        return nodeId;
+    }
+    
+    /**
+     * Get drift category based on risk score
+     */
+    public static String getDriftCategory(Decimal riskScore) {
+        if (riskScore >= SolentraConstants.RISK_THRESHOLD_AUTO_FIX) {
+            return SolentraConstants.DRIFT_POLICY_VIOLATION;
+        } else if (riskScore >= SolentraConstants.RISK_THRESHOLD_HIGH) {
+            return SolentraConstants.DRIFT_PENDING_REVIEW;
         }
+        return SolentraConstants.DRIFT_HUMAN_APPROVED;
     }
-
-    public static String generateDeterministicHash(String entityType, String entityId, String framework) {
-        String input = entityType + '|' + entityId + '|' + framework + '|' + System.now().getTime();
-        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
-        return EncodingUtil.base64Encode(hash).substring(0, 50);
+    
+    /**
+     * Query recent nodes
+     * Stub implementation - returns empty list
+     */
+    public static List<Map<String, Object>> queryRecentNodes(Integer days, String framework) {
+        System.debug(LoggingLevel.INFO, '[SentinelGraphIndexer] Query for ' + days + ' days, framework: ' + framework);
+        return new List<Map<String, Object>>();
     }
-
-    private static Map<String, Object> queryEntityMetadata(String entityType, String entityId) {
-        Map<String, Object> metadata = new Map<String, Object>();
-        switch on entityType {
-            when 'PERMISSION_SET' {
-                PermissionSet ps = [
-                    SELECT Id, Name,
-                        (SELECT SObjectType, PermissionsRead, PermissionsEdit FROM ObjectPerms),
-                        (SELECT SObjectType, Field, PermissionsEdit FROM FieldPerms)
-                    FROM PermissionSet WHERE Id = :entityId
-                ];
-                metadata.put('name', ps.Name);
-                metadata.put('objectPermissions', ps.ObjectPerms);
-                metadata.put('fieldPermissions', ps.FieldPerms);
-            }
-            when 'FLOW' {
-                FlowDefinitionView fd = [
-                    SELECT ApiName, Label, TriggerType, ProcessType
-                    FROM FlowDefinitionView WHERE DurableId = :entityId
-                ];
-                metadata.put('apiName', fd.ApiName);
-                metadata.put('triggerType', fd.TriggerType);
-            }
-        }
-        return metadata;
+    
+    /**
+     * Get node by ID
+     * Stub implementation - returns null
+     */
+    public static Map<String, Object> getNodeById(String nodeId) {
+        System.debug(LoggingLevel.INFO, '[SentinelGraphIndexer] Get node: ' + nodeId);
+        return null;
     }
-
-    private static Decimal calculateRiskScore(Map<String, Object> metadata, String framework) {
-        Sentinel_AI_Settings__c aiSettings = Sentinel_AI_Settings__c.getOrgDefaults();
-        if (aiSettings != null && aiSettings.Enable_AI_Reasoning__c) {
-            return callEinsteinPrediction(metadata, framework);
-        }
-        return calculateFallbackRiskScore(metadata, framework);
+    
+    /**
+     * Mark node as reviewed
+     * Stub implementation
+     */
+    public static Boolean markNodeReviewed(String nodeId, String reviewerId, String notes) {
+        System.debug(LoggingLevel.INFO, '[SentinelGraphIndexer] Mark reviewed: ' + nodeId + ' by ' + reviewerId);
+        return true;
     }
-
-    private static Decimal callEinsteinPrediction(Map<String, Object> metadata, String framework) {
-        try {
-            List<einsteinai__PredictionResult> results =
-                einsteinai__PredictionService.predict('Sentinel_Risk_Scoring', metadata);
-            return results.isEmpty() ? 5.0 : (Decimal)results[0].get('probability') * 10;
-        } catch (Exception e) {
-            return calculateFallbackRiskScore(metadata, framework);
-        }
-    }
-
-    private static Decimal calculateFallbackRiskScore(Map<String, Object> metadata, String framework) {
-        Decimal score = 3.0;
-        if (metadata.containsKey('objectPermissions')) {
-            List<Object> perms = (List<Object>)metadata.get('objectPermissions');
-            score += perms.size(); // Simple heuristic
-        }
-        return Math.min(score, 10.0);
-    }
-
-    private static String determineDriftCategory(Decimal riskScore, Map<String, Object> metadata) {
-        if (riskScore >= SolentraConstants.RISK_THRESHOLD_AUTO_FIX) return 'POLICY_VIOLATION';
-        if (riskScore >= 5.0) return 'UNAUTHORIZED';
-        if (riskScore >= 3.0) return 'ANOMALY';
-        return 'MANUAL_OVERRIDE';
-    }
-
-    public class SentinelException extends Exception {}
 }
