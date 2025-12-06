@@ -56,6 +56,7 @@ public with sharing class SentinelLegalDocumentGenerator {
      * Generate a risk assessment document
      * Stub implementation
      */
+    @AuraEnabled(cacheable=true)
     public static String generateRiskAssessment() {
         Map<String, Object> scoreData = SolentraComplianceScorer.calculateComplianceScore();
         

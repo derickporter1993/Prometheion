@@ -1,35 +1,30 @@
+/**
+ * FlowExecutionStats - Flow Execution Statistics (Stub)
+ * 
+ * Provides flow execution statistics for monitoring.
+ * Stub implementation - full version requires Flow_Execution__c custom object.
+ * 
+ * @author Solentra
+ * @version 1.0 (Stub)
+ */
 public with sharing class FlowExecutionStats {
-    private class ExecAgg {
+    
+    public class ExecAgg {
         @AuraEnabled public String flowName;
         @AuraEnabled public Integer runs;
         @AuraEnabled public Integer faults;
         @AuraEnabled public Datetime lastRun;
         
-        public ExecAgg(AggregateResult ar) {
-            this.flowName = (String) ar.get('fn');
-            this.runs = (Integer) ar.get('runs');
-            this.faults = (Integer) ar.get('faults');
-            this.lastRun = (Datetime) ar.get('lastRun');
+        public ExecAgg() {
+            this.runs = 0;
+            this.faults = 0;
         }
     }
     
     @AuraEnabled(cacheable=true)
     public static List<ExecAgg> topFlows(Integer limitSize) {
-        Integer limit = Math.max(1, limitSize);
-        List<AggregateResult> ars = [
-            SELECT Flow_Name__c fn,
-                   COUNT(Id) runs,
-                   SUM(CASE WHEN Status__c = 'Fault' THEN 1 ELSE 0 END) faults,
-                   MAX(Run_Time__c) lastRun
-            FROM Flow_Execution__c
-            GROUP BY Flow_Name__c
-            ORDER BY runs DESC
-            LIMIT :limit
-        ];
-        List<ExecAgg> out = new List<ExecAgg>();
-        for (AggregateResult ar : ars) {
-            out.add(new ExecAgg(ar));
-        }
-        return out;
+        // Stub implementation - return empty list
+        // Full implementation requires Flow_Execution__c custom object
+        return new List<ExecAgg>();
     }
 }

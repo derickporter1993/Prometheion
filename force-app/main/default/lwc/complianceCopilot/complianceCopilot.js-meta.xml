@@ -7,10 +7,4 @@
         <target>lightning__RecordPage</target>
         <target>lightning__HomePage</target>
     </targets>
-    <targetConfigs>
-        <targetConfig targets="lightning__AppPage,lightning__HomePage">
-            <property name="height" type="Integer" default="600" label="Component Height"/>
-        </targetConfig>
-    </targetConfigs>
 </LightningComponentBundle>
-

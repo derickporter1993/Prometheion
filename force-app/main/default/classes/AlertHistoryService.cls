@@ -1,32 +1,31 @@
+/**
+ * AlertHistoryService - Alert History Service (Stub)
+ * 
+ * Provides alert history for monitoring dashboards.
+ * Stub implementation - full version requires Performance_Alert_History__c custom object.
+ * 
+ * @author Solentra
+ * @version 1.0 (Stub)
+ */
 public with sharing class AlertHistoryService {
-    private class AlertRow {
+    
+    public class AlertRow {
         @AuraEnabled public String metric;
         @AuraEnabled public Decimal value;
         @AuraEnabled public Decimal threshold;
         @AuraEnabled public String contextRecordId;
         @AuraEnabled public Datetime createdDate;
         
-        public AlertRow(Performance_Alert_History__c record) {
-            this.metric = record.Metric__c;
-            this.value = record.Value__c;
-            this.threshold = record.Threshold__c;
-            this.contextRecordId = record.Context_Record__c;
-            this.createdDate = record.CreatedDate;
+        public AlertRow() {
+            this.value = 0;
+            this.threshold = 0;
         }
     }
     
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> recent(Integer limitSize) {
-        Integer limit = Math.max(1, limitSize);
-        List<AlertRow> out = new List<AlertRow>();
-        for (Performance_Alert_History__c r : [
-            SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
-            FROM Performance_Alert_History__c
-            ORDER BY CreatedDate DESC
-            LIMIT :limit
-        ]) {
-            out.add(new AlertRow(r));
-        }
-        return out;
+        // Stub implementation - return empty list
+        // Full implementation requires Performance_Alert_History__c custom object
+        return new List<AlertRow>();
     }
 }

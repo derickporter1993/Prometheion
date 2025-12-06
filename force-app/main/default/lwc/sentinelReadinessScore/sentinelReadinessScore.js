@@ -1,10 +1,9 @@
 import { LightningElement, wire, track } from 'lwc';
-import calculateReadinessScore from '@salesforce/apex/SentinelComplianceScorer.calculateReadinessScore';
-import generateEvidencePack from '@salesforce/apex/SentinelLegalDocumentGenerator.generateLegalAttestation';
+import calculateReadinessScore from '@salesforce/apex/SolentraComplianceScorer.calculateReadinessScore';
+import generateRiskAssessment from '@salesforce/apex/SentinelLegalDocumentGenerator.generateRiskAssessment';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { NavigationMixin } from 'lightning/navigation';
 
-export default class SentinelReadinessScore extends NavigationMixin(LightningElement) {
+export default class SentinelReadinessScore extends LightningElement {
     @track score = 0;
     @track accessScore = 0;
     @track configScore = 0;
@@ -21,7 +20,7 @@ export default class SentinelReadinessScore extends NavigationMixin(LightningEle
             this.updateScoreStatus();
             this.updateProgressStep();
         } else if (error) {
-            this.showToast('Error', error.body.message, 'error');
+            this.showToast('Error', error.body?.message || 'Failed to calculate score', 'error');
             this.scoreStatus = 'Error';
         }
     }
@@ -86,31 +85,23 @@ export default class SentinelReadinessScore extends NavigationMixin(LightningEle
     }
 
     handleGenerateSoc2() {
-        this.generatePack('SOC2');
+        this.generateReport('SOC2');
     }
 
     handleGenerateHipaa() {
-        this.generatePack('HIPAA');
+        this.generateReport('HIPAA');
     }
 
-    generatePack(framework) {
-        const today = new Date();
-        const startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1);
-        generateEvidencePack({ framework: framework, startDate: startDate, endDate: today })
-            .then(contentDocId => {
-                this.showToast('Success', `${framework} evidence pack generated`, 'success');
-                this.navigateToContent(contentDocId);
+    generateReport(framework) {
+        generateRiskAssessment()
+            .then(report => {
+                this.showToast('Success', `${framework} risk assessment generated`, 'success');
+                // eslint-disable-next-line no-console
+                console.log('Risk Assessment:', report);
             })
             .catch(error => {
-                this.showToast('Error', error.body.message, 'error');
+                this.showToast('Error', error.body?.message || 'Failed to generate report', 'error');
             });
-    }
-
-    navigateToContent(contentDocId) {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: { recordId: contentDocId, actionName: 'view' }
-        });
     }
 
     showToast(title, message, variant) {

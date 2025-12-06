@@ -1,5 +1,15 @@
+/**
+ * DeploymentMetrics - Deployment Metrics Service (Stub)
+ * 
+ * Provides deployment job metrics for monitoring.
+ * Stub implementation - full version requires Deployment_Job__c custom object.
+ * 
+ * @author Solentra
+ * @version 1.0 (Stub)
+ */
 public with sharing class DeploymentMetrics {
-    private class DeployRow {
+    
+    public class DeployRow {
         @AuraEnabled public String name;
         @AuraEnabled public String status;
         @AuraEnabled public Datetime startedOn;
@@ -7,28 +17,16 @@ public with sharing class DeploymentMetrics {
         @AuraEnabled public Integer testsPassed;
         @AuraEnabled public Integer testsFailed;
         
-        public DeployRow(Deployment_Job__c record) {
-            this.name = record.Name;
-            this.status = record.Status__c;
-            this.startedOn = record.Started_On__c;
-            this.finishedOn = record.Finished_On__c;
-            this.testsPassed = (Integer)record.Tests_Passed__c;
-            this.testsFailed = (Integer)record.Tests_Failed__c;
+        public DeployRow() {
+            this.testsPassed = 0;
+            this.testsFailed = 0;
         }
     }
     
     @AuraEnabled(cacheable=true)
     public static List<DeployRow> recent(Integer limitSize) {
-        Integer limit = Math.max(1, limitSize);
-        List<DeployRow> out = new List<DeployRow>();
-        for (Deployment_Job__c d : [
-            SELECT Name, Status__c, Started_On__c, Finished_On__c, Tests_Passed__c, Tests_Failed__c
-            FROM Deployment_Job__c
-            ORDER BY CreatedDate DESC
-            LIMIT :limit
-        ]) {
-            out.add(new DeployRow(d));
-        }
-        return out;
+        // Stub implementation - return empty list
+        // Full implementation requires Deployment_Job__c custom object
+        return new List<DeployRow>();
     }
 }
