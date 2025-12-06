@@ -51,6 +51,9 @@ public class SolentraConstants {
     public static final Decimal RISK_THRESHOLD_MEDIUM = 5.0;
     public static final Decimal RISK_THRESHOLD_LOW = 3.0;
     
+    // Auto-fix suggestion threshold (higher than general high-risk)
+    public static final Decimal RISK_THRESHOLD_AUTO_FIX = 8.0;
+    
     // Maximum risk score
     public static final Decimal RISK_SCORE_MAX = 10.0;
     

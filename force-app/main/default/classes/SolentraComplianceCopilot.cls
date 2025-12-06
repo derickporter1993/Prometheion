@@ -195,8 +195,8 @@ public with sharing class SolentraComplianceCopilot {
             impacts.add(changeNumber + '. ' + formatChangeDescription(change));
             changeNumber++;
             
-            // Add suggested action
-            if (change.Risk_Score__c >= SolentraConstants.RISK_THRESHOLD_HIGH) {
+            // Add suggested action (only for very high risk items)
+            if (change.Risk_Score__c >= SolentraConstants.RISK_THRESHOLD_AUTO_FIX) {
                 SuggestedAction action = new SuggestedAction();
                 action.actionType = SolentraConstants.ACTION_AUTO_FIX;
                 action.label = 'Auto-Fix';

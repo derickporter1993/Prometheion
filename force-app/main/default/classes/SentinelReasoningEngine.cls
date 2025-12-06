@@ -112,7 +112,7 @@ public without sharing class SentinelReasoningEngine {
 
     private static ReasoningResult generateFallbackReasoning(Sentinel_Compliance_Graph__b node, String framework) {
         return new ReasoningResult(
-            node.Risk_Score__c >= 8.0,
+            node.Risk_Score__c >= SolentraConstants.RISK_THRESHOLD_AUTO_FIX,
             0.0,
             'MANUAL_REVIEW',
             'N/A',

@@ -89,7 +89,7 @@ public with sharing class SentinelGraphIndexer {
     }
 
     private static String determineDriftCategory(Decimal riskScore, Map<String, Object> metadata) {
-        if (riskScore >= 8.0) return 'POLICY_VIOLATION';
+        if (riskScore >= SolentraConstants.RISK_THRESHOLD_AUTO_FIX) return 'POLICY_VIOLATION';
         if (riskScore >= 5.0) return 'UNAUTHORIZED';
         if (riskScore >= 3.0) return 'ANOMALY';
         return 'MANUAL_OVERRIDE';

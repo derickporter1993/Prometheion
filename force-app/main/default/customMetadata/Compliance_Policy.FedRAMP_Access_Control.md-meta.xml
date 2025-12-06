@@ -18,7 +18,7 @@
         <field>Remediation_Steps__c</field>
         <value xsi:type="xsd:string">1. Conduct quarterly access reviews for all user accounts.
 2. Remove or disable accounts for users inactive 90+ days.
-3. Limit privileged access (Modify All Data, View All Data) to <5% of users.
+3. Limit privileged access (Modify All Data, View All Data) to less than 5% of users.
 4. Implement multi-factor authentication (MFA) for all users.
 5. Document all access grants with business justification and approval.
 6. Maintain access certification records for audit purposes.</value>
