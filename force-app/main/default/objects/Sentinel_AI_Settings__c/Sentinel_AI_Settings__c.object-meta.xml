@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <label>Sentinel AI Settings</label>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Enable_AI_Reasoning__c</fullName>
+        <defaultValue>true</defaultValue>
+        <label>Enable AI Reasoning</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Confidence_Threshold__c</fullName>
+        <defaultValue>0.85</defaultValue>
+        <label>AI Confidence Threshold</label>
+        <precision>3</precision>
+        <scale>2</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Blocked_Users__c</fullName>
+        <label>Blocked Users (Comma-separated IDs)</label>
+        <length>1000</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Require_Human_Approval__c</fullName>
+        <defaultValue>true</defaultValue>
+        <label>Require Human Approval for HIGH+</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Auto_Remediation_Enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Enable Auto-Remediation</label>
+        <type>Checkbox</type>
+    </fields>
+</CustomObject>

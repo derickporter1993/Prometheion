@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Flow Execution</label>
+    <pluralLabel>Flow Executions</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Flow Execution Number</label>
+        <displayFormat>FE-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <fields>
+        <fullName>Flow_Name__c</fullName>
+        <label>Flow Name</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+    <fields>
+        <fullName>Primary_Record__c</fullName>
+        <label>Primary Record</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Primary Records</relationshipLabel>
+        <relationshipName>Primary_Records</relationshipName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <valueSet><valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Success</fullName><default>true</default></value>
+            <value><fullName>Fault</fullName></value>
+        </valueSetDefinition></valueSet>
+    </fields>
+    <fields>
+        <fullName>CPU__c</fullName><label>CPU (ms)</label><type>Number</type><precision>6</precision><scale>0</scale></fields>
+    <fields>
+        <fullName>SOQL__c</fullName><label>SOQL</label><type>Number</type><precision>6</precision><scale>0</scale></fields>
+    <fields>
+        <fullName>DML__c</fullName><label>DML</label><type>Number</type><precision>6</precision><scale>0</scale></fields>
+    <fields>
+        <fullName>Run_Time__c</fullName><label>Run Time</label><type>DateTime</type></fields>
+</CustomObject>
