@@ -12,6 +12,7 @@
     <label>Solentra</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
+    <tabs>Solentra_Compliance_Hub</tabs>
     <tabs>Performance_Alert_History__c</tabs>
     <tabs>API_Usage_Snapshot__c</tabs>
     <tabs>Flow_Execution__c</tabs>
