@@ -22,7 +22,7 @@
     "@babel/core": "^7.26.0",
     "@babel/eslint-parser": "^7.25.9",
     "@eslint/js": "^9.0.0",
-    "@lwc/eslint-plugin-lwc": "^2.1.0",
+    "@lwc/eslint-plugin-lwc": "^3.3.0",
     "@salesforce/eslint-config-lwc": "^3.5.3",
     "@salesforce/sfdx-lwc-jest": "^7.1.2",
     "eslint": "^9.0.0",
