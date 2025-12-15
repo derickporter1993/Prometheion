@@ -25,7 +25,7 @@
     "@lwc/eslint-plugin-lwc": "^2.1.0",
     "@salesforce/eslint-config-lwc": "^3.5.3",
     "@salesforce/sfdx-lwc-jest": "^7.1.2",
-    "eslint": "^9.0.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^9.1.0",
     "jest": "^29.7.0",
     "lint-staged": "^16.2.7",
