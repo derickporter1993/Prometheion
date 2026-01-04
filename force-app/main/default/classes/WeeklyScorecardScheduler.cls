@@ -231,17 +231,17 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     }
 
     /**
-     * Get emoji based on score (using SolentraConstants)
+     * Get emoji based on score (using PrometheionConstants)
      */
     private static String getScoreEmoji(Decimal score) {
-        return SolentraConstants.getScoreEmoji(score);
+        return PrometheionConstants.getScoreEmoji(score);
     }
 
     /**
-     * Get color hex code based on score (using SolentraConstants)
+     * Get color hex code based on score (using PrometheionConstants)
      */
     private static String getScoreColor(Decimal score) {
-        return SolentraConstants.getScoreColor(score);
+        return PrometheionConstants.getScoreColor(score);
     }
 
     /**
