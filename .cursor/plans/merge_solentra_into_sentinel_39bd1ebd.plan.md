@@ -26,7 +26,7 @@ todos:
       - resolve-lwc-conflicts
   - id: rename-branding
     content: Rename Sentinel_/Solentra_ prefixes to Prometheion_
-    status: in_progress
+    status: completed
     dependencies:
       - resolve-object-conflicts
   - id: consolidate-package-json
@@ -36,7 +36,7 @@ todos:
       - rename-branding
   - id: update-api-version
     content: Update all metadata to API version 65.0
-    status: pending
+    status: in_progress
     dependencies:
       - consolidate-package-json
   - id: deploy-test
