@@ -5,13 +5,13 @@
  * without requiring the Big Object or custom objects to be deployed.
  * 
  * Full implementation requires:
- * - Sentinel_Compliance_Graph__b (Big Object)
- * - Sentinel_AI_Settings__c (Custom Settings)
+ * - Prometheion_Compliance_Graph__b (Big Object)
+ * - Prometheion_AI_Settings__c (Custom Settings)
  * 
  * @author Solentra
  * @version 1.0 (Stub)
  */
-public with sharing class SentinelRemediationEngine {
+public with sharing class PrometheionRemediationEngine {
     
     /**
      * Result of a remediation action

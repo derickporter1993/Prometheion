@@ -2,7 +2,7 @@ import { LightningElement, track, wire } from 'lwc';
 import calculateReadinessScore from '@salesforce/apex/SolentraComplianceScorer.calculateReadinessScore';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-export default class SolentraDashboard extends LightningElement {
+export default class PrometheionDashboard extends LightningElement {
     @track scoreResult = null;
     @track isLoading = true;
     @track lastUpdated = new Date();

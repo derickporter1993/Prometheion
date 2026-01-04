@@ -1,5 +1,5 @@
 /**
- * SolentraConstants - Centralized constants for Solentra application
+ * PrometheionConstants - Centralized constants for Solentra application
  * 
  * Provides a single source of truth for:
  * - Compliance framework names
@@ -12,7 +12,7 @@
  * @author Solentra
  * @version 1.0
  */
-public class SolentraConstants {
+public class PrometheionConstants {
     
     // ============================================
     // COMPLIANCE FRAMEWORKS

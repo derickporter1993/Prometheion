@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Solentra Compliance Hub - Central dashboard for compliance monitoring, AI copilot, and audit readiness</description>
+    <description>Prometheion Compliance Hub - Central dashboard for compliance monitoring, AI copilot, and audit readiness</description>
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -29,7 +29,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Solentra Compliance Hub</masterLabel>
+    <masterLabel>Prometheion Compliance Hub</masterLabel>
     <template>
         <name>flexipage:defaultAppHomeTemplate</name>
     </template>

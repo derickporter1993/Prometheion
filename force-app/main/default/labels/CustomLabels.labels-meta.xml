@@ -102,84 +102,84 @@
     
     <!-- UI Labels -->
     <labels>
-        <fullName>Solentra_Quick_Commands</fullName>
+        <fullName>Prometheion_Quick_Commands</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Quick Commands Title</shortDescription>
         <value>Quick Commands</value>
     </labels>
     <labels>
-        <fullName>Solentra_Ask_Question</fullName>
+        <fullName>Prometheion_Ask_Question</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Ask Question Label</shortDescription>
         <value>Ask a question</value>
     </labels>
     <labels>
-        <fullName>Solentra_Input_Placeholder</fullName>
+        <fullName>Prometheion_Input_Placeholder</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Input Placeholder</shortDescription>
         <value>Ask about compliance, violations, or generate evidence...</value>
     </labels>
     <labels>
-        <fullName>Solentra_Send</fullName>
+        <fullName>Prometheion_Send</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Send Button</shortDescription>
         <value>Send</value>
     </labels>
     <labels>
-        <fullName>Solentra_Clear_Chat</fullName>
+        <fullName>Prometheion_Clear_Chat</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Clear Chat Button</shortDescription>
         <value>Clear Chat</value>
     </labels>
     <labels>
-        <fullName>Solentra_Evidence</fullName>
+        <fullName>Prometheion_Evidence</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Evidence Section Title</shortDescription>
         <value>Evidence</value>
     </labels>
     <labels>
-        <fullName>Solentra_Risk_Score</fullName>
+        <fullName>Prometheion_Risk_Score</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Risk Score Label</shortDescription>
         <value>Risk: {0}/10</value>
     </labels>
     <labels>
-        <fullName>Solentra_Error_Title</fullName>
+        <fullName>Prometheion_Error_Title</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Error Toast Title</shortDescription>
         <value>Error</value>
     </labels>
     <labels>
-        <fullName>Solentra_Info_Title</fullName>
+        <fullName>Prometheion_Info_Title</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Info Toast Title</shortDescription>
         <value>Information</value>
     </labels>
     <labels>
-        <fullName>Solentra_Auto_Fix_Coming</fullName>
+        <fullName>Prometheion_Auto_Fix_Coming</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Auto Fix Coming Soon</shortDescription>
         <value>Auto-fix functionality will be available in the next release.</value>
     </labels>
     <labels>
-        <fullName>Solentra_Export_Coming</fullName>
+        <fullName>Prometheion_Export_Coming</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Export Coming Soon</shortDescription>
         <value>Export functionality will be available in the next release.</value>
     </labels>
     <labels>
-        <fullName>Solentra_Processing_Error</fullName>
+        <fullName>Prometheion_Processing_Error</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Processing Error Message</shortDescription>

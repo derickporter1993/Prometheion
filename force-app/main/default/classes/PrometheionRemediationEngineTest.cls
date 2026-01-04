@@ -1,17 +1,17 @@
 /**
- * SentinelRemediationEngineTest - Tests for the Remediation Engine Stub
+ * PrometheionRemediationEngineTest - Tests for the Remediation Engine Stub
  * 
  * @author Solentra
  * @version 1.0
  */
 @isTest
-private class SentinelRemediationEngineTest {
+private class PrometheionRemediationEngineTest {
     
     @isTest
     static void testEvaluateAndRemediate() {
         Test.startTest();
-        SentinelRemediationEngine.RemediationResult result = 
-            SentinelRemediationEngine.evaluateAndRemediate('test-node-123');
+        PrometheionRemediationEngine.RemediationResult result = 
+            PrometheionRemediationEngine.evaluateAndRemediate('test-node-123');
         Test.stopTest();
         
         System.assertNotEquals(null, result, 'Result should not be null');
@@ -23,8 +23,8 @@ private class SentinelRemediationEngineTest {
     @isTest
     static void testRollbackRemediation() {
         Test.startTest();
-        SentinelRemediationEngine.RemediationResult result = 
-            SentinelRemediationEngine.rollbackRemediation('remediation-123');
+        PrometheionRemediationEngine.RemediationResult result = 
+            PrometheionRemediationEngine.rollbackRemediation('remediation-123');
         Test.stopTest();
         
         System.assertNotEquals(null, result, 'Result should not be null');
@@ -35,8 +35,8 @@ private class SentinelRemediationEngineTest {
     @isTest
     static void testGetPendingRemediations() {
         Test.startTest();
-        List<SentinelRemediationEngine.RemediationResult> results = 
-            SentinelRemediationEngine.getPendingRemediations();
+        List<PrometheionRemediationEngine.RemediationResult> results = 
+            PrometheionRemediationEngine.getPendingRemediations();
         Test.stopTest();
         
         System.assertNotEquals(null, results, 'Results should not be null');
@@ -46,8 +46,8 @@ private class SentinelRemediationEngineTest {
     @isTest
     static void testApproveRemediation() {
         Test.startTest();
-        SentinelRemediationEngine.RemediationResult result = 
-            SentinelRemediationEngine.approveRemediation('remediation-123', 'Approved by admin');
+        PrometheionRemediationEngine.RemediationResult result = 
+            PrometheionRemediationEngine.approveRemediation('remediation-123', 'Approved by admin');
         Test.stopTest();
         
         System.assertNotEquals(null, result, 'Result should not be null');
@@ -57,8 +57,8 @@ private class SentinelRemediationEngineTest {
     
     @isTest
     static void testRemediationResultDefaults() {
-        SentinelRemediationEngine.RemediationResult result = 
-            new SentinelRemediationEngine.RemediationResult();
+        PrometheionRemediationEngine.RemediationResult result = 
+            new PrometheionRemediationEngine.RemediationResult();
         
         System.assertEquals(false, result.success, 'Default success should be false');
         System.assertNotEquals(null, result.reviewDeadline, 'Review deadline should be set');

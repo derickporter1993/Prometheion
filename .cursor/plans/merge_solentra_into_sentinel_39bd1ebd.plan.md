@@ -21,17 +21,17 @@ todos:
       - resolve-apex-conflicts
   - id: resolve-object-conflicts
     content: Resolve conflicts for 7 overlapping custom objects
-    status: in_progress
+    status: completed
     dependencies:
       - resolve-lwc-conflicts
   - id: rename-branding
     content: Rename Sentinel_/Solentra_ prefixes to Prometheion_
-    status: pending
+    status: in_progress
     dependencies:
       - resolve-object-conflicts
   - id: consolidate-package-json
     content: Merge package.json dependencies from both repos
-    status: pending
+    status: completed
     dependencies:
       - rename-branding
   - id: update-api-version

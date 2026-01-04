@@ -1,5 +1,5 @@
 /**
- * SolentraComplianceCopilot - Natural Language Compliance Query Interface
+ * PrometheionComplianceCopilot - Natural Language Compliance Query Interface
  * 
  * ChatGPT-style interface for compliance queries:
  * User: "Why did my compliance score drop 15 points?"
@@ -10,7 +10,7 @@
  * @author Solentra
  * @version 1.0
  */
-public with sharing class SolentraComplianceCopilot {
+public with sharing class PrometheionComplianceCopilot {
     
     /**
      * Response structure for copilot queries
@@ -58,7 +58,7 @@ public with sharing class SolentraComplianceCopilot {
             // Validate input - handle null/blank queries gracefully
             if (String.isBlank(query)) {
                 response.answer = Label.Copilot_General_Help;
-                response.queryType = SolentraConstants.QUERY_GENERAL;
+                response.queryType = PrometheionConstants.QUERY_GENERAL;
                 return response;
             }
             
@@ -95,7 +95,7 @@ public with sharing class SolentraComplianceCopilot {
             String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
             response.answer = Label.Copilot_Error_General.replace('{0}', errorMsg);
             response.confidence = 0.0;
-            System.debug(LoggingLevel.ERROR, SolentraConstants.LOG_PREFIX + 'askCopilot error: ' + e.getMessage() + '\n' + e.getStackTraceString());
+            System.debug(LoggingLevel.ERROR, PrometheionConstants.LOG_PREFIX + 'askCopilot error: ' + e.getMessage() + '\n' + e.getStackTraceString());
         }
         
         return response;
@@ -121,28 +121,28 @@ public with sharing class SolentraComplianceCopilot {
         
         // Detect query type based on keywords
         if (lowerQuery.contains('score') && (lowerQuery.contains('drop') || lowerQuery.contains('change') || lowerQuery.contains('went down'))) {
-            result.queryType = SolentraConstants.QUERY_SCORE_CHANGE;
+            result.queryType = PrometheionConstants.QUERY_SCORE_CHANGE;
         } else if (lowerQuery.contains('violation') || lowerQuery.contains('non-compliant') || lowerQuery.contains('failed')) {
-            result.queryType = SolentraConstants.QUERY_VIOLATION_SEARCH;
+            result.queryType = PrometheionConstants.QUERY_VIOLATION_SEARCH;
         } else if (lowerQuery.contains('evidence') || lowerQuery.contains('audit') || lowerQuery.contains('report')) {
-            result.queryType = SolentraConstants.QUERY_EVIDENCE_REQUEST;
+            result.queryType = PrometheionConstants.QUERY_EVIDENCE_REQUEST;
         } else if (lowerQuery.contains('flow') && (lowerQuery.contains('risky') || lowerQuery.contains('pii') || lowerQuery.contains('phi'))) {
-            result.queryType = SolentraConstants.QUERY_RISKY_FLOWS;
+            result.queryType = PrometheionConstants.QUERY_RISKY_FLOWS;
         } else if (lowerQuery.contains('access') || lowerQuery.contains('permission') || lowerQuery.contains('who can')) {
-            result.queryType = SolentraConstants.QUERY_USER_ACCESS;
+            result.queryType = PrometheionConstants.QUERY_USER_ACCESS;
         } else if (lowerQuery.contains('hipaa') || lowerQuery.contains('soc2') || lowerQuery.contains('soc 2') || 
                    lowerQuery.contains('nist') || lowerQuery.contains('fedramp') || lowerQuery.contains('gdpr')) {
-            result.queryType = SolentraConstants.QUERY_FRAMEWORK_STATUS;
+            result.queryType = PrometheionConstants.QUERY_FRAMEWORK_STATUS;
         } else {
-            result.queryType = SolentraConstants.QUERY_GENERAL;
+            result.queryType = PrometheionConstants.QUERY_GENERAL;
         }
         
         // Detect framework
-        if (lowerQuery.contains('hipaa')) result.framework = SolentraConstants.FRAMEWORK_HIPAA;
-        else if (lowerQuery.contains('soc2') || lowerQuery.contains('soc 2')) result.framework = SolentraConstants.FRAMEWORK_SOC2;
-        else if (lowerQuery.contains('nist')) result.framework = SolentraConstants.FRAMEWORK_NIST;
-        else if (lowerQuery.contains('fedramp')) result.framework = SolentraConstants.FRAMEWORK_FEDRAMP;
-        else if (lowerQuery.contains('gdpr')) result.framework = SolentraConstants.FRAMEWORK_GDPR;
+        if (lowerQuery.contains('hipaa')) result.framework = PrometheionConstants.FRAMEWORK_HIPAA;
+        else if (lowerQuery.contains('soc2') || lowerQuery.contains('soc 2')) result.framework = PrometheionConstants.FRAMEWORK_SOC2;
+        else if (lowerQuery.contains('nist')) result.framework = PrometheionConstants.FRAMEWORK_NIST;
+        else if (lowerQuery.contains('fedramp')) result.framework = PrometheionConstants.FRAMEWORK_FEDRAMP;
+        else if (lowerQuery.contains('gdpr')) result.framework = PrometheionConstants.FRAMEWORK_GDPR;
         
         // Detect timeframe
         if (lowerQuery.contains('today')) result.timeframe = 'TODAY';
@@ -239,7 +239,7 @@ public with sharing class SolentraComplianceCopilot {
             Evidence ev = new Evidence();
             ev.nodeId = flow.DurableId;
             ev.description = flow.Description;
-            ev.entityType = SolentraConstants.ENTITY_FLOW;
+            ev.entityType = PrometheionConstants.ENTITY_FLOW;
             ev.riskScore = 5.0; // Default risk score
             response.evidence.add(ev);
             
@@ -258,7 +258,7 @@ public with sharing class SolentraComplianceCopilot {
     private static CopilotResponse handleEvidenceRequest(String query, QueryClassification classification) {
         CopilotResponse response = new CopilotResponse();
         
-        String framework = classification.framework != null ? classification.framework : SolentraConstants.FRAMEWORK_SOC2;
+        String framework = classification.framework != null ? classification.framework : PrometheionConstants.FRAMEWORK_SOC2;
         
         // Get audit trail stats
         Integer totalChanges = [SELECT COUNT() FROM SetupAuditTrail WHERE CreatedDate >= LAST_N_DAYS:30];
@@ -271,7 +271,7 @@ public with sharing class SolentraComplianceCopilot {
         
         // Add export action
         SuggestedAction exportAction = new SuggestedAction();
-        exportAction.actionType = SolentraConstants.ACTION_EXPORT;
+        exportAction.actionType = PrometheionConstants.ACTION_EXPORT;
         exportAction.label = 'Export PDF';
         exportAction.description = 'Generate audit-ready compliance report';
         exportAction.canAutoFix = false;
@@ -372,7 +372,7 @@ public with sharing class SolentraComplianceCopilot {
     private static CopilotResponse handleFrameworkStatus(String query, QueryClassification classification) {
         CopilotResponse response = new CopilotResponse();
         
-        String framework = classification.framework != null ? classification.framework : SolentraConstants.FRAMEWORK_HIPAA;
+        String framework = classification.framework != null ? classification.framework : PrometheionConstants.FRAMEWORK_HIPAA;
         
         // Get compliance score
         Map<String, Object> scoreData = SolentraComplianceScorer.calculateComplianceScore();

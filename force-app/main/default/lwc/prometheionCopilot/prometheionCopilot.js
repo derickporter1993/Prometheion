@@ -6,7 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // Debounce delay in milliseconds
 const DEBOUNCE_DELAY = 300;
 
-export default class SolentraCopilot extends LightningElement {
+export default class PrometheionCopilot extends LightningElement {
     @track query = '';
     @track messages = [];
     @track isLoading = false;
