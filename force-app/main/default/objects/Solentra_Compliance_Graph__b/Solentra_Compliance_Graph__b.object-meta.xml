@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Solentra Compliance Graph - Big Object for storing compliance audit trail, configuration changes, and risk assessments. Optimized for high-volume storage and time-based queries.</description>
+    <label>Solentra Compliance Graph</label>
+    <pluralLabel>Solentra Compliance Graphs</pluralLabel>
+    <indexes>
+        <fullName>ComplianceGraphIndex</fullName>
+        <label>Compliance Graph Index</label>
+        <fields>
+            <name>Compliance_Framework__c</name>
+            <sortDirection>ASC</sortDirection>
+        </fields>
+        <fields>
+            <name>Timestamp__c</name>
+            <sortDirection>DESC</sortDirection>
+        </fields>
+        <fields>
+            <name>Graph_Node_Id__c</name>
+            <sortDirection>ASC</sortDirection>
+        </fields>
+    </indexes>
+    <fields>
+        <fullName>Graph_Node_Id__c</fullName>
+        <description>Unique identifier for the compliance graph node</description>
+        <externalId>true</externalId>
+        <label>Graph Node ID</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Timestamp__c</fullName>
+        <description>When the compliance event occurred</description>
+        <label>Timestamp</label>
+        <required>true</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Entity_Type__c</fullName>
+        <description>Type of Salesforce entity (PERMISSION_SET, PROFILE, FLOW, FIELD, etc.)</description>
+        <label>Entity Type</label>
+        <length>100</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Entity_Record_Id__c</fullName>
+        <description>Salesforce ID or API name of the affected entity</description>
+        <label>Entity Record ID</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Risk_Score__c</fullName>
+        <description>Calculated risk score from 0-10</description>
+        <label>Risk Score</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Compliance_Framework__c</fullName>
+        <description>Applicable compliance framework (HIPAA, SOC2, NIST, FedRAMP, GDPR)</description>
+        <label>Compliance Framework</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Drift_Category__c</fullName>
+        <description>Category of configuration drift (POLICY_VIOLATION, AUTO_REMEDIATED, HUMAN_APPROVED, PENDING_REVIEW)</description>
+        <label>Drift Category</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AI_Explanation__c</fullName>
+        <description>AI-generated explanation of the compliance impact</description>
+        <label>AI Explanation</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Node_Metadata__c</fullName>
+        <description>JSON metadata about the node (entity name, changes, relationships)</description>
+        <label>Node Metadata</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Human_Adjudicated__c</fullName>
+        <description>Whether a human has reviewed this compliance event</description>
+        <defaultValue>false</defaultValue>
+        <label>Human Adjudicated</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Adjudicated_By__c</fullName>
+        <description>User who adjudicated this compliance event</description>
+        <label>Adjudicated By</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Adjudication_Notes__c</fullName>
+        <description>Notes from human adjudication</description>
+        <label>Adjudication Notes</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Parent_Node_Id__c</fullName>
+        <description>Reference to parent node in the compliance graph</description>
+        <label>Parent Node ID</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Change_Type__c</fullName>
+        <description>Type of change (CREATE, UPDATE, DELETE)</description>
+        <label>Change Type</label>
+        <length>20</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Previous_Value__c</fullName>
+        <description>Previous value before the change</description>
+        <label>Previous Value</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>New_Value__c</fullName>
+        <description>New value after the change</description>
+        <label>New Value</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Changed_By__c</fullName>
+        <description>User who made the change</description>
+        <label>Changed By</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>
+

@@ -10,18 +10,18 @@ todos:
     status: completed
   - id: merge-repos
     content: Merge Solentra into Sentinel with --allow-unrelated-histories
-    status: in_progress
+    status: completed
   - id: resolve-apex-conflicts
     content: Resolve conflicts for 21 overlapping Apex classes
-    status: pending
+    status: completed
   - id: resolve-lwc-conflicts
     content: Resolve conflicts for 7 overlapping LWC components
-    status: pending
+    status: completed
     dependencies:
       - resolve-apex-conflicts
   - id: resolve-object-conflicts
     content: Resolve conflicts for 7 overlapping custom objects
-    status: pending
+    status: in_progress
     dependencies:
       - resolve-lwc-conflicts
   - id: rename-branding

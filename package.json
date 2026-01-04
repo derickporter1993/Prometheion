@@ -1,7 +1,13 @@
 {
+<<<<<<< HEAD
   "name": "prometheion-enterprise",
   "version": "3.0.0",
   "description": "Prometheion - Court-defensible compliance & AI governance platform for Salesforce",
+=======
+  "name": "solentra",
+  "version": "1.0.0",
+  "description": "Solentra - Court-defensible compliance & AI governance platform for Salesforce",
+>>>>>>> solentra/main
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,6 +15,7 @@
     "fmt:check": "prettier --check \"force-app/**/*.{js,ts,html,md,json,yml,yaml,xml}\" \"./*.{js,json,yml,yaml,md}\"",
     "lint": "eslint \"force-app/**/*.js\" --max-warnings=0",
     "lint:fix": "eslint \"force-app/**/*.js\" --fix",
+<<<<<<< HEAD
     "test": "jest --passWithNoTests",
     "test:unit": "jest --config jest.config.js",
     "test:unit:watch": "jest --watch",
@@ -40,20 +47,75 @@
     ],
     "force-app/**/*.js": [
       "eslint --fix"
+=======
+    "test": "npm run test:unit",
+    "test:unit": "sfdx-lwc-jest --passWithNoTests",
+    "test:unit:watch": "sfdx-lwc-jest --watch",
+    "test:unit:debug": "sfdx-lwc-jest --debug",
+    "test:unit:coverage": "sfdx-lwc-jest --coverage",
+    "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
+    "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
+    "validate": "npm run precommit",
+    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "prepare": "husky || true"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.9",
+    "@eslint/js": "^9.0.0",
+    "@lwc/eslint-plugin-lwc": "^3.1.0",
+    "@prettier/plugin-xml": "^3.4.1",
+    "@salesforce/eslint-config-lwc": "^4.0.0",
+    "@salesforce/eslint-plugin-aura": "^3.0.0",
+    "@salesforce/eslint-plugin-lightning": "^2.0.0",
+    "@salesforce/sfdx-lwc-jest": "^7.1.2",
+    "@types/jest": "^30.0.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.14.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.5.3",
+    "prettier-plugin-apex": "^2.2.6"
+  },
+  "lint-staged": {
+    "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+      "prettier --write"
+    ],
+    "**/{aura,lwc}/**/*.js": [
+      "eslint"
+    ],
+    "**/lwc/**": [
+      "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
+>>>>>>> solentra/main
     ]
   },
   "repository": {
     "type": "git",
+<<<<<<< HEAD
     "url": "git+https://github.com/your-org/prometheion-enterprise.git"
+=======
+    "url": "git+https://github.com/derickporter1993/Solentra.git"
+>>>>>>> solentra/main
   },
   "keywords": [
     "salesforce",
     "compliance",
     "ai-governance",
     "audit",
+<<<<<<< HEAD
     "security"
   ],
   "author": "Prometheion Compliance Team",
+=======
+    "security",
+    "solentra"
+  ],
+  "author": "Solentra Team",
+>>>>>>> solentra/main
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0",
