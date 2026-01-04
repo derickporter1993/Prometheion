@@ -29,11 +29,13 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 **Status**: ✅ Complete
 
 ### Goals
+
 - Provide a simple, opinionated compliance baseline for Salesforce orgs
 - Detect configuration drift without requiring complex setup
 - Generate audit evidence that regulators actually want to see
 
 ### Features Delivered
+
 - [x] **Compliance Baseline Scan**: Generates Audit Readiness Score (0-100)
 - [x] **Configuration Drift Detection**: Real-time tracking of setup changes
 - [x] **Audit Evidence Export**: Markdown/CSV/JSON exports for compliance teams
@@ -43,11 +45,13 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 - [x] **Sharing Rules Audit**: Detect over-permissioned objects
 
 ### Metrics
+
 - Test Coverage: **95%+**
 - Installation Time: **<10 minutes**
 - First Scan Time: **<60 seconds**
 
 ### User Feedback Themes (Expected)
+
 - ❓ "Can I customize the Audit Readiness Score?" → v2.0
 - ❓ "Can Sentinel prevent changes, not just detect them?" → v3.0
 - ❓ "Can I monitor multiple orgs from one dashboard?" → v2.0
@@ -61,6 +65,7 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 **Status**: 🚧 In Planning
 
 ### Goals
+
 - Reduce time-to-remediation from hours to minutes
 - Use AI to explain complex compliance violations
 - Automate evidence collection for recurring audits
@@ -68,10 +73,12 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 ### Planned Features
 
 #### 1. **AI Change Explanations** 🤖
+
 **Problem**: Users don't understand WHY a change is flagged as high-risk.
 **Solution**: GPT/Claude integration to explain compliance violations in plain English.
 
 **Example**:
+
 ```
 🔴 High-Risk Change Detected
 
@@ -96,6 +103,7 @@ Instead of org-wide "Modify All Data".
 ```
 
 **Implementation**:
+
 - Integrate with OpenAI/Anthropic APIs
 - Use Named Credentials for secure API key storage
 - Cache AI responses to reduce API costs
@@ -106,10 +114,12 @@ Instead of org-wide "Modify All Data".
 ---
 
 #### 2. **Suggested Fixes** 🛠️
+
 **Problem**: Users know WHAT'S wrong, but not HOW to fix it.
 **Solution**: Auto-generate remediation steps with copy-paste Apex/metadata.
 
 **Example**:
+
 ```
 Suggested Fix for: "127 users with Modify All Data"
 
@@ -146,6 +156,7 @@ Compliance Impact: Reduces risk score by 20 points
 ```
 
 **Implementation**:
+
 - Template library for common fixes
 - Dynamic code generation based on org metadata
 - Validation before suggesting changes
@@ -156,16 +167,19 @@ Compliance Impact: Reduces risk score by 20 points
 ---
 
 #### 3. **Jira Integration** 🎫
+
 **Problem**: Compliance teams work in Jira, but Sentinel alerts live in Salesforce/Slack.
 **Solution**: Auto-create Jira tickets for high-risk changes, with bidirectional sync.
 
 **Features**:
+
 - Create Jira ticket when drift event detected
 - Attach compliance evidence (audit logs, metadata exports)
 - Update Sentinel when Jira ticket is resolved
 - Link Sentinel dashboard to Jira issues
 
 **Configuration**:
+
 ```apex
 // Jira Named Credential setup
 Sentinel_Settings__c settings = Sentinel_Settings__c.getInstance();
@@ -180,16 +194,19 @@ upsert settings;
 ---
 
 #### 4. **Compliance Report Scheduler** 📧
+
 **Problem**: Compliance teams want weekly/monthly reports, not on-demand scans.
 **Solution**: Scheduled jobs that email compliance reports to stakeholders.
 
 **Features**:
+
 - Schedule daily/weekly/monthly scans
 - Email report as PDF attachment
 - Configurable recipients (compliance team, CISO, auditors)
 - Trend charts showing improvement over time
 
 **Configuration**:
+
 ```apex
 // Schedule weekly report every Monday at 8 AM
 System.schedule(
@@ -204,10 +221,12 @@ System.schedule(
 ---
 
 #### 5. **Mobile Alerts** 📱
+
 **Problem**: Critical drift events happen outside business hours.
 **Solution**: Push notifications to Salesforce Mobile App for on-call teams.
 
 **Features**:
+
 - Push notifications for Critical/High-risk changes
 - Deep links to Sentinel dashboard
 - Snooze/acknowledge alerts
@@ -218,6 +237,7 @@ System.schedule(
 ---
 
 ### Success Metrics (v1.5)
+
 - **Time-to-Remediation**: <1 hour (down from 4+ hours)
 - **AI Explanation Accuracy**: >90% user satisfaction
 - **Jira Adoption**: >50% of customers enable integration
@@ -231,6 +251,7 @@ System.schedule(
 **Status**: 🔮 Future
 
 ### Goals
+
 - Scale Sentinel to enterprise customers with 10+ Salesforce orgs
 - Centralize compliance evidence across prod, sandboxes, dev orgs
 - Add AI governance (track Einstein/AI feature usage)
@@ -238,16 +259,19 @@ System.schedule(
 ### Planned Features
 
 #### 1. **Multi-Org Dashboard** 🌐
+
 **Problem**: Enterprises have 10-50 Salesforce orgs (prod, QA, sandboxes, dev).
 **Solution**: Single pane of glass to monitor compliance across all orgs.
 
 **Features**:
+
 - Org hierarchy view (prod → staging → dev)
 - Aggregate Audit Readiness Score across all orgs
 - Drift detection across environments (e.g., prod has config not in staging)
 - Centralized alert management
 
 **UI Mockup**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Sentinel Multi-Org Dashboard                                │
@@ -265,6 +289,7 @@ System.schedule(
 ```
 
 **Implementation**:
+
 - Hub-and-spoke architecture (central monitoring org + spoke orgs)
 - REST API for spoke orgs to push data to hub
 - Platform Events for real-time sync
@@ -275,16 +300,19 @@ System.schedule(
 ---
 
 #### 2. **Centralized Evidence Repository** 📚
+
 **Problem**: Auditors want evidence from all orgs, not per-org exports.
 **Solution**: Centralized repository that collects evidence from all connected orgs.
 
 **Features**:
+
 - Automatic evidence collection from all orgs (daily)
 - Deduplicate and compress evidence
 - Searchable evidence library (by date, org, change type)
 - One-click export for auditors (ZIP file with all evidence)
 
 **Evidence Types**:
+
 - Setup Audit Trail (all orgs, last 180 days)
 - Field History (all compliance-sensitive objects)
 - Permission set assignments (with timestamps)
@@ -292,6 +320,7 @@ System.schedule(
 - API usage logs
 
 **Storage**:
+
 - Salesforce Files (for <2GB evidence per org)
 - External storage (AWS S3, Azure Blob) for larger datasets
 
@@ -300,16 +329,19 @@ System.schedule(
 ---
 
 #### 3. **AI Governance** 🤖
+
 **Problem**: GDPR Article 22 requires explaining automated decisions made by AI.
 **Solution**: Track Einstein/AI feature usage and provide compliance documentation.
 
 **Features**:
+
 - Detect when Einstein Prediction/Discovery is used
 - Log when AI-generated insights influence decisions
 - Track which users have access to AI features
 - Generate GDPR Article 22 compliance reports
 
 **Example Report**:
+
 ```
 AI Governance Report — GDPR Article 22 Compliance
 
@@ -339,16 +371,19 @@ Compliance Status: ✅ GDPR Article 22 Compliant
 ---
 
 #### 4. **SIEM Export** 📤
+
 **Problem**: Security teams want Sentinel events in their SIEM (Splunk, Datadog, etc.).
 **Solution**: Real-time event streaming to SIEM tools.
 
 **Features**:
+
 - Push Sentinel events to SIEM via REST API
 - Support for Splunk, Datadog, Sumo Logic, AWS Security Hub
 - Event normalization (map Salesforce events to SIEM schema)
 - Configurable event filtering (only send Critical/High events)
 
 **Configuration**:
+
 ```apex
 SIEM_Integration__c siemConfig = new SIEM_Integration__c(
     Name = 'Splunk_Prod',
@@ -365,16 +400,19 @@ insert siemConfig;
 ---
 
 #### 5. **Custom Compliance Frameworks** 📋
+
 **Problem**: Not all orgs use HIPAA/SOC 2; some need ISO 27001, FedRAMP, etc.
 **Solution**: Allow users to define custom compliance rules.
 
 **Features**:
+
 - Compliance Framework Builder (UI to define rules)
 - Rule types: metadata checks, permission checks, audit trail requirements
 - Custom scoring weights (e.g., encryption = 40%, permissions = 30%)
 - Export/import frameworks (share with community)
 
 **Example Custom Rule**:
+
 ```yaml
 # ISO 27001 Custom Rule
 name: "A.9.2.3 — User Access Provisioning"
@@ -392,6 +430,7 @@ rule:
 ---
 
 ### Success Metrics (v2.0)
+
 - **Multi-Org Adoption**: >30% of customers connect 3+ orgs
 - **Evidence Export Time**: <5 minutes for all orgs
 - **SIEM Integration**: >20% of customers enable SIEM export
@@ -405,6 +444,7 @@ rule:
 **Status**: 🌟 Future Vision
 
 ### Goals
+
 - Shift from "detect" to "prevent" — stop compliance violations before they happen
 - Automate remediation of common drift issues
 - Enforce compliance policies via CI/CD
@@ -412,16 +452,19 @@ rule:
 ### Planned Features
 
 #### 1. **Auto-Remediation** ⚡
+
 **Problem**: Detecting drift is great, but fixing it manually is tedious.
 **Solution**: Automatically fix common compliance violations.
 
 **Example Auto-Remediations**:
+
 - Remove stale permission set assignments (user inactive >90 days)
 - Reset OWD to "Private" if changed to "Public Read/Write" without approval
 - Revoke "Modify All Data" for non-admin users
 - Re-enable Field History Tracking if disabled on compliance-sensitive object
 
 **Safety**:
+
 - Dry-run mode (preview changes before applying)
 - Rollback capability (undo last 10 auto-remediations)
 - Require approval for high-risk fixes
@@ -432,16 +475,19 @@ rule:
 ---
 
 #### 2. **Change Control Workflows** 🚦
+
 **Problem**: High-risk changes should require approval, not just alerting.
 **Solution**: Approval workflows for setup changes (like pull request reviews).
 
 **Features**:
+
 - Require approval before deploying permission set changes
 - Approval matrix (junior admin → senior admin → CISO)
 - Integration with existing approval tools (Jira, ServiceNow)
 - Auto-reject changes that violate policy
 
 **Example**:
+
 ```
 Change Request #1234
 
@@ -465,10 +511,12 @@ Comments:
 ---
 
 #### 3. **Policy-as-Code** 📜
+
 **Problem**: Compliance policies are documented in Word docs, not enforced.
 **Solution**: Define compliance policies in YAML, enforce via CI/CD.
 
 **Example Policy**:
+
 ```yaml
 # acme-healthcare-compliance-policy.yml
 
@@ -503,6 +551,7 @@ enforcement:
 ```
 
 **CI/CD Integration**:
+
 ```bash
 # GitHub Actions workflow
 - name: Sentinel Policy Check
@@ -518,16 +567,19 @@ enforcement:
 ---
 
 #### 4. **AppExchange Listing** 🏪
+
 **Problem**: Installation is complex (git clone, deploy, configure).
 **Solution**: Publish Sentinel as a managed package on AppExchange.
 
 **Features**:
+
 - One-click installation from AppExchange
 - Managed package (no code visibility, automatic updates)
 - Free tier (limited to 1 org, 1 scan/day)
 - Paid tiers (multi-org, unlimited scans, premium support)
 
 **Pricing** (proposed):
+
 - Free: 1 org, 1 scan/day, community support
 - Starter ($99/mo): 3 orgs, daily scans, email support
 - Professional ($299/mo): 10 orgs, hourly scans, Slack integration, phone support
@@ -538,6 +590,7 @@ enforcement:
 ---
 
 ### Success Metrics (v3.0+)
+
 - **Auto-Remediation Adoption**: >40% of violations auto-fixed
 - **Policy-as-Code Usage**: >100 customers using custom policies
 - **AppExchange Installs**: >1,000 installs in first year
@@ -571,12 +624,14 @@ enforcement:
 We welcome community input on this roadmap!
 
 **How to suggest features**:
+
 1. Open a GitHub Discussion: [Feature Requests](https://github.com/YOUR_USERNAME/sentinel/discussions/categories/feature-requests)
 2. Describe the problem you're solving (not just the solution)
 3. Explain who benefits (compliance teams, auditors, developers?)
 4. Vote on existing feature requests
 
 **What gets prioritized**:
+
 - High user demand (>10 votes)
 - Aligns with product vision (compliance drift → governance → remediation)
 - Technical feasibility (can we build it in 3-6 months?)
@@ -587,6 +642,7 @@ We welcome community input on this roadmap!
 ## Changelog
 
 ### v1.0 (2025-01-15)
+
 - Initial release
 - Compliance Baseline Scan
 - Configuration Drift Detection
@@ -594,6 +650,7 @@ We welcome community input on this roadmap!
 - Slack alerting
 
 ### v1.5 (Planned Q2 2025)
+
 - AI Change Explanations
 - Suggested Fixes
 - Jira Integration
@@ -601,6 +658,7 @@ We welcome community input on this roadmap!
 - Mobile Alerts
 
 ### v2.0 (Planned Q4 2025)
+
 - Multi-Org Dashboard
 - Centralized Evidence Repository
 - AI Governance
@@ -609,6 +667,6 @@ We welcome community input on this roadmap!
 
 ---
 
-*This roadmap is a living document and subject to change based on user feedback, market needs, and technical feasibility.*
+_This roadmap is a living document and subject to change based on user feedback, market needs, and technical feasibility._
 
 **Last Updated**: 2025-01-24

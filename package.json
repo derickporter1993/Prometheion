@@ -10,7 +10,7 @@
     "lint": "eslint \"force-app/**/*.js\" --max-warnings=0",
     "lint:fix": "eslint \"force-app/**/*.js\" --fix",
     "test": "jest --passWithNoTests",
-    "test:unit": "jest --config jest.config.js",
+    "test:unit": "jest --config jest.config.cjs --passWithNoTests",
     "test:unit:watch": "jest --watch",
     "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
@@ -32,14 +32,24 @@
     "prettier": "^3.7.4"
   },
   "lint-staged": {
-    "*.{js,ts,html,md,json,yml,yaml,xml}": ["prettier --write"],
-    "force-app/**/*.js": ["eslint --fix"]
+    "*.{js,ts,html,md,json,yml,yaml,xml}": [
+      "prettier --write"
+    ],
+    "force-app/**/*.js": [
+      "eslint --fix"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/your-org/sentinel-enterprise.git"
   },
-  "keywords": ["salesforce", "compliance", "ai-governance", "audit", "security"],
+  "keywords": [
+    "salesforce",
+    "compliance",
+    "ai-governance",
+    "audit",
+    "security"
+  ],
   "author": "Sentinel Compliance Team",
   "license": "MIT",
   "engines": {

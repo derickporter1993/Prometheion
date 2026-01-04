@@ -24,7 +24,14 @@
       </template>
       <template if:false="{stats}"><p>Loading…</p></template>
       <div class="slds-m-top_medium">
-        <lightning-button label="Refresh" onclick="{refresh}"></lightning-button>
+        <lightning-button
+          label="Refresh"
+          onclick="
+            {
+              refresh;
+            }
+          "
+        ></lightning-button>
       </div>
     </div>
   </lightning-card>
