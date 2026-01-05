@@ -1,7 +1,7 @@
 /**
  * PrometheionConstantsTest - Test class for PrometheionConstants
  * 
- * @author Solentra
+ * @author Prometheion
  * @version 1.0
  */
 @IsTest
@@ -162,7 +162,7 @@ private class PrometheionConstantsTest {
     @IsTest
     static void testVersionAndLogging() {
         System.assertEquals('64.0', PrometheionConstants.SALESFORCE_API_VERSION);
-        System.assertEquals('1.0.0', PrometheionConstants.SOLENTRA_VERSION);
+        System.assertEquals('3.0.0', PrometheionConstants.PROMETHEION_VERSION);
         System.assertEquals('[Solentra] ', PrometheionConstants.LOG_PREFIX);
     }
 }
