@@ -1024,7 +1024,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 **What Exists:**
 - `PrometheionClaudeService` calls Claude API directly from Apex (synchronous, burns CPU time)
 - `ApiUsageSnapshot.cls` polls Salesforce REST API (consumes API calls)
-- `SentinelGraphIndexer.cls` is a stub (no heavy processing yet, but would be built in Apex)
+- `PrometheionGraphIndexer.cls` is a stub (no heavy processing yet, but would be built in Apex)
 - All processing happens synchronously in Salesforce transactions
 - Risk of hitting governor limits on large orgs (10,000+ users, 100+ permission sets)
 
@@ -1208,7 +1208,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 
 #### 4.4 Current State (Problematic Pattern)
 
-**SentinelGraphIndexer.cls (Current - Would Burn CPU):**
+**PrometheionGraphIndexer.cls (Current - Would Burn CPU):**
 
 ```apex
 // ❌ PROBLEM: Heavy processing happens inside the transaction

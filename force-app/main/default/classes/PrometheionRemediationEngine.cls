@@ -1,5 +1,5 @@
 /**
- * SentinelRemediationEngine - Auto-Remediation Engine (Stub)
+ * PrometheionRemediationEngine - Auto-Remediation Engine (Stub)
  *
  * This is a stub implementation that provides the interface for auto-remediation
  * without requiring the Big Object or custom objects to be deployed.

@@ -128,7 +128,7 @@
    - Remove duplicate `username` field reference
 
 ### Phase 4: Analytics Features (Optional - Est. 2-3 hours)
-- These are Sentinel analytics features, not compliance services
+- These are Prometheion analytics features, not compliance services
 - Can be addressed separately or excluded if not needed
 - Would require creating Performance_Alert__e or adapting to generic event
 

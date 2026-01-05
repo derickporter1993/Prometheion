@@ -505,7 +505,7 @@ enforcement:
 **CI/CD Integration**:
 ```bash
 # GitHub Actions workflow
-- name: Sentinel Policy Check
+- name: Prometheion Policy Check
   run: |
     sf prometheion policy validate \
       --policy acme-healthcare-compliance-policy.yml \

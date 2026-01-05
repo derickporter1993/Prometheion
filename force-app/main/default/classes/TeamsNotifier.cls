@@ -1,12 +1,12 @@
 /**
- * TeamsNotifier - Microsoft Teams Integration for Sentinel Alerts
+ * TeamsNotifier - Microsoft Teams Integration for Prometheion Alerts
  *
  * Q1 2025 Priority 2 Feature (alongside Slack)
  *
  * Sends rich notifications to Microsoft Teams channels via Incoming Webhooks.
  * Supports Adaptive Cards for interactive compliance alerts with approve/reject buttons.
  *
- * @author Sentinel Enterprise
+ * @author Prometheion Enterprise
  * @version 1.0
  */
 public with sharing class TeamsNotifier {
@@ -69,7 +69,7 @@ public with sharing class TeamsNotifier {
     /**
      * Send auto-remediation notification
      */
-    public static void notifyRemediation(SentinelRemediationEngine.RemediationResult result, String framework) {
+    public static void notifyRemediation(PrometheionRemediationEngine.RemediationResult result, String framework) {
         String payload = buildRemediationCard(result, framework);
         notifyRichAsync(payload);
     }
@@ -106,7 +106,7 @@ public with sharing class TeamsNotifier {
                                 'type' => 'TextBlock',
                                 'size' => 'Large',
                                 'weight' => 'Bolder',
-                                'text' => emoji + ' Sentinel Compliance Alert',
+                                'text' => emoji + ' Prometheion Compliance Alert',
                                 'color' => color
                             },
                             // Title
@@ -135,7 +135,7 @@ public with sharing class TeamsNotifier {
                         'actions' => new List<Map<String, Object>>{
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
-                                'title' => '📊 View in Sentinel',
+                                'title' => '📊 View in Prometheion',
                                 'url' => orgUrl + '/lightning/page/home'
                             },
                             new Map<String, Object>{
@@ -155,7 +155,7 @@ public with sharing class TeamsNotifier {
     /**
      * Build Adaptive Card for remediation notifications
      */
-    private static String buildRemediationCard(SentinelRemediationEngine.RemediationResult result, String framework) {
+    private static String buildRemediationCard(PrometheionRemediationEngine.RemediationResult result, String framework) {
         String orgUrl = URL.getOrgDomainUrl().toExternalForm();
         String emoji = result.success ? '🛡️' : '⚠️';
         String color = result.success ? 'good' : 'warning';
@@ -174,7 +174,7 @@ public with sharing class TeamsNotifier {
                                 'type' => 'TextBlock',
                                 'size' => 'Large',
                                 'weight' => 'Bolder',
-                                'text' => emoji + ' Sentinel Auto-Remediation',
+                                'text' => emoji + ' Prometheion Auto-Remediation',
                                 'color' => color
                             },
                             new Map<String, Object>{
@@ -201,12 +201,12 @@ public with sharing class TeamsNotifier {
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '✅ Approve',
-                                'url' => orgUrl + '/apex/SentinelApprove?id=' + result.remediationId
+                                'url' => orgUrl + '/apex/PrometheionApprove?id=' + result.remediationId
                             },
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '↩️ Rollback',
-                                'url' => orgUrl + '/apex/SentinelRollback?id=' + result.remediationId
+                                'url' => orgUrl + '/apex/PrometheionRollback?id=' + result.remediationId
                             }
                         }
                     }

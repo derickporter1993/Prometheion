@@ -2,7 +2,7 @@
  * Test class for WeeklyScorecardScheduler
  * Provides comprehensive coverage with meaningful assertions
  * 
- * @author Sentinel Enterprise
+ * @author Prometheion Enterprise
  * @version 1.1
  */
 @isTest

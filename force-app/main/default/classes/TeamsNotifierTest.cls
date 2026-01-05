@@ -3,7 +3,7 @@
  * 
  * Tests notification methods, error handling, and Adaptive Card formatting
  * 
- * @author Sentinel Enterprise
+ * @author Prometheion Enterprise
  * @version 1.0
  */
 @isTest
@@ -205,8 +205,8 @@ private class TeamsNotifierTest {
         Test.setMock(HttpCalloutMock.class, new TeamsCalloutMock(200, 'OK'));
         
         // Create mock remediation result
-        SentinelRemediationEngine.RemediationResult result = 
-            new SentinelRemediationEngine.RemediationResult();
+        PrometheionRemediationEngine.RemediationResult result = 
+            new PrometheionRemediationEngine.RemediationResult();
         result.success = true;
         result.action = 'Permission Set Removed';
         result.message = 'Test remediation completed';

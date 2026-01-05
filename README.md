@@ -510,7 +510,7 @@ Coming in v1.5 — automatically create Jira tickets for high-risk changes.
 ### Project Structure
 
 ```
-sentinel/
+prometheion/
 ├── force-app/main/default/          # Salesforce code
 │   ├── classes/                     # Apex classes
 │   │   ├── ApiUsageSnapshot.cls     # API usage tracking
@@ -654,8 +654,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Documentation**: [docs/](docs/)
 - **Sample Reports**: [examples/](examples/)
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/sentinel/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/sentinel/discussions)
+- **Issues**: [GitHub Issues](https://github.com/derickporter1993/Solentra---Prometheion/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/derickporter1993/Solentra---Prometheion/discussions)
 
 ---
 
@@ -664,12 +664,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 **Important**: This repository should be renamed to better reflect its purpose.
 
 **Current name**: `Prometheion` or `prometheion-code`
-**Recommended name**: `sentinel-salesforce-compliance-drift-guard`
+**Recommended name**: `prometheion-salesforce-compliance-drift-guard`
 
 **To rename**:
 
 1. Go to Settings → General → Repository name
-2. Change to: `sentinel-salesforce-compliance-drift-guard`
+2. Change to: `prometheion-salesforce-compliance-drift-guard`
 3. Update the short description to:
    > "Compliance-first Salesforce configuration drift guardrail and audit evidence engine for regulated orgs."
 4. Add GitHub topics: `salesforce`, `compliance`, `audit`, `security`, `governance`, `drift-detection`, `nonprofit`, `regulated-industries`, `hipaa`, `sox`, `soc2`, `gdpr`
