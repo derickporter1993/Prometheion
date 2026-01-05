@@ -8,7 +8,7 @@
  * - Schedule via Setup → Apex → Schedule Apex
  * - Or call WeeklyScorecardScheduler.scheduleWeekly() to schedule programmatically
  *
- * @author Solentra
+ * @author Prometheion
  * @version 1.2
  */
 public with sharing class WeeklyScorecardScheduler implements Schedulable {
@@ -215,7 +215,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
         List<Map<String, Object>> attachments = new List<Map<String, Object>>();
         Map<String, Object> attachment = new Map<String, Object>();
         attachment.put('color', color);
-        attachment.put('footer', 'Solentra ' + Label.Scorecard_Weekly_Title + ' | ' + Datetime.now().format('yyyy-MM-dd'));
+        attachment.put('footer', 'Prometheion ' + Label.Scorecard_Weekly_Title + ' | ' + Datetime.now().format('yyyy-MM-dd'));
         attachments.add(attachment);
         payload.put('attachments', attachments);
 
@@ -266,7 +266,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             9, 0, 0
         );
 
-        String jobName = 'Solentra Weekly Scorecard - ' + channel + ' - ' + Datetime.now().format('yyyy-MM-dd');
+        String jobName = 'Prometheion Weekly Scorecard - ' + channel + ' - ' + Datetime.now().format('yyyy-MM-dd');
         String cronExpression = getCronExpression(nextRun);
 
         WeeklyScorecardScheduler scheduler = new WeeklyScorecardScheduler();

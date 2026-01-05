@@ -1,5 +1,5 @@
 /**
- * PrometheionConstants - Centralized constants for Solentra application
+ * PrometheionConstants - Centralized constants for Prometheion application
  * 
  * Provides a single source of truth for:
  * - Compliance framework names
@@ -9,7 +9,7 @@
  * - Channel names
  * - Entity types
  * 
- * @author Solentra
+ * @author Prometheion
  * @version 1.0
  */
 public class PrometheionConstants {
@@ -147,12 +147,12 @@ public class PrometheionConstants {
     // API & VERSION INFO
     // ============================================
     public static final String SALESFORCE_API_VERSION = '64.0';
-    public static final String SOLENTRA_VERSION = '1.0.0';
+    public static final String PROMETHEION_VERSION = '3.0.0';
     
     // ============================================
     // LOGGING
     // ============================================
-    public static final String LOG_PREFIX = '[Solentra] ';
+    public static final String LOG_PREFIX = '[Prometheion] ';
     
     // ============================================
     // HELPER METHODS
