@@ -12,7 +12,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class GDPRDataErasureService {
+public with sharing class PrometheionGDPRDataErasureService {
 
     /**
      * Process GDPR deletion request for a Contact
@@ -115,7 +115,7 @@ public with sharing class GDPRDataErasureService {
                 Contact_Email__c = subjectEmail,
                 Deletion_Date__c = System.now(),
                 Audit_Log_Id__c = auditLog.Id,
-                Records_Deleted__c = auditLog.Records_Deleted__c
+                Records_Deleted__c = String.valueOf(auditLog.Records_Deleted__c)
             ));
 
             return new ErasureResult(true, auditLog.Id, 'Data successfully erased');
@@ -149,15 +149,16 @@ public with sharing class GDPRDataErasureService {
      */
     @AuraEnabled(cacheable=true)
     public static List<GDPR_Erasure_Request__c> getRecentErasureRequests(Integer limitSize) {
-        return [
+        List<GDPR_Erasure_Request__c> requests = [
             SELECT Id, Name, Status__c, Request_Date__c, Completion_Date__c,
                    Contact_Email__c, Records_Deleted__c, Request_Reason__c,
                    Requested_By__r.Name
             FROM GDPR_Erasure_Request__c
+            WITH USER_MODE
             ORDER BY Request_Date__c DESC
             LIMIT :limitSize
-            WITH USER_MODE
         ];
+        return requests;
     }
 
     /**

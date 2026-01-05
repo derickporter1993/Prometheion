@@ -13,11 +13,12 @@ private class PrometheionComplianceScorerTest {
     @IsTest
     static void testCalculateReadinessScore_ReturnsScore() {
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        PrometheionComplianceScorer.ScoreResult result = PrometheionComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
-        System.assertNotEquals(null, score, 'Should return a score');
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        System.assertNotEquals(null, result, 'Should return a result');
+        System.assertNotEquals(null, result.totalScore, 'Should have a total score');
+        System.assert(result.totalScore >= 0 && result.totalScore <= 100, 'Score should be between 0 and 100');
     }
 
     @IsTest
@@ -34,9 +35,9 @@ private class PrometheionComplianceScorerTest {
         insert permSets;
 
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        PrometheionComplianceScorer.ScoreResult result = PrometheionComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
-        System.assert(score > 0, 'Should have positive score with documented permission sets');
+        System.assert(result.totalScore > 0, 'Should have positive score with documented permission sets');
     }
 }

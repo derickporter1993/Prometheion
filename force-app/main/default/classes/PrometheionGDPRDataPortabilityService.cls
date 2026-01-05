@@ -11,7 +11,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class GDPRDataPortabilityService {
+public with sharing class PrometheionGDPRDataPortabilityService {
 
     /**
      * Generate complete data export for a Contact

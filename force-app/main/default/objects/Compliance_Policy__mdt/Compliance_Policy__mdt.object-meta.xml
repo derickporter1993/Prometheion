@@ -59,7 +59,7 @@
     <fields>
         <fullName>Legal_Citation__c</fullName>
         <label>Legal Citation</label>
-        <length>500</length>
+        <length>255</length>
         <type>Text</type>
     </fields>
     <fields>
@@ -80,7 +80,7 @@
     <fields>
         <fullName>Entity_Types__c</fullName>
         <label>Applicable Entity Types</label>
-        <length>1000</length>
+        <length>255</length>
         <type>Text</type>
         <description>Comma-separated: PERMISSION_SET,PROFILE,FLOW,SHARING_RULE,FIELD_SECURITY</description>
     </fields>

@@ -10,7 +10,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class CCPASLAMonitorScheduler implements Schedulable {
+public with sharing class PrometheionCCPASLAMonitorScheduler implements Schedulable {
 
     private static final Integer WARNING_THRESHOLD_DAYS = 7;
     private static final Integer CRITICAL_THRESHOLD_DAYS = 3;
@@ -173,7 +173,7 @@ public with sharing class CCPASLAMonitorScheduler implements Schedulable {
         return System.schedule(
             'CCPA SLA Monitor - Daily',
             cronExp,
-            new CCPASLAMonitorScheduler()
+            new PrometheionCCPASLAMonitorScheduler()
         );
     }
 
@@ -186,7 +186,7 @@ public with sharing class CCPASLAMonitorScheduler implements Schedulable {
         return System.schedule(
             'CCPA SLA Monitor - Hourly',
             cronExp,
-            new CCPASLAMonitorScheduler()
+            new PrometheionCCPASLAMonitorScheduler()
         );
     }
 }

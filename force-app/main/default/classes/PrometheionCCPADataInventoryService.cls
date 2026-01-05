@@ -12,7 +12,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class CCPADataInventoryService {
+public with sharing class PrometheionCCPADataInventoryService {
 
     /**
      * Generate CCPA data inventory report
@@ -112,7 +112,7 @@ public with sharing class CCPADataInventoryService {
 
         Contact subject = contacts[0];
         subject.CCPA_Do_Not_Sell__c = true;
-        subject.CCPA_OptOut_Date__c = System.now();
+        subject.CCPA_OptOut_Date__c = System.today();
         Database.update(subject, AccessLevel.USER_MODE);
 
         // Create CCPA request audit record
@@ -129,7 +129,7 @@ public with sharing class CCPADataInventoryService {
         EventBus.publish(new CCPA_Request_Event__e(
             Contact_Id__c = contactId,
             Request_Type__c = 'Do Not Sell',
-            Request_Date__c = System.now()
+            Request_Date__c = String.valueOf(System.now())
         ));
 
         return true;
@@ -140,15 +140,16 @@ public with sharing class CCPADataInventoryService {
      */
     @AuraEnabled(cacheable=true)
     public static List<CCPA_Request__c> getPendingRequests() {
-        return [
+        List<CCPA_Request__c> requests = [
             SELECT Id, Name, Contact__c, Contact__r.Name, Contact__r.Email,
                    Request_Type__c, Request_Date__c, Status__c,
                    Response_Deadline__c
             FROM CCPA_Request__c
             WHERE Status__c IN ('Pending', 'In Progress')
-            ORDER BY Response_Deadline__c ASC
             WITH USER_MODE
+            ORDER BY Response_Deadline__c ASC
         ];
+        return requests;
     }
 
     /**

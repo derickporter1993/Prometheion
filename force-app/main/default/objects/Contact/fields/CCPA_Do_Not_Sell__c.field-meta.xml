@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CCPA_Do_Not_Sell__c</fullName>
+    <label>CCPA Do Not Sell</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <description>Indicates if customer has opted out of data selling per CCPA</description>
+</CustomField>

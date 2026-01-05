@@ -38,9 +38,9 @@ public with sharing class PCIAccessAlertHandler {
                 // Critical alert - potential security incident
                 sendSecurityAlert(
                     'CRITICAL: Multiple Failed Access Attempts',
-                    'User ' + userEvents[0].Username__c + ' has ' + userEvents.size() +
+                    'User ' + parseEventField(userEvents[0], 'username') + ' has ' + userEvents.size() +
                     ' failed attempts to access cardholder data.\n' +
-                    'IP Address: ' + userEvents[0].IP_Address__c + '\n' +
+                    'IP Address: ' + parseEventField(userEvents[0], 'ipAddress') + '\n' +
                     'Action: Investigate immediately and consider account lockout.',
                     'Critical'
                 );
@@ -162,7 +162,7 @@ public with sharing class PCIAccessAlertHandler {
         System.debug(LoggingLevel.ERROR,
             '[PCIAccessAlertHandler] Creating security incident: ' + subject);
     }
-    
+
     /**
      * Parse field from generic event JSON payload
      * @param event - The Prometheion_Raw_Event__e
@@ -174,7 +174,7 @@ public with sharing class PCIAccessAlertHandler {
             if (String.isBlank(event.Event_Data__c)) {
                 return '';
             }
-            
+
             Map<String, Object> data = (Map<String, Object>) JSON.deserializeUntyped(event.Event_Data__c);
             Object value = data.get(fieldName);
             return value != null ? String.valueOf(value) : '';

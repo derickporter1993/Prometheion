@@ -10,7 +10,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class DormantAccountAlertScheduler implements Schedulable {
+public with sharing class PrometheionDormantAccountAlertScheduler implements Schedulable {
 
     private static final Integer DORMANT_THRESHOLD_DAYS = 90;
     private static final Integer WARNING_THRESHOLD_DAYS = 60;

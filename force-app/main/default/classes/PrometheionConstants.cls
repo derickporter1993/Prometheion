@@ -73,6 +73,13 @@ public class PrometheionConstants {
     public static final Decimal SCORE_THRESHOLD_NEEDS_IMPROVEMENT = 50;
     
     // ============================================
+    // COMPLIANCE DEADLINES
+    // ============================================
+    public static final Integer CCPA_RESPONSE_DEADLINE_DAYS = 45; // CCPA Section 1798.130
+    public static final Integer GDPR_RESPONSE_DEADLINE_DAYS = 30; // GDPR Article 12
+    public static final Integer GLBA_ANNUAL_NOTICE_DAYS = 365; // GLBA Privacy Rule
+    
+    // ============================================
     // NOTIFICATION CHANNELS
     // ============================================
     public static final String CHANNEL_SLACK = 'Slack';
