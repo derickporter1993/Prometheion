@@ -174,4 +174,59 @@ private class SentinelReasoningEngineTest {
         System.assertEquals(false, result.isViolation, 'Should indicate no violation');
         System.assertEquals(false, result.requiresHumanReview, 'Should not require human review');
     }
+
+    @IsTest
+    static void testGetConfidenceThreshold_Defaults() {
+        Test.startTest();
+        Decimal thresholdWhenNull = SentinelReasoningEngine.getConfidenceThreshold(null);
+
+        Sentinel_AI_Settings__c settingsWithNullThreshold = new Sentinel_AI_Settings__c(
+            Confidence_Threshold__c = null
+        );
+        Decimal thresholdWhenSettingMissing = SentinelReasoningEngine.getConfidenceThreshold(settingsWithNullThreshold);
+        Test.stopTest();
+
+        System.assertEquals(0.85, thresholdWhenNull, 'Should fall back to minimum confidence when settings are missing');
+        System.assertEquals(
+            0.85,
+            thresholdWhenSettingMissing,
+            'Should fall back to minimum confidence when threshold is not defined'
+        );
+    }
+
+    @IsTest
+    static void testGetConfidenceThreshold_CustomValue() {
+        Test.startTest();
+        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(
+            Confidence_Threshold__c = 0.92
+        );
+        Decimal threshold = SentinelReasoningEngine.getConfidenceThreshold(settings);
+        Test.stopTest();
+
+        System.assertEquals(0.92, threshold, 'Should respect custom confidence threshold in settings');
+    }
+
+    @IsTest
+    static void testBuildSafeExplanation_AddsReviewPrefixWhenBelowThreshold() {
+        Compliance_Policy__mdt policy = new Compliance_Policy__mdt(
+            Policy_Description__c = 'Policy description',
+            Legal_Citation__c = 'CIT-123',
+            Remediation_Steps__c = 'Remediate quickly'
+        );
+        Sentinel_Compliance_Graph__b node = new Sentinel_Compliance_Graph__b(
+            Entity_Type__c = 'FLOW',
+            Entity_Record_Id__c = 'Flow123',
+            Risk_Score__c = 9
+        );
+        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(true, 0.5, 'POLICY');
+        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(Confidence_Threshold__c = 0.75);
+
+        Test.startTest();
+        String explanation = SentinelReasoningEngine.buildSafeExplanation(policy, node, prediction, settings);
+        Test.stopTest();
+
+        System.assert(explanation.startsWith('[REVIEW REQUIRED] '), 'Explanation should include review prefix when below threshold');
+        System.assert(explanation.contains('Flow123'), 'Explanation should include entity record id');
+        System.assert(explanation.contains('Policy description'), 'Explanation should reference policy description');
+    }
 }

@@ -1,6 +1,7 @@
 public without sharing class SentinelReasoningEngine {
     private static final Decimal MIN_CONFIDENCE = 0.85;
 
+    @TestVisible
     private static Decimal getConfidenceThreshold(Sentinel_AI_Settings__c settings) {
         if (settings == null || settings.Confidence_Threshold__c == null) {
             return MIN_CONFIDENCE;
@@ -77,6 +78,7 @@ public without sharing class SentinelReasoningEngine {
         return policy;
     }
 
+    @TestVisible
     private static String buildSafeExplanation(Compliance_Policy__mdt policy, Sentinel_Compliance_Graph__b node, PredictionResult einsteinResult, Sentinel_AI_Settings__c settings) {
         Decimal confidenceThreshold = getConfidenceThreshold(settings);
         String prefix = einsteinResult.confidence < confidenceThreshold ? '[REVIEW REQUIRED] ' : '';
