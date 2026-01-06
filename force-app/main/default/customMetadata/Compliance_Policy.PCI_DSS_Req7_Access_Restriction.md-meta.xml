@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>PCI-DSS Requirement 7 Access Restriction</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">PCI_DSS</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Restrict access to cardholder data by business need to know. Access must be limited to only those individuals whose job requires such access.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">PCI-DSS Requirement 7 - Restrict Access to Cardholder Data</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Define access control policies for cardholder data
+2. Implement role-based access control
+3. Restrict access to system components
+4. Document access approval process
+5. Set default deny-all for cardholder data
+6. Conduct quarterly access reviews</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Critical</value>
+    </values>
+    <values>
+        <field>Control_Category__c</field>
+        <value xsi:type="xsd:string">Access Control</value>
+    </values>
+    <values>
+        <field>Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

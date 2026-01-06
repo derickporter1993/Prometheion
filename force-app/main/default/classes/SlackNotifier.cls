@@ -77,7 +77,7 @@ public with sharing class SlackNotifier {
         payload.put(
             'text',
             emoji +
-            ' Sentinel Alert: ' +
+            ' Prometheion Alert: ' +
             evt.Metric__c +
             ' at ' +
             percentOfLimit.setScale(1) +
@@ -192,7 +192,7 @@ public with sharing class SlackNotifier {
         attachment.put('color', color);
         attachment.put(
             'footer',
-            'Sentinel | ' +
+            'Prometheion | ' +
             Datetime.now().format('yyyy-MM-dd HH:mm:ss')
         );
         attachments.add(attachment);

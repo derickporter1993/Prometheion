@@ -1,11 +1,11 @@
-trigger SentinelAlertTrigger on Alert__c (after insert) {
+trigger PrometheionAlertTrigger on Alert__c (after insert) {
     if (!Trigger.isAfter || !Trigger.isInsert) return;
 
-    List<Sentinel_Alert_Event__e> events = new List<Sentinel_Alert_Event__e>();
+    List<Prometheion_Alert_Event__e> events = new List<Prometheion_Alert_Event__e>();
 
     for (Alert__c alert : Trigger.new) {
         if (!alert.Acknowledged__c) {
-            events.add(new Sentinel_Alert_Event__e(
+            events.add(new Prometheion_Alert_Event__e(
                 Alert_Id__c = alert.Id,
                 Alert_Type__c = alert.Alert_Type__c,
                 Severity__c = alert.Severity__c,

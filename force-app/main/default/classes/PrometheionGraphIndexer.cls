@@ -1,4 +1,4 @@
-public with sharing class SentinelGraphIndexer {
+public with sharing class PrometheionGraphIndexer {
     private static final String GRAPH_VERSION = 'v3.0';
 
     public static String indexChange(String entityType, String entityId, String parentNodeId, String framework) {
@@ -6,7 +6,7 @@ public with sharing class SentinelGraphIndexer {
         Map<String, Object> metadata = queryEntityMetadata(entityType, entityId);
         Decimal riskScore = calculateRiskScore(metadata, framework);
 
-        Sentinel_Compliance_Graph__b node = new Sentinel_Compliance_Graph__b(
+        Prometheion_Compliance_Graph__b node = new Prometheion_Compliance_Graph__b(
             Graph_Node_Id__c = nodeHash,
             Parent_Node_Id__c = parentNodeId,
             Timestamp__c = System.now(),
@@ -25,7 +25,7 @@ public with sharing class SentinelGraphIndexer {
             insert node;
             return nodeHash;
         } catch (Exception e) {
-            throw new SentinelException('Graph indexing failed: ' + e.getMessage());
+            throw new PrometheionException('Graph indexing failed: ' + e.getMessage());
         }
     }
 
@@ -62,7 +62,7 @@ public with sharing class SentinelGraphIndexer {
     }
 
     private static Decimal calculateRiskScore(Map<String, Object> metadata, String framework) {
-        Sentinel_AI_Settings__c aiSettings = Sentinel_AI_Settings__c.getOrgDefaults();
+        Prometheion_AI_Settings__c aiSettings = Prometheion_AI_Settings__c.getOrgDefaults();
         if (aiSettings != null && aiSettings.Enable_AI_Reasoning__c) {
             return callEinsteinPrediction(metadata, framework);
         }
@@ -72,7 +72,7 @@ public with sharing class SentinelGraphIndexer {
     private static Decimal callEinsteinPrediction(Map<String, Object> metadata, String framework) {
         try {
             List<einsteinai__PredictionResult> results =
-                einsteinai__PredictionService.predict('Sentinel_Risk_Scoring', metadata);
+                einsteinai__PredictionService.predict('Prometheion_Risk_Scoring', metadata);
             return results.isEmpty() ? 5.0 : (Decimal)results[0].get('probability') * 10;
         } catch (Exception e) {
             return calculateFallbackRiskScore(metadata, framework);
@@ -95,5 +95,5 @@ public with sharing class SentinelGraphIndexer {
         return 'MANUAL_OVERRIDE';
     }
 
-    public class SentinelException extends Exception {}
+    public class PrometheionException extends Exception {}
 }

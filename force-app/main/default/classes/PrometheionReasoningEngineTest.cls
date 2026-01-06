@@ -1,5 +1,5 @@
 @IsTest
-private class SentinelReasoningEngineTest {
+private class PrometheionReasoningEngineTest {
     @TestSetup
     static void setup() {
         // Create a test permission set for entity testing
@@ -13,7 +13,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testReasoningResult_Constructor() {
         Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
+        PrometheionReasoningEngine.ReasoningResult result = new PrometheionReasoningEngine.ReasoningResult(
             true,
             0.95,
             'TEST_POLICY',
@@ -36,7 +36,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testReasoningResult_RequiresHumanReview() {
         Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
+        PrometheionReasoningEngine.ReasoningResult result = new PrometheionReasoningEngine.ReasoningResult(
             true,
             0.50,
             'LOW_CONFIDENCE_POLICY',
@@ -54,7 +54,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testPredictionResult_Constructor() {
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
+        PrometheionReasoningEngine.PredictionResult prediction = new PrometheionReasoningEngine.PredictionResult(
             true,
             0.88,
             'POLICY_001'
@@ -69,7 +69,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testPredictionResult_NoViolation() {
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
+        PrometheionReasoningEngine.PredictionResult prediction = new PrometheionReasoningEngine.PredictionResult(
             false,
             0.0,
             null
@@ -85,8 +85,8 @@ private class SentinelReasoningEngineTest {
     static void testReasoningException() {
         Test.startTest();
         try {
-            throw new SentinelReasoningEngine.ReasoningException('Test error message');
-        } catch (SentinelReasoningEngine.ReasoningException e) {
+            throw new PrometheionReasoningEngine.ReasoningException('Test error message');
+        } catch (PrometheionReasoningEngine.ReasoningException e) {
             System.assertEquals('Test error message', e.getMessage(), 'Exception message should match');
         }
         Test.stopTest();
@@ -96,9 +96,9 @@ private class SentinelReasoningEngineTest {
     static void testExplainViolation_NodeNotFound() {
         Test.startTest();
         try {
-            SentinelReasoningEngine.explainViolation('nonexistent_hash', 'SOC2');
+            PrometheionReasoningEngine.explainViolation('nonexistent_hash', 'SOC2');
             System.assert(false, 'Should have thrown ReasoningException');
-        } catch (SentinelReasoningEngine.ReasoningException e) {
+        } catch (PrometheionReasoningEngine.ReasoningException e) {
             System.assertEquals('Node not found', e.getMessage(), 'Should throw node not found error');
         }
         Test.stopTest();
@@ -108,7 +108,7 @@ private class SentinelReasoningEngineTest {
     static void testReasoningResult_AuraEnabled() {
         // Verify that ReasoningResult properties are properly exposed for Lightning components
         Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
+        PrometheionReasoningEngine.ReasoningResult result = new PrometheionReasoningEngine.ReasoningResult(
             false,
             0.75,
             'AURA_TEST_POLICY',
@@ -132,7 +132,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testPredictionResult_ZeroConfidence() {
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
+        PrometheionReasoningEngine.PredictionResult prediction = new PrometheionReasoningEngine.PredictionResult(
             false,
             0.0,
             'NO_VIOLATION_POLICY'
@@ -146,7 +146,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testPredictionResult_HighConfidence() {
         Test.startTest();
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(
+        PrometheionReasoningEngine.PredictionResult prediction = new PrometheionReasoningEngine.PredictionResult(
             true,
             1.0,
             'HIGH_RISK_POLICY'
@@ -160,7 +160,7 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testReasoningResult_NoViolation() {
         Test.startTest();
-        SentinelReasoningEngine.ReasoningResult result = new SentinelReasoningEngine.ReasoningResult(
+        PrometheionReasoningEngine.ReasoningResult result = new PrometheionReasoningEngine.ReasoningResult(
             false,
             0.90,
             'COMPLIANT_POLICY',
@@ -178,12 +178,12 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testGetConfidenceThreshold_Defaults() {
         Test.startTest();
-        Decimal thresholdWhenNull = SentinelReasoningEngine.getConfidenceThreshold(null);
+        Decimal thresholdWhenNull = PrometheionReasoningEngine.getConfidenceThreshold(null);
 
-        Sentinel_AI_Settings__c settingsWithNullThreshold = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c settingsWithNullThreshold = new Prometheion_AI_Settings__c(
             Confidence_Threshold__c = null
         );
-        Decimal thresholdWhenSettingMissing = SentinelReasoningEngine.getConfidenceThreshold(settingsWithNullThreshold);
+        Decimal thresholdWhenSettingMissing = PrometheionReasoningEngine.getConfidenceThreshold(settingsWithNullThreshold);
         Test.stopTest();
 
         System.assertEquals(0.85, thresholdWhenNull, 'Should fall back to minimum confidence when settings are missing');
@@ -197,10 +197,10 @@ private class SentinelReasoningEngineTest {
     @IsTest
     static void testGetConfidenceThreshold_CustomValue() {
         Test.startTest();
-        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
             Confidence_Threshold__c = 0.92
         );
-        Decimal threshold = SentinelReasoningEngine.getConfidenceThreshold(settings);
+        Decimal threshold = PrometheionReasoningEngine.getConfidenceThreshold(settings);
         Test.stopTest();
 
         System.assertEquals(0.92, threshold, 'Should respect custom confidence threshold in settings');
@@ -213,16 +213,16 @@ private class SentinelReasoningEngineTest {
             Legal_Citation__c = 'CIT-123',
             Remediation_Steps__c = 'Remediate quickly'
         );
-        Sentinel_Compliance_Graph__b node = new Sentinel_Compliance_Graph__b(
+        Prometheion_Compliance_Graph__b node = new Prometheion_Compliance_Graph__b(
             Entity_Type__c = 'FLOW',
             Entity_Record_Id__c = 'Flow123',
             Risk_Score__c = 9
         );
-        SentinelReasoningEngine.PredictionResult prediction = new SentinelReasoningEngine.PredictionResult(true, 0.5, 'POLICY');
-        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(Confidence_Threshold__c = 0.75);
+        PrometheionReasoningEngine.PredictionResult prediction = new PrometheionReasoningEngine.PredictionResult(true, 0.5, 'POLICY');
+        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(Confidence_Threshold__c = 0.75);
 
         Test.startTest();
-        String explanation = SentinelReasoningEngine.buildSafeExplanation(policy, node, prediction, settings);
+        String explanation = PrometheionReasoningEngine.buildSafeExplanation(policy, node, prediction, settings);
         Test.stopTest();
 
         System.assert(explanation.startsWith('[REVIEW REQUIRED] '), 'Explanation should include review prefix when below threshold');

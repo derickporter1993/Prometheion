@@ -1,10 +1,10 @@
 import { LightningElement, wire, track } from "lwc";
-import calculateReadinessScore from "@salesforce/apex/SentinelComplianceScorer.calculateReadinessScore";
-import generateEvidencePack from "@salesforce/apex/SentinelLegalDocumentGenerator.generateLegalAttestation";
+import calculateReadinessScore from "@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore";
+import generateEvidencePack from "@salesforce/apex/PrometheionLegalDocumentGenerator.generateLegalAttestation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
 
-export default class SentinelReadinessScore extends NavigationMixin(LightningElement) {
+export default class PrometheionReadinessScore extends NavigationMixin(LightningElement) {
   @track score = 0;
   @track accessScore = 0;
   @track configScore = 0;

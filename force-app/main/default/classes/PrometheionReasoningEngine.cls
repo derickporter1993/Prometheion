@@ -1,8 +1,8 @@
-public without sharing class SentinelReasoningEngine {
+public without sharing class PrometheionReasoningEngine {
     private static final Decimal MIN_CONFIDENCE = 0.85;
 
     @TestVisible
-    private static Decimal getConfidenceThreshold(Sentinel_AI_Settings__c settings) {
+    private static Decimal getConfidenceThreshold(Prometheion_AI_Settings__c settings) {
         if (settings == null || settings.Confidence_Threshold__c == null) {
             return MIN_CONFIDENCE;
         }
@@ -10,8 +10,8 @@ public without sharing class SentinelReasoningEngine {
     }
 
     public static ReasoningResult explainViolation(String nodeHash, String framework) {
-        Sentinel_Compliance_Graph__b node = queryGraphNode(nodeHash);
-        Sentinel_AI_Settings__c settings = Sentinel_AI_Settings__c.getInstance();
+        Prometheion_Compliance_Graph__b node = queryGraphNode(nodeHash);
+        Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getInstance();
 
         if (!settings.Enable_AI_Reasoning__c) {
             return generateFallbackReasoning(node, framework);
@@ -34,10 +34,10 @@ public without sharing class SentinelReasoningEngine {
         );
     }
 
-    private static Sentinel_Compliance_Graph__b queryGraphNode(String nodeHash) {
-        List<Sentinel_Compliance_Graph__b> nodes = [
+    private static Prometheion_Compliance_Graph__b queryGraphNode(String nodeHash) {
+        List<Prometheion_Compliance_Graph__b> nodes = [
             SELECT Id, Entity_Type__c, Entity_Record_Id__c, Risk_Score__c, Node_Metadata__c
-            FROM Sentinel_Compliance_Graph__b
+            FROM Prometheion_Compliance_Graph__b
             WHERE Graph_Node_Id__c = :nodeHash
             LIMIT 1
         ];
@@ -45,14 +45,14 @@ public without sharing class SentinelReasoningEngine {
         return nodes[0];
     }
 
-    private static PredictionResult callEinsteinPrediction(Sentinel_Compliance_Graph__b node) {
+    private static PredictionResult callEinsteinPrediction(Prometheion_Compliance_Graph__b node) {
         Map<String, Object> features = new Map<String, Object>{
             'entityType' => node.Entity_Type__c,
             'riskScore' => node.Risk_Score__c
         };
 
         List<einsteinai__PredictionResult> results =
-            einsteinai__PredictionService.predict('Sentinel_Risk_Scoring', features);
+            einsteinai__PredictionService.predict('Prometheion_Risk_Scoring', features);
 
         return results.isEmpty() ?
             new PredictionResult(false, 0.0, null) :
@@ -79,7 +79,7 @@ public without sharing class SentinelReasoningEngine {
     }
 
     @TestVisible
-    private static String buildSafeExplanation(Compliance_Policy__mdt policy, Sentinel_Compliance_Graph__b node, PredictionResult einsteinResult, Sentinel_AI_Settings__c settings) {
+    private static String buildSafeExplanation(Compliance_Policy__mdt policy, Prometheion_Compliance_Graph__b node, PredictionResult einsteinResult, Prometheion_AI_Settings__c settings) {
         Decimal confidenceThreshold = getConfidenceThreshold(settings);
         String prefix = einsteinResult.confidence < confidenceThreshold ? '[REVIEW REQUIRED] ' : '';
         return prefix + String.format(
@@ -96,8 +96,8 @@ public without sharing class SentinelReasoningEngine {
     }
 
     private static String logAdjudication(String nodeHash, String explanation, Decimal confidence) {
-        String adjudicationHash = SentinelGraphIndexer.generateDeterministicHash(nodeHash, UserInfo.getUserId(), 'ADJUDICATION');
-        Sentinel_Compliance_Graph__b adjudication = new Sentinel_Compliance_Graph__b(
+        String adjudicationHash = PrometheionGraphIndexer.generateDeterministicHash(nodeHash, UserInfo.getUserId(), 'ADJUDICATION');
+        Prometheion_Compliance_Graph__b adjudication = new Prometheion_Compliance_Graph__b(
             Graph_Node_Id__c = adjudicationHash,
             Parent_Node_Id__c = nodeHash,
             Timestamp__c = System.now(),
@@ -112,7 +112,7 @@ public without sharing class SentinelReasoningEngine {
         return adjudicationHash;
     }
 
-    private static ReasoningResult generateFallbackReasoning(Sentinel_Compliance_Graph__b node, String framework) {
+    private static ReasoningResult generateFallbackReasoning(Prometheion_Compliance_Graph__b node, String framework) {
         return new ReasoningResult(
             node.Risk_Score__c >= 8.0,
             0.0,

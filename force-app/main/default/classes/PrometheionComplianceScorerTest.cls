@@ -1,5 +1,5 @@
 @IsTest
-private class SentinelComplianceScorerTest {
+private class PrometheionComplianceScorerTest {
     @TestSetup
     static void setup() {
         PermissionSet ps = new PermissionSet(
@@ -13,7 +13,7 @@ private class SentinelComplianceScorerTest {
     @IsTest
     static void testCalculateReadinessScore_ReturnsScore() {
         Test.startTest();
-        Decimal score = SentinelComplianceScorer.calculateReadinessScore();
+        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         System.assertNotEquals(null, score, 'Should return a score');
@@ -34,7 +34,7 @@ private class SentinelComplianceScorerTest {
         insert permSets;
 
         Test.startTest();
-        Decimal score = SentinelComplianceScorer.calculateReadinessScore();
+        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         System.assert(score > 0, 'Should have positive score with documented permission sets');

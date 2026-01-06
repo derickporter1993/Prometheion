@@ -1,9 +1,9 @@
 import { LightningElement, track } from "lwc";
-import getAISettings from "@salesforce/apex/SentinelAISettingsController.getSettings";
-import saveAISettings from "@salesforce/apex/SentinelAISettingsController.saveSettings";
+import getAISettings from "@salesforce/apex/PrometheionAISettingsController.getSettings";
+import saveAISettings from "@salesforce/apex/PrometheionAISettingsController.saveSettings";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
-export default class SentinelAiSettings extends LightningElement {
+export default class PrometheionAiSettings extends LightningElement {
   @track enableAI = true;
   @track requireApproval = true;
   @track autoRemediate = false;
