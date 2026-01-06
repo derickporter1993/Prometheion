@@ -8,11 +8,11 @@
     </values>
     <values>
         <field>Policy_Description__c</field>
-        <value>FedRAMP AC-2 (Account Management) requires strict access control management for federal information systems. All user accounts must be authorized, reviewed quarterly, and follow least privilege principles. Privileged access must be limited and monitored.</value>
+        <value xsi:type="xsd:string">FedRAMP AC-2 (Account Management) requires strict access control management for federal information systems. All user accounts must be authorized, reviewed quarterly, and follow least privilege principles. Privileged access must be limited and monitored.</value>
     </values>
     <values>
         <field>Legal_Citation__c</field>
-        <value>FedRAMP Moderate Baseline AC-2 - Account Management, AC-3 - Access Enforcement</value>
+        <value xsi:type="xsd:string">FedRAMP Moderate Baseline AC-2 - Account Management, AC-3 - Access Enforcement</value>
     </values>
     <values>
         <field>Remediation_Steps__c</field>

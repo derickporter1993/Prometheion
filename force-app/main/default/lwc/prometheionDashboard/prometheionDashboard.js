@@ -133,6 +133,10 @@ export default class PrometheionDashboard extends LightningElement {
         return this.filteredTopRisks.length > 0;
     }
 
+    get showFrameworkGrid() {
+        return !this.showDrillDown;
+    }
+
     getScoreClass(score) {
         if (score >= 80) return 'framework-score score-high';
         if (score >= 60) return 'framework-score score-medium';

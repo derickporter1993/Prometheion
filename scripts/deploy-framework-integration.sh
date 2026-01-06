@@ -24,9 +24,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Step 2: Deploy Custom Metadata Policies
+# Step 2: Deploy Custom Metadata Type Definition (with updated Framework picklist)
 echo ""
-echo "Step 2: Deploying Compliance Policies..."
+echo "Step 2: Deploying Custom Metadata Type Definition..."
+sf project deploy start \
+    --source-dir force-app/main/default/objects/Compliance_Policy__mdt \
+    --target-org $ORG_ALIAS \
+    --wait 10
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Custom Metadata Type deployment failed"
+    exit 1
+fi
+
+# Step 3: Deploy Custom Metadata Policies
+echo ""
+echo "Step 3: Deploying Compliance Policies..."
 sf project deploy start \
     --source-dir force-app/main/default/customMetadata \
     --target-org $ORG_ALIAS \
@@ -36,9 +49,9 @@ if [ $? -ne 0 ]; then
     echo "WARNING: Some metadata policies may have failed. Review output above."
 fi
 
-# Step 3: Deploy Dashboard Component
+# Step 4: Deploy Dashboard Component
 echo ""
-echo "Step 3: Deploying Dashboard Component..."
+echo "Step 4: Deploying Dashboard Component..."
 sf project deploy start \
     --source-dir force-app/main/default/lwc/prometheionDashboard \
     --target-org $ORG_ALIAS \
@@ -49,17 +62,17 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Step 4: Deploy FlexiPage
+# Step 5: Deploy FlexiPage
 echo ""
-echo "Step 4: Deploying Compliance Hub Page..."
+echo "Step 5: Deploying Compliance Hub Page..."
 sf project deploy start \
     --source-dir force-app/main/default/flexipages/Prometheion_Compliance_Hub.flexipage-meta.xml \
     --target-org $ORG_ALIAS \
     --wait 10
 
-# Step 5: Run Tests
+# Step 6: Run Tests
 echo ""
-echo "Step 5: Running Compliance Scorer Tests..."
+echo "Step 6: Running Compliance Scorer Tests..."
 sf apex run test \
     --class-names PrometheionComplianceScorerTest \
     --result-format human \

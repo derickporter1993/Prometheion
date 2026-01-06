@@ -86,7 +86,7 @@
             </template>
           </div>
         </template>
-        <template lwc:if={!showDrillDown}>
+        <template lwc:if={showFrameworkGrid}>
           <div class="framework-grid">
             <template for:each={frameworkList} for:item="fw">
               <div key={fw.name} class="framework-card" data-framework={fw.key} onclick={handleFrameworkClick}>
@@ -115,7 +115,7 @@
       </h3>
       <div class="factors-grid">
         <template for:each={factors} for:item="factor">
-          <div key="{factor.name}" class="factor-card">
+          <div key={factor.name} class="factor-card">
             <div class="factor-header">
               <span class="factor-name">{factor.name}</span>
               <span class={factor.statusClass}>{factor.status}</span>
@@ -151,7 +151,7 @@
         </h3>
         <div class="risks-list">
           <template for:each={filteredTopRisks} for:item="risk">
-            <div key="{risk.nodeId}" class="risk-card">
+            <div key={risk.nodeId} class="risk-card">
               <div class="risk-severity" data-severity={risk.severity}>
                 <span class={risk.severityClass}>{risk.severity}</span>
               </div>

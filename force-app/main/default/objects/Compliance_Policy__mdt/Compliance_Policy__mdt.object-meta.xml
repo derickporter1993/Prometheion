@@ -46,6 +46,21 @@
                     <default>false</default>
                     <label>PCI-DSS</label>
                 </value>
+                <value>
+                    <fullName>CCPA</fullName>
+                    <default>false</default>
+                    <label>CCPA</label>
+                </value>
+                <value>
+                    <fullName>GLBA</fullName>
+                    <default>false</default>
+                    <label>GLBA</label>
+                </value>
+                <value>
+                    <fullName>ISO27001</fullName>
+                    <default>false</default>
+                    <label>ISO 27001</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
