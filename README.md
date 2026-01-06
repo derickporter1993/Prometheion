@@ -2,7 +2,7 @@
 
 **The AI Compliance Brain for Salesforce — Configuration drift detection, audit evidence automation, and intelligent compliance analysis for regulated organizations.**
 
-*Current: v3.0 — Unified Enterprise Platform | Combining best of Sentinel + Solentra*
+*Current: v1.0 — Compliance Drift Detection & Audit Evidence Automation*
 
 <div align="center">
 
