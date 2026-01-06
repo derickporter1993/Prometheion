@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consent_Type__c</fullName>
+    <description>Type of consent being tracked</description>
+    <externalId>false</externalId>
+    <label>Consent Type</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Marketing Communications</fullName>
+                <default>false</default>
+                <label>Marketing Communications</label>
+            </value>
+            <value>
+                <fullName>Data Processing</fullName>
+                <default>false</default>
+                <label>Data Processing</label>
+            </value>
+            <value>
+                <fullName>Third Party Sharing</fullName>
+                <default>false</default>
+                <label>Third Party Sharing</label>
+            </value>
+            <value>
+                <fullName>Profiling</fullName>
+                <default>false</default>
+                <label>Profiling</label>
+            </value>
+            <value>
+                <fullName>Automated Decision Making</fullName>
+                <default>false</default>
+                <label>Automated Decision Making</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

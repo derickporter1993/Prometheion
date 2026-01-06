@@ -1,0 +1,117 @@
+<template>
+    <div class="roi-calculator">
+        <div class="calculator-header">
+            <h2>Prometheion ROI Calculator</h2>
+            <p class="subtitle">Calculate your annual compliance cost savings</p>
+        </div>
+        
+        <div class="calculator-inputs">
+            <div class="input-group">
+                <label>Industry</label>
+                <lightning-combobox
+                    value={industry}
+                    options={industryOptions}
+                    onchange={handleIndustryChange}>
+                </lightning-combobox>
+            </div>
+            
+            <div class="input-group">
+                <label>Organization Size (Users)</label>
+                <lightning-input
+                    type="number"
+                    value={orgSize}
+                    onchange={handleOrgSizeChange}>
+                </lightning-input>
+            </div>
+            
+            <div class="input-group">
+                <label>Current Annual Audit Spend ($)</label>
+                <lightning-input
+                    type="number"
+                    value={currentAuditSpend}
+                    formatter="currency"
+                    onchange={handleAuditSpendChange}>
+                </lightning-input>
+            </div>
+            
+            <div class="input-group">
+                <label>Current Audit Prep Hours/Year</label>
+                <lightning-input
+                    type="number"
+                    value={currentAuditPrepHours}
+                    onchange={handleHoursChange}>
+                </lightning-input>
+            </div>
+            
+            <div class="input-group">
+                <label>Compliance Analyst Hourly Rate ($)</label>
+                <lightning-input
+                    type="number"
+                    value={hourlyRate}
+                    formatter="currency"
+                    onchange={handleRateChange}>
+                </lightning-input>
+            </div>
+        </div>
+        
+        <template if:true={showResults}>
+            <div class="roi-results">
+                <div class="results-header">
+                    <h3>Your ROI Analysis</h3>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card savings">
+                        <div class="result-label">Annual Time Savings</div>
+                        <div class="result-value">{roiResults.timeSavings} hours</div>
+                        <div class="result-detail">${roiResults.timeSavingsDollars.toLocaleString()} in labor costs</div>
+                    </div>
+                    
+                    <div class="result-card savings">
+                        <div class="result-label">Audit Cost Reduction</div>
+                        <div class="result-value">${roiResults.auditCostReduction.toLocaleString()}</div>
+                        <div class="result-detail">30% reduction in external audit costs</div>
+                    </div>
+                    
+                    <div class="result-card total">
+                        <div class="result-label">Total Annual Savings</div>
+                        <div class="result-value">${roiResults.totalSavings.toLocaleString()}</div>
+                        <div class="result-detail">${roiResults.monthlySavings.toLocaleString()}/month</div>
+                    </div>
+                    
+                    <div class="result-card cost">
+                        <div class="result-label">Prometheion Annual Cost</div>
+                        <div class="result-value">${roiResults.prometheionCost.toLocaleString()}</div>
+                    </div>
+                    
+                    <div class="result-card net">
+                        <div class="result-label">Net Annual Benefit</div>
+                        <div class="result-value {roiClass}">${roiResults.netBenefit.toLocaleString()}</div>
+                    </div>
+                    
+                    <div class="result-card roi">
+                        <div class="result-label">ROI</div>
+                        <div class="result-value {roiClass}">{roiResults.roi}%</div>
+                        <div class="result-detail">Payback in {roiResults.paybackWeeks} weeks</div>
+                    </div>
+                </div>
+                
+                <div class="roi-summary">
+                    <template if:true={hasPositiveROI}>
+                        <div class="summary-positive">
+                            <strong>Prometheion pays for itself in {roiResults.paybackWeeks} weeks</strong>
+                            <p>You'll save ${roiResults.netBenefit.toLocaleString()} in the first year alone.</p>
+                        </div>
+                    </template>
+                    <template if:false={hasPositiveROI}>
+                        <div class="summary-negative">
+                            <strong>Adjust your inputs to see potential savings</strong>
+                            <p>Most organizations see 80-85% reduction in audit prep time.</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
+

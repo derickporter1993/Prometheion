@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Access_Type__c</fullName>
+    <description>Type of access performed (Query, Insert, Update, Delete, View, Access Denied)</description>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Access Type</label>
+    <length>50</length>
+    <required>true</required>
+    <type>Text</type>
+</CustomField>

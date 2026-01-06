@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>NIST System Integrity</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">NIST</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">NIST 800-53 SI-3 (Malicious Code Protection) and SI-7 (Software Integrity) require organizations to identify unauthorized changes to information systems and system components. Configuration changes must be tracked, reviewed, and approved through change management processes.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">NIST SP 800-53 Rev. 5 SI-3 - Malicious Code Protection, SI-7 - Software Integrity</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Implement change control process requiring approval for all production configuration changes.
+2. Track all metadata changes via Setup Audit Trail and Field History.
+3. Review high-risk changes (permissions, sharing rules, security settings) within 24 hours.
+4. Implement segregation of duties for change approval and implementation.
+5. Document all configuration changes with business justification.
+6. Conduct monthly reviews of unreviewed configuration changes.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">7.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE,SHARING_RULE,OBJECT,FIELD,SECURITY_SETTINGS</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">MEDIUM</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"trackChanges":true,"highRiskThreshold":7.0,"reviewWindowHours":24,"requireApproval":true}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

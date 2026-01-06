@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CCPA Right to Know</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">CCPA</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">CCPA Section 1798.100 requires businesses to provide consumers with access to their personal information upon request. Organizations must be able to generate data inventory reports within 45 days and track all consumer data requests to ensure timely response.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">CCPA Section 1798.100 - Right to Know, Section 1798.130 - Methods for Submitting Consumer Requests</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Implement data inventory tracking for all personal information collected.
+2. Create automated workflows to respond to consumer requests within 45 days.
+3. Document data sources and categories of personal information.
+4. Establish SLA monitoring for CCPA request completion.
+5. Train staff on CCPA request handling procedures.
+6. Maintain audit trail of all consumer requests and responses.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">OBJECT,FIELD,USER</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"ccpaRequestTracking":true,"slaDeadlineDays":45,"personalInformationFields":["Email","Phone","Address","SSN","DateOfBirth"]}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>GLBA Privacy Notice</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">GLBA</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">GLBA Privacy Rule (16 CFR Part 313) requires financial institutions to provide initial privacy notices to customers and annual privacy notices thereafter. Organizations must track notice distribution, manage opt-out requests, and maintain audit trails of privacy notice compliance.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">GLBA Privacy Rule 16 CFR Part 313.4 - Initial Privacy Notice, Part 313.5 - Annual Privacy Notice</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Implement privacy notice tracking system for all customers.
+2. Send initial privacy notices to new customers within required timeframe.
+3. Schedule and send annual privacy notices to all customers.
+4. Process and track opt-out requests from customers.
+5. Maintain audit trail of all privacy notices sent and opt-out requests received.
+6. Review and update privacy notices when information sharing practices change.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.0</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">OBJECT,FIELD,USER</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"privacyNoticeTracking":true,"annualNoticeRequired":true,"optOutManagement":true,"noticeDistributionTracking":true}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,29 @@
+{
+  "orgName": "Prometheion Enterprise Scratch Org",
+  "edition": "Developer",
+  "features": ["EinsteinGPT", "MultiCurrency", "Communities", "PlatformCache"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "securitySettings": {
+      "sessionSettings": {
+        "enforceIpRangesEveryRequest": false
+      }
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "platformCacheSettings": {
+      "cachePartitions": [
+        {
+          "description": "Prometheion Compliance cache partition for storing compliance scores",
+          "isDefaultPartition": false,
+          "masterLabel": "PrometheionCompliance",
+          "platformCacheType": "Org"
+        }
+      ]
+    }
+  }
+}
+

@@ -1,0 +1,44 @@
+{
+  "xml.preferences.showSchemaDocumentationType": "none",
+
+  // Formatting
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // File exclusions
+  "files.exclude": {
+    "**/.sfdx": true,
+    "**/.sf": true,
+    "**/node_modules": true
+  },
+
+  // Language-specific formatters
+  "[apex]": {
+    "editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex",
+    "editor.tabSize": 4
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[xml]": {
+    "editor.tabSize": 2
+  },
+
+  // Salesforce-specific
+  "salesforcedx-vscode-apex.enableSemanticErrors": true,
+  "salesforcedx-vscode-apex.autocomplete": true,
+  "salesforcedx-vscode-apex.java.home": "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home",
+
+  // Cursor AI settings (if available in settings)
+  "cursor.ai.model": "claude-sonnet-4.5",
+  "cursor.ai.enableTabAutocomplete": true,
+  "cursor.ai.maxTokens": 8000
+}

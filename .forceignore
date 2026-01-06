@@ -1,0 +1,11 @@
+**/jsconfig.json
+
+**/.eslintrc.json
+
+# Temporarily exclude platform events due to custom object limit
+**/Performance_Alert__e/**
+**/PCI_Access_Event__e/**
+**/GLBA_Compliance_Event__e/**
+**/Prometheion_Alert_Event__e/**
+__tests__/
+**/__tests__/**

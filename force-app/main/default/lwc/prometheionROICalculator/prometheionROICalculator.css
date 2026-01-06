@@ -1,0 +1,170 @@
+.roi-calculator {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.calculator-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.calculator-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0176d3;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #706e6b;
+    font-size: 1rem;
+}
+
+.calculator-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #fafaf9;
+    border-radius: 0.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #3e3e3c;
+}
+
+.roi-results {
+    margin-top: 2rem;
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.results-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0176d3;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.result-card {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #dddbda;
+    background: white;
+    text-align: center;
+}
+
+.result-card.savings {
+    border-left: 4px solid #2e844a;
+}
+
+.result-card.total {
+    border-left: 4px solid #0176d3;
+    background: #f3f2f2;
+}
+
+.result-card.cost {
+    border-left: 4px solid #fe9339;
+}
+
+.result-card.net {
+    border-left: 4px solid #0176d3;
+    background: #f3f2f2;
+}
+
+.result-card.roi {
+    border-left: 4px solid #0176d3;
+    background: #f3f2f2;
+}
+
+.result-label {
+    font-size: 0.875rem;
+    color: #706e6b;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.result-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #3e3e3c;
+    margin-bottom: 0.5rem;
+}
+
+.result-value.roi-positive {
+    color: #2e844a;
+}
+
+.result-value.roi-negative {
+    color: #c23934;
+}
+
+.result-detail {
+    font-size: 0.75rem;
+    color: #706e6b;
+}
+
+.roi-summary {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.summary-positive {
+    background: #cdefc4;
+    border: 1px solid #2e844a;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.summary-positive strong {
+    color: #2e844a;
+    font-size: 1.125rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.summary-positive p {
+    color: #3e3e3c;
+    margin: 0;
+}
+
+.summary-negative {
+    background: #fef7f7;
+    border: 1px solid #c23934;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.summary-negative strong {
+    color: #c23934;
+    font-size: 1.125rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.summary-negative p {
+    color: #3e3e3c;
+    margin: 0;
+}
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>HIPAA Audit Controls</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">HIPAA</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">HIPAA requires covered entities to implement hardware, software, and procedural mechanisms to record and examine access and activity in systems containing ePHI. Field History Tracking must be enabled on all objects containing Protected Health Information.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">45 CFR §164.312(b) - Audit Controls</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Enable Field History Tracking on all PHI-containing objects.
+2. Track all sensitive fields (SSN, DOB, Medical Record Numbers, Diagnosis codes).
+3. Configure Setup Audit Trail retention for 180+ days.
+4. Enable Event Monitoring if Shield is available.
+5. Document audit log review procedures.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.0</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">OBJECT,FIELD,FIELD_HISTORY</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"checkFieldHistory":true,"requiredObjects":["Patient__c","Contact","Account"],"phiFields":["SSN__c","Date_of_Birth__c","Medical_Record_Number__c"]}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

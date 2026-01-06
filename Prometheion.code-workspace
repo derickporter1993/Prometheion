@@ -1,0 +1,54 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.sfdx": true,
+			"**/.sf": true,
+			"**/node_modules": true,
+			"**/.vscode": true
+		},
+		"files.associations": {
+			"*.cls": "apex",
+			"*.trigger": "apex",
+			"*.page": "visualforce",
+			"*.component": "visualforce"
+		},
+		"apex.pmd.enabled": true,
+		"apex.pmd.rules": [
+			"category/apex/security.xml",
+			"category/apex/performance.xml",
+			"category/apex/design.xml"
+		],
+		"javascript.preferences.quoteStyle": "single",
+		"typescript.preferences.quoteStyle": "single",
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"[javascript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[json]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[jsonc]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[apex]": {
+			"editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex"
+		},
+		"prettier.enable": true,
+		"prettier.configPath": ".prettierrc"
+	},
+	"extensions": {
+		"recommendations": [
+			"salesforce.salesforcedx-vscode",
+			"esbenp.prettier-vscode",
+			"dbaeumer.vscode-eslint"
+		]
+	}
+}
+

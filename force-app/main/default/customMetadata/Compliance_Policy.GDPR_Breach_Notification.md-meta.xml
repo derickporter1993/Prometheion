@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>GDPR Breach Notification</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">GDPR</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">GDPR Article 33 requires organizations to notify the supervisory authority of a personal data breach within 72 hours of becoming aware of it. Article 34 requires notification to affected data subjects without undue delay if the breach poses a high risk to their rights and freedoms.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">GDPR Article 33 - Notification of a Personal Data Breach to the Supervisory Authority, Article 34 - Communication of a Personal Data Breach to the Data Subject</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Enable comprehensive audit logging to detect potential data breaches (Field History, Setup Audit Trail, Event Monitoring).
+2. Implement automated alerts for suspicious access patterns (bulk data exports, unauthorized access attempts).
+3. Document breach notification procedures and assign breach response team.
+4. Maintain incident log with timestamps, affected data subjects, and breach details.
+5. Test breach notification procedures quarterly.
+6. Ensure breach notifications include required information (nature of breach, categories of data, number of data subjects affected, likely consequences, measures taken).</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">9.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">AUDIT_LOG,EVENT_MONITORING,ALERT,BREACH_INCIDENT</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"requireAuditLogging":true,"breachDetectionAlerts":true,"notificationTimeframeHours":72,"dataSubjectNotificationRequired":true}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

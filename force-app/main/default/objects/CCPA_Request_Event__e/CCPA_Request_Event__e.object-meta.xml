@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <eventType>HighVolume</eventType>
+    <label>CCPA Request Event</label>
+    <pluralLabel>CCPA Request Events</pluralLabel>
+    <publishBehavior>PublishImmediately</publishBehavior>
+    <description>Platform Event for CCPA request audit trail</description>
+</CustomObject>

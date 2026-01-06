@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact__c</fullName>
+    <label>Contact</label>
+    <type>Lookup</type>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>GDPR Erasure Requests</relationshipLabel>
+    <relationshipName>GDPR_Erasure_Requests</relationshipName>
+    <required>false</required>
+    <description>Contact subject of the erasure request</description>
+</CustomField>

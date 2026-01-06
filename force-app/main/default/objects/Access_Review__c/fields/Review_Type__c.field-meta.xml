@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Review_Type__c</fullName>
+    <description>Type of access review being conducted</description>
+    <externalId>false</externalId>
+    <label>Review Type</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Quarterly Review</fullName>
+                <default>true</default>
+                <label>Quarterly Review</label>
+            </value>
+            <value>
+                <fullName>Annual Certification</fullName>
+                <default>false</default>
+                <label>Annual Certification</label>
+            </value>
+            <value>
+                <fullName>Privileged Access Review</fullName>
+                <default>false</default>
+                <label>Privileged Access Review</label>
+            </value>
+            <value>
+                <fullName>Termination Review</fullName>
+                <default>false</default>
+                <label>Termination Review</label>
+            </value>
+            <value>
+                <fullName>Role Change Review</fullName>
+                <default>false</default>
+                <label>Role Change Review</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PCI-DSS Data Encryption</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">PCI_DSS</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">PCI-DSS Requirement 3 requires encryption of cardholder data both at rest and in transit. All fields containing Primary Account Numbers (PAN), cardholder names, expiration dates, or CVV must have Shield Platform Encryption enabled.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">PCI-DSS Requirement 3 - Protect stored cardholder data</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Identify all fields containing cardholder data (PAN, CVV, expiration dates).
+2. Enable Shield Platform Encryption on all cardholder data fields.
+3. Implement data masking for non-production environments.
+4. Restrict access to encrypted fields using field-level security.
+5. Document encryption key management procedures.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">FIELD,ENCRYPTION</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"cardholderDataFields":["CreditCard","CardNumber","PAN","CVV","ExpirationDate"],"encryptionRequired":true,"shieldEncryptionEnabled":true}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

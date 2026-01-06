@@ -1,0 +1,212 @@
+<template>
+  <lightning-card title="Compliance Copilot" icon-name="utility:bot">
+    <div class="slds-p-around_medium">
+      <!-- Chat Container -->
+      <div
+        class="chat-container slds-scrollable_y"
+        style="
+          height: 500px;
+          overflow-y: auto;
+          border: 1px solid #d8dde6;
+          border-radius: 4px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          background-color: #fafaf9;
+        "
+      >
+        <!-- Welcome Message -->
+        <template lwc:if={showQuickCommands}>
+          <div class="slds-text-align_center slds-m-vertical_large">
+            <lightning-icon
+              icon-name="utility:bot"
+              size="large"
+              class="slds-m-bottom_small"
+            ></lightning-icon>
+            <h2 class="slds-text-heading_medium slds-m-bottom_small">{labels.welcome}</h2>
+            <p class="slds-text-color_weak">{labels.welcomeSubtitle}</p>
+          </div>
+        </template>
+
+        <!-- Messages -->
+        <template lwc:if={hasMessages}>
+          <template for:each={messageList} for:item="message">
+            <div key={message.id} class="slds-m-bottom_medium">
+              <!-- User Message -->
+              <template lwc:if={message.isUser}>
+                <div class="slds-chat-message">
+                  <div class="slds-chat-message__body" style="text-align: right">
+                    <div
+                      class="slds-chat-message__text slds-p-around_small"
+                      style="
+                        background-color: #0176d3;
+                        color: white;
+                        border-radius: 8px;
+                        display: inline-block;
+                        max-width: 80%;
+                      "
+                    >
+                      <p>{message.content}</p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Assistant Message -->
+              <template lwc:if={message.isAssistant}>
+                <div class="slds-chat-message">
+                  <div
+                    class="slds-chat-message__body"
+                    style="display: flex; align-items: flex-start; gap: 0.5rem"
+                  >
+                    <lightning-icon
+                      icon-name="utility:bot"
+                      size="small"
+                      class="slds-m-top_x-small"
+                    ></lightning-icon>
+                    <div style="flex: 1">
+                      <div
+                        class="slds-chat-message__text slds-p-around_small"
+                        style="
+                          background-color: white;
+                          border: 1px solid #d8dde6;
+                          border-radius: 8px;
+                          max-width: 85%;
+                        "
+                      >
+                        <lightning-formatted-rich-text
+                          value={message.content}
+                          class="slds-text-longform"
+                        ></lightning-formatted-rich-text>
+
+                        <!-- Evidence List -->
+                        <template lwc:if={message.hasEvidence}>
+                          <div class="slds-m-top_small">
+                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                              {labels.evidence}
+                            </h3>
+                            <ul class="slds-list_dotted">
+                              <template for:each={message.evidenceList} for:item="evidence">
+                                <li key={evidence.nodeId} class="slds-m-bottom_x-small">
+                                  <strong>{evidence.entityType}</strong>
+                                  - {evidence.description}
+                                  <template lwc:if={evidence.formattedRiskScore}>
+                                    <span class="slds-badge slds-m-left_x-small"
+                                      >{evidence.formattedRiskScore}</span
+                                    >
+                                  </template>
+                                </li>
+                              </template>
+                            </ul>
+                          </div>
+                        </template>
+
+                        <!-- Action Buttons -->
+                        <template lwc:if={message.hasActions}>
+                          <div class="slds-m-top_small">
+                            <template
+                              for:each={message.copilotResponse.actions}
+                              for:item="action"
+                            >
+                              <lightning-button
+                                key={action.actionType}
+                                label={action.label}
+                                variant="brand"
+                                class="slds-m-right_x-small slds-m-bottom_x-small"
+                                data-action-type={action.actionType}
+                                data-node-id={action.nodeId}
+                                onclick={handleActionClick}
+                              >
+                              </lightning-button>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </template>
+
+        <!-- Loading Indicator -->
+        <template lwc:if={isLoading}>
+          <div class="slds-chat-message">
+            <div
+              class="slds-chat-message__body"
+              style="display: flex; align-items: flex-start; gap: 0.5rem"
+            >
+              <lightning-icon
+                icon-name="utility:bot"
+                size="small"
+                class="slds-m-top_x-small"
+              ></lightning-icon>
+              <div style="flex: 1">
+                <div class="slds-spinner_container">
+                  <lightning-spinner alternative-text="Processing" size="small"></lightning-spinner>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Quick Commands -->
+      <template lwc:if={showQuickCommands}>
+        <div class="slds-m-bottom_medium">
+          <h3 class="slds-text-heading_small slds-m-bottom_small">{labels.quickCommands}</h3>
+          <div class="slds-grid slds-gutters slds-wrap">
+            <template for:each={quickCommands} for:item="command">
+              <div key={command.command} class="slds-col slds-size_1-of-2">
+                <lightning-button
+                  label={command.command}
+                  icon-name={command.icon}
+                  variant="neutral"
+                  class="slds-m-bottom_x-small full-width-button"
+                  data-command={command.command}
+                  onclick={handleQuickCommand}
+                >
+                </lightning-button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- Input Area -->
+      <div class="slds-grid slds-gutters slds-grid_align-center">
+        <div class="slds-col slds-size_1-of-1">
+          <lightning-input
+            type="text"
+            label={labels.askQuestion}
+            value={query}
+            onchange={handleQueryChange}
+            onkeypress={handleKeyPress}
+            placeholder={labels.inputPlaceholder}
+            class="slds-m-bottom_small"
+            disabled={isLoading}
+          >
+          </lightning-input>
+        </div>
+      </div>
+      <div class="slds-grid slds-gutters">
+        <div class="slds-col">
+          <lightning-button
+            label={labels.send}
+            variant="brand"
+            onclick={handleSubmit}
+            disabled={isLoading}
+          >
+          </lightning-button>
+          <lightning-button
+            label={labels.clearChat}
+            variant="neutral"
+            onclick={clearChat}
+            class="slds-m-left_small"
+          >
+          </lightning-button>
+        </div>
+      </div>
+    </div>
+  </lightning-card>
+</template>

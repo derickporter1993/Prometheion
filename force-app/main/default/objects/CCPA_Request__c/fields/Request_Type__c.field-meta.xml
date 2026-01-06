@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Request_Type__c</fullName>
+    <description>Type of CCPA request</description>
+    <externalId>false</externalId>
+    <label>Request Type</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Right to Know</fullName>
+                <default>false</default>
+                <label>Right to Know</label>
+            </value>
+            <value>
+                <fullName>Right to Delete</fullName>
+                <default>false</default>
+                <label>Right to Delete</label>
+            </value>
+            <value>
+                <fullName>Do Not Sell</fullName>
+                <default>false</default>
+                <label>Do Not Sell</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IP_Address__c</fullName>
+    <description>Source IP address of the access request (PCI DSS 10.2)</description>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>IP Address</label>
+    <length>45</length>
+    <required>false</required>
+    <type>Text</type>
+</CustomField>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>NIST Access Control</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">NIST</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">NIST 800-53 AC-2 (Account Management) requires organizations to manage information system accounts, including establishing, activating, modifying, disabling, and removing accounts. Access must be limited to authorized users and follow the principle of least privilege. All account changes must be logged and reviewed.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">NIST SP 800-53 Rev. 5 AC-2 - Account Management</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Review all active user accounts and permission set assignments quarterly.
+2. Disable or remove accounts for users inactive for 90+ days.
+3. Implement role-based access control (RBAC) with least privilege.
+4. Document business justification for all elevated permissions.
+5. Enable audit logging for all account management activities.
+6. Conduct annual access certification reviews.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">USER,PERMISSION_SET,PROFILE,PERMISSION_SET_ASSIGNMENT</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"checkStaleAccounts":true,"inactiveThresholdDays":90,"checkElevatedPermissions":true,"requiredAuditLogging":true}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

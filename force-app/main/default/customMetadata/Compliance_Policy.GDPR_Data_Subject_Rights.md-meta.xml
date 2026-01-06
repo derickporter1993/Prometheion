@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>GDPR Data Subject Rights</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">GDPR</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">GDPR Articles 15-22 grant data subjects rights including access, rectification, erasure, portability, and objection. Organizations must be able to identify, locate, and process personal data in response to data subject requests within 30 days.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">GDPR Articles 15-22 - Rights of the Data Subject</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Enable Field History Tracking on all objects containing personal data (Contact, Lead, Account, custom objects).
+2. Document data subject request procedures and assign responsible parties.
+3. Implement data discovery tools to locate personal data across the system.
+4. Configure automated workflows for data subject request processing.
+5. Maintain audit logs of all data subject request activities.
+6. Train staff on GDPR data subject rights and response procedures.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">9.0</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">OBJECT,FIELD,FIELD_HISTORY,DATA_SUBJECT_REQUEST</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"requiredObjects":["Contact","Lead","Account"],"piiFields":["Email","Phone","MailingAddress","BillingAddress"],"responseTimeframeDays":30}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

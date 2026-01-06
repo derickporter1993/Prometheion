@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SOC2 Logical Access</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">SOC2</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">SOC 2 CC6.1 requires logical access controls to restrict access to information assets. Permission changes must follow the principle of least privilege and be documented with business justification. Segregation of duties must be maintained.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">SOC 2 CC6.1, CC6.3 - Logical and Physical Access Controls</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Document business justification for all permission changes in change management system.
+2. Implement maker-checker approval for elevated permissions.
+3. Review and remove stale permission set assignments (90+ days inactive).
+4. Ensure segregation between data entry and approval roles.
+5. Conduct quarterly access certification reviews.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE,PERMISSION_SET_ASSIGNMENT,USER</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"segregationViolations":["EditFinancial+ApproveFinancial","CreateUser+ModifyPermissions"],"staleThresholdDays":90}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

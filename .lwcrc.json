@@ -1,0 +1,10 @@
+{
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.test.js",
+    "**/node_modules/**"
+  ],
+  "rules": {
+    "@lwc/lwc/no-invalid-import": "off"
+  }
+}

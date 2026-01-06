@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Copilot Labels -->
+    <labels>
+        <fullName>Copilot_Welcome</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copilot Welcome Message</shortDescription>
+        <value>Welcome to Prometheion Copilot</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Welcome_Subtitle</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copilot Welcome Subtitle</shortDescription>
+        <value>Your AI-powered compliance assistant. Ask me anything about your compliance posture.</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Error_General</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copilot General Error</shortDescription>
+        <value>I encountered an error: {0}. Please try again or contact your administrator.</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_No_Recent_Changes</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Recent Changes Message</shortDescription>
+        <value>Great news! I found no high-risk changes in the last 7 days that would impact your compliance score.</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Score_Drop_Reason</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Score Drop Reason</shortDescription>
+        <value>I found {0} high-risk change(s) that may have impacted your score:</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_No_Risky_Flows</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Risky Flows Message</shortDescription>
+        <value>Excellent! No high-risk Flows detected that access sensitive data.</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Risky_Flows_Found</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Risky Flows Found</shortDescription>
+        <value>I found {0} Flow(s) with elevated risk scores:</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Evidence_Summary</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Evidence Summary Title</shortDescription>
+        <value>{0} Compliance Evidence Summary</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_No_Violations</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Violations Message</shortDescription>
+        <value>No active policy violations found{0}!</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Violations_Found</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Violations Found</shortDescription>
+        <value>Found {0} active policy violation(s):</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_No_Elevated_Users</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Elevated Users</shortDescription>
+        <value>No users found with Modify All Data or View All Data permissions.</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Elevated_Users_Found</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Elevated Users Found</shortDescription>
+        <value>{0} user(s) have elevated data access permissions:</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_Framework_Status</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Framework Status Title</shortDescription>
+        <value>{0} Compliance Status</value>
+    </labels>
+    <labels>
+        <fullName>Copilot_General_Help</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>General Help Message</shortDescription>
+        <value>I can help you with compliance questions. Try asking:</value>
+    </labels>
+
+    <!-- UI Labels -->
+    <labels>
+        <fullName>Prometheion_Quick_Commands</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Quick Commands Title</shortDescription>
+        <value>Quick Commands</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Ask_Question</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Ask Question Label</shortDescription>
+        <value>Ask a question</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Input_Placeholder</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Input Placeholder</shortDescription>
+        <value>Ask about compliance, violations, or generate evidence...</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Send</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Send Button</shortDescription>
+        <value>Send</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Clear_Chat</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Clear Chat Button</shortDescription>
+        <value>Clear Chat</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Evidence</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Evidence Section Title</shortDescription>
+        <value>Evidence</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Risk_Score</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Risk Score Label</shortDescription>
+        <value>Risk: {0}/10</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Error_Title</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error Toast Title</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Info_Title</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Info Toast Title</shortDescription>
+        <value>Information</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Auto_Fix_Coming</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Fix Coming Soon</shortDescription>
+        <value>Auto-fix functionality will be available in the next release.</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Export_Coming</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Export Coming Soon</shortDescription>
+        <value>Export functionality will be available in the next release.</value>
+    </labels>
+    <labels>
+        <fullName>Prometheion_Processing_Error</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Processing Error Message</shortDescription>
+        <value>I encountered an error processing your request. Please try again.</value>
+    </labels>
+
+    <!-- Scheduler Labels -->
+    <labels>
+        <fullName>Scorecard_Subject</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Weekly Scorecard Subject</shortDescription>
+        <value>Weekly Compliance Scorecard</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Title</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Scorecard Title</shortDescription>
+        <value>Prometheion Weekly Compliance Report</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Overall_Score</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Overall Score Label</shortDescription>
+        <value>Overall Score</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Framework_Scores</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Framework Scores Label</shortDescription>
+        <value>Framework Scores</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Error</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Scorecard Error</shortDescription>
+        <value>Error generating weekly scorecard: {0}</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Weekly_Title</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Weekly Scorecard Title</shortDescription>
+        <value>Weekly Compliance Scorecard</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Score_Breakdown</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Score Breakdown Title</shortDescription>
+        <value>Score Breakdown</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Top_Risks</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Top Risks Title</shortDescription>
+        <value>Top {0} Risks Requiring Attention</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_View_Report</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>View Report Button</shortDescription>
+        <value>View Full Report</value>
+    </labels>
+    <labels>
+        <fullName>Scorecard_Scheduled</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Scheduled Confirmation</shortDescription>
+        <value>Weekly scorecard scheduled for {0}. Job name: {1}</value>
+    </labels>
+</CustomLabels>

@@ -1,0 +1,17 @@
+// Use .soql files to store SOQL queries.
+// You can execute queries in VS Code by selecting the
+//     query text and running the command:
+//     SFDX: Execute SOQL Query with Currently Selected Text
+
+// Get all compliance policies
+SELECT DeveloperName, MasterLabel, Framework__c, Category__c, Severity__c, Description__c
+FROM Compliance_Policy__mdt
+ORDER BY Framework__c, Severity__c
+
+// Get setup audit trail (last 30 days)
+SELECT CreatedDate, CreatedById, CreatedBy.Name, Action, Section, Display
+FROM SetupAuditTrail
+WHERE CreatedDate = LAST_N_DAYS:30
+ORDER BY CreatedDate DESC
+LIMIT 100
+

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0176D3</headerColor>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>Prometheion - AI-Powered Compliance &amp; Governance Platform for Salesforce</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <label>Prometheion</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>Prometheion_Dashboard</tabs>
+    <tabs>Prometheion_Compliance_Hub</tabs>
+    <tabs>Performance_Alert_History__c</tabs>
+    <tabs>API_Usage_Snapshot__c</tabs>
+    <tabs>Flow_Execution__c</tabs>
+    <tabs>Deployment_Job__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

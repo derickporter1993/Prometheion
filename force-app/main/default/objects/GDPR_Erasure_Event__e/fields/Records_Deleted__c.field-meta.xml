@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Records_Deleted__c</fullName>
+    <label>Records Deleted</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <description>Number of records deleted (stored as text for platform events)</description>
+</CustomField>

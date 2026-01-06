@@ -1,0 +1,20 @@
+/* Deployment Monitor Dashboard Styles */
+
+.datatable-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .datatable-wrapper {
+    width: 100%;
+    overflow-x: scroll;
+  }
+  
+  /* Ensure datatable is scrollable on mobile */
+  .datatable-wrapper lightning-datatable {
+    min-width: 600px;
+  }
+}

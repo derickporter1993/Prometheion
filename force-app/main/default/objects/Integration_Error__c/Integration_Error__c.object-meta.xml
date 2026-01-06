@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Integration Error</label>
+    <pluralLabel>Integration Errors</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Integration Error Number</label>
+        <displayFormat>IE-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <fields>
+        <fullName>Error_Type__c</fullName>
+        <label>Error Type</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SLACK</fullName>
+                    <default>false</default>
+                    <label>Slack</label>
+                </value>
+                <value>
+                    <fullName>TEAMS</fullName>
+                    <default>false</default>
+                    <label>Teams</label>
+                </value>
+                <value>
+                    <fullName>EINSTEIN</fullName>
+                    <default>false</default>
+                    <label>Einstein</label>
+                </value>
+                <value>
+                    <fullName>API_CALLOUT</fullName>
+                    <default>false</default>
+                    <label>API Callout</label>
+                </value>
+                <value>
+                    <fullName>OTHER</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Error_Message__c</fullName>
+        <label>Error Message</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Stack_Trace__c</fullName>
+        <label>Stack Trace</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Correlation_Id__c</fullName>
+        <label>Correlation ID</label>
+        <type>Text</type>
+        <length>50</length>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Context__c</fullName>
+        <label>Context</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Retry_Count__c</fullName>
+        <label>Retry Count</label>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <defaultValue>NEW</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>NEW</fullName>
+                    <default>true</default>
+                    <label>New</label>
+                </value>
+                <value>
+                    <fullName>RETRYING</fullName>
+                    <default>false</default>
+                    <label>Retrying</label>
+                </value>
+                <value>
+                    <fullName>RESOLVED</fullName>
+                    <default>false</default>
+                    <label>Resolved</label>
+                </value>
+                <value>
+                    <fullName>FAILED</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Timestamp__c</fullName>
+        <label>Timestamp</label>
+        <type>DateTime</type>
+        <required>true</required>
+    </fields>
+</CustomObject>

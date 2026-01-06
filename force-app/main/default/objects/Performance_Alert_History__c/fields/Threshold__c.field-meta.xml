@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Threshold__c</fullName>
+    <label>Threshold</label>
+    <type>Number</type>
+    <precision>18</precision>
+    <scale>4</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+    <unique>false</unique>
+</CustomField>
+

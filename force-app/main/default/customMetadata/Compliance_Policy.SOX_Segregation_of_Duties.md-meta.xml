@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SOX Segregation of Duties</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">SOX</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Sarbanes-Oxley Act Section 302 and 404 require segregation of duties to prevent fraud and errors. Users should not have conflicting permissions such as the ability to both create financial transactions and approve them, or create users and modify permissions.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">Sarbanes-Oxley Act Section 302 - Corporate Responsibility for Financial Reports, Section 404 - Management Assessment of Internal Controls</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Identify users with conflicting permissions (e.g., financial data entry + approval).
+2. Create separate permission sets for data entry and approval roles.
+3. Remove conflicting permissions from individual users.
+4. Implement maker-checker approval workflows for financial transactions.
+5. Document segregation of duties controls and review quarterly.</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">9.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE,PERMISSION_SET_ASSIGNMENT,USER</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"segregationViolations":["EditFinancial+ApproveFinancial","CreateUser+ModifyPermissions","CreateTransaction+ApproveTransaction"],"financialObjects":["Account","Opportunity","Invoice","Payment"]}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

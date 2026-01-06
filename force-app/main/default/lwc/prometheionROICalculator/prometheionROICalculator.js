@@ -1,0 +1,128 @@
+import { LightningElement, track } from 'lwc';
+
+export default class PrometheionROICalculator extends LightningElement {
+    @track orgSize = 500;
+    @track industry = 'healthcare';
+    @track currentAuditSpend = 150000;
+    @track currentAuditPrepHours = 600;
+    @track hourlyRate = 200;
+    
+    @track roiResults = null;
+    @track showResults = false;
+    
+    industryOptions = [
+        { label: 'Healthcare', value: 'healthcare' },
+        { label: 'Financial Services', value: 'finance' },
+        { label: 'Government', value: 'government' },
+        { label: 'Enterprise', value: 'enterprise' }
+    ];
+    
+    // Industry-specific defaults
+    industryDefaults = {
+        healthcare: {
+            auditPrepHours: 600,
+            auditSpend: 150000,
+            prometheionCost: 45000,
+            timeReduction: 0.85
+        },
+        finance: {
+            auditPrepHours: 500,
+            auditSpend: 120000,
+            prometheionCost: 35000,
+            timeReduction: 0.80
+        },
+        government: {
+            auditPrepHours: 700,
+            auditSpend: 200000,
+            prometheionCost: 60000,
+            timeReduction: 0.85
+        },
+        enterprise: {
+            auditPrepHours: 400,
+            auditSpend: 100000,
+            prometheionCost: 30000,
+            timeReduction: 0.75
+        }
+    };
+    
+    handleIndustryChange(event) {
+        this.industry = event.detail.value;
+        const defaults = this.industryDefaults[this.industry];
+        this.currentAuditPrepHours = defaults.auditPrepHours;
+        this.currentAuditSpend = defaults.auditSpend;
+        this.calculateROI();
+    }
+    
+    handleOrgSizeChange(event) {
+        this.orgSize = parseInt(event.detail.value, 10);
+        this.calculateROI();
+    }
+    
+    handleAuditSpendChange(event) {
+        this.currentAuditSpend = parseInt(event.detail.value, 10);
+        this.calculateROI();
+    }
+    
+    handleHoursChange(event) {
+        this.currentAuditPrepHours = parseInt(event.detail.value, 10);
+        this.calculateROI();
+    }
+    
+    handleRateChange(event) {
+        this.hourlyRate = parseInt(event.detail.value, 10);
+        this.calculateROI();
+    }
+    
+    calculateROI() {
+        const defaults = this.industryDefaults[this.industry];
+        const timeReduction = defaults.timeReduction;
+        const prometheionCost = defaults.prometheionCost;
+        
+        // Calculate time savings (85% reduction in audit prep time)
+        const timeSavings = this.currentAuditPrepHours * timeReduction;
+        const timeSavingsDollars = timeSavings * this.hourlyRate;
+        
+        // Calculate audit cost reduction (30% reduction in external audit costs)
+        const auditCostReduction = this.currentAuditSpend * 0.30;
+        
+        // Total annual savings
+        const totalSavings = timeSavingsDollars + auditCostReduction;
+        
+        // Net benefit
+        const netBenefit = totalSavings - prometheionCost;
+        
+        // Payback period (weeks)
+        const weeklySavings = totalSavings / 52;
+        const paybackWeeks = weeklySavings > 0 ? Math.round(prometheionCost / weeklySavings) : 0;
+        
+        // ROI percentage
+        const roi = prometheionCost > 0 ? Math.round((netBenefit / prometheionCost) * 100) : 0;
+        
+        this.roiResults = {
+            timeSavings: Math.round(timeSavings),
+            timeSavingsDollars: Math.round(timeSavingsDollars),
+            auditCostReduction: Math.round(auditCostReduction),
+            totalSavings: Math.round(totalSavings),
+            prometheionCost: prometheionCost,
+            netBenefit: Math.round(netBenefit),
+            paybackWeeks: paybackWeeks,
+            roi: roi,
+            monthlySavings: Math.round(totalSavings / 12)
+        };
+        
+        this.showResults = true;
+    }
+    
+    connectedCallback() {
+        this.calculateROI();
+    }
+    
+    get hasPositiveROI() {
+        return this.roiResults && this.roiResults.roi > 0;
+    }
+    
+    get roiClass() {
+        return this.hasPositiveROI ? 'roi-positive' : 'roi-negative';
+    }
+}
+

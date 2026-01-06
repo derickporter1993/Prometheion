@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CCPA_OptOut_Date__c</fullName>
+    <label>CCPA Opt-Out Date</label>
+    <type>Date</type>
+    <description>Date when customer opted out of data selling per CCPA</description>
+</CustomField>
