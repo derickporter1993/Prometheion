@@ -80,7 +80,6 @@
         <label>Gap Description</label>
         <type>LongTextArea</type>
         <length>32768</length>
-        <required>true</required>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
@@ -88,7 +87,6 @@
         <label>Severity</label>
         <type>Picklist</type>
         <required>true</required>
-        <defaultValue>MEDIUM</defaultValue>
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>
@@ -121,7 +119,6 @@
         <label>Status</label>
         <type>Picklist</type>
         <required>true</required>
-        <defaultValue>OPEN</defaultValue>
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>

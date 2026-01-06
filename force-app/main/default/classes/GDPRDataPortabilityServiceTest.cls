@@ -6,7 +6,7 @@
  * @version 1.0
  */
 @IsTest
-private class PrometheionGDPRDataPortabilityServiceTest {
+private class GDPRDataPortabilityServiceTest {
 
     @TestSetup
     static void setupTestData() {

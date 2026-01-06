@@ -34,7 +34,7 @@ public with sharing class AlertHistoryService {
     /**
      * @deprecated Use getRecentAlerts instead
      */
-    @Deprecated
+    // @Deprecated (not supported in non-managed packages)
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> recent(Integer limitSize) {
         return getRecentAlerts(limitSize);

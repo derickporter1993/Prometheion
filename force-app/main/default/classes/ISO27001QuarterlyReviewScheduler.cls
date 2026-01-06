@@ -10,11 +10,11 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class PrometheionISO27001QuarterlyReviewScheduler implements Schedulable {
+public with sharing class ISO27001QuarterlyReviewScheduler implements Schedulable {
 
     private String reviewType;
 
-    public PrometheionISO27001QuarterlyReviewScheduler() {
+    public ISO27001QuarterlyReviewScheduler() {
         this.reviewType = 'quarterly';
     }
 

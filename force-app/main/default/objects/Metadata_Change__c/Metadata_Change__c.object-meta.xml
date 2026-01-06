@@ -66,7 +66,7 @@
         <referenceTo>User</referenceTo>
         <relationshipLabel>Metadata Changes</relationshipLabel>
         <relationshipName>Metadata_Changes</relationshipName>
-        <required>true</required>
+        <deleteConstraint>SetNull</deleteConstraint>
     </fields>
     <fields>
         <fullName>Change_Date__c</fullName>
@@ -102,7 +102,6 @@
         <fullName>Risk_Level__c</fullName>
         <label>Risk Level</label>
         <type>Picklist</type>
-        <defaultValue>MEDIUM</defaultValue>
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>

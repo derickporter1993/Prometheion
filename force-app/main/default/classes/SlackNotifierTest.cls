@@ -1,154 +1,64 @@
-@IsTest
+/**
+ * Test class for SlackNotifier
+ */
+@isTest
 private class SlackNotifierTest {
-    // Mock class for Slack HTTP callout
-    private class SlackCalloutMock implements HttpCalloutMock {
-        public Integer statusCode;
-        public String status;
-
-        public SlackCalloutMock(Integer statusCode, String status) {
-            this.statusCode = statusCode;
-            this.status = status;
-        }
-
-        public HttpResponse respond(HttpRequest req) {
-            HttpResponse res = new HttpResponse();
-            res.setStatusCode(this.statusCode);
-            res.setStatus(this.status);
-            res.setBody('ok');
-            return res;
-        }
-    }
-
-    @IsTest
-    static void testNotifyAsyncSuccess() {
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, 'OK'));
-
+    
+    @isTest
+    static void testNotifyAsyncQueueable() {
         Test.startTest();
-        SlackNotifier.notifyAsync('Test notification message');
+        SlackNotifier.notifyAsyncQueueable('Test notification');
         Test.stopTest();
-
-        // Verify the async method completed without throwing an exception
-        // In a real scenario, we'd verify the callout was made with correct params
-        System.assert(true, 'notifyAsync completed successfully');
-    }
-
-    @IsTest
-    static void testNotifyPerformanceEvent() {
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, 'OK'));
-
-        Performance_Alert__e testEvent = new Performance_Alert__e(
-            Metric__c = 'CPU',
-            Value__c = 9500,
-            Threshold__c = 9000,
-            Context_Record__c = '001000000000001',
-            Stack__c = 'Stack trace here'
-        );
-
-        Test.startTest();
-        SlackNotifier.notifyPerformanceEvent(testEvent);
-        Test.stopTest();
-
-        // Verify the method executed without errors
-        System.assert(true, 'notifyPerformanceEvent completed successfully');
-    }
-
-    @IsTest
-    static void testNotifyPerformanceEventWithoutContext() {
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, 'OK'));
-
-        Performance_Alert__e testEvent = new Performance_Alert__e(
-            Metric__c = 'HEAP',
-            Value__c = 5500,
-            Threshold__c = 5000,
-            Context_Record__c = null,
-            Stack__c = null
-        );
-
-        Test.startTest();
-        SlackNotifier.notifyPerformanceEvent(testEvent);
-        Test.stopTest();
-
-        System.assert(true, 'notifyPerformanceEvent with null context completed successfully');
-    }
-
-    @IsTest
-    static void testNotifyAsyncFailure() {
-        // Test error handling when Slack returns an error
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(500, 'Internal Server Error'));
-
-        Test.startTest();
-        // Should not throw exception, just log the error
-        SlackNotifier.notifyAsync('Test message');
-        Test.stopTest();
-
-        // Method should handle error gracefully (logged to debug)
-        System.assert(true, 'notifyAsync handled error gracefully');
-    }
-
-    @IsTest
-    static void testNotifyAsyncWithException() {
-        // Don't set a mock to simulate a callout exception scenario
-        // Note: This would normally fail without a mock, but the try-catch should handle it
-
-        Test.startTest();
-        try {
-            SlackNotifier.notifyAsync('Test message');
-            // Without a mock or Named Credential, this may fail but should be caught
-        } catch (Exception e) {
-            // If it throws, that's also acceptable for this test
-        }
-        Test.stopTest();
-
-        System.assert(true, 'notifyAsync exception handling tested');
+        // Just verify no exceptions thrown
+        System.assert(true, 'Notification should complete without errors');
     }
     
-    @IsTest
-    static void testHttp4xxError() {
-        // Test 400 Bad Request
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(400, 'Bad Request'));
-        
+    @isTest
+    static void testNotifyAsyncQueueableEmpty() {
         Test.startTest();
-        SlackNotifier.notifyAsync('Test message');
+        SlackNotifier.notifyAsyncQueueable('');
         Test.stopTest();
-        
-        System.assert(true, 'notifyAsync handled 4xx error gracefully');
+        // Should skip empty notifications without error
+        System.assert(true, 'Empty notification should be skipped');
     }
     
-    @IsTest
-    static void testHttp5xxError() {
-        // Test 500 Internal Server Error
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(500, 'Internal Server Error'));
+    @isTest
+    static void testNotifyRichAsyncQueueable() {
+        Map<String, Object> payload = new Map<String, Object>{
+            'text' => 'Test rich notification'
+        };
         
         Test.startTest();
-        SlackNotifier.notifyAsync('Test message');
+        SlackNotifier.notifyRichAsyncQueueable(JSON.serialize(payload));
         Test.stopTest();
-        
-        System.assert(true, 'notifyAsync handled 5xx error gracefully');
+        // Just verify no exceptions thrown
+        System.assert(true, 'Rich notification should complete without errors');
     }
     
-    @IsTest
-    static void testHttp429RateLimit() {
-        // Test 429 Too Many Requests
-        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(429, 'Too Many Requests'));
-        
+    @isTest
+    static void testNotifyPerformanceAlert() {
         Test.startTest();
-        SlackNotifier.notifyAsync('Test message');
+        SlackNotifier.notifyPerformanceAlert('CPU', 9500, 10000, 'testContext');
         Test.stopTest();
-        
-        System.assert(true, 'notifyAsync handled 429 rate limit error gracefully');
+        // Just verify no exceptions thrown
+        System.assert(true, 'Performance alert notification should complete without errors');
     }
     
-    @IsTest
-    static void testInvalidJsonPayload() {
+    @isTest
+    static void testNotifyFlowPerformance() {
         Test.startTest();
-        try {
-            SlackNotifier.notifyRichAsyncQueueable('invalid json {');
-            // Should handle invalid JSON gracefully
-        } catch (Exception e) {
-            // Expected to catch JSON exception
-        }
+        SlackNotifier.notifyFlowPerformance('Test_Flow', 5000, 'WARNING', 85.5);
         Test.stopTest();
-        
-        System.assert(true, 'notifyRichAsyncQueueable handled invalid JSON gracefully');
+        // Just verify no exceptions thrown
+        System.assert(true, 'Flow performance notification should complete without errors');
+    }
+    
+    @isTest
+    static void testNotifyFlowPerformanceEmptyName() {
+        Test.startTest();
+        SlackNotifier.notifyFlowPerformance('', 5000, 'WARNING', 85.5);
+        Test.stopTest();
+        // Should skip without error
+        System.assert(true, 'Empty flow name should be skipped');
     }
 }

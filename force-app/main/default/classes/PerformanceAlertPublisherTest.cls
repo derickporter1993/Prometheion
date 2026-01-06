@@ -1,48 +1,71 @@
-@IsTest
+/**
+ * Test class for PerformanceAlertPublisher
+ */
+@isTest
 private class PerformanceAlertPublisherTest {
-    @IsTest
+    
+    @isTest
     static void testPublishSuccess() {
         Test.startTest();
-        // This should succeed without throwing an exception
-        PerformanceAlertPublisher.publish('CPU', 9500, 9000, '001000000000001', 'Test stack trace');
+        PerformanceAlertPublisher.publish('CPU', 8500, 10000, null, 'Test stack trace');
         Test.stopTest();
-
-        // Verify the event was published by checking that no exception was thrown
-        // Note: Platform Events are published asynchronously, so we can't query them directly in tests
-        System.assert(true, 'Publish completed without exception');
+        
+        // Verify alert was saved to history
+        List<Performance_Alert_History__c> alerts = [
+            SELECT Metric__c, Value__c, Threshold__c, Stack__c
+            FROM Performance_Alert_History__c
+            WHERE Metric__c = 'CPU'
+        ];
+        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        System.assertEquals(8500, alerts[0].Value__c, 'Value should match');
+        System.assertEquals(10000, alerts[0].Threshold__c, 'Threshold should match');
     }
-
-    @IsTest
-    static void testPublishMultipleMetrics() {
+    
+    @isTest
+    static void testPublishWithNullMetric() {
+        Boolean exceptionThrown = false;
         Test.startTest();
-        PerformanceAlertPublisher.publish('CPU', 9500, 9000, null, 'CPU exceeded');
-        PerformanceAlertPublisher.publish('HEAP', 5500, 5000, null, 'Heap exceeded');
-        PerformanceAlertPublisher.publish('SOQL', 110, 100, null, 'SOQL exceeded');
-        PerformanceAlertPublisher.publish('DML', 160, 150, null, 'DML exceeded');
+        try {
+            PerformanceAlertPublisher.publish(null, 8500, 10000, null, null);
+        } catch (AuraHandledException e) {
+            exceptionThrown = true;
+            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+        }
         Test.stopTest();
-
-        // Verify all publishes completed without exceptions
-        System.assert(true, 'All publishes completed without exception');
+        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
-
-    @IsTest
-    static void testPublishWithContext() {
-        String testRecordId = '001000000000ABC';
-
+    
+    @isTest
+    static void testPublishWithNullValue() {
+        Boolean exceptionThrown = false;
         Test.startTest();
-        PerformanceAlertPublisher.publish('HEAP', 6000, 5000, testRecordId, 'Memory limit approaching');
+        try {
+            PerformanceAlertPublisher.publish('CPU', null, 10000, null, null);
+        } catch (AuraHandledException e) {
+            exceptionThrown = true;
+            System.assert(e.getMessage().contains('Value cannot be null'), 'Expected validation error');
+        }
         Test.stopTest();
-
-        System.assert(true, 'Publish with context completed without exception');
+        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
-
-    @IsTest
-    static void testPublishNullValues() {
-        // Test edge case with null context record
+    
+    @isTest
+    static void testPublishWithLongStackTrace() {
+        String longStack = '';
+        for (Integer i = 0; i < 4000; i++) {
+            longStack += 'x';
+        }
+        
         Test.startTest();
-        PerformanceAlertPublisher.publish('CPU', 8500, 8000, null, null);
+        PerformanceAlertPublisher.publish('HEAP', 5000, 6000, 'someRecordId', longStack);
         Test.stopTest();
-
-        System.assert(true, 'Publish with null values completed without exception');
+        
+        List<Performance_Alert_History__c> alerts = [
+            SELECT Stack__c
+            FROM Performance_Alert_History__c
+            WHERE Metric__c = 'HEAP'
+        ];
+        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        System.assert(alerts[0].Stack__c.length() <= 32768, 'Stack should be truncated');
     }
 }

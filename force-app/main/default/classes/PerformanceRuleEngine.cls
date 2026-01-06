@@ -2,6 +2,9 @@
  * Performance rule evaluation engine with improved error handling and validation
  * Best Practice: Validates inputs, extracts helper methods, improves error reporting
  * Security: Input validation, safe parsing, structured error handling
+ * 
+ * Note: Performance_Alert__e platform event not available due to org custom object limits.
+ * This version stores alerts in Performance_Alert_History__c instead.
  */
 public with sharing class PerformanceRuleEngine {
     public class EvalResult {
@@ -46,24 +49,24 @@ public with sharing class PerformanceRuleEngine {
             // Get thresholds with safe parsing
             Thresholds thresholds = getThresholds();
 
-            List<Performance_Alert__e> eventsToPublish = new List<Performance_Alert__e>();
+            List<AlertData> alertsToSave = new List<AlertData>();
 
             // Check all thresholds using helper method
-            checkThreshold('CPU', stats.cpuMs, thresholds.cpuWarn, thresholds.cpuCrit, contextRecordId, out, eventsToPublish);
-            checkThreshold('HEAP', stats.heapKb, thresholds.heapWarn, thresholds.heapCrit, contextRecordId, out, eventsToPublish);
-            checkThreshold('SOQL', stats.soql, thresholds.soqlWarn, thresholds.soqlCrit, contextRecordId, out, eventsToPublish);
-            checkThreshold('DML', stats.dml, thresholds.dmlWarn, thresholds.dmlCrit, contextRecordId, out, eventsToPublish);
+            checkThreshold('CPU', stats.cpuMs, thresholds.cpuWarn, thresholds.cpuCrit, contextRecordId, out, alertsToSave);
+            checkThreshold('HEAP', stats.heapKb, thresholds.heapWarn, thresholds.heapCrit, contextRecordId, out, alertsToSave);
+            checkThreshold('SOQL', stats.soql, thresholds.soqlWarn, thresholds.soqlCrit, contextRecordId, out, alertsToSave);
+            checkThreshold('DML', stats.dml, thresholds.dmlWarn, thresholds.dmlCrit, contextRecordId, out, alertsToSave);
 
-            // Bulk publish all events at once
-            if (!eventsToPublish.isEmpty()) {
-                PublishResult publishResult = publishEvents(eventsToPublish);
-                out.eventsPublished = publishResult.published;
-                out.eventsFailed = publishResult.failed;
+            // Save all alerts at once
+            if (!alertsToSave.isEmpty()) {
+                SaveResult saveResult = saveAlerts(alertsToSave);
+                out.eventsPublished = saveResult.saved;
+                out.eventsFailed = saveResult.failed;
 
-                if (publishResult.failed > 0) {
-                    out.message = 'Evaluated stats. Published ' + publishResult.published + ' alerts, ' + publishResult.failed + ' failed.';
+                if (saveResult.failed > 0) {
+                    out.message = 'Evaluated stats. Saved ' + saveResult.saved + ' alerts, ' + saveResult.failed + ' failed.';
                 } else {
-                    out.message = 'Evaluated stats. Published ' + publishResult.published + ' alerts successfully.';
+                    out.message = 'Evaluated stats. Saved ' + saveResult.saved + ' alerts successfully.';
                 }
             } else {
                 out.message = 'Evaluated current governor stats against thresholds. No alerts triggered.';
@@ -161,8 +164,7 @@ public with sharing class PerformanceRuleEngine {
     }
 
     /**
-     * Check threshold and create alert event if needed
-     * Extracted helper method to reduce duplication
+     * Check threshold and create alert data if needed
      */
     private static void checkThreshold(
         String metric,
@@ -171,18 +173,18 @@ public with sharing class PerformanceRuleEngine {
         Integer critThreshold,
         String contextRecordId,
         EvalResult result,
-        List<Performance_Alert__e> events
+        List<AlertData> alerts
     ) {
         if (value == null) {
             System.debug(LoggingLevel.WARN, 'PerformanceRuleEngine: Null value for metric: ' + metric);
             return;
         }
 
-        // Create alert event using helper method
-        Performance_Alert__e alert = createAlertEvent(metric, value, warnThreshold, critThreshold, contextRecordId);
+        // Create alert data using helper method
+        AlertData alert = createAlertData(metric, value, warnThreshold, critThreshold, contextRecordId);
 
         if (alert != null) {
-            events.add(alert);
+            alerts.add(alert);
             if (value >= critThreshold) {
                 result.critical = true;
             } else if (value >= warnThreshold) {
@@ -192,9 +194,9 @@ public with sharing class PerformanceRuleEngine {
     }
 
     /**
-     * Create alert event using builder pattern to reduce duplication
+     * Create alert data
      */
-    private static Performance_Alert__e createAlertEvent(
+    private static AlertData createAlertData(
         String metric,
         Decimal value,
         Integer warnThreshold,
@@ -202,48 +204,60 @@ public with sharing class PerformanceRuleEngine {
         String contextRecordId
     ) {
         if (value >= critThreshold) {
-            return new Performance_Alert__e(
-                Metric__c = metric,
-                Value__c = value,
-                Threshold__c = critThreshold,
-                Context_Record__c = contextRecordId,
-                Stack__c = metric + ' critical threshold exceeded: ' + value + ' >= ' + critThreshold
-            );
+            AlertData alert = new AlertData();
+            alert.metric = metric;
+            alert.value = value;
+            alert.threshold = critThreshold;
+            alert.contextRecordId = contextRecordId;
+            alert.stack = metric + ' critical threshold exceeded: ' + value + ' >= ' + critThreshold;
+            return alert;
         } else if (value >= warnThreshold) {
-            return new Performance_Alert__e(
-                Metric__c = metric,
-                Value__c = value,
-                Threshold__c = warnThreshold,
-                Context_Record__c = contextRecordId,
-                Stack__c = metric + ' warning threshold exceeded: ' + value + ' >= ' + warnThreshold
-            );
+            AlertData alert = new AlertData();
+            alert.metric = metric;
+            alert.value = value;
+            alert.threshold = warnThreshold;
+            alert.contextRecordId = contextRecordId;
+            alert.stack = metric + ' warning threshold exceeded: ' + value + ' >= ' + warnThreshold;
+            return alert;
         }
         return null;
     }
 
     /**
-     * Publish events with improved error handling
+     * Save alerts to Performance_Alert_History__c
      */
-    private static PublishResult publishEvents(List<Performance_Alert__e> events) {
-        PublishResult result = new PublishResult();
-        result.published = 0;
+    private static SaveResult saveAlerts(List<AlertData> alerts) {
+        SaveResult result = new SaveResult();
+        result.saved = 0;
         result.failed = 0;
 
-        if (events == null || events.isEmpty()) {
+        if (alerts == null || alerts.isEmpty()) {
             return result;
         }
 
         try {
-            List<Database.SaveResult> results = EventBus.publish(events);
+            List<Performance_Alert_History__c> records = new List<Performance_Alert_History__c>();
+            for (AlertData alert : alerts) {
+                Performance_Alert_History__c record = new Performance_Alert_History__c(
+                    Metric__c = alert.metric,
+                    Value__c = alert.value,
+                    Threshold__c = alert.threshold,
+                    Context_Record__c = alert.contextRecordId,
+                    Stack__c = alert.stack
+                );
+                records.add(record);
+            }
+
+            List<Database.SaveResult> results = Database.insert(records, false);
 
             for (Integer i = 0; i < results.size(); i++) {
                 Database.SaveResult sr = results[i];
                 if (sr.isSuccess()) {
-                    result.published++;
+                    result.saved++;
                 } else {
                     result.failed++;
-                    String errorMsg = 'Failed to publish Performance_Alert__e for metric: ' +
-                                     events[i].Metric__c + ', Errors: ';
+                    String errorMsg = 'Failed to save Performance_Alert_History__c for metric: ' +
+                                     alerts[i].metric + ', Errors: ';
                     for (Database.Error err : sr.getErrors()) {
                         errorMsg += err.getMessage() + ' ';
                     }
@@ -251,11 +265,22 @@ public with sharing class PerformanceRuleEngine {
                 }
             }
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'PerformanceRuleEngine: Exception publishing events: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
-            result.failed = events.size();
+            System.debug(LoggingLevel.ERROR, 'PerformanceRuleEngine: Exception saving alerts: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
+            result.failed = alerts.size();
         }
 
         return result;
+    }
+
+    /**
+     * Helper class for alert data
+     */
+    private class AlertData {
+        String metric;
+        Decimal value;
+        Integer threshold;
+        String contextRecordId;
+        String stack;
     }
 
     /**
@@ -273,10 +298,10 @@ public with sharing class PerformanceRuleEngine {
     }
 
     /**
-     * Helper class for publish results
+     * Helper class for save results
      */
-    private class PublishResult {
-        Integer published;
+    private class SaveResult {
+        Integer saved;
         Integer failed;
     }
 }

@@ -3,7 +3,7 @@ public with sharing class SlackNotifier {
      * @deprecated Use notifyAsyncQueueable instead for better error handling and retry logic
      */
     @future(callout=true)
-    @Deprecated
+    // @Deprecated (not supported in non-managed packages)
     public static void notifyAsync(String text) {
         // Maintain backward compatibility, delegate to Queueable
         notifyAsyncQueueable(text);
@@ -37,7 +37,7 @@ public with sharing class SlackNotifier {
      * @deprecated Use notifyRichAsyncQueueable instead for better error handling and retry logic
      */
     @future(callout=true)
-    @Deprecated
+    // @Deprecated (not supported in non-managed packages)
     public static void notifyRichAsync(String jsonPayload) {
         // Maintain backward compatibility, delegate to Queueable
         notifyRichAsyncQueueable(jsonPayload);
@@ -71,19 +71,23 @@ public with sharing class SlackNotifier {
         }
     }
 
-    public static void notifyPerformanceEvent(Performance_Alert__e performanceEvent) {
-        // Use rich formatting for performance alerts
-        String jsonPayload = buildPerformanceAlertBlocks(performanceEvent);
+    /**
+     * Notify about a performance event
+     * Note: Performance_Alert__e platform event not available due to org limits.
+     * Use notifyPerformanceAlert(String, Decimal, Decimal, String) instead.
+     */
+    public static void notifyPerformanceAlert(String metric, Decimal value, Decimal threshold, String contextRecord) {
+        String jsonPayload = buildPerformanceAlertBlocks(metric, value, threshold, contextRecord, null);
         notifyRichAsyncQueueable(jsonPayload);
     }
 
-    // Build Slack Block Kit JSON for performance alerts
-    private static String buildPerformanceAlertBlocks(Performance_Alert__e performanceEvent) {
+    // Build Slack Block Kit JSON for performance alerts (without platform event dependency)
+    private static String buildPerformanceAlertBlocks(String metric, Decimal value, Decimal threshold, String contextRecord, String stack) {
         // Determine severity emoji and color
         String emoji = '⚠️';
         String color = '#ffb75d'; // Warning (orange)
 
-        Decimal percentOfLimit = (performanceEvent.Value__c / performanceEvent.Threshold__c) * 100;
+        Decimal percentOfLimit = (value / threshold) * 100;
 
         if (percentOfLimit >= 95) {
             emoji = '🔴';
@@ -101,7 +105,7 @@ public with sharing class SlackNotifier {
             'text',
             emoji +
             ' Prometheion Alert: ' +
-            performanceEvent.Metric__c +
+            metric +
             ' at ' +
             percentOfLimit.setScale(1) +
             '%'
@@ -119,7 +123,7 @@ public with sharing class SlackNotifier {
             'text',
             emoji +
             ' ' +
-            performanceEvent.Metric__c +
+            metric +
             ' Performance Alert'
         );
         headerBlock.put('text', headerText);
@@ -139,7 +143,7 @@ public with sharing class SlackNotifier {
         valueField.put(
             'text',
             '*Current Value:*\n' +
-            String.valueOf(performanceEvent.Value__c.setScale(0)) +
+            String.valueOf(value.setScale(0)) +
             ' (' +
             percentOfLimit.setScale(1) +
             '%)'
@@ -152,21 +156,21 @@ public with sharing class SlackNotifier {
         thresholdField.put(
             'text',
             '*Threshold:*\n' +
-            String.valueOf(performanceEvent.Threshold__c.setScale(0))
+            String.valueOf(threshold.setScale(0))
         );
         fields.add(thresholdField);
 
         // Metric Type
         Map<String, Object> metricField = new Map<String, Object>();
         metricField.put('type', 'mrkdwn');
-        metricField.put('text', '*Metric:*\n' + performanceEvent.Metric__c);
+        metricField.put('text', '*Metric:*\n' + metric);
         fields.add(metricField);
 
         // Context Record (if available)
-        if (!String.isBlank(performanceEvent.Context_Record__c)) {
+        if (!String.isBlank(contextRecord)) {
             Map<String, Object> contextField = new Map<String, Object>();
             contextField.put('type', 'mrkdwn');
-            contextField.put('text', '*Context:*\n' + performanceEvent.Context_Record__c);
+            contextField.put('text', '*Context:*\n' + contextRecord);
             fields.add(contextField);
         }
 
@@ -174,9 +178,9 @@ public with sharing class SlackNotifier {
         blocks.add(infoSection);
 
         // Stack trace context (if available) - truncate to prevent Slack limits
-        if (!String.isBlank(performanceEvent.Stack__c)) {
+        if (!String.isBlank(stack)) {
             // Slack has a 3000 character limit per block, truncate if needed
-            String stackTrace = performanceEvent.Stack__c;
+            String stackTrace = stack;
             Integer maxLength = 2500; // Leave room for markdown formatting
             if (stackTrace.length() > maxLength) {
                 stackTrace = stackTrace.substring(0, maxLength) + '\n... (truncated)';
