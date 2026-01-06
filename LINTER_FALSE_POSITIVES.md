@@ -17,16 +17,45 @@ This document explains known false positives and warnings from the linter that c
 
 **Status:** ⚠️ Warnings (not errors) - Can be safely ignored
 
-**Issue:** The linter reports accessibility warnings for buttons that already have proper `aria-label` attributes:
+**Issue:** The linter reports accessibility warnings for buttons that already have proper accessibility attributes:
 
-- Line 19: Refresh button - Has `aria-label="Refresh dashboard data"` ✅
-- Line 135: Risk action button - Has `aria-label="{risk.viewDetailsLabel}"` ✅
-- Line 157: SOC2 Report button - Has `aria-label="Generate SOC2 Report"` ✅
-- Line 180: HIPAA Report button - Has `aria-label="Generate HIPAA Report"` ✅
+### Button Analysis:
 
-**Explanation:** These are false positives. All buttons have appropriate `aria-label` attributes for screen readers and mobile accessibility. The linter may be checking for additional attributes or may not recognize dynamic `aria-label` values.
+1. **Line 19: Refresh button**
+   - ✅ Has `aria-label="Refresh dashboard data"`
+   - ✅ Has visible text: "Refresh"
+   - ✅ SVG icon has `aria-hidden="true"` (correctly hidden from screen readers)
+   - ✅ Button is fully accessible
 
-**Action:** No action required. These warnings can be safely ignored as the buttons are properly labeled.
+2. **Line 135: Risk action button**
+   - ✅ Has `aria-label="{risk.viewDetailsLabel}"` (dynamic label)
+   - ✅ Has visible text: "View Details →"
+   - ✅ No icon, so no aria-hidden needed
+   - ✅ Button is fully accessible
+
+3. **Line 157: SOC2 Report button**
+   - ✅ Has `aria-label="Generate SOC2 Report"`
+   - ✅ Has visible text: "Generate SOC2 Report"
+   - ✅ SVG icon has `aria-hidden="true"` (correctly hidden from screen readers)
+   - ✅ Button is fully accessible
+
+4. **Line 180: HIPAA Report button**
+   - ✅ Has `aria-label="Generate HIPAA Report"`
+   - ✅ Has visible text: "Generate HIPAA Report"
+   - ✅ SVG icon has `aria-hidden="true"` (correctly hidden from screen readers)
+   - ✅ Button is fully accessible
+
+**Explanation:** These are false positives. All buttons have:
+- Proper `aria-label` attributes for screen readers
+- Visible text labels for all users
+- SVG icons correctly marked with `aria-hidden="true"` to avoid duplicate announcements
+- Full accessibility compliance
+
+The linter warning "Clickable images, Lightning button icons, and form elements require labels for mobile users" is incorrectly flagging these buttons. The linter may not recognize:
+- The combination of visible text + `aria-label` + `aria-hidden` SVG as a complete accessibility solution
+- Dynamic `aria-label` values (e.g., `{risk.viewDetailsLabel}`)
+
+**Action:** No action required. These warnings can be safely ignored as all buttons are properly labeled and accessible according to WCAG 2.1 guidelines.
 
 ## LWC1034 and LWC1043 Errors (Real Syntax Errors)
 
