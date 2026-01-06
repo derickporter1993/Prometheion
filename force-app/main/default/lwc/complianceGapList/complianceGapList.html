@@ -1,0 +1,25 @@
+<template>
+    <lightning-card title="Compliance Gaps">
+        <template if:true={hasGaps}>
+            <template for:each={gaps} for:item="gap">
+                <div key={gap.Id} class="slds-p-around_small slds-border_bottom">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-3">
+                            <div class="slds-text-heading_small">{gap.Policy_Reference__c}</div>
+                            <div class="slds-text-body_small">{gap.Severity__c}</div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <div class="slds-text-body_small">Status: {gap.Status__c}</div>
+                            <div class="slds-text-body_small">Risk: {gap.Risk_Score__c}</div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+        <template if:false={hasGaps}>
+            <div class="slds-p-around_medium">
+                <p>No compliance gaps found.</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>

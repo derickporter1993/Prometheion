@@ -1,0 +1,12 @@
+<template>
+    <lightning-card title="Select Framework">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                label="Framework"
+                value={selectedFramework}
+                options={frameworkOptions}
+                onchange={handleFrameworkChange}>
+            </lightning-combobox>
+        </div>
+    </lightning-card>
+</template>
