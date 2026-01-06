@@ -1,7 +1,7 @@
 /**
  * PrometheionRemediationEngineTest - Tests for the Remediation Engine Stub
  * 
- * @author Solentra
+ * @author Prometheion
  * @version 1.0
  */
 @isTest

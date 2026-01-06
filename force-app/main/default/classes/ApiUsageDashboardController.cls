@@ -43,9 +43,8 @@ public with sharing class ApiUsageDashboardController {
     }
     
     /**
-     * @deprecated Use getRecentSnapshots instead
+     * Legacy method - Use getRecentSnapshots instead
      */
-    @Deprecated
     @AuraEnabled(cacheable = true)
     public static List<Row> recent(Integer limitSize) {
         return getRecentSnapshots(limitSize);

@@ -40,9 +40,9 @@ public with sharing class SegregationOfDutiesService {
         // Get object permissions
         List<ObjectPermissions> objPerms = [
             SELECT SObjectType, PermissionsRead, PermissionsCreate, PermissionsEdit, 
-                   PermissionsDelete, PermissionsModifyAllRecords, PermissionSetId
+                   PermissionsDelete, PermissionsModifyAllRecords, ParentId
             FROM ObjectPermissions
-            WHERE PermissionSetId IN :permSetIds
+            WHERE ParentId IN :permSetIds
             WITH SECURITY_ENFORCED
         ];
         

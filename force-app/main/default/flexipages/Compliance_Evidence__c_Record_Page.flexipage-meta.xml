@@ -28,9 +28,9 @@
         <type>Facet</type>
     </flexiPageRegions>
     <masterLabel>Compliance Evidence Record Page</masterLabel>
-    <objectType>Compliance_Evidence__c</objectType>
+    <sobjectType>Compliance_Evidence__c</sobjectType>
     <template>
-        <name>flexipage:defaultRecordDetailTemplate</name>
+        <name>flexipage:recordHomeTemplateDesktop</name>
     </template>
     <type>RecordPage</type>
 </FlexiPage>

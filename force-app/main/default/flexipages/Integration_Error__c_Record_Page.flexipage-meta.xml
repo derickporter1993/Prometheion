@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Record page for Compliance Gap with all fields and related lists</description>
+    <description>Record page for Integration Error with all fields and related lists</description>
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -27,8 +27,8 @@
         <name>detailTabContent</name>
         <type>Facet</type>
     </flexiPageRegions>
-    <masterLabel>Compliance Gap Record Page</masterLabel>
-    <sobjectType>Compliance_Gap__c</sobjectType>
+    <masterLabel>Integration Error Record Page</masterLabel>
+    <sobjectType>Integration_Error__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>
     </template>

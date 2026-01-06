@@ -28,9 +28,9 @@
         <type>Facet</type>
     </flexiPageRegions>
     <masterLabel>Metadata Change Record Page</masterLabel>
-    <objectType>Metadata_Change__c</objectType>
+    <sobjectType>Metadata_Change__c</sobjectType>
     <template>
-        <name>flexipage:defaultRecordDetailTemplate</name>
+        <name>flexipage:recordHomeTemplateDesktop</name>
     </template>
     <type>RecordPage</type>
 </FlexiPage>

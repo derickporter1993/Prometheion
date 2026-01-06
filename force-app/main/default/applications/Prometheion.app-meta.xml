@@ -12,8 +12,16 @@
     <label>Prometheion</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
-    <tabs>Prometheion_Dashboard</tabs>
+    <tabs>Prometheion_All_Components</tabs>
     <tabs>Prometheion_Compliance_Hub</tabs>
+    <tabs>Prometheion_Dashboard</tabs>
+    <tabs>Compliance_Evidence__c</tabs>
+    <tabs>Compliance_Gap__c</tabs>
+    <tabs>Compliance_Score__c</tabs>
+    <tabs>Alert__c</tabs>
+    <tabs>Metadata_Change__c</tabs>
+    <tabs>Vendor_Compliance__c</tabs>
+    <tabs>Integration_Error__c</tabs>
     <tabs>Performance_Alert_History__c</tabs>
     <tabs>API_Usage_Snapshot__c</tabs>
     <tabs>Flow_Execution__c</tabs>

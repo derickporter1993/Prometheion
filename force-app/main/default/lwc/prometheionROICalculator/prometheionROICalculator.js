@@ -1,6 +1,7 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 
 export default class PrometheionROICalculator extends LightningElement {
+    @api title = 'ROI Calculator';
     @track orgSize = 500;
     @track industry = 'healthcare';
     @track currentAuditSpend = 150000;

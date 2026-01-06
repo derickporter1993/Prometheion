@@ -3,11 +3,11 @@
  *
  * ChatGPT-style interface for compliance queries:
  * User: "Why did my compliance score drop 15 points?"
- * Solentra: "On Dec 2, Profile 'Sales_Manager' was given Edit access to
+ * Prometheion: "On Dec 2, Profile 'Sales_Manager' was given Edit access to
  *            PHI field Patient_SSN__c, violating HIPAA Minimum Necessary rule.
  *            [View Evidence] [Auto-Fix]"
  *
- * @author Solentra
+ * @author Prometheion
  * @version 1.0
  */
 public with sharing class PrometheionComplianceCopilot {
@@ -278,7 +278,7 @@ public with sharing class PrometheionComplianceCopilot {
         }
 
         response.answer = 'Found ' + flows.size() + ' active Flows:\n\n' +
-            String.join(flowDescriptions, '\n') + '\n\n_Enable Solentra Big Object for detailed risk analysis._';
+            String.join(flowDescriptions, '\n') + '\n\n_Enable Prometheion Big Object for detailed risk analysis._';
 
         return response;
     }
@@ -298,7 +298,7 @@ public with sharing class PrometheionComplianceCopilot {
             '• Configuration changes (30 days): ' + totalChanges + '\n' +
             '• Audit trail retention: Active\n' +
             '• Field History Tracking: Check Setup\n\n' +
-            '_Enable Solentra Big Object for comprehensive compliance tracking._';
+            '_Enable Prometheion Big Object for comprehensive compliance tracking._';
 
         // Add export action
         SuggestedAction exportAction = new SuggestedAction();

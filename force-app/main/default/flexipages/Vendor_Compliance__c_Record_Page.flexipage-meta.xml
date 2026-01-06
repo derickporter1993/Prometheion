@@ -28,9 +28,9 @@
         <type>Facet</type>
     </flexiPageRegions>
     <masterLabel>Vendor Compliance Record Page</masterLabel>
-    <objectType>Vendor_Compliance__c</objectType>
+    <sobjectType>Vendor_Compliance__c</sobjectType>
     <template>
-        <name>flexipage:defaultRecordDetailTemplate</name>
+        <name>flexipage:recordHomeTemplateDesktop</name>
     </template>
     <type>RecordPage</type>
 </FlexiPage>

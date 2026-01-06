@@ -86,8 +86,6 @@
         <fullName>Status__c</fullName>
         <label>Status</label>
         <type>Picklist</type>
-        <required>true</required>
-        <defaultValue>NEW</defaultValue>
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>

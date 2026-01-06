@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Prometheion All Components - Comprehensive dashboard with all compliance, analytics, and monitoring components organized in structured sections</description>
+    <flexiPageRegions>
+        <!-- Header Section: Main Dashboard -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionDashboard</componentName>
+                <identifier>prometheionDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>header</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 1: Compliance Overview -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceDashboard</componentName>
+                <identifier>complianceDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:frameworkSelector</componentName>
+                <identifier>frameworkSelector1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceScoreCard</componentName>
+                <identifier>complianceScoreCard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>complianceOverview</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 2: Compliance Details -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceGapList</componentName>
+                <identifier>complianceGapList1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionReadinessScore</componentName>
+                <identifier>prometheionReadinessScore1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>complianceDetails</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 3: Executive & Analytics -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:executiveKpiDashboard</componentName>
+                <identifier>executiveKpiDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionExecutiveKPIDashboard</componentName>
+                <identifier>prometheionExecutiveKPIDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>executiveAnalytics</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 4: Trends & Visualizations -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceTrendChart</componentName>
+                <identifier>complianceTrendChart1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:riskHeatmap</componentName>
+                <identifier>riskHeatmap1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceTimeline</componentName>
+                <identifier>complianceTimeline1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>trendsVisualizations</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 5: Reporting & Analysis -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:auditReportGenerator</componentName>
+                <identifier>auditReportGenerator1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionDynamicReportBuilder</componentName>
+                <identifier>prometheionDynamicReportBuilder1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionComparativeAnalytics</componentName>
+                <identifier>prometheionComparativeAnalytics1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionTrendAnalyzer</componentName>
+                <identifier>prometheionTrendAnalyzer1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionDrillDownViewer</componentName>
+                <identifier>prometheionDrillDownViewer1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>reportingAnalysis</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 6: AI & Copilot -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionCopilot</componentName>
+                <identifier>prometheionCopilot1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceCopilot</componentName>
+                <identifier>complianceCopilot1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionAiSettings</componentName>
+                <identifier>prometheionAiSettings1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>aiCopilot</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 7: System Monitoring -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:systemMonitorDashboard</componentName>
+                <identifier>systemMonitorDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:apiUsageDashboard</componentName>
+                <identifier>apiUsageDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:flowExecutionMonitor</componentName>
+                <identifier>flowExecutionMonitor1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:deploymentMonitorDashboard</componentName>
+                <identifier>deploymentMonitorDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:performanceAlertPanel</componentName>
+                <identifier>performanceAlertPanel1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>systemMonitoring</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <flexiPageRegions>
+        <!-- Section 8: Business Tools -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:prometheionROICalculator</componentName>
+                <identifier>prometheionROICalculator1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>businessTools</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    
+    <masterLabel>Prometheion All Components</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

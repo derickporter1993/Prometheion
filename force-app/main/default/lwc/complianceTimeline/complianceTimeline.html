@@ -6,7 +6,7 @@
                     <template for:each={sortedEvents} for:item="event">
                         <li key={event.id} class="slds-timeline__item">
                             <div class="slds-timeline__marker">
-                                <lightning-icon icon-name={eventIcon(event.type)} size="small"></lightning-icon>
+                                <lightning-icon icon-name={event.iconName} size="small"></lightning-icon>
                             </div>
                             <div class="slds-timeline__item_content">
                                 <div class="slds-text-heading_small">{event.title}</div>

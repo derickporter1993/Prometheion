@@ -8,7 +8,7 @@
  * - Prometheion_Compliance_Graph__b (Big Object)
  * - Prometheion_AI_Settings__c (Custom Settings)
  *
- * @author Solentra
+ * @author Prometheion
  * @version 1.0 (Stub)
  */
 public with sharing class PrometheionRemediationEngine {
@@ -39,7 +39,7 @@ public with sharing class PrometheionRemediationEngine {
         RemediationResult result = new RemediationResult();
         result.success = false;
         result.action = 'PENDING_REVIEW';
-        result.message = 'Auto-remediation requires Solentra Big Object deployment. Please review manually.';
+        result.message = 'Auto-remediation requires Prometheion Big Object deployment. Please review manually.';
         result.nodeId = nodeId;
         result.remediationId = 'stub-' + String.valueOf(Datetime.now().getTime());
         return result;
@@ -53,7 +53,7 @@ public with sharing class PrometheionRemediationEngine {
         RemediationResult result = new RemediationResult();
         result.success = false;
         result.action = 'ROLLBACK_UNAVAILABLE';
-        result.message = 'Rollback requires Solentra Big Object deployment.';
+        result.message = 'Rollback requires Prometheion Big Object deployment.';
         result.remediationId = remediationId;
         return result;
     }

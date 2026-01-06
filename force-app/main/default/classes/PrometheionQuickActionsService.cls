@@ -67,7 +67,6 @@ public with sharing class PrometheionQuickActionsService {
                     SELECT AssigneeId
                     FROM PermissionSetAssignment
                     WHERE PermissionSet.PermissionsModifyAllData = true
-                    WITH SECURITY_ENFORCED
                 )
                 AND Profile.Name != 'System Administrator'
                 AND IsActive = true
@@ -275,7 +274,7 @@ public with sharing class PrometheionQuickActionsService {
             excessiveAssignments = [
                 SELECT AssigneeId, COUNT(Id) assignmentCount
                 FROM PermissionSetAssignment
-                WHERE AssigneeId IN (SELECT Id FROM User WHERE IsActive = true WITH SECURITY_ENFORCED)
+                WHERE AssigneeId IN (SELECT Id FROM User WHERE IsActive = true)
                 WITH SECURITY_ENFORCED
                 GROUP BY AssigneeId
                 HAVING COUNT(Id) > 10

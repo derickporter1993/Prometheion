@@ -394,6 +394,12 @@
         <visibility>Visible</visibility>
     </tabSettings>
 
+    <!-- Application Access -->
+    <applicationVisibilities>
+        <application>Prometheion</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+
     <!-- User Permissions -->
     <userPermissions>
         <enabled>true</enabled>

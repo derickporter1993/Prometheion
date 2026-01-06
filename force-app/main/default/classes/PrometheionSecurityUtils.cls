@@ -9,6 +9,21 @@
 public with sharing class PrometheionSecurityUtils {
     
     /**
+     * DML Operation enum
+     */
+    public enum DmlOperation {
+        DML_INSERT,
+        DML_UPDATE,
+        DML_DELETE,
+        DML_UPSERT
+    }
+    
+    /**
+     * Custom Security Exception
+     */
+    public class SecurityException extends Exception {}
+    
+    /**
      * Check if user has read access to SObject type
      */
     public static Boolean hasReadAccess(String sObjectType) {
@@ -100,19 +115,14 @@ public with sharing class PrometheionSecurityUtils {
     public static void validateCRUDAccess(String sObjectType, DmlOperation operation) {
         Boolean hasAccess = false;
         
-        switch on operation {
-            when INSERT {
-                hasAccess = hasCreateAccess(sObjectType);
-            }
-            when UPDATE {
-                hasAccess = hasUpdateAccess(sObjectType);
-            }
-            when DELETE {
-                hasAccess = hasDeleteAccess(sObjectType);
-            }
-            when UPSERT {
-                hasAccess = hasCreateAccess(sObjectType) && hasUpdateAccess(sObjectType);
-            }
+        if (operation == DmlOperation.DML_INSERT) {
+            hasAccess = hasCreateAccess(sObjectType);
+        } else if (operation == DmlOperation.DML_UPDATE) {
+            hasAccess = hasUpdateAccess(sObjectType);
+        } else if (operation == DmlOperation.DML_DELETE) {
+            hasAccess = hasDeleteAccess(sObjectType);
+        } else if (operation == DmlOperation.DML_UPSERT) {
+            hasAccess = hasCreateAccess(sObjectType) && hasUpdateAccess(sObjectType);
         }
         
         if (!hasAccess) {
@@ -143,19 +153,4 @@ public with sharing class PrometheionSecurityUtils {
         String cleaned = baseQuery.replaceAll('(?i)\\s+WITH\\s+SECURITY_ENFORCED', '');
         return cleaned + ' WITH SECURITY_ENFORCED';
     }
-    
-    /**
-     * DML Operation enum
-     */
-    public enum DmlOperation {
-        INSERT,
-        UPDATE,
-        DELETE,
-        UPSERT
-    }
-    
-    /**
-     * Custom Security Exception
-     */
-    public class SecurityException extends Exception {}
 }
