@@ -51,13 +51,14 @@
         <label>Error Message</label>
         <type>LongTextArea</type>
         <length>32768</length>
-        <required>true</required>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Stack_Trace__c</fullName>
         <label>Stack Trace</label>
         <type>LongTextArea</type>
         <length>32768</length>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Correlation_Id__c</fullName>
@@ -71,6 +72,7 @@
         <label>Context</label>
         <type>LongTextArea</type>
         <length>32768</length>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Retry_Count__c</fullName>

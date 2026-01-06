@@ -29,13 +29,14 @@
         <label>Framework Scores</label>
         <type>LongTextArea</type>
         <length>131072</length>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Risk_Level__c</fullName>
         <label>Risk Level</label>
         <type>Picklist</type>
         <valueSet>
-            <restrictedPicklist>true</restrictedPicklist>
+            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
