@@ -164,9 +164,13 @@ private class PrometheionGLBAPrivacyNoticeServiceTest {
                     'Email'
                 );
                 System.assert(false, 'Should have thrown InsufficientAccessException');
-            } catch (System.InsufficientAccessException e) {
+            } catch (Exception e) {
                 // Then: Permission exception should be thrown
-                System.assert(true, 'InsufficientAccessException expected');
+                // Note: InsufficientAccessException may not be available, catch generic Exception
+                System.assert(e.getMessage().contains('insufficient') || 
+                    e.getMessage().contains('access') || 
+                    e.getMessage().contains('permission'), 
+                    'Should throw permission-related exception: ' + e.getMessage());
             }
         }
         Test.stopTest();

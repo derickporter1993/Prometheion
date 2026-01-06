@@ -22,7 +22,7 @@ public with sharing class AlertHistoryService {
         for (Performance_Alert_History__c r : [
             SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
             FROM Performance_Alert_History__c
-            WITH USER_MODE
+            WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
             LIMIT :recordLimit
         ]) {

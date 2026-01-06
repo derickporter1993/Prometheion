@@ -33,7 +33,7 @@ public with sharing class ApiUsageDashboardController {
                 Percent_Used__c,
                 Projected_Exhaustion__c
             FROM API_Usage_Snapshot__c
-            WITH USER_MODE
+            WITH SECURITY_ENFORCED
             ORDER BY Taken_On__c DESC
             LIMIT :recordLimit
         ]) {

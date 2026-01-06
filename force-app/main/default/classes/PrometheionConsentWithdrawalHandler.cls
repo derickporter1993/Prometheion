@@ -9,7 +9,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class ConsentWithdrawalHandler {
+public with sharing class PrometheionConsentWithdrawalHandler {
 
     /**
      * Process consent withdrawals
@@ -107,8 +107,8 @@ public with sharing class ConsentWithdrawalHandler {
             events.add(new GDPR_Erasure_Event__e(
                 Contact_Email__c = contactEmail != null ? contactEmail : '',
                 Deletion_Date__c = now,
-                Records_Deleted__c = 0,
-                Audit_Log_Id__c = 'CONSENT-WITHDRAWAL-' + consent.Id
+                Records_Deleted__c = String.valueOf(0),
+                Audit_Log_Id__c = 'CONSENT-WITHDRAWAL-' + String.valueOf(consent.Id)
             ));
         }
 

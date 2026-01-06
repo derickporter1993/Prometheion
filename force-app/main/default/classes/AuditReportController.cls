@@ -91,6 +91,10 @@ public with sharing class AuditReportController {
         // Generate PDF content
         String pdfContent = generatePDFContent(report);
         
+        // Validate CRUD access before DML
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', 
+            PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+        
         // Create ContentVersion
         ContentVersion cv = new ContentVersion();
         cv.Title = report.framework + '_Audit_Report_' + System.today().format();

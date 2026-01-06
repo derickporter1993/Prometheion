@@ -184,7 +184,7 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
         return System.schedule(
             'Dormant Account Alert - Daily',
             cronExp,
-            new DormantAccountAlertScheduler()
+            new PrometheionDormantAccountAlertScheduler()
         );
     }
 }

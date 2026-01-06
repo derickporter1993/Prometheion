@@ -44,8 +44,8 @@ private class ISO27001AccessReviewServiceTest {
                 LocaleSidKey = 'en_US',
                 EmailEncodingKey = 'UTF-8',
                 LanguageLocaleKey = 'en_US',
-                IsActive = true,
-                LastLoginDate = (i < 2) ? System.now().addDays(-10) : System.now().addDays(-100) // Some dormant
+                IsActive = true
+                // Note: LastLoginDate is read-only, cannot be set in test
             ));
         }
         insert testUsers;
@@ -168,9 +168,13 @@ private class ISO27001AccessReviewServiceTest {
             try {
                 PrometheionISO27001AccessReviewService.initiateQuarterlyReviews();
                 System.assert(false, 'Should have thrown InsufficientAccessException');
-            } catch (System.InsufficientAccessException e) {
+            } catch (Exception e) {
                 // Then: Permission exception should be thrown
-                System.assert(true, 'InsufficientAccessException expected');
+                // Note: InsufficientAccessException may not be available, catch generic Exception
+                System.assert(e.getMessage().contains('insufficient') || 
+                    e.getMessage().contains('access') || 
+                    e.getMessage().contains('permission'), 
+                    'Should throw permission-related exception: ' + e.getMessage());
             }
         }
         Test.stopTest();

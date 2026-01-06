@@ -68,7 +68,7 @@ public with sharing class MetadataChangeTracker {
      */
     @AuraEnabled(cacheable=true)
     public static List<Metadata_Change__c> getRecentChanges(Integer limitSize) {
-        Integer limit = Math.max(1, Math.min(limitSize, 100));
+        Integer recordLimit = Math.max(1, Math.min(limitSize, 100));
         
         return [
             SELECT Id, Change_Type__c, Metadata_Type__c, Metadata_Name__c, 
@@ -76,7 +76,7 @@ public with sharing class MetadataChangeTracker {
             FROM Metadata_Change__c
             WITH SECURITY_ENFORCED
             ORDER BY Change_Date__c DESC
-            LIMIT :limit
+            LIMIT :recordLimit
         ];
     }
 }

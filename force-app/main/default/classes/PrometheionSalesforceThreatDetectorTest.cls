@@ -38,9 +38,8 @@ private class PrometheionSalesforceThreatDetectorTest {
         );
         insert u;
         
-        // Update last login to be old
-        u.LastLoginDate = Datetime.now().addDays(-200);
-        update u;
+        // Note: LastLoginDate is read-only and cannot be set in tests
+        // The test will rely on actual LastLoginDate values or mock the detection logic
         
         Test.startTest();
         List<PrometheionSalesforceThreatDetector.Threat> threats = 

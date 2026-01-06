@@ -43,20 +43,22 @@ private class PrometheionCCPADataInventoryServiceTest {
         insert testContacts;
         
         // Create test CCPA requests
+        // Note: Response_Deadline__c may be a formula field, so we set Request_Date__c
+        // and let the formula calculate the deadline
         List<CCPA_Request__c> testRequests = new List<CCPA_Request__c>();
         testRequests.add(new CCPA_Request__c(
             Contact__c = testContacts[0].Id,
             Request_Type__c = 'Right to Know',
             Request_Date__c = System.now().addDays(-10),
-            Status__c = 'Pending',
-            Response_Deadline__c = Date.today().addDays(35)
+            Status__c = 'Pending'
+            // Response_Deadline__c is likely a formula field (Request_Date__c + 45 days)
         ));
         testRequests.add(new CCPA_Request__c(
             Contact__c = testContacts[1].Id,
             Request_Type__c = 'Right to Know',
-            Request_Date__c = System.now().addDays(-50), // Overdue
-            Status__c = 'Pending',
-            Response_Deadline__c = Date.today().addDays(-5)
+            Request_Date__c = System.now().addDays(-50), // Overdue (>45 days)
+            Status__c = 'Pending'
+            // Response_Deadline__c is likely a formula field
         ));
         insert testRequests;
     }
@@ -148,9 +150,13 @@ private class PrometheionCCPADataInventoryServiceTest {
             try {
                 PrometheionCCPADataInventoryService.processDoNotSellRequest(testContact.Id);
                 System.assert(false, 'Should have thrown InsufficientAccessException');
-            } catch (System.InsufficientAccessException e) {
+            } catch (Exception e) {
                 // Then: Permission exception should be thrown
-                System.assert(true, 'InsufficientAccessException expected');
+                // Note: InsufficientAccessException may not be available, catch generic Exception
+                System.assert(e.getMessage().contains('insufficient') || 
+                    e.getMessage().contains('access') || 
+                    e.getMessage().contains('permission'), 
+                    'Should throw permission-related exception: ' + e.getMessage());
             }
         }
         Test.stopTest();

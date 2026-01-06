@@ -45,10 +45,11 @@ public with sharing class AnomalyDetectionService {
         List<Anomaly> anomalies = new List<Anomaly>();
         
         // Find users with excessive permission sets (more than 10)
+        // Note: PermissionSetAssignment doesn't have CreatedDate, using SystemModstamp instead
         List<AggregateResult> excessiveAssignments = [
             SELECT AssigneeId, COUNT(Id) assignmentCount
             FROM PermissionSetAssignment
-            WHERE CreatedDate >= :startDate
+            WHERE SystemModstamp >= :startDate
             WITH SECURITY_ENFORCED
             GROUP BY AssigneeId
             HAVING COUNT(Id) > 10
