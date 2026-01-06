@@ -68,21 +68,37 @@ public with sharing class SegregationOfDutiesService {
             }
         }
         
-        // Check for conflicts (e.g., CREATE + APPROVE on financial objects)
+        // Check for conflicts on financial objects
+        // Note: Salesforce ObjectPermissions doesn't have a PermissionsApprove field.
+        // Approval permissions are managed through Approval Processes, not object-level permissions.
+        // We check for practical SoD violations: CREATE+MODIFY_ALL and full CRUD access.
         Set<String> financialObjects = new Set<String>{'Account', 'Opportunity', 'Invoice__c', 'Payment__c'};
         
         for (String objType : userPermissions.keySet()) {
             if (financialObjects.contains(objType)) {
                 Set<String> perms = userPermissions.get(objType);
                 
-                // Check for CREATE + APPROVE conflict
-                if (perms.contains('CREATE') && perms.contains('APPROVE')) {
+                // Check for CREATE + MODIFY_ALL conflict (critical SoD violation)
+                // This allows user to create records and then modify all records, bypassing approval workflows
+                if (perms.contains('CREATE') && perms.contains('MODIFY_ALL')) {
                     SoDViolation violation = new SoDViolation();
                     violation.userId = userId;
                     violation.objectType = objType;
-                    violation.conflictType = 'CREATE_AND_APPROVE';
+                    violation.conflictType = 'CREATE_AND_MODIFY_ALL';
+                    violation.severity = 'CRITICAL';
+                    violation.description = 'User has both Create and Modify All permissions on ' + objType + ' - critical SoD violation';
+                    violations.add(violation);
+                }
+                
+                // Check for CREATE + EDIT + DELETE (weaker but still a violation)
+                // Full CRUD access without approval controls is a compliance risk
+                if (perms.contains('CREATE') && perms.contains('EDIT') && perms.contains('DELETE')) {
+                    SoDViolation violation = new SoDViolation();
+                    violation.userId = userId;
+                    violation.objectType = objType;
+                    violation.conflictType = 'FULL_CRUD_ACCESS';
                     violation.severity = 'HIGH';
-                    violation.description = 'User has both Create and Approve permissions on ' + objType;
+                    violation.description = 'User has full CRUD access (Create, Edit, Delete) on ' + objType + ' - SoD violation';
                     violations.add(violation);
                 }
             }

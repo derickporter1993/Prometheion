@@ -10,8 +10,9 @@ public with sharing class ComplianceDashboardController {
     
     /**
      * Get dashboard summary for all frameworks
+     * Note: Not cacheable to ensure users always see current compliance status
      */
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static DashboardSummary getDashboardSummary() {
         DashboardSummary summary = new DashboardSummary();
         summary.lastUpdated = System.now();
@@ -64,8 +65,9 @@ public with sharing class ComplianceDashboardController {
     
     /**
      * Get framework-specific dashboard data
+     * Note: Not cacheable to ensure users always see current compliance gaps and evidence
      */
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static FrameworkDashboardData getFrameworkDashboard(String framework) {
         if (String.isBlank(framework)) {
             throw new IllegalArgumentException('Framework cannot be blank');
