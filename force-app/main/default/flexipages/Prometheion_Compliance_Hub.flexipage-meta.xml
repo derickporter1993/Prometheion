@@ -5,6 +5,30 @@
         <!-- Main Compliance Dashboard Section -->
         <itemInstances>
             <componentInstance>
+                <componentName>c:complianceDashboard</componentName>
+                <identifier>complianceDashboard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:frameworkSelector</componentName>
+                <identifier>frameworkSelector1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceScoreCard</componentName>
+                <identifier>complianceScoreCard1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceGapList</componentName>
+                <identifier>complianceGapList1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>c:prometheionDashboard</componentName>
                 <identifier>prometheionDashboard1</identifier>
             </componentInstance>
@@ -13,6 +37,12 @@
             <componentInstance>
                 <componentName>c:prometheionReadinessScore</componentName>
                 <identifier>prometheionReadinessScore1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:executiveKpiDashboard</componentName>
+                <identifier>executiveKpiDashboard1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -43,6 +73,30 @@
         </itemInstances>
         
         <!-- Analytics & Reporting Section -->
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceTrendChart</componentName>
+                <identifier>complianceTrendChart1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:riskHeatmap</componentName>
+                <identifier>riskHeatmap1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:complianceTimeline</componentName>
+                <identifier>complianceTimeline1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:auditReportGenerator</componentName>
+                <identifier>auditReportGenerator1</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>c:prometheionComparativeAnalytics</componentName>
