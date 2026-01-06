@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CCPA Third-Party Disclosure</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">CCPA</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Businesses must disclose when personal information is sold or disclosed to third parties. Consumers have the right to know the categories of third parties receiving their data.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">CCPA Section 1798.110(c)</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Document all third-party data sharing
+2. Maintain list of third-party categories
+3. Update privacy policy with disclosure information
+4. Implement data sharing audit trail
+5. Review third-party contracts for CCPA compliance</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">7.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">INTEGRATION,API,EXTERNAL_SERVICE</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">MEDIUM</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"pattern": "third_party_sharing", "required": ["disclosure", "audit_trail"], "threshold": 1}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

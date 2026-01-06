@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SOX Record Retention</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">SOX</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Companies must retain audit workpapers and other records relevant to audits or reviews for at least 7 years. Destruction of records to impede investigations is prohibited.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">SOX Section 802(a)</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Establish record retention policy
+2. Configure retention periods (minimum 7 years)
+3. Implement automated retention management
+4. Prevent unauthorized record destruction
+5. Maintain audit trail of record lifecycle</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">8.0</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">RECORD_RETENTION,POLICY</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"pattern": "record_retention", "required": ["retention_policy", "retention_period"], "threshold": 1}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>GLBA Service Provider Oversight</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">GLBA</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Financial institutions must exercise appropriate due diligence in selecting service providers and require them to implement safeguards to protect customer information.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">GLBA Safeguards Rule Section 314.4(d)</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Conduct due diligence on service providers
+2. Include security requirements in contracts
+3. Monitor service provider compliance
+4. Maintain service provider inventory
+5. Review service provider security practices</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">7.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">INTEGRATION,EXTERNAL_SERVICE,VENDOR</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">MEDIUM</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"pattern": "service_provider", "required": ["due_diligence", "contract_requirements"], "threshold": 1}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

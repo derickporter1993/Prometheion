@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SOX Internal Controls</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">SOX</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Management must establish and maintain adequate internal control over financial reporting. Controls must be designed to provide reasonable assurance regarding the reliability of financial reporting.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">SOX Section 404(a)</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Document financial processes and controls
+2. Implement approval workflows for financial transactions
+3. Segregate duties (SoD) for financial operations
+4. Implement access controls on financial data
+5. Test controls regularly</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">9.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE,FLOW</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"pattern": "internal_controls", "required": ["approval_workflow", "sod", "access_control"], "threshold": 2}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

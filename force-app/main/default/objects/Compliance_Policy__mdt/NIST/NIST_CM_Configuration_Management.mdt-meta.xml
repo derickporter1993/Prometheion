@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>NIST CM - Configuration Management</label>
+    <protected>false</protected>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">NIST</value>
+    </values>
+    <values>
+        <field>Policy_Description__c</field>
+        <value xsi:type="xsd:string">Establish and maintain baseline configurations and inventories of organizational information systems (including hardware, software, firmware, and documentation) throughout the respective system development life cycles.</value>
+    </values>
+    <values>
+        <field>Legal_Citation__c</field>
+        <value xsi:type="xsd:string">NIST 800-53 CM-2</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">1. Document baseline configurations
+2. Maintain metadata inventory
+3. Track configuration changes
+4. Implement change approval process
+5. Review configurations regularly</value>
+    </values>
+    <values>
+        <field>Risk_Weight__c</field>
+        <value xsi:type="xsd:double">7.5</value>
+    </values>
+    <values>
+        <field>Entity_Types__c</field>
+        <value xsi:type="xsd:string">METADATA_CHANGE,CUSTOM_OBJECT</value>
+    </values>
+    <values>
+        <field>Auto_Remediation_Allowed__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">MEDIUM</value>
+    </values>
+    <values>
+        <field>Detection_Pattern__c</field>
+        <value xsi:type="xsd:string">{"pattern": "configuration_management", "required": ["baseline", "inventory"], "threshold": 1}</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

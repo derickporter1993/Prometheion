@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Vendor Compliance</label>
+    <pluralLabel>Vendor Compliance</pluralLabel>
+    <nameField>
+        <type>Text</type>
+        <label>Vendor Name</label>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Tracks third-party vendor compliance and risk (Phase 4)</description>
+    <fields>
+        <fullName>Vendor_Name__c</fullName>
+        <label>Vendor Name</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Vendor_Type__c</fullName>
+        <label>Vendor Type</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CLOUD_SERVICE</fullName>
+                    <default>false</default>
+                    <label>Cloud Service</label>
+                </value>
+                <value>
+                    <fullName>INTEGRATION</fullName>
+                    <default>false</default>
+                    <label>Integration</label>
+                </value>
+                <value>
+                    <fullName>DATA_PROCESSOR</fullName>
+                    <default>false</default>
+                    <label>Data Processor</label>
+                </value>
+                <value>
+                    <fullName>CONSULTING</fullName>
+                    <default>false</default>
+                    <label>Consulting</label>
+                </value>
+                <value>
+                    <fullName>OTHER</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Compliance_Frameworks__c</fullName>
+        <label>Compliance Frameworks</label>
+        <type>MultiSelectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SOX</fullName>
+                    <default>false</default>
+                    <label>SOX</label>
+                </value>
+                <value>
+                    <fullName>SOC2</fullName>
+                    <default>false</default>
+                    <label>SOC 2</label>
+                </value>
+                <value>
+                    <fullName>HIPAA</fullName>
+                    <default>false</default>
+                    <label>HIPAA</label>
+                </value>
+                <value>
+                    <fullName>GDPR</fullName>
+                    <default>false</default>
+                    <label>GDPR</label>
+                </value>
+                <value>
+                    <fullName>CCPA</fullName>
+                    <default>false</default>
+                    <label>CCPA</label>
+                </value>
+                <value>
+                    <fullName>GLBA</fullName>
+                    <default>false</default>
+                    <label>GLBA</label>
+                </value>
+                <value>
+                    <fullName>NIST</fullName>
+                    <default>false</default>
+                    <label>NIST 800-53</label>
+                </value>
+                <value>
+                    <fullName>ISO27001</fullName>
+                    <default>false</default>
+                    <label>ISO 27001</label>
+                </value>
+                <value>
+                    <fullName>PCI_DSS</fullName>
+                    <default>false</default>
+                    <label>PCI-DSS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Risk_Score__c</fullName>
+        <label>Risk Score</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <description>Overall risk score (0-10) for this vendor</description>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <defaultValue>ACTIVE</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ACTIVE</fullName>
+                    <default>true</default>
+                    <label>Active</label>
+                </value>
+                <value>
+                    <fullName>UNDER_REVIEW</fullName>
+                    <default>false</default>
+                    <label>Under Review</label>
+                </value>
+                <value>
+                    <fullName>SUSPENDED</fullName>
+                    <default>false</default>
+                    <label>Suspended</label>
+                </value>
+                <value>
+                    <fullName>TERMINATED</fullName>
+                    <default>false</default>
+                    <label>Terminated</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Last_Assessment_Date__c</fullName>
+        <label>Last Assessment Date</label>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Next_Assessment_Date__c</fullName>
+        <label>Next Assessment Date</label>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Assessment_Notes__c</fullName>
+        <label>Assessment Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Contract_Reference__c</fullName>
+        <label>Contract Reference</label>
+        <type>Text</type>
+        <length>255</length>
+        <description>Reference to contract or agreement document</description>
+    </fields>
+    <fields>
+        <fullName>Data_Processing_Agreement__c</fullName>
+        <label>Data Processing Agreement</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+        <description>Whether vendor has signed DPA (GDPR requirement)</description>
+    </fields>
+    <fields>
+        <fullName>Security_Certifications__c</fullName>
+        <label>Security Certifications</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <description>List of security certifications held by vendor (SOC2, ISO27001, etc.)</description>
+    </fields>
+    <fields>
+        <fullName>Owner__c</fullName>
+        <label>Owner</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Vendor Compliance</relationshipLabel>
+        <relationshipName>Vendor_Compliance</relationshipName>
+    </fields>
+</CustomObject>

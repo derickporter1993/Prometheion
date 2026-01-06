@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Compliance Evidence</label>
+    <pluralLabel>Compliance Evidence</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Evidence Number</label>
+        <displayFormat>EVI-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Stores audit evidence for compliance frameworks (SOX, SOC2, HIPAA, etc.)</description>
+    <fields>
+        <fullName>Framework__c</fullName>
+        <label>Framework</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SOX</fullName>
+                    <default>false</default>
+                    <label>SOX</label>
+                </value>
+                <value>
+                    <fullName>SOC2</fullName>
+                    <default>false</default>
+                    <label>SOC 2</label>
+                </value>
+                <value>
+                    <fullName>HIPAA</fullName>
+                    <default>false</default>
+                    <label>HIPAA</label>
+                </value>
+                <value>
+                    <fullName>GDPR</fullName>
+                    <default>false</default>
+                    <label>GDPR</label>
+                </value>
+                <value>
+                    <fullName>CCPA</fullName>
+                    <default>false</default>
+                    <label>CCPA</label>
+                </value>
+                <value>
+                    <fullName>GLBA</fullName>
+                    <default>false</default>
+                    <label>GLBA</label>
+                </value>
+                <value>
+                    <fullName>NIST</fullName>
+                    <default>false</default>
+                    <label>NIST 800-53</label>
+                </value>
+                <value>
+                    <fullName>ISO27001</fullName>
+                    <default>false</default>
+                    <label>ISO 27001</label>
+                </value>
+                <value>
+                    <fullName>PCI_DSS</fullName>
+                    <default>false</default>
+                    <label>PCI-DSS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Evidence_Type__c</fullName>
+        <label>Evidence Type</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SETUP_AUDIT_TRAIL</fullName>
+                    <default>false</default>
+                    <label>Setup Audit Trail</label>
+                </value>
+                <value>
+                    <fullName>FIELD_HISTORY</fullName>
+                    <default>false</default>
+                    <label>Field History</label>
+                </value>
+                <value>
+                    <fullName>PERMISSION_SET</fullName>
+                    <default>false</default>
+                    <label>Permission Set</label>
+                </value>
+                <value>
+                    <fullName>SHARING_RULE</fullName>
+                    <default>false</default>
+                    <label>Sharing Rule</label>
+                </value>
+                <value>
+                    <fullName>LOGIN_HISTORY</fullName>
+                    <default>false</default>
+                    <label>Login History</label>
+                </value>
+                <value>
+                    <fullName>API_USAGE</fullName>
+                    <default>false</default>
+                    <label>API Usage</label>
+                </value>
+                <value>
+                    <fullName>FLOW_EXECUTION</fullName>
+                    <default>false</default>
+                    <label>Flow Execution</label>
+                </value>
+                <value>
+                    <fullName>METADATA_CHANGE</fullName>
+                    <default>false</default>
+                    <label>Metadata Change</label>
+                </value>
+                <value>
+                    <fullName>DOCUMENT</fullName>
+                    <default>false</default>
+                    <label>Document</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Evidence_Date__c</fullName>
+        <label>Evidence Date</label>
+        <type>Date</type>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <label>Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Evidence_Data__c</fullName>
+        <label>Evidence Data (JSON)</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>10</visibleLines>
+        <description>JSON structure containing the actual evidence data</description>
+    </fields>
+    <fields>
+        <fullName>File_Reference__c</fullName>
+        <label>File Reference</label>
+        <type>Text</type>
+        <length>255</length>
+        <description>Reference to ContentDocument or external file storage</description>
+    </fields>
+    <fields>
+        <fullName>Policy_Reference__c</fullName>
+        <label>Policy Reference</label>
+        <type>Text</type>
+        <length>255</length>
+        <description>Reference to Compliance_Policy__mdt DeveloperName</description>
+    </fields>
+    <fields>
+        <fullName>Compliance_Score__c</fullName>
+        <label>Compliance Score</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <description>Score (0-100) indicating compliance level for this evidence</description>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <defaultValue>COLLECTED</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>COLLECTED</fullName>
+                    <default>true</default>
+                    <label>Collected</label>
+                </value>
+                <value>
+                    <fullName>REVIEWED</fullName>
+                    <default>false</default>
+                    <label>Reviewed</label>
+                </value>
+                <value>
+                    <fullName>APPROVED</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>REJECTED</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Reviewed_By__c</fullName>
+        <label>Reviewed By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Evidence Reviews</relationshipLabel>
+        <relationshipName>Evidence_Reviews</relationshipName>
+    </fields>
+    <fields>
+        <fullName>Reviewed_Date__c</fullName>
+        <label>Reviewed Date</label>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <label>Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+</CustomObject>

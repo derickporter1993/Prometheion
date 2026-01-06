@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Compliance Gap</label>
+    <pluralLabel>Compliance Gaps</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Gap Number</label>
+        <displayFormat>GAP-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Tracks compliance gaps and remediation requirements</description>
+    <fields>
+        <fullName>Framework__c</fullName>
+        <label>Framework</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SOX</fullName>
+                    <default>false</default>
+                    <label>SOX</label>
+                </value>
+                <value>
+                    <fullName>SOC2</fullName>
+                    <default>false</default>
+                    <label>SOC 2</label>
+                </value>
+                <value>
+                    <fullName>HIPAA</fullName>
+                    <default>false</default>
+                    <label>HIPAA</label>
+                </value>
+                <value>
+                    <fullName>GDPR</fullName>
+                    <default>false</default>
+                    <label>GDPR</label>
+                </value>
+                <value>
+                    <fullName>CCPA</fullName>
+                    <default>false</default>
+                    <label>CCPA</label>
+                </value>
+                <value>
+                    <fullName>GLBA</fullName>
+                    <default>false</default>
+                    <label>GLBA</label>
+                </value>
+                <value>
+                    <fullName>NIST</fullName>
+                    <default>false</default>
+                    <label>NIST 800-53</label>
+                </value>
+                <value>
+                    <fullName>ISO27001</fullName>
+                    <default>false</default>
+                    <label>ISO 27001</label>
+                </value>
+                <value>
+                    <fullName>PCI_DSS</fullName>
+                    <default>false</default>
+                    <label>PCI-DSS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Policy_Reference__c</fullName>
+        <label>Policy Reference</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+        <description>Reference to Compliance_Policy__mdt DeveloperName</description>
+    </fields>
+    <fields>
+        <fullName>Gap_Description__c</fullName>
+        <label>Gap Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <required>true</required>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Severity__c</fullName>
+        <label>Severity</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <defaultValue>MEDIUM</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CRITICAL</fullName>
+                    <default>false</default>
+                    <label>Critical</label>
+                </value>
+                <value>
+                    <fullName>HIGH</fullName>
+                    <default>false</default>
+                    <label>High</label>
+                </value>
+                <value>
+                    <fullName>MEDIUM</fullName>
+                    <default>true</default>
+                    <label>Medium</label>
+                </value>
+                <value>
+                    <fullName>LOW</fullName>
+                    <default>false</default>
+                    <label>Low</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <defaultValue>OPEN</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>OPEN</fullName>
+                    <default>true</default>
+                    <label>Open</label>
+                </value>
+                <value>
+                    <fullName>IN_PROGRESS</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>REMEDIATED</fullName>
+                    <default>false</default>
+                    <label>Remediated</label>
+                </value>
+                <value>
+                    <fullName>VERIFIED</fullName>
+                    <default>false</default>
+                    <label>Verified</label>
+                </value>
+                <value>
+                    <fullName>ACCEPTED_RISK</fullName>
+                    <default>false</default>
+                    <label>Accepted Risk</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Remediation_Plan__c</fullName>
+        <label>Remediation Plan</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Remediation_Owner__c</fullName>
+        <label>Remediation Owner</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Gap Remediations</relationshipLabel>
+        <relationshipName>Gap_Remediations</relationshipName>
+    </fields>
+    <fields>
+        <fullName>Target_Remediation_Date__c</fullName>
+        <label>Target Remediation Date</label>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Remediation_Date__c</fullName>
+        <label>Actual Remediation Date</label>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Risk_Score__c</fullName>
+        <label>Risk Score</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <description>Calculated risk score (0-10) for this gap</description>
+    </fields>
+    <fields>
+        <fullName>Entity_Type__c</fullName>
+        <label>Entity Type</label>
+        <type>Text</type>
+        <length>100</length>
+        <description>Type of entity with the gap (e.g., PERMISSION_SET, FLOW, CUSTOM_OBJECT)</description>
+    </fields>
+    <fields>
+        <fullName>Entity_Id__c</fullName>
+        <label>Entity ID</label>
+        <type>Text</type>
+        <length>18</length>
+        <description>Salesforce ID of the entity with the gap</description>
+    </fields>
+    <fields>
+        <fullName>Detected_Date__c</fullName>
+        <label>Detected Date</label>
+        <type>DateTime</type>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <label>Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+</CustomObject>

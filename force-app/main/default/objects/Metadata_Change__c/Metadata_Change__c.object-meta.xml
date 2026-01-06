@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Metadata Change</label>
+    <pluralLabel>Metadata Changes</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Change Number</label>
+        <displayFormat>CHG-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Tracks all metadata changes for compliance and change management (vs Strongpoint)</description>
+    <fields>
+        <fullName>Change_Type__c</fullName>
+        <label>Change Type</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CREATE</fullName>
+                    <default>false</default>
+                    <label>Create</label>
+                </value>
+                <value>
+                    <fullName>UPDATE</fullName>
+                    <default>false</default>
+                    <label>Update</label>
+                </value>
+                <value>
+                    <fullName>DELETE</fullName>
+                    <default>false</default>
+                    <label>Delete</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Metadata_Type__c</fullName>
+        <label>Metadata Type</label>
+        <type>Text</type>
+        <length>100</length>
+        <required>true</required>
+        <description>Type of metadata changed (e.g., CustomObject, ApexClass, Flow, PermissionSet)</description>
+    </fields>
+    <fields>
+        <fullName>Metadata_Name__c</fullName>
+        <label>Metadata Name</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Metadata_Id__c</fullName>
+        <label>Metadata ID</label>
+        <type>Text</type>
+        <length>18</length>
+        <description>Salesforce ID if applicable</description>
+    </fields>
+    <fields>
+        <fullName>Changed_By__c</fullName>
+        <label>Changed By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Metadata Changes</relationshipLabel>
+        <relationshipName>Metadata_Changes</relationshipName>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Change_Date__c</fullName>
+        <label>Change Date</label>
+        <type>DateTime</type>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Deployment_Job__c</fullName>
+        <label>Deployment Job</label>
+        <type>Lookup</type>
+        <referenceTo>Deployment_Job__c</referenceTo>
+        <relationshipLabel>Metadata Changes</relationshipLabel>
+        <relationshipName>Metadata_Changes</relationshipName>
+    </fields>
+    <fields>
+        <fullName>Change_Details__c</fullName>
+        <label>Change Details (JSON)</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>10</visibleLines>
+        <description>JSON structure containing before/after values and change details</description>
+    </fields>
+    <fields>
+        <fullName>Impact_Analysis__c</fullName>
+        <label>Impact Analysis</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <description>Analysis of potential impact on compliance, security, or business processes</description>
+    </fields>
+    <fields>
+        <fullName>Risk_Level__c</fullName>
+        <label>Risk Level</label>
+        <type>Picklist</type>
+        <defaultValue>MEDIUM</defaultValue>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>LOW</fullName>
+                    <default>false</default>
+                    <label>Low</label>
+                </value>
+                <value>
+                    <fullName>MEDIUM</fullName>
+                    <default>true</default>
+                    <label>Medium</label>
+                </value>
+                <value>
+                    <fullName>HIGH</fullName>
+                    <default>false</default>
+                    <label>High</label>
+                </value>
+                <value>
+                    <fullName>CRITICAL</fullName>
+                    <default>false</default>
+                    <label>Critical</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Approved_By__c</fullName>
+        <label>Approved By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Approved Changes</relationshipLabel>
+        <relationshipName>Approved_Changes</relationshipName>
+    </fields>
+    <fields>
+        <fullName>Approval_Date__c</fullName>
+        <label>Approval Date</label>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Compliance_Impact__c</fullName>
+        <label>Compliance Impact</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <description>Impact on compliance frameworks (SOX, SOC2, etc.)</description>
+    </fields>
+    <fields>
+        <fullName>Rollback_Available__c</fullName>
+        <label>Rollback Available</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+        <description>Whether this change can be rolled back</description>
+    </fields>
+    <fields>
+        <fullName>Rollback_Details__c</fullName>
+        <label>Rollback Details</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <description>Instructions or metadata for rolling back this change</description>
+    </fields>
+</CustomObject>
