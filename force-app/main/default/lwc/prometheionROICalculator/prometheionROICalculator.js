@@ -124,5 +124,30 @@ export default class PrometheionROICalculator extends LightningElement {
     get roiClass() {
         return this.hasPositiveROI ? 'roi-positive' : 'roi-negative';
     }
+    
+    // Formatted getters for template expressions (LWC doesn't allow method calls in templates)
+    get formattedTimeSavingsDollars() {
+        return this.roiResults ? this.roiResults.timeSavingsDollars.toLocaleString() : '0';
+    }
+    
+    get formattedAuditCostReduction() {
+        return this.roiResults ? this.roiResults.auditCostReduction.toLocaleString() : '0';
+    }
+    
+    get formattedTotalSavings() {
+        return this.roiResults ? this.roiResults.totalSavings.toLocaleString() : '0';
+    }
+    
+    get formattedMonthlySavings() {
+        return this.roiResults ? this.roiResults.monthlySavings.toLocaleString() : '0';
+    }
+    
+    get formattedPrometheionCost() {
+        return this.roiResults ? this.roiResults.prometheionCost.toLocaleString() : '0';
+    }
+    
+    get formattedNetBenefit() {
+        return this.roiResults ? this.roiResults.netBenefit.toLocaleString() : '0';
+    }
 }
 

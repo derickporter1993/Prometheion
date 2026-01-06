@@ -11,7 +11,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_ValidCard() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard('4111111111111111');
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard('4111111111111111');
         Test.stopTest();
 
         System.assertEquals('****-****-****-1111', masked, 'Should show only last 4 digits');
@@ -20,7 +20,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_WithDashes() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard('4111-1111-1111-1111');
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard('4111-1111-1111-1111');
         Test.stopTest();
 
         System.assertEquals('****-****-****-1111', masked, 'Should handle dashes');
@@ -29,7 +29,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_WithSpaces() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard('4111 1111 1111 1111');
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard('4111 1111 1111 1111');
         Test.stopTest();
 
         System.assertEquals('****-****-****-1111', masked, 'Should handle spaces');
@@ -38,7 +38,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_Null() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard(null);
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard(null);
         Test.stopTest();
 
         System.assertEquals('****-****-****-****', masked, 'Should return full mask for null');
@@ -47,7 +47,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_Empty() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard('');
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard('');
         Test.stopTest();
 
         System.assertEquals('****-****-****-****', masked, 'Should return full mask for empty');
@@ -56,7 +56,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCard_TooShort() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCard('123');
+        String masked = PrometheionPCIDataMaskingService.maskCreditCard('123');
         Test.stopTest();
 
         System.assertEquals('****-****-****-****', masked, 'Should return full mask for short input');
@@ -65,7 +65,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCardWithFormat_Amex() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCardWithFormat(
+        String masked = PrometheionPCIDataMaskingService.maskCreditCardWithFormat(
             '371449635398431',
             '****-******-*1234'
         );
@@ -77,7 +77,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testMaskCreditCardWithFormat_Standard() {
         Test.startTest();
-        String masked = PrometheionPrometheionPCIDataMaskingService.maskCreditCardWithFormat(
+        String masked = PrometheionPCIDataMaskingService.maskCreditCardWithFormat(
             '4111111111111111',
             '****-****-****-1234'
         );
@@ -90,9 +90,9 @@ private class PrometheionPCIDataMaskingServiceTest {
     static void testValidateNoCVVStorage_WithCVV() {
         Test.startTest();
         try {
-            PrometheionPrometheionPCIDataMaskingService.validateNoCVVStorage('123');
+            PrometheionPCIDataMaskingService.validateNoCVVStorage('123');
             System.assert(false, 'Should throw PCIViolationException');
-        } catch (PrometheionPrometheionPCIDataMaskingService.PCIViolationException e) {
+        } catch (PrometheionPCIDataMaskingService.PCIViolationException e) {
             System.assert(e.getMessage().contains('PCI DSS Requirement 3.2'),
                 'Should mention PCI requirement');
         }
@@ -103,9 +103,9 @@ private class PrometheionPCIDataMaskingServiceTest {
     static void testValidateNoCVVStorage_Null() {
         Test.startTest();
         try {
-            PrometheionPrometheionPCIDataMaskingService.validateNoCVVStorage(null);
+            PrometheionPCIDataMaskingService.validateNoCVVStorage(null);
             System.assert(true, 'Should not throw exception for null');
-        } catch (PrometheionPrometheionPCIDataMaskingService.PCIViolationException e) {
+        } catch (PrometheionPCIDataMaskingService.PCIViolationException e) {
             System.assert(false, 'Should not throw for null CVV');
         }
         Test.stopTest();
@@ -115,9 +115,9 @@ private class PrometheionPCIDataMaskingServiceTest {
     static void testValidateNoCVVStorage_Empty() {
         Test.startTest();
         try {
-            PrometheionPrometheionPCIDataMaskingService.validateNoCVVStorage('');
+            PrometheionPCIDataMaskingService.validateNoCVVStorage('');
             System.assert(true, 'Should not throw exception for empty');
-        } catch (PrometheionPrometheionPCIDataMaskingService.PCIViolationException e) {
+        } catch (PrometheionPCIDataMaskingService.PCIViolationException e) {
             System.assert(false, 'Should not throw for empty CVV');
         }
         Test.stopTest();
@@ -126,7 +126,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testTruncatePAN_Valid() {
         Test.startTest();
-        String truncated = PrometheionPrometheionPCIDataMaskingService.truncatePAN('4111111111111111');
+        String truncated = PrometheionPCIDataMaskingService.truncatePAN('4111111111111111');
         Test.stopTest();
 
         System.assertEquals('1111', truncated, 'Should return last 4 digits only');
@@ -135,7 +135,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testTruncatePAN_Null() {
         Test.startTest();
-        String truncated = PrometheionPrometheionPCIDataMaskingService.truncatePAN(null);
+        String truncated = PrometheionPCIDataMaskingService.truncatePAN(null);
         Test.stopTest();
 
         System.assertEquals(null, truncated, 'Should return null for null input');
@@ -144,7 +144,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testGetBIN_Valid() {
         Test.startTest();
-        String bin = PrometheionPrometheionPCIDataMaskingService.getBIN('4111111111111111');
+        String bin = PrometheionPCIDataMaskingService.getBIN('4111111111111111');
         Test.stopTest();
 
         System.assertEquals('411111', bin, 'Should return first 6 digits');
@@ -153,7 +153,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testGetBIN_Null() {
         Test.startTest();
-        String bin = PrometheionPrometheionPCIDataMaskingService.getBIN(null);
+        String bin = PrometheionPCIDataMaskingService.getBIN(null);
         Test.stopTest();
 
         System.assertEquals(null, bin, 'Should return null for null input');
@@ -162,7 +162,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testGetBIN_TooShort() {
         Test.startTest();
-        String bin = PrometheionPrometheionPCIDataMaskingService.getBIN('41111');
+        String bin = PrometheionPCIDataMaskingService.getBIN('41111');
         Test.stopTest();
 
         System.assertEquals(null, bin, 'Should return null for short input');
@@ -171,7 +171,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateLuhnChecksum_ValidVisa() {
         Test.startTest();
-        Boolean isValid = PrometheionPrometheionPCIDataMaskingService.validateLuhnChecksum('4111111111111111');
+        Boolean isValid = PrometheionPCIDataMaskingService.validateLuhnChecksum('4111111111111111');
         Test.stopTest();
 
         System.assertEquals(true, isValid, 'Should validate valid Visa test number');
@@ -180,7 +180,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateLuhnChecksum_ValidMastercard() {
         Test.startTest();
-        Boolean isValid = PrometheionPrometheionPCIDataMaskingService.validateLuhnChecksum('5500000000000004');
+        Boolean isValid = PrometheionPCIDataMaskingService.validateLuhnChecksum('5500000000000004');
         Test.stopTest();
 
         System.assertEquals(true, isValid, 'Should validate valid Mastercard test number');
@@ -189,7 +189,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateLuhnChecksum_Invalid() {
         Test.startTest();
-        Boolean isValid = PrometheionPrometheionPCIDataMaskingService.validateLuhnChecksum('4111111111111112');
+        Boolean isValid = PrometheionPCIDataMaskingService.validateLuhnChecksum('4111111111111112');
         Test.stopTest();
 
         System.assertEquals(false, isValid, 'Should fail for invalid checksum');
@@ -198,7 +198,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateLuhnChecksum_TooShort() {
         Test.startTest();
-        Boolean isValid = PrometheionPrometheionPCIDataMaskingService.validateLuhnChecksum('411111111');
+        Boolean isValid = PrometheionPCIDataMaskingService.validateLuhnChecksum('411111111');
         Test.stopTest();
 
         System.assertEquals(false, isValid, 'Should fail for too short');
@@ -207,7 +207,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateLuhnChecksum_TooLong() {
         Test.startTest();
-        Boolean isValid = PrometheionPrometheionPCIDataMaskingService.validateLuhnChecksum('41111111111111111111');
+        Boolean isValid = PrometheionPCIDataMaskingService.validateLuhnChecksum('41111111111111111111');
         Test.stopTest();
 
         System.assertEquals(false, isValid, 'Should fail for too long');
@@ -216,7 +216,7 @@ private class PrometheionPCIDataMaskingServiceTest {
     @IsTest
     static void testIsShieldEncryptionEnabled() {
         Test.startTest();
-        Boolean isEnabled = PrometheionPrometheionPCIDataMaskingService.isShieldEncryptionEnabled();
+        Boolean isEnabled = PrometheionPCIDataMaskingService.isShieldEncryptionEnabled();
         Test.stopTest();
 
         // In test context, returns true as placeholder
@@ -233,7 +233,7 @@ private class PrometheionPCIDataMaskingServiceTest {
         Test.startTest();
         List<String> maskedCards = new List<String>();
         for (String cardNumber : cardNumbers) {
-            maskedCards.add(PrometheionPrometheionPCIDataMaskingService.maskCreditCard(cardNumber));
+            maskedCards.add(PrometheionPCIDataMaskingService.maskCreditCard(cardNumber));
         }
         Test.stopTest();
 
@@ -247,10 +247,10 @@ private class PrometheionPCIDataMaskingServiceTest {
     static void testValidateEncryptionEnabled() {
         Test.startTest();
         try {
-            PrometheionPrometheionPCIDataMaskingService.validateEncryptionEnabled();
+            PrometheionPCIDataMaskingService.validateEncryptionEnabled();
             // In dev/test, this passes as encryption check returns true
             System.assert(true, 'Encryption validation passed');
-        } catch (PrometheionPrometheionPCIDataMaskingService.PCIViolationException e) {
+        } catch (PrometheionPCIDataMaskingService.PCIViolationException e) {
             // This may throw in environments without Shield
             System.assert(e.getMessage().contains('Platform Encryption'),
                 'Should mention encryption requirement');

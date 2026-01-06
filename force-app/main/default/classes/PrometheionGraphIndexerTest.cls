@@ -125,8 +125,8 @@ private class PrometheionGraphIndexerTest {
     }
     
     @IsTest
-    static void testBulkIndexChange() {
-        // Create multiple permission sets for bulk test
+    static void testBulkIndexChangeSmallBatch() {
+        // Create multiple permission sets for bulk test (smaller batch)
         List<PermissionSet> permSets = new List<PermissionSet>();
         for (Integer i = 0; i < 10; i++) {
             permSets.add(new PermissionSet(Name='BulkTestPS' + i, Label='Bulk Test PS ' + i));

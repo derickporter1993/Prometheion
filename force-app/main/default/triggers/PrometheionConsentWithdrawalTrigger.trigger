@@ -9,7 +9,7 @@
  * @author Prometheion
  * @version 1.0
  */
-trigger ConsentWithdrawalTrigger on Consent__c (after update) {
+trigger PrometheionConsentWithdrawalTrigger on Consent__c (after update) {
 
     List<Consent__c> withdrawnConsents = new List<Consent__c>();
 

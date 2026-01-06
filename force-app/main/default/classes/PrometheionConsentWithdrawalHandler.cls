@@ -87,9 +87,25 @@ public with sharing class ConsentWithdrawalHandler {
         String userId = UserInfo.getUserId();
         Datetime now = System.now();
 
+        // Query Contact emails for the withdrawn consents
+        Set<Id> contactIds = new Set<Id>();
         for (Consent__c consent : withdrawnConsents) {
+            if (consent.Contact__c != null) {
+                contactIds.add(consent.Contact__c);
+            }
+        }
+        
+        Map<Id, String> contactEmailMap = new Map<Id, String>();
+        if (!contactIds.isEmpty()) {
+            for (Contact c : [SELECT Id, Email FROM Contact WHERE Id IN :contactIds]) {
+                contactEmailMap.put(c.Id, c.Email);
+            }
+        }
+
+        for (Consent__c consent : withdrawnConsents) {
+            String contactEmail = contactEmailMap.get(consent.Contact__c);
             events.add(new GDPR_Erasure_Event__e(
-                Contact_Email__c = String.valueOf(consent.Contact__c),
+                Contact_Email__c = contactEmail != null ? contactEmail : '',
                 Deletion_Date__c = now,
                 Records_Deleted__c = 0,
                 Audit_Log_Id__c = 'CONSENT-WITHDRAWAL-' + consent.Id

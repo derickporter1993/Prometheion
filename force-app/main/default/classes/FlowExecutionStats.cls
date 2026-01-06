@@ -1,5 +1,5 @@
 public with sharing class FlowExecutionStats {
-    private class ExecAgg {
+    public class ExecAgg {
         @AuraEnabled public String flowName;
         @AuraEnabled public Integer runs;
         @AuraEnabled public Integer faults;

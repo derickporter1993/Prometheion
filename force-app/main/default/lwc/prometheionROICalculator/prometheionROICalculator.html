@@ -64,29 +64,29 @@
                     <div class="result-card savings">
                         <div class="result-label">Annual Time Savings</div>
                         <div class="result-value">{roiResults.timeSavings} hours</div>
-                        <div class="result-detail">${roiResults.timeSavingsDollars.toLocaleString()} in labor costs</div>
+                        <div class="result-detail">${formattedTimeSavingsDollars} in labor costs</div>
                     </div>
                     
                     <div class="result-card savings">
                         <div class="result-label">Audit Cost Reduction</div>
-                        <div class="result-value">${roiResults.auditCostReduction.toLocaleString()}</div>
+                        <div class="result-value">${formattedAuditCostReduction}</div>
                         <div class="result-detail">30% reduction in external audit costs</div>
                     </div>
                     
                     <div class="result-card total">
                         <div class="result-label">Total Annual Savings</div>
-                        <div class="result-value">${roiResults.totalSavings.toLocaleString()}</div>
-                        <div class="result-detail">${roiResults.monthlySavings.toLocaleString()}/month</div>
+                        <div class="result-value">${formattedTotalSavings}</div>
+                        <div class="result-detail">${formattedMonthlySavings}/month</div>
                     </div>
                     
                     <div class="result-card cost">
                         <div class="result-label">Prometheion Annual Cost</div>
-                        <div class="result-value">${roiResults.prometheionCost.toLocaleString()}</div>
+                        <div class="result-value">${formattedPrometheionCost}</div>
                     </div>
                     
                     <div class="result-card net">
                         <div class="result-label">Net Annual Benefit</div>
-                        <div class="result-value {roiClass}">${roiResults.netBenefit.toLocaleString()}</div>
+                        <div class="result-value {roiClass}">${formattedNetBenefit}</div>
                     </div>
                     
                     <div class="result-card roi">
@@ -100,7 +100,7 @@
                     <template if:true={hasPositiveROI}>
                         <div class="summary-positive">
                             <strong>Prometheion pays for itself in {roiResults.paybackWeeks} weeks</strong>
-                            <p>You'll save ${roiResults.netBenefit.toLocaleString()} in the first year alone.</p>
+                            <p>You'll save ${formattedNetBenefit} in the first year alone.</p>
                         </div>
                     </template>
                     <template if:false={hasPositiveROI}>
