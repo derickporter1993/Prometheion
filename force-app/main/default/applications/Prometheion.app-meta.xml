@@ -12,6 +12,7 @@
     <label>Prometheion</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
+    <tabs>Prometheion_Dashboard</tabs>
     <tabs>Prometheion_Compliance_Hub</tabs>
     <tabs>Performance_Alert_History__c</tabs>
     <tabs>API_Usage_Snapshot__c</tabs>

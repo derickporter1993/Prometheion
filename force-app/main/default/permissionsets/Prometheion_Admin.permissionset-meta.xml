@@ -78,4 +78,12 @@
     <field>CCX_Settings__c.DML_Crit__c</field>
     <readable>true</readable>
   </fieldPermissions>
+  <classAccesses>
+    <apexClass>PrometheionComplianceCopilot</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>PrometheionComplianceScorer</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
 </PermissionSet>

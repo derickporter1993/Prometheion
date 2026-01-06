@@ -444,6 +444,149 @@ public with sharing class PrometheionComplianceCopilot {
     }
 
     /**
+     * Deep analysis of a specific compliance topic
+     * Performs comprehensive analysis including violations, risks, and recommendations
+     */
+    @AuraEnabled
+    public static CopilotResponse deepAnalysis(String topic) {
+        CopilotResponse response = new CopilotResponse();
+
+        try {
+            // Validate input
+            if (String.isBlank(topic)) {
+                response.answer = 'Please provide a topic for deep analysis (e.g., "HIPAA compliance", "permission sprawl")';
+                response.confidence = 0.0;
+                return response;
+            }
+
+            // Validate input length
+            if (topic.length() > 500) {
+                throw new AuraHandledException('Topic exceeds maximum length of 500 characters');
+            }
+
+            String lowerTopic = topic.toLowerCase();
+            response.queryType = 'DEEP_ANALYSIS';
+
+            // Detect framework from topic
+            String framework = null;
+            if (lowerTopic.contains('hipaa')) framework = PrometheionConstants.FRAMEWORK_HIPAA;
+            else if (lowerTopic.contains('soc2') || lowerTopic.contains('soc 2')) framework = PrometheionConstants.FRAMEWORK_SOC2;
+            else if (lowerTopic.contains('nist')) framework = PrometheionConstants.FRAMEWORK_NIST;
+            else if (lowerTopic.contains('fedramp')) framework = PrometheionConstants.FRAMEWORK_FEDRAMP;
+            else if (lowerTopic.contains('gdpr')) framework = PrometheionConstants.FRAMEWORK_GDPR;
+            else if (lowerTopic.contains('sox')) framework = PrometheionConstants.FRAMEWORK_SOX;
+            else if (lowerTopic.contains('pci') || lowerTopic.contains('pci-dss')) framework = PrometheionConstants.FRAMEWORK_PCI_DSS;
+            else if (lowerTopic.contains('ccpa')) framework = PrometheionConstants.FRAMEWORK_CCPA;
+            else if (lowerTopic.contains('glba')) framework = PrometheionConstants.FRAMEWORK_GLBA;
+            else if (lowerTopic.contains('iso') || lowerTopic.contains('27001')) framework = PrometheionConstants.FRAMEWORK_ISO27001;
+
+            // Get comprehensive compliance score
+            Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
+            Decimal overallScore = (Decimal)scoreData.get('overallScore');
+            Map<String, Decimal> frameworkScores = (Map<String, Decimal>)scoreData.get('frameworkScores');
+
+            // Build comprehensive analysis
+            List<String> analysisPoints = new List<String>();
+            analysisPoints.add('📊 *Compliance Overview*');
+            analysisPoints.add('• Overall Score: ' + overallScore.setScale(1) + '%');
+            
+            if (framework != null && frameworkScores.containsKey(framework)) {
+                Decimal frameworkScore = frameworkScores.get(framework);
+                analysisPoints.add('• ' + framework + ' Score: ' + frameworkScore.setScale(1) + '%');
+            }
+
+            // Analyze violations
+            List<SetupAuditTrail> violations = [
+                SELECT CreatedDate, CreatedById, CreatedBy.Name, Action, Section, Display
+                FROM SetupAuditTrail
+                WHERE CreatedDate >= LAST_N_DAYS:30
+                AND (Action LIKE '%permission%' OR Action LIKE '%delete%' OR Action LIKE '%removed%' OR Action LIKE '%field%')
+                ORDER BY CreatedDate DESC
+                LIMIT 20
+            ];
+
+            if (!violations.isEmpty()) {
+                analysisPoints.add('');
+                analysisPoints.add('⚠️ *Recent Violations* (' + violations.size() + ' found)');
+                Integer count = 1;
+                for (SetupAuditTrail v : violations) {
+                    Evidence ev = new Evidence();
+                    ev.nodeId = String.valueOf(v.Id);
+                    ev.timestamp = v.CreatedDate;
+                    ev.description = v.Display;
+                    ev.entityType = v.Section;
+                    ev.riskScore = calculateRiskFromAction(v.Action);
+                    ev.framework = framework != null ? framework : PrometheionConstants.FRAMEWORK_SOC2;
+                    response.evidence.add(ev);
+
+                    if (count <= 5) {
+                        analysisPoints.add(count + '. ' + v.Section + ' - ' + v.Display);
+                        count++;
+                    }
+                }
+                if (violations.size() > 5) {
+                    analysisPoints.add('... and ' + (violations.size() - 5) + ' more');
+                }
+            }
+
+            // Analyze user access
+            List<PermissionSetAssignment> elevatedUsers = [
+                SELECT AssigneeId, Assignee.Name, PermissionSet.Name,
+                       PermissionSet.PermissionsModifyAllData, PermissionSet.PermissionsViewAllData
+                FROM PermissionSetAssignment
+                WHERE PermissionSet.PermissionsModifyAllData = true
+                OR PermissionSet.PermissionsViewAllData = true
+                LIMIT 20
+            ];
+
+            if (!elevatedUsers.isEmpty()) {
+                analysisPoints.add('');
+                analysisPoints.add('🔐 *Elevated Access Users* (' + elevatedUsers.size() + ' found)');
+                Set<Id> userIds = new Set<Id>();
+                for (PermissionSetAssignment psa : elevatedUsers) {
+                    userIds.add(psa.AssigneeId);
+                }
+                analysisPoints.add('• Users with Modify All Data or View All Data: ' + userIds.size());
+            }
+
+            // Add recommendations
+            analysisPoints.add('');
+            analysisPoints.add('💡 *Recommendations*');
+            if (overallScore < 70) {
+                analysisPoints.add('• Review and remediate recent violations');
+                analysisPoints.add('• Conduct access review for elevated permissions');
+                analysisPoints.add('• Enable field history tracking for critical objects');
+            } else if (overallScore < 85) {
+                analysisPoints.add('• Monitor for new violations');
+                analysisPoints.add('• Review permission assignments quarterly');
+            } else {
+                analysisPoints.add('• Maintain current compliance posture');
+                analysisPoints.add('• Continue regular monitoring');
+            }
+
+            response.answer = String.join(analysisPoints, '\n');
+            response.confidence = 0.85;
+
+            // Add export action
+            SuggestedAction exportAction = new SuggestedAction();
+            exportAction.actionType = PrometheionConstants.ACTION_EXPORT;
+            exportAction.label = 'Export Analysis Report';
+            exportAction.description = 'Generate detailed compliance analysis report';
+            exportAction.canAutoFix = false;
+            response.actions.add(exportAction);
+
+        } catch (Exception e) {
+            String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
+            response.answer = 'Error performing deep analysis: ' + errorMsg;
+            response.confidence = 0.0;
+            String correlationId = 'DEEP-ANALYSIS-' + System.now().getTime();
+            System.debug(LoggingLevel.ERROR, PrometheionConstants.LOG_PREFIX + 'deepAnalysis error: ' + e.getTypeName() + ' - ' + e.getMessage() + ' [CorrelationId: ' + correlationId + ']');
+        }
+
+        return response;
+    }
+
+    /**
      * Quick commands for common queries
      */
     @AuraEnabled(cacheable=true)

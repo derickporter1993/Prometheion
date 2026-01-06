@@ -1,22 +1,22 @@
-/* Solentra Copilot - Modern Glassmorphism Design */
+/* Prometheion Copilot - Modern Glassmorphism Design */
 
 /* CSS Variables for theming */
 :host {
-    --solentra-primary: #6366f1;
-    --solentra-primary-light: #818cf8;
-    --solentra-primary-dark: #4f46e5;
-    --solentra-accent: #22d3ee;
-    --solentra-success: #10b981;
-    --solentra-warning: #f59e0b;
-    --solentra-danger: #ef4444;
-    --solentra-bg-dark: #0f172a;
-    --solentra-bg-card: rgba(30, 41, 59, 0.8);
-    --solentra-bg-glass: rgba(255, 255, 255, 0.05);
-    --solentra-border: rgba(255, 255, 255, 0.1);
-    --solentra-text: #f1f5f9;
-    --solentra-text-muted: #94a3b8;
-    --solentra-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-    --solentra-gradient-accent: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
+    --prometheion-primary: #6366f1;
+    --prometheion-primary-light: #818cf8;
+    --prometheion-primary-dark: #4f46e5;
+    --prometheion-accent: #22d3ee;
+    --prometheion-success: #10b981;
+    --prometheion-warning: #f59e0b;
+    --prometheion-danger: #ef4444;
+    --prometheion-bg-dark: #0f172a;
+    --prometheion-bg-card: rgba(30, 41, 59, 0.8);
+    --prometheion-bg-glass: rgba(255, 255, 255, 0.05);
+    --prometheion-border: rgba(255, 255, 255, 0.1);
+    --prometheion-text: #f1f5f9;
+    --prometheion-text-muted: #94a3b8;
+    --prometheion-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    --prometheion-gradient-accent: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
 }
 
 /* Main Container */
@@ -25,7 +25,7 @@
     flex-direction: column;
     height: 700px;
     max-height: 90vh;
-    background: var(--solentra-bg-dark);
+    background: var(--prometheion-bg-dark);
     background-image: 
         radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
@@ -35,15 +35,15 @@
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     box-shadow: 
         0 25px 50px -12px rgba(0, 0, 0, 0.5),
-        0 0 0 1px var(--solentra-border);
+        0 0 0 1px var(--prometheion-border);
 }
 
 /* Header */
 .copilot-header {
     padding: 20px 24px;
-    background: var(--solentra-bg-glass);
+    background: var(--prometheion-bg-glass);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--solentra-border);
+    border-bottom: 1px solid var(--prometheion-border);
 }
 
 .header-content {
@@ -61,7 +61,7 @@
 .logo-icon {
     width: 40px;
     height: 40px;
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -78,14 +78,14 @@
 .logo-text h1 {
     font-size: 20px;
     font-weight: 700;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
     margin: 0;
     letter-spacing: -0.02em;
 }
 
 .logo-text .subtitle {
     font-size: 12px;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     font-weight: 500;
 }
 
@@ -93,9 +93,9 @@
     width: 36px;
     height: 36px;
     border: none;
-    background: var(--solentra-bg-glass);
+    background: var(--prometheion-bg-glass);
     border-radius: 10px;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -105,7 +105,7 @@
 
 .icon-button:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
 }
 
 .icon-button svg {
@@ -130,7 +130,7 @@
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-    background: var(--solentra-border);
+    background: var(--prometheion-border);
     border-radius: 3px;
 }
 
@@ -153,7 +153,7 @@
 .welcome-icon {
     width: 64px;
     height: 64px;
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -171,13 +171,13 @@
 .welcome-section h2 {
     font-size: 24px;
     font-weight: 600;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
     margin: 0 0 8px 0;
 }
 
 .welcome-subtitle {
     font-size: 14px;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     margin: 0 0 32px 0;
     max-width: 400px;
 }
@@ -197,17 +197,17 @@
     align-items: center;
     gap: 10px;
     padding: 16px;
-    background: var(--solentra-bg-glass);
-    border: 1px solid var(--solentra-border);
+    background: var(--prometheion-bg-glass);
+    border: 1px solid var(--prometheion-border);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
 }
 
 .quick-action-card:hover {
     background: rgba(99, 102, 241, 0.1);
-    border-color: var(--solentra-primary);
+    border-color: var(--prometheion-primary);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
 }
@@ -215,12 +215,12 @@
 .action-icon {
     width: 40px;
     height: 40px;
-    background: var(--solentra-bg-card);
+    background: var(--prometheion-bg-card);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--solentra-primary-light);
+    color: var(--prometheion-primary-light);
 }
 
 .action-icon svg {
@@ -260,7 +260,7 @@
 }
 
 .user-message .message-content {
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     color: white;
     padding: 14px 18px;
     border-radius: 18px 18px 4px 18px;
@@ -277,12 +277,12 @@
 .user-avatar {
     width: 32px;
     height: 32px;
-    background: var(--solentra-bg-card);
+    background: var(--prometheion-bg-card);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     flex-shrink: 0;
 }
 
@@ -301,7 +301,7 @@
 .assistant-avatar {
     width: 36px;
     height: 36px;
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -318,9 +318,9 @@
 
 .assistant-message .message-content {
     flex: 1;
-    background: var(--solentra-bg-glass);
+    background: var(--prometheion-bg-glass);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--solentra-border);
+    border: 1px solid var(--prometheion-border);
     border-radius: 4px 18px 18px 18px;
     padding: 16px 20px;
     max-width: 85%;
@@ -330,7 +330,7 @@
     margin: 0;
     font-size: 14px;
     line-height: 1.6;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
     white-space: pre-wrap;
 }
 
@@ -338,7 +338,7 @@
 .evidence-section {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid var(--solentra-border);
+    border-top: 1px solid var(--prometheion-border);
 }
 
 .evidence-title {
@@ -347,7 +347,7 @@
     gap: 8px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 12px 0;
@@ -365,10 +365,10 @@
 }
 
 .evidence-card {
-    background: var(--solentra-bg-card);
+    background: var(--prometheion-bg-card);
     border-radius: 10px;
     padding: 12px 14px;
-    border: 1px solid var(--solentra-border);
+    border: 1px solid var(--prometheion-border);
 }
 
 .evidence-header {
@@ -382,7 +382,7 @@
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
-    background: var(--solentra-primary);
+    background: var(--prometheion-primary);
     color: white;
     padding: 3px 8px;
     border-radius: 4px;
@@ -398,22 +398,22 @@
 
 .risk-high {
     background: rgba(239, 68, 68, 0.2);
-    color: var(--solentra-danger);
+    color: var(--prometheion-danger);
 }
 
 .risk-medium {
     background: rgba(245, 158, 11, 0.2);
-    color: var(--solentra-warning);
+    color: var(--prometheion-warning);
 }
 
 .risk-low {
     background: rgba(16, 185, 129, 0.2);
-    color: var(--solentra-success);
+    color: var(--prometheion-success);
 }
 
 .evidence-description {
     font-size: 13px;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
     margin: 0 0 8px 0;
     line-height: 1.5;
 }
@@ -421,8 +421,8 @@
 .framework-tag {
     font-size: 10px;
     font-weight: 500;
-    background: var(--solentra-bg-glass);
-    color: var(--solentra-accent);
+    background: var(--prometheion-bg-glass);
+    color: var(--prometheion-accent);
     padding: 2px 8px;
     border-radius: 4px;
     border: 1px solid rgba(34, 211, 238, 0.3);
@@ -441,7 +441,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     border: none;
     border-radius: 8px;
     color: white;
@@ -475,15 +475,15 @@
     align-items: center;
     gap: 4px;
     padding: 16px 20px;
-    background: var(--solentra-bg-glass);
-    border: 1px solid var(--solentra-border);
+    background: var(--prometheion-bg-glass);
+    border: 1px solid var(--prometheion-border);
     border-radius: 4px 18px 18px 18px;
 }
 
 .typing-indicator span {
     width: 8px;
     height: 8px;
-    background: var(--solentra-primary-light);
+    background: var(--prometheion-primary-light);
     border-radius: 50%;
     animation: bounce 1.4s infinite ease-in-out both;
 }
@@ -508,9 +508,9 @@
 /* Input Container */
 .input-container {
     padding: 16px 24px 20px;
-    background: var(--solentra-bg-glass);
+    background: var(--prometheion-bg-glass);
     backdrop-filter: blur(20px);
-    border-top: 1px solid var(--solentra-border);
+    border-top: 1px solid var(--prometheion-border);
 }
 
 .input-wrapper {
@@ -521,22 +521,22 @@
 
 .chat-input {
     flex: 1;
-    background: var(--solentra-bg-card);
-    border: 1px solid var(--solentra-border);
+    background: var(--prometheion-bg-card);
+    border: 1px solid var(--prometheion-border);
     border-radius: 12px;
     padding: 14px 18px;
     font-size: 14px;
-    color: var(--solentra-text);
+    color: var(--prometheion-text);
     outline: none;
     transition: all 0.2s ease;
 }
 
 .chat-input::placeholder {
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
 }
 
 .chat-input:focus {
-    border-color: var(--solentra-primary);
+    border-color: var(--prometheion-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
@@ -548,7 +548,7 @@
 .send-button {
     width: 48px;
     height: 48px;
-    background: var(--solentra-gradient);
+    background: var(--prometheion-gradient);
     border: none;
     border-radius: 12px;
     color: white;
@@ -577,7 +577,7 @@
 
 .input-hint {
     font-size: 11px;
-    color: var(--solentra-text-muted);
+    color: var(--prometheion-text-muted);
     text-align: center;
     margin: 10px 0 0 0;
 }
