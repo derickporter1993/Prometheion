@@ -274,9 +274,9 @@ sf org open --target-org myorg
 
 ### Run Your First Compliance Scan
 
-1. **Navigate to Sentinel** in the App Launcher
+1. **Navigate to Prometheion** in the App Launcher
 2. **Click "Run Baseline Scan"** on the dashboard
-3. **Wait 30-60 seconds** while Sentinel analyzes your org
+3. **Wait 30-60 seconds** while Prometheion analyzes your org
 4. **View your Audit Readiness Score** and top risks
 5. **Export the report** (Markdown or PDF) for your compliance team
 
@@ -456,7 +456,7 @@ Configure compliance thresholds in **Prometheion Settings** (Custom Settings):
 
 ### Alert Integrations
 
-Sentinel supports multiple alert channels:
+Prometheion supports multiple alert channels:
 
 #### Slack Integration
 
