@@ -2,8 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <deploymentStatus>Deployed</deploymentStatus>
     <eventType>PlatformEvent</eventType>
-    <label>Sentinel Alert Event</label>
-    <pluralLabel>Sentinel Alert Events</pluralLabel>
+    <label>Prometheion Alert Event</label>
+    <pluralLabel>Prometheion Alert Events</pluralLabel>
     <fields>
         <fullName>Alert_Id__c</fullName>
         <label>Alert ID</label>

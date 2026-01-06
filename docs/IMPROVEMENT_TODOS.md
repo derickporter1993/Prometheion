@@ -1,4 +1,4 @@
-# Sentinel AppExchange Improvement To-Do List
+# Prometheion AppExchange Improvement To-Do List
 **Generated**: January 2026
 **Total Items**: 47
 
@@ -15,19 +15,19 @@
 ## 1. SECURITY IMPROVEMENTS (P1)
 
 ### 1.1 Input Validation
-- [ ] **P1** Add input validation to `SentinelGraphIndexer.indexChange()` for `entityType`, `entityId` parameters
+- [ ] **P1** Add input validation to `PrometheionGraphIndexer.indexChange()` for `entityType`, `entityId` parameters
 - [ ] **P1** Add input validation to `PerformanceAlertPublisher.publish()` for `metric`, `stack` parameters (XSS prevention)
 - [ ] **P1** Add input validation to `FlowExecutionLogger.log()` for `flowName`, `status` parameters
-- [ ] **P1** Add framework validation to `SentinelLegalDocumentGenerator.generateLegalAttestation()` against allowed values
+- [ ] **P1** Add framework validation to `PrometheionLegalDocumentGenerator.generateLegalAttestation()` against allowed values
 
 ### 1.2 USER_MODE Enforcement
-- [ ] **P1** Add `WITH USER_MODE` to query in `SentinelGraphIndexer.cls:42-47` (PermissionSet query)
-- [ ] **P1** Add `WITH USER_MODE` to query in `SentinelGraphIndexer.cls:53-56` (FlowDefinitionView query)
+- [ ] **P1** Add `WITH USER_MODE` to query in `PrometheionGraphIndexer.cls:42-47` (PermissionSet query)
+- [ ] **P1** Add `WITH USER_MODE` to query in `PrometheionGraphIndexer.cls:53-56` (FlowDefinitionView query)
 - [ ] **P1** Add `WITH USER_MODE` to query in `AlertHistoryService.cls:22-27` (Performance_Alert_History__c query)
 - [ ] **P1** Add `WITH USER_MODE` to query in `ApiUsageDashboardController.cls:28-38` (API_Usage_Snapshot__c query)
 
 ### 1.3 Sharing Model Documentation
-- [ ] **P1** Document justification for `without sharing` on `SentinelReasoningEngine` class
+- [ ] **P1** Document justification for `without sharing` on `PrometheionReasoningEngine` class
 
 ---
 
@@ -36,7 +36,7 @@
 ### 2.1 Silent Failures
 - [ ] **P2** Replace `System.debug` with proper error logging in `SlackNotifier.cls:20-22`
 - [ ] **P2** Replace `System.debug` with proper error logging in `SlackNotifier.cls:44-47`
-- [ ] **P2** Add error tracking for Einstein prediction failures in `SentinelGraphIndexer.cls:77-79`
+- [ ] **P2** Add error tracking for Einstein prediction failures in `PrometheionGraphIndexer.cls:77-79`
 - [ ] **P2** Create `Integration_Error__c` custom object or platform event for integration failure tracking
 
 ### 2.2 Exception Details
@@ -56,9 +56,9 @@
 - [ ] **P3** Rename `FlowExecutionStats.topFlows()` to `getTopFlows()`
 
 ### 3.3 Magic Numbers
-- [ ] **P3** Extract constant `DEFAULT_RISK_SCORE = 5.0` in `SentinelGraphIndexer.cls:76`
-- [ ] **P3** Extract constant `MAX_RISK_SCORE = 10.0` in `SentinelGraphIndexer.cls:76`
-- [ ] **P3** Extract constant `BASE_RISK_SCORE = 3.0` in `SentinelGraphIndexer.cls:83`
+- [ ] **P3** Extract constant `DEFAULT_RISK_SCORE = 5.0` in `PrometheionGraphIndexer.cls:76`
+- [ ] **P3** Extract constant `MAX_RISK_SCORE = 10.0` in `PrometheionGraphIndexer.cls:76`
+- [ ] **P3** Extract constant `BASE_RISK_SCORE = 3.0` in `PrometheionGraphIndexer.cls:83`
 - [ ] **P3** Add documentation explaining what each risk score value represents
 
 ---
@@ -69,15 +69,15 @@
 - [ ] **P4** Create `IRiskScoringService` interface for Einstein AI abstraction
 - [ ] **P4** Create `EinsteinRiskScoringService` implementation
 - [ ] **P4** Create `FallbackRiskScoringService` implementation
-- [ ] **P4** Refactor `SentinelGraphIndexer` to use interface
-- [ ] **P4** Refactor `SentinelReasoningEngine` to use interface
+- [ ] **P4** Refactor `PrometheionGraphIndexer` to use interface
+- [ ] **P4** Refactor `PrometheionReasoningEngine` to use interface
 
 ### 4.2 Async Processing
-- [ ] **P3** Implement `Queueable` version of `SentinelLegalDocumentGenerator.generateLegalAttestation()` for large datasets
+- [ ] **P3** Implement `Queueable` version of `PrometheionLegalDocumentGenerator.generateLegalAttestation()` for large datasets
 - [ ] **P3** Add record count check to decide sync vs async processing
 
 ### 4.3 Bulkification
-- [ ] **P3** Create bulk version of `SentinelGraphIndexer.indexChange()` that accepts `List<IndexRequest>`
+- [ ] **P3** Create bulk version of `PrometheionGraphIndexer.indexChange()` that accepts `List<IndexRequest>`
 - [ ] **P3** Add bulkification guard/warning to single-record method
 
 ---
@@ -85,17 +85,17 @@
 ## 5. MISSING FEATURES (P2-P3)
 
 ### 5.1 Rate Limiting
-- [ ] **P2** Implement rate limiting for `SentinelLegalDocumentGenerator.generateLegalAttestation()`
+- [ ] **P2** Implement rate limiting for `PrometheionLegalDocumentGenerator.generateLegalAttestation()`
 - [ ] **P2** Implement rate limiting for `PerformanceAlertPublisher.publish()`
 - [ ] **P3** Implement rate limiting for `FlowExecutionLogger.log()`
 
 ### 5.2 Audit Logging
-- [ ] **P2** Add audit logging when AI Settings are changed in `SentinelAISettingsController.saveSettings()`
-- [ ] **P2** Add audit logging when evidence packs are generated in `SentinelLegalDocumentGenerator`
-- [ ] **P3** Create `Sentinel_Audit_Log__c` custom object for tracking
+- [ ] **P2** Add audit logging when AI Settings are changed in `PrometheionAISettingsController.saveSettings()`
+- [ ] **P2** Add audit logging when evidence packs are generated in `PrometheionLegalDocumentGenerator`
+- [ ] **P3** Create `Prometheion_Audit_Log__c` custom object for tracking
 
 ### 5.3 Framework Validation
-- [ ] **P1** Create `SUPPORTED_FRAMEWORKS` constant set in `SentinelLegalDocumentGenerator`
+- [ ] **P1** Create `SUPPORTED_FRAMEWORKS` constant set in `PrometheionLegalDocumentGenerator`
 - [ ] **P1** Add framework validation with user-friendly error message
 
 ---
@@ -103,14 +103,14 @@
 ## 6. TEST COVERAGE (P1-P2)
 
 ### 6.1 Error Path Tests
-- [ ] **P2** Add test for Einstein callout failure in `SentinelGraphIndexerTest`
-- [ ] **P2** Add test for invalid `entityType` in switch statement in `SentinelGraphIndexerTest`
+- [ ] **P2** Add test for Einstein callout failure in `PrometheionGraphIndexerTest`
+- [ ] **P2** Add test for invalid `entityType` in switch statement in `PrometheionGraphIndexerTest`
 - [ ] **P2** Add test for HTTP 4xx/5xx responses in `SlackNotifierTest`
-- [ ] **P2** Add test for ContentVersion insert failure in `SentinelLegalDocumentGeneratorTest`
+- [ ] **P2** Add test for ContentVersion insert failure in `PrometheionLegalDocumentGeneratorTest`
 
 ### 6.2 Bulk Tests
 - [ ] **P1** Add 200+ record bulk test to `FlowExecutionLoggerTest`
-- [ ] **P1** Add bulk test to `SentinelGraphIndexerTest`
+- [ ] **P1** Add bulk test to `PrometheionGraphIndexerTest`
 
 ---
 
@@ -151,15 +151,15 @@
 - [ ] **P4** Create `PCILoggingService` for Req 10 audit trails
 
 ### 7.7 UI Enhancements
-- [ ] **P3** Add GDPR button to `sentinelReadinessScore` LWC
-- [ ] **P3** Add ISO27001 button to `sentinelReadinessScore` LWC
+- [ ] **P3** Add GDPR button to `prometheionReadinessScore` LWC
+- [ ] **P3** Add ISO27001 button to `prometheionReadinessScore` LWC
 - [ ] **P3** Add framework selector dropdown instead of individual buttons
 
 ---
 
 ## 8. DOCUMENTATION (P2)
 
-- [ ] **P2** Document `without sharing` justification for `SentinelReasoningEngine`
+- [ ] **P2** Document `without sharing` justification for `PrometheionReasoningEngine`
 - [ ] **P2** Create ApexDoc comments for all public methods
 - [ ] **P3** Create architecture diagram showing class relationships
 - [ ] **P3** Document risk score calculation methodology

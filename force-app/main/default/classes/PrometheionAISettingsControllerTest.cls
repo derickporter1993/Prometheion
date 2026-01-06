@@ -1,12 +1,12 @@
 @IsTest
-private class SentinelAISettingsControllerTest {
+private class PrometheionAISettingsControllerTest {
 
     @IsTest
     static void testGetSettings_ReturnsDefaultsWhenNoSettings() {
-        // Given: No Sentinel_AI_Settings__c record exists
+        // Given: No Prometheion_AI_Settings__c record exists
 
         Test.startTest();
-        Sentinel_AI_Settings__c settings = SentinelAISettingsController.getSettings();
+        Prometheion_AI_Settings__c settings = PrometheionAISettingsController.getSettings();
         Test.stopTest();
 
         // Then: Should return default values
@@ -21,7 +21,7 @@ private class SentinelAISettingsControllerTest {
     @IsTest
     static void testGetSettings_ReturnsExistingSettings() {
         // Given: Custom settings exist
-        Sentinel_AI_Settings__c customSettings = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c customSettings = new Prometheion_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = false,
             Confidence_Threshold__c = 0.75,
@@ -32,7 +32,7 @@ private class SentinelAISettingsControllerTest {
         insert customSettings;
 
         Test.startTest();
-        Sentinel_AI_Settings__c settings = SentinelAISettingsController.getSettings();
+        Prometheion_AI_Settings__c settings = PrometheionAISettingsController.getSettings();
         Test.stopTest();
 
         // Then: Should return existing settings
@@ -45,7 +45,7 @@ private class SentinelAISettingsControllerTest {
     @IsTest
     static void testSaveSettings_PositivePath() {
         // Given: New settings to save
-        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = true,
             Confidence_Threshold__c = 0.90,
@@ -55,18 +55,18 @@ private class SentinelAISettingsControllerTest {
         );
 
         Test.startTest();
-        SentinelAISettingsController.saveSettings(settings);
+        PrometheionAISettingsController.saveSettings(settings);
         Test.stopTest();
 
         // Then: Settings should be saved
-        Sentinel_AI_Settings__c savedSettings = Sentinel_AI_Settings__c.getOrgDefaults();
+        Prometheion_AI_Settings__c savedSettings = Prometheion_AI_Settings__c.getOrgDefaults();
         System.assertEquals(0.90, savedSettings.Confidence_Threshold__c, 'Threshold should be updated');
     }
 
     @IsTest
     static void testSaveSettings_UpdateExisting() {
         // Given: Existing settings
-        Sentinel_AI_Settings__c existingSettings = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c existingSettings = new Prometheion_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = true,
             Confidence_Threshold__c = 0.85
@@ -77,18 +77,18 @@ private class SentinelAISettingsControllerTest {
         existingSettings.Confidence_Threshold__c = 0.95;
 
         Test.startTest();
-        SentinelAISettingsController.saveSettings(existingSettings);
+        PrometheionAISettingsController.saveSettings(existingSettings);
         Test.stopTest();
 
         // Then: Settings should be updated
-        Sentinel_AI_Settings__c updated = Sentinel_AI_Settings__c.getOrgDefaults();
+        Prometheion_AI_Settings__c updated = Prometheion_AI_Settings__c.getOrgDefaults();
         System.assertEquals(0.95, updated.Confidence_Threshold__c, 'Threshold should be updated to 0.95');
     }
 
     @IsTest
     static void testSaveSettings_ThrowsAuraHandledException() {
         // Given: Invalid settings (null record to trigger exception in test context)
-        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c();
+        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c();
         // Set an invalid field value that will cause upsert to fail
         settings.Confidence_Threshold__c = -1; // Assuming validation rule prevents negative values
 
@@ -96,7 +96,7 @@ private class SentinelAISettingsControllerTest {
         try {
             // This test verifies the exception handling path
             // In real scenarios, validation rules or other constraints would trigger this
-            SentinelAISettingsController.saveSettings(settings);
+            PrometheionAISettingsController.saveSettings(settings);
             // If we reach here with valid data, that's acceptable
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('Error saving settings'),
@@ -126,7 +126,7 @@ private class SentinelAISettingsControllerTest {
         Test.startTest();
         System.runAs(limitedUser) {
             // When: Limited user tries to get settings
-            Sentinel_AI_Settings__c settings = SentinelAISettingsController.getSettings();
+            Prometheion_AI_Settings__c settings = PrometheionAISettingsController.getSettings();
 
             // Then: Should still return defaults (custom settings are accessible)
             System.assertNotEquals(null, settings, 'Should return settings even for limited user');

@@ -1,4 +1,4 @@
-public with sharing class SentinelComplianceScorer {
+public with sharing class PrometheionComplianceScorer {
     @AuraEnabled(cacheable=true)
     public static Decimal calculateReadinessScore() {
         try {
@@ -42,9 +42,9 @@ public with sharing class SentinelComplianceScorer {
 
     private static Decimal calculateEvidenceScore() {
         // Check if we have recent compliance graph entries
-        List<Sentinel_Compliance_Graph__b> recentEntries = [
+        List<Prometheion_Compliance_Graph__b> recentEntries = [
             SELECT Id
-            FROM Sentinel_Compliance_Graph__b
+            FROM Prometheion_Compliance_Graph__b
             WHERE Timestamp__c >= LAST_N_DAYS:30
             LIMIT 1
         ];

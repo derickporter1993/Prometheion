@@ -1,4 +1,4 @@
-# Sentinel AppExchange Security Review Documentation
+# Prometheion AppExchange Security Review Documentation
 **Version**: 1.0
 **Generated**: January 2026
 **Target**: AppExchange Security Review Submission
@@ -10,7 +10,7 @@
 | Metric | Status | Notes |
 |--------|--------|-------|
 | Entry Point Audit | COMPLETE | 11 @AuraEnabled methods, 1 @InvocableMethod |
-| Without Sharing Classes | 1 | SentinelReasoningEngine (documented) |
+| Without Sharing Classes | 1 | PrometheionReasoningEngine (documented) |
 | Dynamic SOQL | 0 | All queries use static SOQL with bind variables |
 | LWC Syntax Issues | 0 | No quoted template expressions found |
 | Secrets Hardcoded | 0 | No hardcoded credentials detected |
@@ -23,18 +23,18 @@
 
 | Entry Point | Class | Access Pattern | Intended Users | Permission Set |
 |-------------|-------|----------------|----------------|----------------|
-| `getSettings()` | `SentinelAISettingsController` | `cacheable=true` | All Users | `Sentinel_User` |
-| `saveSettings()` | `SentinelAISettingsController` | Read/Write | Admins Only | `Sentinel_Admin` |
-| `calculateReadinessScore()` | `SentinelComplianceScorer` | `cacheable=true` | All Users | `Sentinel_User` |
-| `publish()` | `PerformanceAlertPublisher` | Read/Write | All Users | `Sentinel_User` |
-| `generateLegalAttestation()` | `SentinelLegalDocumentGenerator` | Read/Write | Compliance Officers | `Sentinel_Compliance` |
-| `getSnapshot()` | `ApiUsageDashboardController` | Read Only | All Users | `Sentinel_User` |
-| `getRecentAlerts()` | `AlertHistoryService` | `cacheable=true` | All Users | `Sentinel_User` |
-| `capture()` | `LimitMetrics` | `cacheable=true` | All Users | `Sentinel_User` |
-| `getRecentDeployments()` | `DeploymentMetrics` | `cacheable=true` | All Users | `Sentinel_User` |
-| `evaluate()` | `PerformanceRuleEngine` | Read/Write | All Users | `Sentinel_User` |
-| `log()` | `FlowExecutionLogger` | Read/Write | System/Flow | `Sentinel_System` |
-| `topFlows()` | `FlowExecutionStats` | `cacheable=true` | All Users | `Sentinel_User` |
+| `getSettings()` | `PrometheionAISettingsController` | `cacheable=true` | All Users | `Prometheion_User` |
+| `saveSettings()` | `PrometheionAISettingsController` | Read/Write | Admins Only | `Prometheion_Admin` |
+| `calculateReadinessScore()` | `PrometheionComplianceScorer` | `cacheable=true` | All Users | `Prometheion_User` |
+| `publish()` | `PerformanceAlertPublisher` | Read/Write | All Users | `Prometheion_User` |
+| `generateLegalAttestation()` | `PrometheionLegalDocumentGenerator` | Read/Write | Compliance Officers | `Prometheion_Compliance` |
+| `getSnapshot()` | `ApiUsageDashboardController` | Read Only | All Users | `Prometheion_User` |
+| `getRecentAlerts()` | `AlertHistoryService` | `cacheable=true` | All Users | `Prometheion_User` |
+| `capture()` | `LimitMetrics` | `cacheable=true` | All Users | `Prometheion_User` |
+| `getRecentDeployments()` | `DeploymentMetrics` | `cacheable=true` | All Users | `Prometheion_User` |
+| `evaluate()` | `PerformanceRuleEngine` | Read/Write | All Users | `Prometheion_User` |
+| `log()` | `FlowExecutionLogger` | Read/Write | System/Flow | `Prometheion_System` |
+| `topFlows()` | `FlowExecutionStats` | `cacheable=true` | All Users | `Prometheion_User` |
 
 ### 1.2 @InvocableMethod Inventory
 
@@ -56,15 +56,15 @@
 
 | Class | Justification | Risk Accepted By | Mitigations |
 |-------|---------------|------------------|-------------|
-| `SentinelReasoningEngine` | AI reasoning requires access to compliance graph data across all records for accurate risk scoring. System context needed to query Big Object data that may span multiple users' data. | Security Team | 1. All inputs are validated before processing. 2. Output is sanitized before returning to UI. 3. Audit trail logged for all operations. 4. No user-controlled query parameters. |
+| `PrometheionReasoningEngine` | AI reasoning requires access to compliance graph data across all records for accurate risk scoring. System context needed to query Big Object data that may span multiple users' data. | Security Team | 1. All inputs are validated before processing. 2. Output is sanitized before returning to UI. 3. Audit trail logged for all operations. 4. No user-controlled query parameters. |
 
 ### 2.2 With Sharing Classes (Default)
 
 All other classes use `with sharing`:
-- `SentinelAISettingsController`
-- `SentinelComplianceScorer`
+- `PrometheionAISettingsController`
+- `PrometheionComplianceScorer`
 - `PerformanceAlertPublisher`
-- `SentinelLegalDocumentGenerator`
+- `PrometheionLegalDocumentGenerator`
 - `ApiUsageDashboardController`
 - `AlertHistoryService`
 - `LimitMetrics`
@@ -72,7 +72,7 @@ All other classes use `with sharing`:
 - `PerformanceRuleEngine`
 - `FlowExecutionLogger`
 - `FlowExecutionStats`
-- `SentinelGraphIndexer`
+- `PrometheionGraphIndexer`
 - `SlackNotifier`
 
 ---
@@ -90,10 +90,10 @@ All other classes use `with sharing`:
 ### 3.2 Sample Query Audit
 
 ```apex
-// SentinelLegalDocumentGenerator.cls:33-41 - SAFE
-List<Sentinel_Compliance_Graph__b> entries = [
+// PrometheionLegalDocumentGenerator.cls:33-41 - SAFE
+List<Prometheion_Compliance_Graph__b> entries = [
     SELECT Graph_Node_Id__c, Entity_Type__c, Risk_Score__c, ...
-    FROM Sentinel_Compliance_Graph__b
+    FROM Prometheion_Compliance_Graph__b
     WHERE Compliance_Framework__c = :framework
     AND Timestamp__c >= :startDate
     AND Timestamp__c <= :endDate
@@ -125,8 +125,8 @@ List<Sentinel_Compliance_Graph__b> entries = [
 - `deploymentMonitorDashboard`
 - `flowExecutionMonitor`
 - `performanceAlertPanel`
-- `sentinelAiSettings`
-- `sentinelReadinessScore`
+- `prometheionAiSettings`
+- `prometheionReadinessScore`
 - `systemMonitorDashboard`
 
 **Status**: All components use standard LWC patterns with no high-risk DOM manipulation.
@@ -159,14 +159,14 @@ grep -rn "apiKey|password|secret|token" force-app/ --include="*.cls" --include="
 
 | Class | Pattern | Status |
 |-------|---------|--------|
-| `SentinelAISettingsController` | `AuraHandledException` with message | COMPLIANT |
-| `SentinelLegalDocumentGenerator` | `AuraHandledException` with message | COMPLIANT |
-| `SentinelReasoningEngine` | Custom `ReasoningException` | COMPLIANT |
+| `PrometheionAISettingsController` | `AuraHandledException` with message | COMPLIANT |
+| `PrometheionLegalDocumentGenerator` | `AuraHandledException` with message | COMPLIANT |
+| `PrometheionReasoningEngine` | Custom `ReasoningException` | COMPLIANT |
 
 ### 6.2 Sample Error Handling
 
 ```apex
-// SentinelAISettingsController.cls:19-23 - COMPLIANT
+// PrometheionAISettingsController.cls:19-23 - COMPLIANT
 try {
     upsert settings;
 } catch (Exception e) {
@@ -185,11 +185,11 @@ try {
 
 | Class | Test Class | Coverage Status |
 |-------|------------|-----------------|
-| `SentinelAISettingsController` | `SentinelAISettingsControllerTest` | NEW |
-| `SentinelComplianceScorer` | `SentinelComplianceScorerTest` | EXISTING |
-| `SentinelReasoningEngine` | `SentinelReasoningEngineTest` | EXISTING |
-| `SentinelLegalDocumentGenerator` | `SentinelLegalDocumentGeneratorTest` | NEW |
-| `SentinelGraphIndexer` | `SentinelGraphIndexerTest` | EXISTING |
+| `PrometheionAISettingsController` | `PrometheionAISettingsControllerTest` | NEW |
+| `PrometheionComplianceScorer` | `PrometheionComplianceScorerTest` | EXISTING |
+| `PrometheionReasoningEngine` | `PrometheionReasoningEngineTest` | EXISTING |
+| `PrometheionLegalDocumentGenerator` | `PrometheionLegalDocumentGeneratorTest` | NEW |
+| `PrometheionGraphIndexer` | `PrometheionGraphIndexerTest` | EXISTING |
 | `FlowExecutionLogger` | `FlowExecutionLoggerTest` | EXISTING |
 | `FlowExecutionStats` | `FlowExecutionStatsTest` | NEW |
 | `PerformanceAlertPublisher` | `PerformanceAlertPublisherTest` | EXISTING |
@@ -212,15 +212,15 @@ try {
 
 ## 8. Recommended Permission Set Structure
 
-### 8.1 Sentinel_User (Base Access)
+### 8.1 Prometheion_User (Base Access)
 
 ```xml
-<!-- Sentinel_User.permissionset-meta.xml -->
+<!-- Prometheion_User.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Sentinel User</label>
-    <description>Base access for all Sentinel users</description>
+    <label>Prometheion User</label>
+    <description>Base access for all Prometheion users</description>
     <classAccesses>
-        <apexClass>SentinelComplianceScorer</apexClass>
+        <apexClass>PrometheionComplianceScorer</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -235,33 +235,33 @@ try {
 </PermissionSet>
 ```
 
-### 8.2 Sentinel_Admin (Administrative Access)
+### 8.2 Prometheion_Admin (Administrative Access)
 
 ```xml
-<!-- Sentinel_Admin.permissionset-meta.xml -->
+<!-- Prometheion_Admin.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Sentinel Admin</label>
-    <description>Administrative access for Sentinel configuration</description>
+    <label>Prometheion Admin</label>
+    <description>Administrative access for Prometheion configuration</description>
     <classAccesses>
-        <apexClass>SentinelAISettingsController</apexClass>
+        <apexClass>PrometheionAISettingsController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <!-- Includes all Sentinel_User permissions -->
+    <!-- Includes all Prometheion_User permissions -->
 </PermissionSet>
 ```
 
-### 8.3 Sentinel_Compliance (Compliance Officer Access)
+### 8.3 Prometheion_Compliance (Compliance Officer Access)
 
 ```xml
-<!-- Sentinel_Compliance.permissionset-meta.xml -->
+<!-- Prometheion_Compliance.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Sentinel Compliance Officer</label>
+    <label>Prometheion Compliance Officer</label>
     <description>Access for compliance evidence generation</description>
     <classAccesses>
-        <apexClass>SentinelLegalDocumentGenerator</apexClass>
+        <apexClass>PrometheionLegalDocumentGenerator</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <!-- Includes all Sentinel_User permissions -->
+    <!-- Includes all Prometheion_User permissions -->
 </PermissionSet>
 ```
 
@@ -299,7 +299,7 @@ try {
 
 ### 10.2 Known Limitations
 
-1. **Big Object Queries**: `Sentinel_Compliance_Graph__b` queries cannot use USER_MODE due to Big Object limitations
+1. **Big Object Queries**: `Prometheion_Compliance_Graph__b` queries cannot use USER_MODE due to Big Object limitations
 2. **Einstein AI Integration**: Requires Named Credential setup in production
 
 ### 10.3 Future Security Enhancements

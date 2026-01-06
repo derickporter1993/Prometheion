@@ -1,4 +1,4 @@
-public with sharing class SentinelLegalDocumentGenerator {
+public with sharing class PrometheionLegalDocumentGenerator {
     @AuraEnabled
     public static String generateLegalAttestation(String framework, Date startDate, Date endDate) {
         try {
@@ -30,10 +30,10 @@ public with sharing class SentinelLegalDocumentGenerator {
         content.append('Period: ' + startDate + ' to ' + endDate + '\n\n');
 
         // Query compliance graph entries
-        List<Sentinel_Compliance_Graph__b> entries = [
+        List<Prometheion_Compliance_Graph__b> entries = [
             SELECT Graph_Node_Id__c, Entity_Type__c, Risk_Score__c, Drift_Category__c,
                    Timestamp__c, Human_Adjudicated__c
-            FROM Sentinel_Compliance_Graph__b
+            FROM Prometheion_Compliance_Graph__b
             WHERE Compliance_Framework__c = :framework
             AND Timestamp__c >= :startDate
             AND Timestamp__c <= :endDate
@@ -45,7 +45,7 @@ public with sharing class SentinelLegalDocumentGenerator {
         content.append('DETAILED AUDIT LOG\n');
         content.append('==================\n\n');
 
-        for (Sentinel_Compliance_Graph__b entry : entries) {
+        for (Prometheion_Compliance_Graph__b entry : entries) {
             content.append('Node: ' + entry.Graph_Node_Id__c + '\n');
             content.append('Type: ' + entry.Entity_Type__c + '\n');
             content.append('Risk: ' + entry.Risk_Score__c + '/10\n');

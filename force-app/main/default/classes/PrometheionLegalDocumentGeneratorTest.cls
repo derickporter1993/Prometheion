@@ -1,5 +1,5 @@
 @IsTest
-private class SentinelLegalDocumentGeneratorTest {
+private class PrometheionLegalDocumentGeneratorTest {
 
     @IsTest
     static void testGenerateLegalAttestation_PositivePath() {
@@ -9,7 +9,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Should create a ContentVersion and return ContentDocumentId
@@ -29,7 +29,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Should create document with GDPR in title
@@ -46,7 +46,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Should create document with HIPAA in title
@@ -62,7 +62,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Verify ContentVersion properties
@@ -84,7 +84,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Verify document content structure
@@ -108,7 +108,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date singleDay = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, singleDay, singleDay);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, singleDay, singleDay);
         Test.stopTest();
 
         // Then: Should still create document
@@ -124,7 +124,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Date endDate = Date.today();
 
         Test.startTest();
-        String contentDocId = SentinelLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
+        String contentDocId = PrometheionLegalDocumentGenerator.generateLegalAttestation(framework, startDate, endDate);
         Test.stopTest();
 
         // Then: Should handle empty result set gracefully
@@ -159,7 +159,7 @@ private class SentinelLegalDocumentGeneratorTest {
         Test.startTest();
         System.runAs(limitedUser) {
             try {
-                SentinelLegalDocumentGenerator.generateLegalAttestation('SOC2', Date.today().addDays(-30), Date.today());
+                PrometheionLegalDocumentGenerator.generateLegalAttestation('SOC2', Date.today().addDays(-30), Date.today());
                 // May succeed if user has implicit permissions
             } catch (AuraHandledException e) {
                 // Expected: Should throw AuraHandledException for permission issues
@@ -178,7 +178,7 @@ private class SentinelLegalDocumentGeneratorTest {
 
         Test.startTest();
         try {
-            SentinelLegalDocumentGenerator.generateLegalAttestation(null, startDate, endDate);
+            PrometheionLegalDocumentGenerator.generateLegalAttestation(null, startDate, endDate);
             // Document creation may succeed with null framework
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('Error generating evidence pack'),

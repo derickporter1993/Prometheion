@@ -1,15 +1,15 @@
 /**
- * @description Test Data Factory for Sentinel compliance testing.
+ * @description Test Data Factory for Prometheion compliance testing.
  * Provides reusable test data creation methods for all compliance-related tests.
  *
- * IMPORTANT: Big Objects (Sentinel_Compliance_Graph__b) cannot be inserted in test context.
+ * IMPORTANT: Big Objects (Prometheion_Compliance_Graph__b) cannot be inserted in test context.
  * Use the mock methods to create in-memory instances for unit testing.
  *
  * Custom Metadata (Compliance_Policy__mdt) cannot be inserted in tests.
  * Use createMockPolicy() for unit tests, and deploy actual records for integration tests.
  */
 @IsTest
-public class SentinelTestDataFactory {
+public class PrometheionTestDataFactory {
 
     // ============================================
     // CONSTANTS - Supported Frameworks
@@ -47,16 +47,16 @@ public class SentinelTestDataFactory {
     // ============================================
 
     /**
-     * @description Creates a mock Sentinel_Compliance_Graph__b node (in-memory only).
+     * @description Creates a mock Prometheion_Compliance_Graph__b node (in-memory only).
      * Big Objects cannot be inserted in test context.
      */
-    public static Sentinel_Compliance_Graph__b createMockComplianceNode(
+    public static Prometheion_Compliance_Graph__b createMockComplianceNode(
         String entityType,
         String entityRecordId,
         String framework,
         Decimal riskScore
     ) {
-        return new Sentinel_Compliance_Graph__b(
+        return new Prometheion_Compliance_Graph__b(
             Graph_Node_Id__c = generateTestHash(entityType, entityRecordId, framework),
             Parent_Node_Id__c = null,
             Timestamp__c = System.now(),
@@ -75,11 +75,11 @@ public class SentinelTestDataFactory {
     /**
      * @description Creates multiple mock compliance nodes for bulk testing.
      */
-    public static List<Sentinel_Compliance_Graph__b> createMockComplianceNodes(
+    public static List<Prometheion_Compliance_Graph__b> createMockComplianceNodes(
         String framework,
         Integer count
     ) {
-        List<Sentinel_Compliance_Graph__b> nodes = new List<Sentinel_Compliance_Graph__b>();
+        List<Prometheion_Compliance_Graph__b> nodes = new List<Prometheion_Compliance_Graph__b>();
         for (Integer i = 0; i < count; i++) {
             Decimal riskScore = Math.mod(i, 10) + 1; // Varies 1-10
             nodes.add(createMockComplianceNode(
@@ -95,12 +95,12 @@ public class SentinelTestDataFactory {
     /**
      * @description Creates a mock AI adjudication node.
      */
-    public static Sentinel_Compliance_Graph__b createMockAdjudicationNode(
+    public static Prometheion_Compliance_Graph__b createMockAdjudicationNode(
         String parentNodeHash,
         Decimal confidence,
         String explanation
     ) {
-        return new Sentinel_Compliance_Graph__b(
+        return new Prometheion_Compliance_Graph__b(
             Graph_Node_Id__c = generateTestHash(ENTITY_AI_ADJUDICATION, parentNodeHash, 'ADJUDICATION'),
             Parent_Node_Id__c = parentNodeHash,
             Timestamp__c = System.now(),
@@ -288,12 +288,12 @@ public class SentinelTestDataFactory {
     /**
      * @description Creates default AI settings for testing.
      */
-    public static Sentinel_AI_Settings__c createAISettings(
+    public static Prometheion_AI_Settings__c createAISettings(
         Boolean enableAI,
         Decimal confidenceThreshold,
         Boolean requireHumanApproval
     ) {
-        Sentinel_AI_Settings__c settings = new Sentinel_AI_Settings__c(
+        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = enableAI,
             Confidence_Threshold__c = confidenceThreshold,
@@ -308,21 +308,21 @@ public class SentinelTestDataFactory {
     /**
      * @description Creates AI settings with AI disabled (fallback mode).
      */
-    public static Sentinel_AI_Settings__c createAISettingsDisabled() {
+    public static Prometheion_AI_Settings__c createAISettingsDisabled() {
         return createAISettings(false, 0.85, true);
     }
 
     /**
      * @description Creates AI settings with strict thresholds.
      */
-    public static Sentinel_AI_Settings__c createAISettingsStrict() {
+    public static Prometheion_AI_Settings__c createAISettingsStrict() {
         return createAISettings(true, 0.95, true);
     }
 
     /**
      * @description Creates AI settings with lenient thresholds.
      */
-    public static Sentinel_AI_Settings__c createAISettingsLenient() {
+    public static Prometheion_AI_Settings__c createAISettingsLenient() {
         return createAISettings(true, 0.70, false);
     }
 
@@ -503,14 +503,14 @@ public class SentinelTestDataFactory {
 
         User u = new User(
             Alias = 'minuser',
-            Email = 'minuser@test.sentinel.com',
+            Email = 'minuser@test.prometheion.com',
             EmailEncodingKey = 'UTF-8',
             LastName = 'Minimal User',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
             ProfileId = minProfile.Id,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'minuser' + DateTime.now().getTime() + '@test.sentinel.com'
+            Username = 'minuser' + DateTime.now().getTime() + '@test.prometheion.com'
         );
         insert u;
         return u;
@@ -524,14 +524,14 @@ public class SentinelTestDataFactory {
 
         User u = new User(
             Alias = 'admuser',
-            Email = 'adminuser@test.sentinel.com',
+            Email = 'adminuser@test.prometheion.com',
             EmailEncodingKey = 'UTF-8',
             LastName = 'Admin User',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
             ProfileId = adminProfile.Id,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'adminuser' + DateTime.now().getTime() + '@test.sentinel.com'
+            Username = 'adminuser' + DateTime.now().getTime() + '@test.prometheion.com'
         );
         insert u;
         return u;

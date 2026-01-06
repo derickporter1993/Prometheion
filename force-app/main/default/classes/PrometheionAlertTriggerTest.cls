@@ -1,5 +1,5 @@
 @IsTest
-private class SentinelAlertTriggerTest {
+private class PrometheionAlertTriggerTest {
     @IsTest
     static void testTrigger_PublishesEvent() {
         Alert__c alert = new Alert__c(

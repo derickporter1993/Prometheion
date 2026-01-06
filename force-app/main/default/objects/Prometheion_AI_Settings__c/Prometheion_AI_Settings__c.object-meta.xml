@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
-    <label>Sentinel AI Settings</label>
+    <label>Prometheion AI Settings</label>
     <visibility>Public</visibility>
     <fields>
         <fullName>Enable_AI_Reasoning__c</fullName>
