@@ -135,13 +135,9 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!assignmentsToRemove.isEmpty()) {
             try {
-                // Strip inaccessible fields before delete
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.DELETABLE,
-                    assignmentsToRemove
-                );
-                delete decision.getRecords();
-                result.assignmentsRemoved.addAll(decision.getRecords());
+                // Delete permission set assignments directly
+                delete assignmentsToRemove;
+                result.assignmentsRemoved.addAll(assignmentsToRemove);
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception deleting assignments: ' + e.getMessage());
                 result.messages.add('Error removing permission set assignments: ' + e.getMessage());
@@ -238,11 +234,7 @@ public with sharing class PrometheionQuickActionsService {
                 ];
                 
                 if (!assignments.isEmpty()) {
-                    SObjectAccessDecision decision = Security.stripInaccessible(
-                        AccessType.DELETABLE,
-                        assignments
-                    );
-                    delete decision.getRecords();
+                    delete assignments;
                 }
             } catch (Exception e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] Error removing assignments: ' + e.getMessage());
@@ -251,11 +243,7 @@ public with sharing class PrometheionQuickActionsService {
             
             // Then delete the permission sets
             try {
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.DELETABLE,
-                    setsToRemove
-                );
-                delete decision.getRecords();
+                delete setsToRemove;
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception deleting permission sets: ' + e.getMessage());
                 result.messages.add('Error deleting permission sets: ' + e.getMessage());
@@ -317,7 +305,7 @@ public with sharing class PrometheionQuickActionsService {
                     FROM PermissionSetAssignment
                     WHERE AssigneeId IN :userIds
                     WITH SECURITY_ENFORCED
-                    ORDER BY AssigneeId, CreatedDate DESC
+                    ORDER BY AssigneeId
                 ];
             } catch (SecurityException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] Security exception querying all assignments: ' + e.getMessage());
@@ -348,13 +336,9 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!toRemove.isEmpty()) {
             try {
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.DELETABLE,
-                    toRemove
-                );
-                delete decision.getRecords();
-                result.assignmentsRemoved.addAll(decision.getRecords());
-                result.messages.add('Removed ' + decision.getRecords().size() + 
+                delete toRemove;
+                result.assignmentsRemoved.addAll(toRemove);
+                result.messages.add('Removed ' + toRemove.size() + 
                     ' excessive permission set assignments.');
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception removing assignments: ' + e.getMessage());
