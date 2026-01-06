@@ -42,9 +42,9 @@ Prometheion makes your Salesforce org **audit-ready and protected from configura
 Prometheion is built for **regulated organizations using Salesforce**:
 
 - 🏥 **Healthcare**: HIPAA compliance, PHI protection, audit trails
-- 🏛️ **Government & Nonprofits**: FedRAMP, FISMA, grants management, donor privacy
-- 💰 **Financial Services**: SOX, PCI-DSS, transaction auditing
-- 🏢 **Any Regulated Org**: SOC 2, GDPR, or compliance frameworks requiring audit evidence
+- 🏛️ **Government & Nonprofits**: FedRAMP, FISMA, NIST, grants management, donor privacy
+- 💰 **Financial Services**: SOX, PCI-DSS, GLBA, transaction auditing, privacy notices
+- 🏢 **Any Regulated Org**: SOC 2, GDPR, CCPA, ISO 27001, or compliance frameworks requiring audit evidence
 
 If you're spending weeks preparing for audits, manually reviewing permissions, or can't explain recent configuration changes — Prometheion is for you.
 
@@ -59,7 +59,7 @@ Generates a comprehensive compliance baseline report showing:
 - Top 5 compliance risks ranked by severity
 - Permissions overview (who has access to what)
 - Sharing rules and data access analysis
-- Compliance checklist (HIPAA, SOC 2, GDPR, etc.)
+- Compliance checklist across 10 frameworks: HIPAA, SOC 2, NIST, FedRAMP, GDPR, SOX, PCI-DSS, CCPA, GLBA, ISO 27001
 
 **📄 [View Sample Report](examples/compliance-baseline-report-sample.md)**
 
@@ -546,7 +546,7 @@ npm run lint
 - [x] Slack alerting
 - [x] LWC dashboards (governor limits, API usage, Flow monitoring)
 - [x] AI Compliance Copilot
-- [x] Multi-framework compliance scoring (HIPAA, SOC2, NIST, FedRAMP, GDPR)
+- [x] Multi-framework compliance scoring (HIPAA, SOC2, NIST, FedRAMP, GDPR, SOX, PCI-DSS, CCPA, GLBA, ISO 27001)
 - [x] Enhanced error logging and correlation IDs
 - [x] Batched queries for governor limit optimization
 
@@ -564,7 +564,7 @@ npm run lint
 - [ ] **Centralized Evidence Repository**: Store audit evidence from multiple orgs in a single location
 - [ ] **AI Governance**: Track Einstein/AI feature usage and compliance (e.g., GDPR Article 22)
 - [ ] **SIEM Export**: Push events to Splunk, DataDog, or other SIEM tools
-- [ ] **Custom Compliance Frameworks**: Define your own compliance rules beyond HIPAA/SOC 2
+- [ ] **Custom Compliance Frameworks**: Define your own compliance rules beyond the 10 supported frameworks
 
 ### 🌟 v3.0+ (Future) - Automated Remediation
 
@@ -599,7 +599,7 @@ npm run lint
 
 ### Q: Can I customize the Audit Readiness Score calculation?
 
-**A**: Not yet. Custom scoring is planned for v2. For now, the score is based on industry best practices (NIST 800-53, HIPAA, SOC 2).
+**A**: Not yet. Custom scoring is planned for v2. For now, the score is based on industry best practices across 10 compliance frameworks (HIPAA, SOC 2, NIST, FedRAMP, GDPR, SOX, PCI-DSS, CCPA, GLBA, ISO 27001).
 
 ---
 
@@ -608,7 +608,6 @@ npm run lint
 Prometheion is under active development. Contributions welcome!
 
 **Priority areas for v3.0+**:
-- Additional compliance framework support (ISO 27001, FedRAMP)
 - Improved drift detection rules
 - Test coverage improvements (target 75%+)
 - Enhanced error handling and logging

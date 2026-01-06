@@ -24,6 +24,9 @@ public class PrometheionConstants {
     public static final String FRAMEWORK_GDPR = 'GDPR';
     public static final String FRAMEWORK_SOX = 'SOX';
     public static final String FRAMEWORK_PCI_DSS = 'PCI_DSS';
+    public static final String FRAMEWORK_CCPA = 'CCPA';
+    public static final String FRAMEWORK_GLBA = 'GLBA';
+    public static final String FRAMEWORK_ISO27001 = 'ISO27001';
     
     public static final Set<String> ALL_FRAMEWORKS = new Set<String>{
         FRAMEWORK_HIPAA,
@@ -32,7 +35,10 @@ public class PrometheionConstants {
         FRAMEWORK_FEDRAMP,
         FRAMEWORK_GDPR,
         FRAMEWORK_SOX,
-        FRAMEWORK_PCI_DSS
+        FRAMEWORK_PCI_DSS,
+        FRAMEWORK_CCPA,
+        FRAMEWORK_GLBA,
+        FRAMEWORK_ISO27001
     };
     
     // ============================================

@@ -126,6 +126,11 @@ public with sharing class PrometheionComplianceScorer {
         scoreMap.put('nistScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_NIST));
         scoreMap.put('fedrampScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_FEDRAMP));
         scoreMap.put('gdprScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_GDPR));
+        scoreMap.put('soxScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_SOX));
+        scoreMap.put('pciDssScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_PCI_DSS));
+        scoreMap.put('ccpaScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_CCPA));
+        scoreMap.put('glbaScore', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_GLBA));
+        scoreMap.put('iso27001Score', result.frameworkScores.get(PrometheionConstants.FRAMEWORK_ISO27001));
         scoreMap.put('riskLevel', result.rating);
         
         return scoreMap;
@@ -380,6 +385,11 @@ public with sharing class PrometheionComplianceScorer {
         scores.put(PrometheionConstants.FRAMEWORK_NIST, (baseScore * 0.98).setScale(1));  // NIST focuses on policy
         scores.put(PrometheionConstants.FRAMEWORK_FEDRAMP, (baseScore * 0.92).setScale(1)); // FedRAMP is strictest
         scores.put(PrometheionConstants.FRAMEWORK_GDPR, (baseScore * 0.97).setScale(1));  // GDPR focuses on data protection
+        scores.put(PrometheionConstants.FRAMEWORK_SOX, (baseScore * 0.96).setScale(1));  // SOX focuses on financial controls
+        scores.put(PrometheionConstants.FRAMEWORK_PCI_DSS, (baseScore * 0.94).setScale(1)); // PCI-DSS focuses on card data security
+        scores.put(PrometheionConstants.FRAMEWORK_CCPA, (baseScore * 0.98).setScale(1)); // CCPA focuses on consumer privacy rights
+        scores.put(PrometheionConstants.FRAMEWORK_GLBA, (baseScore * 0.96).setScale(1));  // GLBA focuses on financial privacy
+        scores.put(PrometheionConstants.FRAMEWORK_ISO27001, (baseScore * 0.99).setScale(1)); // ISO 27001 is comprehensive ISMS
         
         return scores;
     }

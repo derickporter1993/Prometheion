@@ -53,7 +53,12 @@ export default class PrometheionDashboard extends LightningElement {
             { key: 'SOC2', name: 'SOC 2', color: '#8b5cf6' },
             { key: 'NIST', name: 'NIST', color: '#a855f7' },
             { key: 'FedRAMP', name: 'FedRAMP', color: '#22d3ee' },
-            { key: 'GDPR', name: 'GDPR', color: '#10b981' }
+            { key: 'GDPR', name: 'GDPR', color: '#10b981' },
+            { key: 'SOX', name: 'SOX', color: '#f59e0b' },
+            { key: 'PCI_DSS', name: 'PCI-DSS', color: '#ef4444' },
+            { key: 'CCPA', name: 'CCPA', color: '#06b6d4' },
+            { key: 'GLBA', name: 'GLBA', color: '#84cc16' },
+            { key: 'ISO27001', name: 'ISO 27001', color: '#8b5cf6' }
         ];
 
         return frameworks.map(fw => {
