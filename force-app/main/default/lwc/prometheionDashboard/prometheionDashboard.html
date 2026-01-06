@@ -18,8 +18,12 @@
       <div class="header-actions">
         <button
           class="refresh-btn"
-          onclick={refreshData}
-          disabled={isLoading}
+          onclick="
+            {
+              refreshData;
+            }
+          "
+          disabled="{isLoading}"
           aria-label="Refresh dashboard data"
         >
           <svg
@@ -27,7 +31,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            class={refreshIconClass}
+            class="{refreshIconClass}"
             aria-hidden="true"
           >
             <path d="M23 4V10H17M1 20V14H7" />
@@ -43,14 +47,14 @@
     <!-- Main Score Card -->
     <div class="main-score-section">
       <div class="score-ring-container">
-        <div class="score-ring" style={scoreRingStyle}>
+        <div class="score-ring" style="{scoreRingStyle}">
           <div class="score-inner">
             <span class="score-value">{displayScore}</span>
             <span class="score-label">Overall Score</span>
           </div>
         </div>
         <div class="score-rating">
-          <span class={ratingBadgeClass}>{rating}</span>
+          <span class="{ratingBadgeClass}">{rating}</span>
         </div>
       </div>
 
@@ -58,14 +62,14 @@
       <div class="framework-scores">
         <h3 class="section-title">Framework Compliance</h3>
         <div class="framework-grid">
-          <template for:each={frameworkList} for:item="fw">
-            <div key={fw.name} class="framework-card">
+          <template for:each="{frameworkList}" for:item="fw">
+            <div key="{fw.name}" class="framework-card">
               <div class="framework-header">
                 <span class="framework-name">{fw.name}</span>
-                <span class={fw.scoreClass}>{fw.score}%</span>
+                <span class="{fw.scoreClass}">{fw.score}%</span>
               </div>
               <div class="progress-bar">
-                <div class="progress-fill" style={fw.progressStyle}></div>
+                <div class="progress-fill" style="{fw.progressStyle}"></div>
               </div>
             </div>
           </template>
@@ -82,18 +86,18 @@
         Score Breakdown
       </h3>
       <div class="factors-grid">
-        <template for:each={factors} for:item="factor">
-          <div key={factor.name} class="factor-card">
+        <template for:each="{factors}" for:item="factor">
+          <div key="{factor.name}" class="factor-card">
             <div class="factor-header">
               <span class="factor-name">{factor.name}</span>
-              <span class={factor.statusClass}>{factor.status}</span>
+              <span class="{factor.statusClass}">{factor.status}</span>
             </div>
             <div class="factor-score">
               <span class="factor-value">{factor.score}</span>
               <span class="factor-max">/100</span>
             </div>
             <div class="factor-bar">
-              <div class="factor-fill" style={factor.barStyle}></div>
+              <div class="factor-fill" style="{factor.barStyle}"></div>
             </div>
             <p class="factor-detail">{factor.detail}</p>
             <div class="factor-weight">
@@ -106,7 +110,7 @@
     </div>
 
     <!-- Top Risks -->
-    <template lwc:if={hasRisks}>
+    <template lwc:if="{hasRisks}">
       <div class="risks-section">
         <h3 class="section-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -118,10 +122,10 @@
           Top Risks
         </h3>
         <div class="risks-list">
-          <template for:each={topRisks} for:item="risk">
-            <div key={risk.nodeId} class="risk-card">
-              <div class="risk-severity" data-severity={risk.severity}>
-                <span class={risk.severityClass}>{risk.severity}</span>
+          <template for:each="{topRisks}" for:item="risk">
+            <div key="{risk.nodeId}" class="risk-card">
+              <div class="risk-severity" data-severity="{risk.severity}">
+                <span class="{risk.severityClass}">{risk.severity}</span>
               </div>
               <div class="risk-content">
                 <h4 class="risk-title">{risk.title}</h4>
@@ -130,9 +134,13 @@
                   <span class="risk-framework">{risk.framework}</span>
                   <button
                     class="risk-action"
-                    data-node-id={risk.nodeId}
-                    onclick={handleRiskClick}
-                    aria-label={risk.viewDetailsLabel}
+                    data-node-id="{risk.nodeId}"
+                    onclick="
+                      {
+                        handleRiskClick;
+                      }
+                    "
+                    aria-label="{risk.viewDetailsLabel}"
                   >
                     View Details →
                   </button>
@@ -148,7 +156,11 @@
     <div class="actions-section">
       <button
         class="action-btn primary"
-        onclick={handleGenerateSoc2}
+        onclick="
+          {
+            handleGenerateSoc2;
+          }
+        "
         aria-label="Generate SOC2 Report"
       >
         <svg
@@ -167,7 +179,11 @@
       </button>
       <button
         class="action-btn secondary"
-        onclick={handleGenerateHipaa}
+        onclick="
+          {
+            handleGenerateHipaa;
+          }
+        "
         aria-label="Generate HIPAA Report"
       >
         <svg
@@ -184,7 +200,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <template lwc:if={isLoading}>
+    <template lwc:if="{isLoading}">
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <span>Calculating compliance scores...</span>

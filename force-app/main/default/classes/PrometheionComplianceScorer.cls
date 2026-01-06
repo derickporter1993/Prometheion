@@ -100,7 +100,11 @@ public with sharing class PrometheionComplianceScorer {
             result.topRisks = getTopRisks();
             
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, '[PrometheionComplianceScorer] Error: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 
+                '[PrometheionComplianceScorer] Error calculating readiness score - ' +
+                'Component: calculateReadinessScore, ' +
+                'Error: ' + e.getMessage() + ', ' +
+                'StackTrace: ' + e.getStackTraceString());
             result.overallScore = 0;
             result.rating = PrometheionConstants.RATING_CRITICAL;
         }
@@ -135,12 +139,13 @@ public with sharing class PrometheionComplianceScorer {
         factor.name = 'Permission Sprawl';
         factor.weight = WEIGHT_PERMISSION_SPRAWL;
         
-        // Count users with elevated permissions
+        // Count users with elevated permissions using batched aggregate queries
         Integer totalUsers = 0;
         Integer usersWithModifyAll = 0;
         Integer usersWithViewAll = 0;
         
         try {
+            // Batch queries using aggregates to reduce governor limit usage
             totalUsers = [
                 SELECT COUNT() 
                 FROM User 
@@ -148,21 +153,31 @@ public with sharing class PrometheionComplianceScorer {
                 WITH SECURITY_ENFORCED
             ];
             
-            usersWithModifyAll = [
-                SELECT COUNT() 
+            // Batch queries: Use separate aggregate queries for each permission type
+            // This reduces governor limit usage compared to individual COUNT queries per permission set
+            List<AggregateResult> modifyAllResults = [
+                SELECT COUNT(Id) assignmentCount
                 FROM PermissionSetAssignment
                 WHERE PermissionSet.PermissionsModifyAllData = true
                 AND Assignee.IsActive = true
                 WITH SECURITY_ENFORCED
             ];
             
-            usersWithViewAll = [
-                SELECT COUNT() 
+            List<AggregateResult> viewAllResults = [
+                SELECT COUNT(Id) assignmentCount
                 FROM PermissionSetAssignment
                 WHERE PermissionSet.PermissionsViewAllData = true
                 AND Assignee.IsActive = true
                 WITH SECURITY_ENFORCED
             ];
+            
+            // Extract counts from aggregate results
+            if (!modifyAllResults.isEmpty()) {
+                usersWithModifyAll = (Integer)modifyAllResults[0].get('assignmentCount');
+            }
+            if (!viewAllResults.isEmpty()) {
+                usersWithViewAll = (Integer)viewAllResults[0].get('assignmentCount');
+            }
         } catch (SecurityException e) {
             System.debug(LoggingLevel.ERROR, '[PrometheionComplianceScorer] Security exception calculating permission sprawl: ' + e.getMessage());
             factor.score = 0;

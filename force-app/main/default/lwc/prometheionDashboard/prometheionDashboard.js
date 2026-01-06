@@ -9,29 +9,17 @@ export default class PrometheionDashboard extends LightningElement {
 
     @wire(calculateReadinessScore)
     wiredScore({ error, data }) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:11',message:'wiredScore entry',data:{hasError:!!error,hasData:!!data,errorMsg:error?.body?.message||error?.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-        // #endregion
         this.isLoading = false;
         if (data) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:14',message:'wiredScore data received',data:{hasScore:!!data.overallScore,score:data.overallScore},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-            // #endregion
             this.scoreResult = data;
             this.lastUpdated = new Date();
         } else if (error) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:18',message:'wiredScore error',data:{errorMsg:error.body?.message||error.message,errorType:error.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-            // #endregion
             console.error('Error loading score:', error);
             this.showToast('Error', 'Failed to load compliance score', 'error');
         }
     }
 
     get displayScore() {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:22',message:'displayScore getter',data:{hasScoreResult:!!this.scoreResult,score:this.scoreResult?.overallScore},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4'})}).catch(()=>{});
-        // #endregion
         return this.scoreResult?.overallScore ?? 0;
     }
 
@@ -127,24 +115,15 @@ export default class PrometheionDashboard extends LightningElement {
     }
 
     refreshData() {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:117',message:'refreshData CALLED - handler is working',data:{isLoading:this.isLoading,stack:new Error().stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'H2'})}).catch(()=>{});
-        // #endregion
         this.isLoading = true;
         // Force refresh by calling imperative Apex
         calculateReadinessScore()
             .then(result => {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:121',message:'refreshData success',data:{hasResult:!!result,score:result?.overallScore},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-                // #endregion
                 this.scoreResult = result;
                 this.lastUpdated = new Date();
                 this.isLoading = false;
             })
             .catch(error => {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:126',message:'refreshData error',data:{errorMsg:error.body?.message||error.message,errorType:error.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-                // #endregion
                 console.error('Refresh error:', error);
                 this.isLoading = false;
                 this.showToast('Error', 'Failed to refresh data', 'error');
@@ -152,23 +131,14 @@ export default class PrometheionDashboard extends LightningElement {
     }
 
     handleGenerateSoc2() {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:133',message:'handleGenerateSoc2 called',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-        // #endregion
         this.showToast('Coming Soon', 'SOC2 report generation will be available in the next release.', 'info');
     }
 
     handleGenerateHipaa() {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:137',message:'handleGenerateHipaa called',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-        // #endregion
         this.showToast('Coming Soon', 'HIPAA report generation will be available in the next release.', 'info');
     }
 
     handleRiskClick(event) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'prometheionDashboard.js:141',message:'handleRiskClick called',data:{hasEvent:!!event,nodeId:event?.currentTarget?.dataset?.nodeId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-        // #endregion
         const nodeId = event.currentTarget.dataset.nodeId;
         this.showToast('Risk Details', `Viewing details for risk: ${nodeId}`, 'info');
     }

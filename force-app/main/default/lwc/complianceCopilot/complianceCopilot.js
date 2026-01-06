@@ -81,21 +81,12 @@ export default class ComplianceCopilot extends LightningElement {
     }
 
     handleSubmit() {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:83',message:'handleSubmit entry',data:{isLoading:this.isLoading,queryLength:this.query?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-        // #endregion
         // Prevent submission if already loading or empty query
         if (this.isLoading) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:85',message:'handleSubmit blocked - loading',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-            // #endregion
             return;
         }
 
         if (!this.query || this.query.trim().length === 0) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:89',message:'handleSubmit blocked - empty query',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-            // #endregion
             return;
         }
 
@@ -105,21 +96,12 @@ export default class ComplianceCopilot extends LightningElement {
         this.isLoading = true;
         this.showQuickCommands = false;
 
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:99',message:'askCopilot API call',data:{query:userMessage},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-        // #endregion
         askCopilot({ query: userMessage })
             .then((response) => {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:100',message:'askCopilot success',data:{hasAnswer:!!response?.answer,hasEvidence:!!response?.evidence},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-                // #endregion
                 this.isLoading = false;
                 this.addMessage('assistant', response.answer, response);
             })
             .catch((error) => {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:104',message:'askCopilot error',data:{errorMsg:error.body?.message||error.message,errorType:error.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3'})}).catch(()=>{});
-                // #endregion
                 this.isLoading = false;
                 const errorMessage = this.extractErrorMessage(error);
                 this.showToast(ERROR_TITLE, errorMessage, 'error');
@@ -147,9 +129,6 @@ export default class ComplianceCopilot extends LightningElement {
     }
 
     addMessage(role, content, copilotResponse = null) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:131',message:'addMessage before',data:{role,messageCount:this.messages.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5'})}).catch(()=>{});
-        // #endregion
         this.messages = [
             ...this.messages,
             {
@@ -160,9 +139,6 @@ export default class ComplianceCopilot extends LightningElement {
                 copilotResponse: copilotResponse
             }
         ];
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/d928e7df-87a5-4977-8428-ec2ece0c9f16',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'complianceCopilot.js:142',message:'addMessage after',data:{newMessageCount:this.messages.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5'})}).catch(()=>{});
-        // #endregion
 
         // Scroll to bottom after message is added
         this.scrollToBottom();

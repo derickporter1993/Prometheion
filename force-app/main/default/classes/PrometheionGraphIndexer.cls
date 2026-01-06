@@ -24,11 +24,23 @@ public with sharing class PrometheionGraphIndexer {
             insert node;
             return nodeHash;
         } catch (DmlException e) {
-            System.debug(LoggingLevel.ERROR, 'Graph indexing failed for entity: ' + entityType + ', record: ' + entityId + ', error: ' + e.getMessage());
-            throw new PrometheionException('Graph indexing failed: ' + e.getMessage());
+            String correlationId = generateCorrelationId(entityType, entityId);
+            System.debug(LoggingLevel.ERROR, 
+                '[PrometheionGraphIndexer] Graph indexing failed - CorrelationId: ' + correlationId + 
+                ', EntityType: ' + entityType + 
+                ', EntityId: ' + entityId + 
+                ', Error: ' + e.getMessage() + 
+                ', StackTrace: ' + e.getStackTraceString());
+            throw new PrometheionException('Graph indexing failed for ' + entityType + ' (' + entityId + '): ' + e.getDmlMessage(0));
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Graph indexing unexpected error for entity: ' + entityType + ', record: ' + entityId + ', error: ' + e.getMessage());
-            throw new PrometheionException('Graph indexing failed: ' + e.getMessage());
+            String correlationId = generateCorrelationId(entityType, entityId);
+            System.debug(LoggingLevel.ERROR, 
+                '[PrometheionGraphIndexer] Graph indexing unexpected error - CorrelationId: ' + correlationId + 
+                ', EntityType: ' + entityType + 
+                ', EntityId: ' + entityId + 
+                ', Error: ' + e.getMessage() + 
+                ', StackTrace: ' + e.getStackTraceString());
+            throw new PrometheionException('Graph indexing failed for ' + entityType + ' (' + entityId + '): ' + e.getMessage());
         }
     }
 
@@ -113,6 +125,15 @@ public with sharing class PrometheionGraphIndexer {
         if (riskScore >= 5.0) return 'UNAUTHORIZED';
         if (riskScore >= 3.0) return 'ANOMALY';
         return 'MANUAL_OVERRIDE';
+    }
+
+    /**
+     * Generate correlation ID for structured logging
+     */
+    private static String generateCorrelationId(String entityType, String entityId) {
+        String input = entityType + '|' + entityId + '|' + UserInfo.getUserId() + '|' + System.now().getTime();
+        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 
     public class PrometheionException extends Exception {}

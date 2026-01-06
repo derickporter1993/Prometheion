@@ -104,8 +104,15 @@ public without sharing class PrometheionReasoningEngine {
             insert adjudication;
             return adjudicationHash;
         } catch (DmlException e) {
-            System.debug(LoggingLevel.ERROR, 'Failed to log adjudication for node: ' + nodeHash + ', error: ' + e.getMessage());
-            throw new ReasoningException('Failed to log adjudication: ' + e.getMessage());
+            String correlationId = generateCorrelationId(nodeHash);
+            System.debug(LoggingLevel.ERROR, 
+                '[PrometheionReasoningEngine] Failed to log adjudication - ' +
+                'CorrelationId: ' + correlationId + ', ' +
+                'NodeHash: ' + nodeHash + ', ' +
+                'Error: ' + e.getMessage() + ', ' +
+                'DmlMessage: ' + e.getDmlMessage(0) + ', ' +
+                'StackTrace: ' + e.getStackTraceString());
+            throw new ReasoningException('Failed to log adjudication for node ' + nodeHash + ': ' + e.getDmlMessage(0));
         }
     }
 
@@ -139,6 +146,15 @@ public without sharing class PrometheionReasoningEngine {
             this.auditTrailId = auditTrailId;
             this.requiresHumanReview = requiresHumanReview;
         }
+    }
+
+    /**
+     * Generate correlation ID for structured logging
+     */
+    private static String generateCorrelationId(String nodeHash) {
+        String input = nodeHash + '|' + UserInfo.getUserId() + '|' + System.now().getTime();
+        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 
     public class ReasoningException extends Exception {}
