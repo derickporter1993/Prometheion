@@ -35,9 +35,8 @@ public with sharing class DeploymentMetrics {
     }
     
     /**
-     * @deprecated Use getRecentDeployments instead
+     * Legacy method - Use getRecentDeployments instead
      */
-    @Deprecated
     @AuraEnabled(cacheable=true)
     public static List<Row> recent(Integer limitSize) {
         return getRecentDeployments(limitSize);
