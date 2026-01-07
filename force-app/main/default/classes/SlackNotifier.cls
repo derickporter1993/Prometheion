@@ -54,6 +54,50 @@ public with sharing class SlackNotifier {
         notifyRichAsync(jsonPayload);
     }
 
+    /**
+     * Bulk notify for multiple performance events (trigger-safe)
+     * Combines all events into a single future call to avoid governor limits
+     * @param events List of performance alert events to notify
+     */
+    public static void notifyPerformanceEventsBulk(List<Performance_Alert__e> events) {
+        if (events == null || events.isEmpty()) {
+            return;
+        }
+        // Build all payloads and combine into single future call
+        List<String> payloads = new List<String>();
+        for (Performance_Alert__e evt : events) {
+            payloads.add(buildPerformanceAlertBlocks(evt));
+        }
+        notifyBulkAsync(JSON.serialize(payloads));
+    }
+
+    @future(callout=true)
+    public static void notifyBulkAsync(String serializedPayloads) {
+        try {
+            List<Object> payloads = (List<Object>) JSON.deserializeUntyped(serializedPayloads);
+            for (Object payloadObj : payloads) {
+                String jsonPayload = (String) payloadObj;
+                HttpRequest req = new HttpRequest();
+                req.setEndpoint('callout:Slack_Webhook');
+                req.setMethod('POST');
+                req.setHeader('Content-Type', 'application/json');
+                req.setBody(jsonPayload);
+                HttpResponse res = new Http().send(req);
+                if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
+                    System.debug(
+                        LoggingLevel.ERROR,
+                        'Slack bulk notify failed with status ' +
+                            res.getStatusCode() +
+                            ': ' +
+                            res.getStatus()
+                    );
+                }
+            }
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Slack bulk notify exception: ' + e.getMessage());
+        }
+    }
+
     // Build Slack Block Kit JSON for performance alerts
     private static String buildPerformanceAlertBlocks(Performance_Alert__e evt) {
         // Determine severity emoji and color
