@@ -8,8 +8,10 @@ trigger PerformanceAlertEventTrigger on Performance_Alert__e (after insert) {
             Context_Record__c = e.Context_Record__c,
             Stack__c = e.Stack__c
         ));
-        // Slack fan-out (fire-and-forget)
-        SlackNotifier.notifyPerformanceEvent(e);
     }
-    if (!hist.isEmpty()) insert hist;
+    if (!hist.isEmpty()) {
+        insert hist;
+    }
+    // Bulk Slack notification (single future call for all events)
+    SlackNotifier.notifyPerformanceEventsBulk(Trigger.new);
 }
