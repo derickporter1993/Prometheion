@@ -12,7 +12,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public class PrometheionConstants {
+public with sharing class PrometheionConstants {
     
     // ============================================
     // COMPLIANCE FRAMEWORKS
