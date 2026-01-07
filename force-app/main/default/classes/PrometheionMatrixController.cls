@@ -233,7 +233,7 @@ public with sharing class PrometheionMatrixController {
     }
 
     /**
-     * Validate filter clause (basic validation)
+     * Validate filter clause (comprehensive security validation)
      */
     private static void validateFilterClause(String filters, String objectName) {
         // Check for dangerous patterns
@@ -241,7 +241,8 @@ public with sharing class PrometheionMatrixController {
 
         Set<String> dangerous = new Set<String>{
             'INSERT', 'UPDATE', 'DELETE', 'UPSERT', 'MERGE',
-            'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'GRANT'
+            'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'GRANT',
+            '--', '/*', '*/', ';', 'EXEC', 'EXECUTE'
         };
 
         for (String keyword : dangerous) {
@@ -259,6 +260,35 @@ public with sharing class PrometheionMatrixController {
     }
 
     /**
+     * Sanitize filter clause by escaping string literals
+     * This prevents SOQL injection by escaping single quotes in string values
+     */
+    private static String sanitizeFilterClause(String filters) {
+        if (String.isBlank(filters)) {
+            return '';
+        }
+        
+        // Pattern to find string literals (values within single quotes)
+        // Replace unescaped single quotes within values
+        String result = filters;
+        
+        // Find all string literals and escape internal quotes
+        Pattern p = Pattern.compile('\'([^\']*)\'');
+        Matcher m = p.matcher(filters);
+        
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String value = m.group(1);
+            // Escape single quotes within the value
+            String escapedValue = String.escapeSingleQuotes(value);
+            m.appendReplacement(sb, '\'' + escapedValue + '\'');
+        }
+        m.appendTail(sb);
+        
+        return sb.toString();
+    }
+
+    /**
      * Estimate group count to determine if direct query is safe
      */
     private static Integer estimateGroupCount(MatrixConfiguration cfg) {
@@ -266,7 +296,7 @@ public with sharing class PrometheionMatrixController {
         String colField = sanitizeFieldName(cfg.columnField);
 
         String baseFilter = String.isNotBlank(cfg.filters) ?
-            ' WHERE ' + cfg.filters : '';
+            ' WHERE ' + sanitizeFilterClause(cfg.filters) : '';
 
         try {
             // Count distinct row values
@@ -304,7 +334,7 @@ public with sharing class PrometheionMatrixController {
                       'FROM ' + cfg.objectName;
 
         if (String.isNotBlank(cfg.filters)) {
-            soql += ' WHERE ' + cfg.filters;
+            soql += ' WHERE ' + sanitizeFilterClause(cfg.filters);
         }
 
         soql += ' GROUP BY ' + rowField + ', ' + colField +
