@@ -38,7 +38,7 @@ public with sharing class MetadataChangeTracker {
             insert change;
             return change.Id;
         } catch (DmlException e) {
-            throw new AuraHandledException('Error tracking change: ' + e.getDmlMessage(0));
+            throw new AuraHandledException('Error tracking change: ' + getSafeDmlMessage(e));
         }
     }
     
@@ -78,5 +78,15 @@ public with sharing class MetadataChangeTracker {
             ORDER BY Change_Date__c DESC
             LIMIT :recordLimit
         ];
+    }
+
+    /**
+     * Safely extract DML error message with bounds checking
+     */
+    private static String getSafeDmlMessage(DmlException e) {
+        if (e == null || e.getNumDml() == 0) {
+            return e != null ? e.getMessage() : 'Unknown DML error';
+        }
+        return e.getDmlMessage(0);
     }
 }

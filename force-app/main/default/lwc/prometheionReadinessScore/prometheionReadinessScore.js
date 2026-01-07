@@ -21,7 +21,7 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
       this.updateScoreStatus();
       this.updateProgressStep();
     } else if (error) {
-      this.showToast("Error", error.body?.message || 'Failed to load readiness score', "error");
+      this.showToast("Error", error.body?.message || "Failed to load readiness score", "error");
       this.scoreStatus = "Error";
     }
   }
