@@ -44,9 +44,8 @@ public with sharing class EvidenceCollectionService {
         // Insert all evidence records
         if (!evidenceList.isEmpty()) {
             // Validate CRUD access before DML
-            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Evidence__c', 
+            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Evidence__c',
                 PrometheionSecurityUtils.DmlOperation.DML_INSERT);
-            
             try {
                 insert evidenceList;
             } catch (DmlException e) {

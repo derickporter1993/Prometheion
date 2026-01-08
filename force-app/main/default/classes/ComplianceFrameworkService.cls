@@ -37,23 +37,38 @@ public with sharing class ComplianceFrameworkService {
         result.evaluatedPolicies = 0;
         result.compliantPolicies = 0;
         result.gaps = new List<ComplianceGapSummary>();
-        
+
         Decimal totalScore = 0;
         Decimal maxScore = 0;
-        
+
+        // Collect all policy names for bulk query (avoid SOQL in loop)
+        Set<String> policyNames = new Set<String>();
+        for (Compliance_Policy__mdt policy : policies) {
+            policyNames.add(policy.DeveloperName);
+        }
+
+        // Query all gaps for all policies in one query
+        Map<String, List<Compliance_Gap__c>> gapsByPolicy = new Map<String, List<Compliance_Gap__c>>();
+        for (Compliance_Gap__c gap : [
+            SELECT Id, Policy_Reference__c, Severity__c, Status__c, Risk_Score__c
+            FROM Compliance_Gap__c
+            WHERE Policy_Reference__c IN :policyNames
+            AND Status__c != 'VERIFIED'
+            WITH SECURITY_ENFORCED
+        ]) {
+            if (!gapsByPolicy.containsKey(gap.Policy_Reference__c)) {
+                gapsByPolicy.put(gap.Policy_Reference__c, new List<Compliance_Gap__c>());
+            }
+            gapsByPolicy.get(gap.Policy_Reference__c).add(gap);
+        }
+
         for (Compliance_Policy__mdt policy : policies) {
             maxScore += policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0;
-            
-            // Check for gaps related to this policy
-            List<Compliance_Gap__c> policyGaps = [
-                SELECT Id, Severity__c, Status__c, Risk_Score__c
-                FROM Compliance_Gap__c
-                WHERE Policy_Reference__c = :policy.DeveloperName
-                AND Status__c != 'VERIFIED'
-                WITH SECURITY_ENFORCED
-            ];
-            
-            if (policyGaps.isEmpty()) {
+
+            // Get gaps for this policy from the pre-queried map
+            List<Compliance_Gap__c> policyGaps = gapsByPolicy.get(policy.DeveloperName);
+
+            if (policyGaps == null || policyGaps.isEmpty()) {
                 result.compliantPolicies++;
                 totalScore += policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0;
             } else {
@@ -62,7 +77,7 @@ public with sharing class ComplianceFrameworkService {
                 for (Compliance_Gap__c gap : policyGaps) {
                     Decimal gapScore = gap.Risk_Score__c != null ? gap.Risk_Score__c : 5.0;
                     gapPenalty += gapScore;
-                    
+
                     ComplianceGapSummary gapSummary = new ComplianceGapSummary();
                     gapSummary.policyName = policy.DeveloperName;
                     gapSummary.severity = gap.Severity__c;
@@ -70,11 +85,11 @@ public with sharing class ComplianceFrameworkService {
                     gapSummary.riskScore = gapScore;
                     result.gaps.add(gapSummary);
                 }
-                
+
                 Decimal policyScore = (policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0) - (gapPenalty / policyGaps.size());
                 totalScore += Math.max(0, policyScore);
             }
-            
+
             result.evaluatedPolicies++;
         }
         
