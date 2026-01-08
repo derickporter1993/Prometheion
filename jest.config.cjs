@@ -1,7 +1,7 @@
-const { defaults } = require("@salesforce/sfdx-lwc-jest/config");
+const { jestConfig } = require("@salesforce/sfdx-lwc-jest/config");
 
 module.exports = {
-  ...defaults,
+  ...jestConfig,
   modulePathIgnorePatterns: ["<rootDir>/Sentinel-main/"],
   testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/Sentinel-main/"],
 };
