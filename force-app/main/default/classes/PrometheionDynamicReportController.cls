@@ -58,9 +58,12 @@ public with sharing class PrometheionDynamicReportController {
             if (orgCache != null && orgCache.contains(cacheKey)) {
                 return (List<FieldMetadata>)orgCache.get(cacheKey);
             }
-        } catch (Exception e) {
+        } catch (Cache.Org.OrgCacheException e) {
             // Cache not configured, continue without it
             System.debug(LoggingLevel.WARN, 'Cache partition not available: ' + e.getMessage());
+        } catch (Exception e) {
+            // Unexpected cache error - log but continue
+            System.debug(LoggingLevel.WARN, 'Unexpected cache error: ' + e.getMessage());
         }
 
         // Validate object exists and is accessible
@@ -97,8 +100,10 @@ public with sharing class PrometheionDynamicReportController {
         if (orgCache != null) {
             try {
                 orgCache.put(cacheKey, result, 86400); // 24 hour TTL
-            } catch (Exception e) {
+            } catch (Cache.Org.OrgCacheException e) {
                 System.debug(LoggingLevel.WARN, 'Failed to cache field metadata: ' + e.getMessage());
+            } catch (Exception e) {
+                System.debug(LoggingLevel.WARN, 'Unexpected cache error: ' + e.getMessage());
             }
         }
 
@@ -117,6 +122,8 @@ public with sharing class PrometheionDynamicReportController {
         ReportConfiguration cfg;
         try {
             cfg = (ReportConfiguration)JSON.deserialize(reportConfigJson, ReportConfiguration.class);
+        } catch (JSONException e) {
+            throw new AuraHandledException('Invalid report configuration format: ' + e.getMessage());
         } catch (Exception e) {
             throw new AuraHandledException('Invalid report configuration format');
         }
@@ -147,7 +154,12 @@ public with sharing class PrometheionDynamicReportController {
                     } else {
                         rowData.put(safeField, row.get(safeField));
                     }
+                } catch (SObjectException e) {
+                    // Field not accessible or doesn't exist - set to null
+                    rowData.put(safeField, null);
                 } catch (Exception e) {
+                    // Unexpected error accessing field - log and set to null
+                    System.debug(LoggingLevel.WARN, 'Unexpected error accessing field ' + safeField + ': ' + e.getMessage());
                     rowData.put(safeField, null);
                 }
             }
@@ -424,6 +436,8 @@ public with sharing class PrometheionDynamicReportController {
         try {
             Decimal.valueOf(value);
             return true;
+        } catch (TypeException e) {
+            return false;
         } catch (Exception e) {
             return false;
         }

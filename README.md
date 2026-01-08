@@ -278,8 +278,8 @@ Suggested Action: Review Flow permissions before deployment.
 
 ```bash
 # Clone the repo
-git clone https://github.com/derickporter1993/Solentra---Prometheion.git
-cd sentinel-code
+git clone https://github.com/derickporter1993/prometheion.git
+cd prometheion
 
 # Authenticate to your Salesforce org
 sf org login web --alias myorg
@@ -679,8 +679,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Documentation**: [docs/](docs/)
 - **Sample Reports**: [examples/](examples/)
-- **Issues**: [GitHub Issues](https://github.com/derickporter1993/Solentra---Prometheion/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/derickporter1993/Solentra---Prometheion/discussions)
+- **Issues**: [GitHub Issues](https://github.com/derickporter1993/prometheion/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions)
 
 ---
 

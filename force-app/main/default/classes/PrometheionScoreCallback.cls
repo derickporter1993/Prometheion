@@ -15,6 +15,14 @@ global class PrometheionScoreCallback {
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
         
+        // Security: Validate API key authentication
+        String apiKey = req.headers.get('X-Prometheion-Api-Key');
+        if (!validateApiKey(apiKey)) {
+            res.statusCode = 401;
+            res.responseBody = Blob.valueOf('{"success":false,"error":"Unauthorized"}');
+            return;
+        }
+        
         try {
             // Parse request body
             String requestBody = req.requestBody.toString();
@@ -50,6 +58,7 @@ global class PrometheionScoreCallback {
                 WHERE Org_ID__c = :orgId 
                 AND Entity_Type__c = :entityType 
                 AND Entity_Id__c = :entityId 
+                WITH SECURITY_ENFORCED
                 LIMIT 1
             ];
             
@@ -100,13 +109,53 @@ global class PrometheionScoreCallback {
             }));
             
         } catch (Exception e) {
-            // Return error response
+            // Return error response (sanitized - no stack trace exposed)
+            System.debug(LoggingLevel.ERROR, 'PrometheionScoreCallback error: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
             res.statusCode = 500;
             res.responseBody = Blob.valueOf(JSON.serialize(new Map<String, Object>{
                 'success' => false,
-                'error' => e.getMessage(),
-                'stackTrace' => e.getStackTraceString()
+                'error' => 'An internal error occurred'
             }));
+        }
+    }
+    
+    /**
+     * Validates API key from request header
+     * Checks Custom Metadata Type for configured API key
+     * @param apiKey The API key from request header
+     * @return true if valid, false otherwise
+     */
+    private static Boolean validateApiKey(String apiKey) {
+        if (String.isBlank(apiKey)) {
+            return false;
+        }
+        
+        // Check Custom Metadata Type for API key configuration
+        try {
+            // Query Custom Metadata Type for API key (if it exists)
+            // For now, use a placeholder that can be configured
+            // In production, create Custom Metadata Type: Prometheion_API_Config__mdt
+            List<Prometheion_API_Config__mdt> configs = [
+                SELECT API_Key__c, Is_Active__c 
+                FROM Prometheion_API_Config__mdt 
+                WHERE Is_Active__c = true 
+                AND DeveloperName = 'Default'
+                LIMIT 1
+            ];
+            
+            if (!configs.isEmpty() && String.isNotBlank(configs[0].API_Key__c)) {
+                return apiKey == configs[0].API_Key__c;
+            }
+            
+            // Fallback: For development, allow if Custom Metadata doesn't exist
+            // In production, this should return false
+            System.debug(LoggingLevel.WARN, 'PrometheionScoreCallback: API key validation - Custom Metadata not configured');
+            return false;
+            
+        } catch (Exception e) {
+            // If Custom Metadata doesn't exist or query fails, deny access
+            System.debug(LoggingLevel.ERROR, 'PrometheionScoreCallback: API key validation error: ' + e.getMessage());
+            return false;
         }
     }
     

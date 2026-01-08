@@ -21,7 +21,13 @@ const lwcRecommended = lwc.configs?.recommended ?? lwc.configs?.base ?? {};
 
 export default [
   {
-    ignores: ["**/node_modules/**", "**/*.zip", "**/coverage/**", "**/__tests__/**", "**/*.test.js"],
+    ignores: [
+      "**/node_modules/**",
+      "**/*.zip",
+      "**/coverage/**",
+      "**/__tests__/**",
+      "**/*.test.js",
+    ],
   },
   {
     ...js.configs.recommended,
@@ -60,7 +66,13 @@ export default [
     rules: {
       ...(lwcRecommended.rules ?? {}),
       "no-console": "warn",
-      "no-unused-vars": ["warn", { argsIgnorePattern: "^_|^e$|^error$|^action$", varsIgnorePattern: "^_|^e$|^error$|^action$" }],
+      "no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_|^e$|^error$|^action$",
+          varsIgnorePattern: "^_|^e$|^error$|^action$",
+        },
+      ],
       "@lwc/lwc/no-async-operation": "off", // Disable if rule definition not found
     },
   },

@@ -7,7 +7,7 @@ private class AlertHistoryServiceTest {
             Metric__c = 'CPU',
             Value__c = 9000,
             Threshold__c = 8000,
-            Context_Record__c = '001000000000001'
+            Context_Record__c = UserInfo.getUserId()
         );
 
         Test.startTest();
@@ -21,7 +21,7 @@ private class AlertHistoryServiceTest {
         System.assertEquals('CPU', rows[0].metric, 'Metric should be CPU');
         System.assertEquals(9000, rows[0].value, 'Value should be 9000');
         System.assertEquals(8000, rows[0].threshold, 'Threshold should be 8000');
-        System.assertEquals('001000000000001', rows[0].contextRecordId, 'Context should match');
+        System.assertEquals(UserInfo.getUserId(), rows[0].contextRecordId, 'Context should match');
         System.assertNotEquals(null, rows[0].createdDate, 'Created date should be populated');
     }
 

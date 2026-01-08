@@ -248,7 +248,8 @@ public with sharing class PerformanceRuleEngine {
                 records.add(record);
             }
 
-            List<Database.SaveResult> results = Database.insert(records, false);
+            // Use USER_MODE for FLS enforcement and add structured error tracking
+            List<Database.SaveResult> results = Database.insert(records, AccessLevel.USER_MODE, false);
 
             for (Integer i = 0; i < results.size(); i++) {
                 Database.SaveResult sr = results[i];
@@ -256,20 +257,61 @@ public with sharing class PerformanceRuleEngine {
                     result.saved++;
                 } else {
                     result.failed++;
-                    String errorMsg = 'Failed to save Performance_Alert_History__c for metric: ' +
-                                     alerts[i].metric + ', Errors: ';
+                    // Structured error logging with correlation ID for monitoring
+                    String correlationId = generateCorrelationId(alerts[i].metric, alerts[i].value);
+                    List<String> errorMessages = new List<String>();
                     for (Database.Error err : sr.getErrors()) {
-                        errorMsg += err.getMessage() + ' ';
+                        errorMessages.add(err.getMessage() + ' (' + err.getStatusCode() + ')');
                     }
-                    System.debug(LoggingLevel.ERROR, 'PerformanceRuleEngine: ' + errorMsg);
+                    String errorMsg = String.join(errorMessages, '; ');
+                    
+                    // Log with structured format for monitoring systems
+                    System.debug(LoggingLevel.ERROR, 
+                        '[PerformanceRuleEngine] Alert save failed - ' +
+                        'CorrelationId: ' + correlationId + ', ' +
+                        'Metric: ' + alerts[i].metric + ', ' +
+                        'Value: ' + alerts[i].value + ', ' +
+                        'Errors: ' + errorMsg);
                 }
             }
+        } catch (DmlException e) {
+            // Structured error logging with correlation ID
+            String correlationId = generateCorrelationId('BULK_SAVE', String.valueOf(alerts.size()));
+            System.debug(LoggingLevel.ERROR, 
+                '[PerformanceRuleEngine] DML exception saving alerts - ' +
+                'CorrelationId: ' + correlationId + ', ' +
+                'AlertCount: ' + alerts.size() + ', ' +
+                'Error: ' + e.getMessage() + ', ' +
+                'StackTrace: ' + e.getStackTraceString());
+            result.failed = alerts.size();
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'PerformanceRuleEngine: Exception saving alerts: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
+            // Structured error logging with correlation ID
+            String correlationId = generateCorrelationId('BULK_SAVE', String.valueOf(alerts.size()));
+            System.debug(LoggingLevel.ERROR, 
+                '[PerformanceRuleEngine] Unexpected exception saving alerts - ' +
+                'CorrelationId: ' + correlationId + ', ' +
+                'AlertCount: ' + alerts.size() + ', ' +
+                'Error: ' + e.getMessage() + ', ' +
+                'StackTrace: ' + e.getStackTraceString());
             result.failed = alerts.size();
         }
 
         return result;
+    }
+
+    /**
+     * Generate correlation ID for structured logging and monitoring
+     */
+    private static String generateCorrelationId(String metric, Decimal value) {
+        String input = metric + '|' + String.valueOf(value) + '|' + UserInfo.getUserId();
+        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        return EncodingUtil.base64Encode(hash).substring(0, 16);
+    }
+    
+    private static String generateCorrelationId(String prefix, String suffix) {
+        String input = prefix + '|' + suffix + '|' + UserInfo.getUserId();
+        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 
     /**

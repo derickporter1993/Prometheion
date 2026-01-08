@@ -79,9 +79,9 @@ private class PrometheionCCPADataInventoryServiceTest {
         System.assertNotEquals(null, report.reportDate, 'Report date should be set');
         System.assertNotEquals(null, report.responseDeadline, 'Response deadline should be set');
         System.assertEquals(true, report.doNotSellStatus, 'Should reflect opt-out status');
-        System.assert(report.categoriesCollected.size() > 0, 'Should have categories');
-        System.assert(report.sources.size() > 0, 'Should have sources');
-        System.assert(report.businessPurposes.size() > 0, 'Should have business purposes');
+        System.assert(!report.categoriesCollected.isEmpty(), 'Should have categories');
+        System.assert(!report.sources.isEmpty(), 'Should have sources');
+        System.assert(!report.businessPurposes.isEmpty(), 'Should have business purposes');
         System.assertNotEquals(null, report.requestId, 'Request ID should be set');
         
         // Verify audit log created
@@ -172,7 +172,7 @@ private class PrometheionCCPADataInventoryServiceTest {
         Test.stopTest();
         
         // Then: Should return pending requests
-        System.assert(requests.size() > 0, 'Should return pending requests');
+        System.assert(!requests.isEmpty(), 'Should return pending requests');
         for (CCPA_Request__c req : requests) {
             System.assert(req.Status__c == 'Pending' || req.Status__c == 'In Progress', 
                 'Should only return pending/in progress requests');

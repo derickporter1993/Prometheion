@@ -16,7 +16,7 @@ private class PrometheionChangeAdvisorTest {
         System.assertNotEquals(null, impact.frameworkImpact, 'Should have framework impact');
         System.assert(impact.overallImpact < 0, 'Should show negative impact');
         System.assertNotEquals(null, impact.alternatives, 'Should provide alternatives');
-        System.assert(impact.alternatives.size() > 0, 'Should have at least one alternative');
+        System.assert(!impact.alternatives.isEmpty(), 'Should have at least one alternative');
     }
     
     @isTest

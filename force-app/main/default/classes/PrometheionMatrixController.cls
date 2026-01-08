@@ -49,6 +49,8 @@ public with sharing class PrometheionMatrixController {
         MatrixConfiguration cfg;
         try {
             cfg = (MatrixConfiguration)JSON.deserialize(configJson, MatrixConfiguration.class);
+        } catch (JSONException e) {
+            throw new AuraHandledException('Invalid matrix configuration format: ' + e.getMessage());
         } catch (Exception e) {
             throw new AuraHandledException('Invalid matrix configuration format');
         }
@@ -314,8 +316,13 @@ public with sharing class PrometheionMatrixController {
             Integer colCount = colResults.isEmpty() ? 0 : (Integer)colResults[0].get('distinctCount');
 
             return rowCount * colCount;
+        } catch (QueryException e) {
+            // If query fails, assume worst case
+            System.debug(LoggingLevel.WARN, 'PrometheionMatrixController: Estimation query failed: ' + e.getMessage());
+            return MAX_GROUP_COMBINATIONS + 1;
         } catch (Exception e) {
             // If estimation fails, assume worst case
+            System.debug(LoggingLevel.WARN, 'PrometheionMatrixController: Unexpected error in estimation: ' + e.getMessage());
             return MAX_GROUP_COMBINATIONS + 1;
         }
     }
@@ -344,8 +351,13 @@ public with sharing class PrometheionMatrixController {
         List<AggregateResult> results;
         try {
             results = Database.query(soql);
+        } catch (QueryException e) {
+            throw new AuraHandledException('Matrix query syntax error: ' + e.getMessage());
+        } catch (System.SecurityException e) {
+            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
         } catch (Exception e) {
-            throw new AuraHandledException('Matrix query failed: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'PrometheionMatrixController: Unexpected query error: ' + e.getStackTraceString());
+            throw new AuraHandledException('Matrix query failed');
         }
 
         return transformToMatrix(results, cfg);
@@ -380,8 +392,13 @@ public with sharing class PrometheionMatrixController {
         List<SObject> summaryRecords;
         try {
             summaryRecords = Database.query(soql);
+        } catch (QueryException e) {
+            throw new AuraHandledException('Summary query syntax error: ' + e.getMessage());
+        } catch (System.SecurityException e) {
+            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
         } catch (Exception e) {
-            throw new AuraHandledException('Summary query failed: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'PrometheionMatrixController: Unexpected summary query error: ' + e.getStackTraceString());
+            throw new AuraHandledException('Summary query failed');
         }
 
         return transformSummaryToMatrix(summaryRecords, cfg);

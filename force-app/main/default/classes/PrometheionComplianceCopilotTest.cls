@@ -173,7 +173,7 @@ private class PrometheionComplianceCopilotTest {
         Test.stopTest();
         
         System.assertNotEquals(null, commands, 'Commands should not be null');
-        System.assert(commands.size() > 0, 'Should return at least one command');
+        System.assert(!commands.isEmpty(), 'Should return at least one command');
         
         for (Map<String, String> cmd : commands) {
             System.assert(cmd.containsKey('command'), 'Command should have command key');

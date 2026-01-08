@@ -20,7 +20,7 @@ private class EvidenceCollectionServiceTest {
         Test.stopTest();
         
         System.assertNotEquals(null, evidence, 'Evidence list should not be null');
-        System.assert(evidence.size() > 0, 'Should have collected evidence');
+        System.assert(!evidence.isEmpty(), 'Should have collected evidence');
         
         // Verify evidence was inserted
         List<Compliance_Evidence__c> insertedEvidence = [
@@ -29,7 +29,7 @@ private class EvidenceCollectionServiceTest {
             WHERE Framework__c = 'SOX'
             WITH SECURITY_ENFORCED
         ];
-        System.assert(insertedEvidence.size() > 0, 'Evidence should be inserted');
+        System.assert(!insertedEvidence.isEmpty(), 'Evidence should be inserted');
     }
     
     @IsTest

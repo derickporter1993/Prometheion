@@ -35,7 +35,10 @@ public with sharing class MetadataChangeTracker {
         );
         
         try {
-            insert change;
+            Database.SaveResult result = Database.insert(change, AccessLevel.USER_MODE);
+            if (!result.isSuccess()) {
+                throw new DmlException('Insert failed');
+            }
             return change.Id;
         } catch (DmlException e) {
             throw new AuraHandledException('Error tracking change: ' + getSafeDmlMessage(e));

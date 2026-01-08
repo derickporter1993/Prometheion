@@ -1,63 +1,169 @@
+/**
+ * AI Settings Controller with proper default persistence
+ * Best Practice: Persists org defaults instead of in-memory objects
+ * Security: Enforces CRUD/FLS with Security.stripInaccessible
+ */
 public with sharing class PrometheionAISettingsController {
+    private static final Boolean DEFAULT_ENABLE_AI_REASONING = true;
+    private static final Decimal DEFAULT_CONFIDENCE_THRESHOLD = 0.85;
+    private static final Boolean DEFAULT_REQUIRE_HUMAN_APPROVAL = true;
+    private static final Boolean DEFAULT_AUTO_REMEDIATION_ENABLED = false;
+    private static final String DEFAULT_BLACKLISTED_USERS = '';
+
     @AuraEnabled(cacheable=true)
     public static Prometheion_AI_Settings__c getSettings() {
-        // Validate read access
-        if (!PrometheionSecurityUtils.hasReadAccess('Prometheion_AI_Settings__c')) {
-            throw new AuraHandledException('Insufficient access to AI Settings');
-        }
-        
         Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getInstance();
+
+        // If no org default exists, create and persist one
         if (settings == null) {
-            // Return in-memory default (don't create record here - let saveSettings handle it)
-            settings = new Prometheion_AI_Settings__c(
-                Enable_AI_Reasoning__c = true,
-                Confidence_Threshold__c = 0.85,
-                Require_Human_Approval__c = true,
-                Auto_Remediation_Enabled__c = false,
-                Blacklisted_Users__c = ''
+            settings = createAndPersistDefaults();
+        }
+
+        return settings;
+    }
+
+    /**
+     * Create and persist org default settings
+     * This ensures settings are always persisted, not just in-memory
+     */
+    private static Prometheion_AI_Settings__c createAndPersistDefaults() {
+        try {
+            Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
+                SetupOwnerId = UserInfo.getOrganizationId(),
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
+            );
+
+            // Check if we have permission to insert
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                new List<Prometheion_AI_Settings__c>{ settings }
+            );
+
+            List<Prometheion_AI_Settings__c> sanitizedSettings = decision.getRecords();
+            if (!sanitizedSettings.isEmpty()) {
+                Database.SaveResult result = Database.insert(sanitizedSettings[0], AccessLevel.USER_MODE);
+                if (!result.isSuccess()) {
+                    throw new DmlException('Failed to create default settings');
+                }
+                System.debug(LoggingLevel.INFO, 'PrometheionAISettingsController: Created org default settings');
+                return sanitizedSettings[0];
+            } else {
+                System.debug(LoggingLevel.WARN, 'PrometheionAISettingsController: No accessible fields to create settings');
+                // Return in-memory object as fallback (should not happen in normal operation)
+                return settings;
+            }
+        } catch (DmlException e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionAISettingsController: Failed to create default settings: ' + e.getMessage());
+            // Return in-memory object as fallback
+            return new Prometheion_AI_Settings__c(
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
+            );
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionAISettingsController: Unexpected error creating default settings: ' + e.getMessage());
+            // Return in-memory object as fallback
+            return new Prometheion_AI_Settings__c(
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
             );
         }
-        return settings;
     }
 
     @AuraEnabled
     public static void saveSettings(Prometheion_AI_Settings__c settings) {
-        // Input validation
         if (settings == null) {
             throw new AuraHandledException('Settings cannot be null');
         }
-        
-        // Validate Confidence_Threshold__c range (0.0 to 1.0)
-        if (settings.Confidence_Threshold__c != null) {
-            if (settings.Confidence_Threshold__c < 0.0 || settings.Confidence_Threshold__c > 1.0) {
-                throw new AuraHandledException('Confidence threshold must be between 0.0 and 1.0');
-            }
-        }
-        
-        // Validate CRUD access
-        PrometheionSecurityUtils.validateCRUDAccess('Prometheion_AI_Settings__c', PrometheionSecurityUtils.DmlOperation.UPSERT);
-        
-        // Validate FLS for required fields
-        List<String> requiredFields = new List<String>{
-            'Enable_AI_Reasoning__c', 'Confidence_Threshold__c', 
-            'Require_Human_Approval__c', 'Auto_Remediation_Enabled__c'
-        };
-        PrometheionSecurityUtils.validateFLSAccess('Prometheion_AI_Settings__c', requiredFields, true);
-        
+
         try {
-            // Strip inaccessible fields before upsert
-            List<SObject> accessibleSettings = PrometheionSecurityUtils.stripInaccessibleFields(
-                AccessType.UPDATABLE,
-                new List<SObject>{settings}
-            );
-            if (accessibleSettings.isEmpty()) {
-                throw new AuraHandledException('Insufficient field-level security access');
+            // Ensure SetupOwnerId is set to org level
+            if (settings.SetupOwnerId == null) {
+                settings.SetupOwnerId = UserInfo.getOrganizationId();
             }
-            upsert accessibleSettings;
-        } catch (PrometheionSecurityUtils.SecurityException e) {
-            throw new AuraHandledException('Security error: ' + e.getMessage());
+
+            // Strip inaccessible fields for security
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.UPDATABLE,
+                new List<Prometheion_AI_Settings__c>{ settings }
+            );
+            List<Prometheion_AI_Settings__c> sanitizedSettings = decision.getRecords();
+
+            if (sanitizedSettings.isEmpty()) {
+                throw new AuraHandledException('No accessible fields to update');
+            }
+
+            Prometheion_AI_Settings__c oldSettings = Prometheion_AI_Settings__c.getInstance();
+            
+            Database.UpsertResult result = Database.upsert(sanitizedSettings[0], AccessLevel.USER_MODE);
+            if (!result.isSuccess()) {
+                throw new DmlException('Failed to save settings');
+            }
+            
+            // Audit log for settings changes
+            logAuditEvent('AI_SETTINGS_CHANGED', 'Prometheion_AI_Settings__c', sanitizedSettings[0].Id, 
+                'AI Settings updated by ' + UserInfo.getUserName());
+        } catch (DmlException e) {
+            System.debug(LoggingLevel.ERROR, 'DML error saving settings: ' + e.getMessage());
+            throw new AuraHandledException('Error saving settings: ' + getSafeDmlMessage(e));
         } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Error saving settings: ' + e.getMessage());
             throw new AuraHandledException('Error saving settings: ' + e.getMessage());
         }
+    }
+    
+    /**
+     * Log audit event for AI settings changes
+     * Implements proper audit logging with CRUD/FLS enforcement
+     */
+    private static void logAuditEvent(String action, String entityType, String entityId, String details) {
+        try {
+            Prometheion_Audit_Log__c auditLog = new Prometheion_Audit_Log__c(
+                Action__c = action,
+                Entity_Type__c = entityType,
+                Entity_Id__c = entityId,
+                Details__c = details,
+                User__c = UserInfo.getUserId(),
+                Timestamp__c = System.now()
+            );
+            
+            // Strip inaccessible fields for security (CRUD/FLS enforcement)
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                new List<Prometheion_Audit_Log__c>{ auditLog }
+            );
+            
+            List<Prometheion_Audit_Log__c> sanitizedLogs = decision.getRecords();
+            if (!sanitizedLogs.isEmpty()) {
+                Database.SaveResult logResult = Database.insert(sanitizedLogs[0], AccessLevel.USER_MODE);
+                if (logResult.isSuccess()) {
+                    System.debug(LoggingLevel.INFO, '[Audit] Logged: ' + action + ' - ' + entityType + ' (' + entityId + ')');
+                }
+            } else {
+                System.debug(LoggingLevel.WARN, '[Audit] No accessible fields to create audit log for: ' + action);
+            }
+        } catch (Exception e) {
+            // Don't fail the main operation if audit logging fails
+            System.debug(LoggingLevel.WARN, 'PrometheionAISettingsController: Failed to log audit event: ' + e.getMessage());
+        }
+    }
+
+    /**
+     * Safely extract DML error message with bounds checking
+     */
+    private static String getSafeDmlMessage(DmlException e) {
+        if (e == null || e.getNumDml() == 0) {
+            return e != null ? e.getMessage() : 'Unknown DML error';
+        }
+        return e.getDmlMessage(0);
     }
 }

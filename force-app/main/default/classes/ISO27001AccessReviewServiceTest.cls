@@ -79,7 +79,7 @@ private class ISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Reviews should be created
-        System.assert(reviews.size() > 0, 'Should create reviews');
+        System.assert(!reviews.isEmpty(), 'Should create reviews');
         for (Access_Review__c review : reviews) {
             System.assertEquals('Quarterly Review', review.Review_Type__c, 'Should be quarterly review');
             System.assertEquals('Pending', review.Review_Status__c, 'Status should be Pending');
@@ -98,7 +98,7 @@ private class ISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Privileged reviews should be created
-        System.assert(reviews.size() > 0, 'Should create privileged reviews');
+        System.assert(!reviews.isEmpty(), 'Should create privileged reviews');
         for (Access_Review__c review : reviews) {
             System.assertEquals('Privileged Access Review', review.Review_Type__c, 
                 'Should be privileged review');
