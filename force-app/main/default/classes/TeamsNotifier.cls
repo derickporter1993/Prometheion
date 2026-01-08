@@ -178,12 +178,12 @@ public with sharing class TeamsNotifier {
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '✅ Approve',
-                                'url' => orgUrl + '/apex/PrometheionApprove?id=' + result.remediationId
+                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/PrometheionApprove')
                             },
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '↩️ Rollback',
-                                'url' => orgUrl + '/apex/PrometheionRollback?id=' + result.remediationId
+                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/PrometheionRollback')
                             }
                         }
                     }

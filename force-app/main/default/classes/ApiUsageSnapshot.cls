@@ -14,6 +14,7 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
         req.setEndpoint('callout:SF_Limits/services/data/v65.0/limits');
         req.setMethod('GET');
         req.setHeader('Accept','application/json');
+        req.setTimeout(10000); // 10 second timeout
         HttpResponse res = new Http().send(req);
         if (res.getStatusCode() >= 300) throw new CalloutException('Limits callout failed: ' + res.getStatus());
         LimitsResponse lr = (LimitsResponse) JSON.deserialize(res.getBody(), LimitsResponse.class);
@@ -34,12 +35,16 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
             projected = now.addSeconds((Integer)Math.min(Integer.MAX_VALUE, secsToExhaust));
         }
 
-        insert new API_Usage_Snapshot__c(
-            Taken_On__c = now,
-            Daily_Used__c = used,
-            Daily_Limit__c = max,
-            Percent_Used__c = pct.setScale(2),
-            Projected_Exhaustion__c = projected
-        );
+        if (Schema.sObjectType.API_Usage_Snapshot__c.isCreateable()) {
+            insert new API_Usage_Snapshot__c(
+                Taken_On__c = now,
+                Daily_Used__c = used,
+                Daily_Limit__c = max,
+                Percent_Used__c = pct.setScale(2),
+                Projected_Exhaustion__c = projected
+            );
+        } else {
+            System.debug(LoggingLevel.ERROR, 'ApiUsageSnapshot: Insufficient permissions to create API_Usage_Snapshot__c');
+        }
     }
 }
