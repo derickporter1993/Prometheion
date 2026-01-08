@@ -24,7 +24,7 @@ private class PrometheionTrendControllerTest {
         Test.stopTest();
 
         System.assertNotEquals(null, fields, 'Should return date fields');
-        System.assertEquals(true, fields.size() > 0, 'Should return at least some date fields');
+        System.assertEquals(true, !fields.isEmpty(), 'Should return at least some date fields');
     }
 
     @isTest
@@ -48,7 +48,7 @@ private class PrometheionTrendControllerTest {
         Test.stopTest();
 
         System.assertNotEquals(null, fields, 'Should return metric fields');
-        System.assertEquals(true, fields.size() > 0, 'Should return at least COUNT option');
+        System.assertEquals(true, !fields.isEmpty(), 'Should return at least COUNT option');
     }
 
     @isTest

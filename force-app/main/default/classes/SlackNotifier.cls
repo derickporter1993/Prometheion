@@ -1,13 +1,4 @@
 public with sharing class SlackNotifier {
-    /**
-     * @deprecated Use notifyAsyncQueueable instead for better error handling and retry logic
-     */
-    @future(callout=true)
-    // @Deprecated (not supported in non-managed packages)
-    public static void notifyAsync(String text) {
-        // Maintain backward compatibility, delegate to Queueable
-        notifyAsyncQueueable(text);
-    }
 
     /**
      * Send Slack notification using Queueable (recommended approach)
@@ -33,15 +24,6 @@ public with sharing class SlackNotifier {
         }
     }
 
-    /**
-     * @deprecated Use notifyRichAsyncQueueable instead for better error handling and retry logic
-     */
-    @future(callout=true)
-    // @Deprecated (not supported in non-managed packages)
-    public static void notifyRichAsync(String jsonPayload) {
-        // Maintain backward compatibility, delegate to Queueable
-        notifyRichAsyncQueueable(jsonPayload);
-    }
 
     /**
      * Send rich Slack notification using Queueable (recommended approach)

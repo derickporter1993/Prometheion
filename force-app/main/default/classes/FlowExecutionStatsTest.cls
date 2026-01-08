@@ -30,7 +30,7 @@ private class FlowExecutionStatsTest {
         Test.stopTest();
         
         System.assertNotEquals(null, results, 'Results should not be null');
-        System.assert(results.size() > 0, 'Should return at least one result');
+        System.assert(!results.isEmpty(), 'Should return at least one result');
     }
     
     @IsTest

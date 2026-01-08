@@ -5,7 +5,7 @@
  * @author Prometheion
  * @version 3.0
  */
-public class Violation {
+public with sharing class Violation {
     @AuraEnabled public String title;
     @AuraEnabled public String description;
     @AuraEnabled public String severity;

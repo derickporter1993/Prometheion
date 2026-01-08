@@ -218,8 +218,7 @@ public with sharing class PrometheionGDPRDataErasureService {
         @AuraEnabled public List<String> blockers;
     }
 
-    /**
-     * Custom exception for GDPR operations
-     */
-    public class GDPRException extends Exception {}
+    // GDPRException moved to shared class: PrometheionGDPRException
+    // For backwards compatibility, create an alias
+    public class GDPRException extends PrometheionGDPRException {}
 }

@@ -54,12 +54,4 @@ public with sharing class FlowExecutionStats {
         return out;
     }
     
-    /**
-     * @deprecated Use getTopFlows instead
-     */
-    // @Deprecated (not supported in non-managed packages)
-    @AuraEnabled(cacheable=true)
-    public static List<ExecAgg> topFlows(Integer limitSize) {
-        return getTopFlows(limitSize);
-    }
 }

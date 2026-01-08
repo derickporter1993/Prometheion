@@ -49,6 +49,8 @@ public with sharing class PrometheionMatrixController {
         MatrixConfiguration cfg;
         try {
             cfg = (MatrixConfiguration)JSON.deserialize(configJson, MatrixConfiguration.class);
+        } catch (JSONException e) {
+            throw new AuraHandledException('Invalid matrix configuration format: ' + e.getMessage());
         } catch (Exception e) {
             throw new AuraHandledException('Invalid matrix configuration format');
         }
@@ -233,7 +235,7 @@ public with sharing class PrometheionMatrixController {
     }
 
     /**
-     * Validate filter clause (basic validation)
+     * Validate filter clause (comprehensive security validation)
      */
     private static void validateFilterClause(String filters, String objectName) {
         // Check for dangerous patterns
@@ -241,7 +243,8 @@ public with sharing class PrometheionMatrixController {
 
         Set<String> dangerous = new Set<String>{
             'INSERT', 'UPDATE', 'DELETE', 'UPSERT', 'MERGE',
-            'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'GRANT'
+            'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'GRANT',
+            '--', '/*', '*/', ';', 'EXEC', 'EXECUTE'
         };
 
         for (String keyword : dangerous) {
@@ -259,6 +262,35 @@ public with sharing class PrometheionMatrixController {
     }
 
     /**
+     * Sanitize filter clause by escaping string literals
+     * This prevents SOQL injection by escaping single quotes in string values
+     */
+    private static String sanitizeFilterClause(String filters) {
+        if (String.isBlank(filters)) {
+            return '';
+        }
+        
+        // Pattern to find string literals (values within single quotes)
+        // Replace unescaped single quotes within values
+        String result = filters;
+        
+        // Find all string literals and escape internal quotes
+        Pattern p = Pattern.compile('\'([^\']*)\'');
+        Matcher m = p.matcher(filters);
+        
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String value = m.group(1);
+            // Escape single quotes within the value
+            String escapedValue = String.escapeSingleQuotes(value);
+            m.appendReplacement(sb, '\'' + escapedValue + '\'');
+        }
+        m.appendTail(sb);
+        
+        return sb.toString();
+    }
+
+    /**
      * Estimate group count to determine if direct query is safe
      */
     private static Integer estimateGroupCount(MatrixConfiguration cfg) {
@@ -266,7 +298,7 @@ public with sharing class PrometheionMatrixController {
         String colField = sanitizeFieldName(cfg.columnField);
 
         String baseFilter = String.isNotBlank(cfg.filters) ?
-            ' WHERE ' + cfg.filters : '';
+            ' WHERE ' + sanitizeFilterClause(cfg.filters) : '';
 
         try {
             // Count distinct row values
@@ -284,8 +316,13 @@ public with sharing class PrometheionMatrixController {
             Integer colCount = colResults.isEmpty() ? 0 : (Integer)colResults[0].get('distinctCount');
 
             return rowCount * colCount;
+        } catch (QueryException e) {
+            // If query fails, assume worst case
+            System.debug(LoggingLevel.WARN, 'PrometheionMatrixController: Estimation query failed: ' + e.getMessage());
+            return MAX_GROUP_COMBINATIONS + 1;
         } catch (Exception e) {
             // If estimation fails, assume worst case
+            System.debug(LoggingLevel.WARN, 'PrometheionMatrixController: Unexpected error in estimation: ' + e.getMessage());
             return MAX_GROUP_COMBINATIONS + 1;
         }
     }
@@ -304,7 +341,7 @@ public with sharing class PrometheionMatrixController {
                       'FROM ' + cfg.objectName;
 
         if (String.isNotBlank(cfg.filters)) {
-            soql += ' WHERE ' + cfg.filters;
+            soql += ' WHERE ' + sanitizeFilterClause(cfg.filters);
         }
 
         soql += ' GROUP BY ' + rowField + ', ' + colField +
@@ -314,8 +351,13 @@ public with sharing class PrometheionMatrixController {
         List<AggregateResult> results;
         try {
             results = Database.query(soql);
+        } catch (QueryException e) {
+            throw new AuraHandledException('Matrix query syntax error: ' + e.getMessage());
+        } catch (System.SecurityException e) {
+            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
         } catch (Exception e) {
-            throw new AuraHandledException('Matrix query failed: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'PrometheionMatrixController: Unexpected query error: ' + e.getStackTraceString());
+            throw new AuraHandledException('Matrix query failed');
         }
 
         return transformToMatrix(results, cfg);
@@ -350,8 +392,13 @@ public with sharing class PrometheionMatrixController {
         List<SObject> summaryRecords;
         try {
             summaryRecords = Database.query(soql);
+        } catch (QueryException e) {
+            throw new AuraHandledException('Summary query syntax error: ' + e.getMessage());
+        } catch (System.SecurityException e) {
+            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
         } catch (Exception e) {
-            throw new AuraHandledException('Summary query failed: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'PrometheionMatrixController: Unexpected summary query error: ' + e.getStackTraceString());
+            throw new AuraHandledException('Summary query failed');
         }
 
         return transformSummaryToMatrix(summaryRecords, cfg);

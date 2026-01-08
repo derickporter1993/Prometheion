@@ -143,7 +143,7 @@ private class PrometheionGDPRDataErasureServiceTest {
         
         // Then: Should not be able to erase
         System.assertEquals(false, result.canErase, 'Should not be able to erase');
-        System.assert(result.blockers.size() > 0, 'Blockers should exist');
+        System.assert(!result.blockers.isEmpty(), 'Blockers should exist');
         System.assert(result.blockers[0].contains('open case'), 
             'Blocker should mention open case');
     }
@@ -189,7 +189,7 @@ private class PrometheionGDPRDataErasureServiceTest {
         Test.stopTest();
         
         // Then: Should return requests
-        System.assert(requests.size() > 0, 'Should return at least one request');
+        System.assert(!requests.isEmpty(), 'Should return at least one request');
         System.assertEquals(testContact.Email, requests[0].Contact_Email__c, 
             'Should match contact email');
     }

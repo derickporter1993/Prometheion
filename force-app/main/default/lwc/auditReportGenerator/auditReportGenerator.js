@@ -53,7 +53,7 @@ export default class AuditReportGenerator extends LightningElement {
             this.loading = false;
         })
         .catch(error => {
-            this.error = error.body.message;
+            this.error = error?.body?.message || error?.message || 'An error occurred';
             this.loading = false;
         });
     }
@@ -72,7 +72,7 @@ export default class AuditReportGenerator extends LightningElement {
             this.loading = false;
         })
         .catch(error => {
-            this.error = error.body.message;
+            this.error = error?.body?.message || error?.message || 'An error occurred';
             this.loading = false;
         });
     }

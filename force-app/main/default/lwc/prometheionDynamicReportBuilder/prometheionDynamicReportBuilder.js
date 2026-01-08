@@ -48,7 +48,8 @@ export default class PrometheionDynamicReportBuilder extends LightningElement {
                 value: obj.value
             }));
         } else if (error) {
-            this.showError('Error loading objects: ' + error.body.message);
+            const errorMsg = error?.body?.message || error?.message || 'Unknown error';
+            this.showError('Error loading objects: ' + errorMsg);
         }
     }
 
@@ -98,7 +99,8 @@ export default class PrometheionDynamicReportBuilder extends LightningElement {
                 this.isLoading = false;
             })
             .catch(error => {
-                this.showError('Error loading fields: ' + error.body.message);
+                const errorMsg = error?.body?.message || error?.message || 'Unknown error';
+                this.showError('Error loading fields: ' + errorMsg);
                 this.isLoading = false;
             });
     }

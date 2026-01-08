@@ -94,7 +94,7 @@ private class PrometheionGLBAPrivacyNoticeServiceTest {
         Test.stopTest();
         
         // Then: Annual notices should be created
-        System.assert(notices.size() > 0, 'Should create annual notices');
+        System.assert(!notices.isEmpty(), 'Should create annual notices');
         for (Privacy_Notice__c notice : notices) {
             System.assertEquals('Annual', notice.Notice_Type__c, 'Should be annual notice');
             System.assertEquals('Pending', notice.Delivery_Status__c, 'Status should be Pending');

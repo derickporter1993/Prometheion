@@ -34,8 +34,6 @@ export default class SystemMonitorDashboard extends LightningElement {
       this.stats = await fetchGovernorStats();
       await evaluateAndPublish({ stats: this.stats, contextRecordId: null });
     } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e);
       this.showError("Failed to load governor stats", e.body?.message || e.message);
     }
   }

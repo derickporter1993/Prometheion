@@ -4,7 +4,7 @@
  * Scheduled job that polls Setup Audit Trail every 5 minutes and publishes
  * changes to AWS via Platform Events for processing.
  */
-public class PrometheionAuditTrailPoller implements Schedulable {
+public with sharing class PrometheionAuditTrailPoller implements Schedulable {
     
     private static final String JOB_NAME = 'Prometheion Audit Trail Poller';
     private static final Integer BATCH_SIZE = 200;
@@ -72,32 +72,74 @@ public class PrometheionAuditTrailPoller implements Schedulable {
     
     /**
      * Gets audit trail entries since last poll time
-     * Note: This is a placeholder - actual implementation would use Setup Audit Trail API
+     * Queries SetupAuditTrail object for configuration changes
      */
     private static List<Map<String, Object>> getAuditTrailEntries(
         Datetime startTime, 
         Datetime endTime
     ) {
-        // Placeholder implementation
-        // In production, this would query Setup Audit Trail via API
-        // For now, return empty list
-        return new List<Map<String, Object>>();
+        List<Map<String, Object>> entries = new List<Map<String, Object>>();
+        
+        try {
+            // Query SetupAuditTrail for changes within the time window
+            for (SetupAuditTrail trail : [
+                SELECT Action, CreatedBy.Username, CreatedDate, Display, Section
+                FROM SetupAuditTrail
+                WHERE CreatedDate >= :startTime AND CreatedDate <= :endTime
+                WITH SECURITY_ENFORCED
+                ORDER BY CreatedDate DESC
+                LIMIT :BATCH_SIZE
+            ]) {
+                entries.add(new Map<String, Object>{
+                    'Action' => trail.Action,
+                    'CreatedBy' => trail.CreatedBy.Username,
+                    'CreatedDate' => trail.CreatedDate,
+                    'Display' => trail.Display,
+                    'Section' => trail.Section
+                });
+            }
+        } catch (Exception e) {
+            // Log error but don't fail the entire job
+            System.debug(LoggingLevel.ERROR, 'PrometheionAuditTrailPoller: Error querying SetupAuditTrail: ' + e.getMessage());
+        }
+        
+        return entries;
     }
     
     /**
      * Gets the last poll time from custom settings or returns 1 hour ago
+     * Uses Prometheion_Settings__c Custom Setting to persist last poll time
      */
     private static Datetime getLastPollTime() {
-        // In production, store this in Custom Settings or Custom Metadata
-        // For now, return 1 hour ago
+        try {
+            Prometheion_Settings__c settings = Prometheion_Settings__c.getOrgDefaults();
+            if (settings != null && settings.Last_Audit_Trail_Poll__c != null) {
+                return settings.Last_Audit_Trail_Poll__c;
+            }
+        } catch (Exception e) {
+            System.debug(LoggingLevel.WARN, 'PrometheionAuditTrailPoller: Could not retrieve last poll time: ' + e.getMessage());
+        }
+        
+        // Default: return 1 hour ago for first run
         return Datetime.now().addHours(-1);
     }
     
     /**
-     * Updates the last poll time
+     * Updates the last poll time in Custom Settings
+     * Creates org default if it doesn't exist
      */
     private static void updateLastPollTime(Datetime pollTime) {
-        // In production, store this in Custom Settings or Custom Metadata
+        try {
+            Prometheion_Settings__c settings = Prometheion_Settings__c.getOrgDefaults();
+            if (settings == null) {
+                settings = new Prometheion_Settings__c(SetupOwnerId = UserInfo.getOrganizationId());
+            }
+            settings.Last_Audit_Trail_Poll__c = pollTime;
+            upsert settings;
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionAuditTrailPoller: Failed to update last poll time: ' + e.getMessage());
+            // Don't throw - logging failure shouldn't break the poller
+        }
     }
 }
 

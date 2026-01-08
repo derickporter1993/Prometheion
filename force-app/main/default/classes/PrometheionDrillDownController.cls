@@ -53,6 +53,8 @@ public with sharing class PrometheionDrillDownController {
         FilterContext ctx;
         try {
             ctx = (FilterContext)JSON.deserialize(contextJson, FilterContext.class);
+        } catch (JSONException e) {
+            throw new AuraHandledException('Invalid drill-down context format: ' + e.getMessage());
         } catch (Exception e) {
             throw new AuraHandledException('Invalid drill-down context format');
         }
@@ -103,6 +105,8 @@ public with sharing class PrometheionDrillDownController {
         FilterContext ctx;
         try {
             ctx = (FilterContext)JSON.deserialize(contextJson, FilterContext.class);
+        } catch (JSONException e) {
+            throw new AuraHandledException('Invalid export context format: ' + e.getMessage());
         } catch (Exception e) {
             throw new AuraHandledException('Invalid export context format');
         }
@@ -353,7 +357,11 @@ public with sharing class PrometheionDrillDownController {
 
         try {
             return Database.countQuery(countSoql);
+        } catch (QueryException e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionDrillDownController: Count query failed: ' + e.getMessage());
+            return 0;
         } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionDrillDownController: Unexpected error in count query: ' + e.getMessage());
             return 0;
         }
     }
@@ -446,6 +454,8 @@ public with sharing class PrometheionDrillDownController {
         try {
             Decimal.valueOf(value);
             return true;
+        } catch (TypeException e) {
+            return false;
         } catch (Exception e) {
             return false;
         }

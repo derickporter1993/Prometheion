@@ -13,42 +13,19 @@ public with sharing class TeamsNotifier {
 
     /**
      * Send simple text notification to Teams
+     * Uses Queueable for better error handling and retry logic
      */
-    @future(callout=true)
     public static void notifyAsync(String text) {
-        try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint('callout:Teams_Webhook');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setBody(JSON.serialize(new Map<String, Object>{ 'text' => text }));
-            HttpResponse res = new Http().send(req);
-            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
-                System.debug(LoggingLevel.ERROR, 'Teams notify failed: ' + res.getStatus());
-            }
-        } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Teams notify exception: ' + e.getMessage());
-        }
+        String payload = JSON.serialize(new Map<String, Object>{ 'text' => text });
+        System.enqueueJob(new PrometheionTeamsNotifierQueueable(payload, 0, null));
     }
 
     /**
      * Send rich Adaptive Card notification to Teams
+     * Uses Queueable for better error handling and retry logic
      */
-    @future(callout=true)
     public static void notifyRichAsync(String jsonPayload) {
-        try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint('callout:Teams_Webhook');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setBody(jsonPayload);
-            HttpResponse res = new Http().send(req);
-            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
-                System.debug(LoggingLevel.ERROR, 'Teams rich notify failed: ' + res.getStatus());
-            }
-        } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Teams rich notify exception: ' + e.getMessage());
-        }
+        System.enqueueJob(new PrometheionTeamsNotifierQueueable(jsonPayload, 0, null));
     }
 
     /**

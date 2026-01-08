@@ -41,16 +41,4 @@ public with sharing class AlertHistoryService {
         }
         return out;
     }
-<<<<<<< HEAD
-=======
-    
-    /**
-     * @deprecated Use getRecentAlerts instead
-     */
-    // @Deprecated (not supported in non-managed packages)
-    @AuraEnabled(cacheable=true)
-    public static List<AlertRow> recent(Integer limitSize) {
-        return getRecentAlerts(limitSize);
-    }
->>>>>>> open-repo-f518a
 }

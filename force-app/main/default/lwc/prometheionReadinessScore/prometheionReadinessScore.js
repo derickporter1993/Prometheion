@@ -21,7 +21,7 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
       this.updateScoreStatus();
       this.updateProgressStep();
     } else if (error) {
-      this.showToast("Error", error.body.message, "error");
+      this.showToast("Error", error.body?.message || "Failed to load readiness score", "error");
       this.scoreStatus = "Error";
     }
   }
@@ -110,7 +110,8 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
         this.navigateToContent(contentDocId);
       })
       .catch((error) => {
-        this.showToast("Error", error.body.message, "error");
+        const errorMsg = error?.body?.message || error?.message || 'An unexpected error occurred';
+        this.showToast("Error", errorMsg, "error");
       });
   }
 

@@ -317,10 +317,8 @@ public with sharing class PrometheionTrendController {
 
         // Add additional filters if provided
         if (String.isNotBlank(additionalFilters)) {
-            // Basic sanitization
-            String safeFilters = additionalFilters
-                .replaceAll('(?i)(INSERT|UPDATE|DELETE|DROP)', '')
-                .trim();
+            // Comprehensive sanitization for SOQL injection prevention
+            String safeFilters = sanitizeFilterClause(additionalFilters);
 
             if (String.isNotBlank(safeFilters)) {
                 soql += ' AND (' + safeFilters + ')';
@@ -489,5 +487,43 @@ public with sharing class PrometheionTrendController {
         @AuraEnabled public String apiName;
         @AuraEnabled public String label;
         @AuraEnabled public String fieldType;
+    }
+
+    /**
+     * Sanitize filter clause by escaping string literals and blocking dangerous patterns
+     * Prevents SOQL injection attacks
+     */
+    private static String sanitizeFilterClause(String filters) {
+        if (String.isBlank(filters)) {
+            return '';
+        }
+        
+        // Block dangerous SQL/SOQL keywords and patterns
+        String upper = filters.toUpperCase();
+        Set<String> dangerous = new Set<String>{
+            'INSERT', 'UPDATE', 'DELETE', 'UPSERT', 'MERGE',
+            'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'GRANT',
+            '--', '/*', '*/', ';', 'EXEC', 'EXECUTE'
+        };
+        
+        for (String keyword : dangerous) {
+            if (upper.contains(keyword)) {
+                return ''; // Return empty to block the filter entirely
+            }
+        }
+        
+        // Escape string literals within the filter
+        Pattern p = Pattern.compile('\'([^\']*)\'');
+        Matcher m = p.matcher(filters);
+        
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String value = m.group(1);
+            String escapedValue = String.escapeSingleQuotes(value);
+            m.appendReplacement(sb, '\'' + escapedValue + '\'');
+        }
+        m.appendTail(sb);
+        
+        return sb.toString();
     }
 }

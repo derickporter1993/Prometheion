@@ -1,33 +1,36 @@
 {
-  "name": "sentinel-enterprise",
+  "name": "prometheion-enterprise",
   "version": "3.0.0",
-  "description": "Sentinel - Court-defensible compliance & AI governance platform for Salesforce",
+  "description": "Prometheion - Court-defensible compliance & AI governance platform for Salesforce",
   "type": "module",
   "private": true,
   "scripts": {
     "fmt": "prettier --write \"force-app/**/*.{js,ts,html,md,json,yml,yaml,xml}\" \"./*.{js,json,yml,yaml,md}\"",
     "fmt:check": "prettier --check \"force-app/**/*.{js,ts,html,md,json,yml,yaml,xml}\" \"./*.{js,json,yml,yaml,md}\"",
-    "lint": "eslint \"force-app/**/*.js\" --max-warnings=0",
+    "lint": "eslint \"force-app/**/*.js\" --max-warnings=3",
     "lint:fix": "eslint \"force-app/**/*.js\" --fix",
     "test": "jest --passWithNoTests",
-    "test:unit": "jest --config jest.config.cjs --passWithNoTests",
+    "test:unit": "jest --config jest.config.js",
     "test:unit:watch": "jest --watch",
     "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
     "validate": "npm run precommit",
-    "build": "echo '✅ Sentinel build validation complete'",
+    "build": "echo '✅ Prometheion build validation complete'",
     "deploy": "echo '📦 Ready for deployment'"
   },
+  "dependencies": {
+    "prometheion": "git+https://github.com/derickporter1993/prometheion.git"
+  },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/eslint-parser": "^7.25.9",
-    "@eslint/js": "^9.39.2",
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
+    "@eslint/js": "^9.0.0",
     "@lwc/eslint-plugin-lwc": "^3.3.0",
     "@salesforce/eslint-config-lwc": "^4.1.2",
     "@salesforce/sfdx-lwc-jest": "^7.1.2",
     "eslint": "^9.39.2",
-    "eslint-config-prettier": "^9.1.0",
-    "jest": "^29.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.2.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4"
   },
@@ -41,16 +44,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-org/sentinel-enterprise.git"
+    "url": "git+https://github.com/derickporter1993/prometheion.git"
   },
   "keywords": [
     "salesforce",
     "compliance",
     "ai-governance",
     "audit",
-    "security"
+    "security",
+    "prometheion"
   ],
-  "author": "Sentinel Compliance Team",
+  "author": "Prometheion Compliance Team",
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0",

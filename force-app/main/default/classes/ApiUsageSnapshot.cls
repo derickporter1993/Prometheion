@@ -11,7 +11,7 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
 
     public static void run() {
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:SF_Limits/services/data/v60.0/limits');
+        req.setEndpoint('callout:SF_Limits/services/data/v65.0/limits');
         req.setMethod('GET');
         req.setHeader('Accept','application/json');
         HttpResponse res = new Http().send(req);
