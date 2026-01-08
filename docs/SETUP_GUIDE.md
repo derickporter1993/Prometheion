@@ -1,6 +1,6 @@
-# Sentinel Setup Guide
+# Prometheion Setup Guide
 
-Complete setup instructions for deploying and configuring Sentinel in your Salesforce org.
+Complete setup instructions for deploying and configuring Prometheion in your Salesforce org.
 
 ---
 
@@ -19,8 +19,8 @@ Complete setup instructions for deploying and configuring Sentinel in your Sales
 
 ```bash
 # Clone the repo (if not already done)
-git clone https://github.com/YOUR_USERNAME/sentinel.git
-cd sentinel
+git clone https://github.com/YOUR_USERNAME/prometheion.git
+cd prometheion
 
 # Authenticate to your Salesforce org
 sf org login web --alias myorg
@@ -29,7 +29,7 @@ sf org login web --alias myorg
 sf project deploy start --target-org myorg
 
 # Assign permissions
-sf org assign permset --name Sentinel_Admin --target-org myorg
+sf org assign permset --name Prometheion_Admin --target-org myorg
 
 # Open the org
 sf org open --target-org myorg
@@ -44,7 +44,7 @@ sf org open --target-org myorg
 # This will:
 # - Create a 7-day scratch org
 # - Push source code
-# - Assign Sentinel_Admin permission set
+# - Assign Prometheion_Admin permission set
 # - Open the org in your browser
 ```
 
@@ -54,7 +54,7 @@ sf org open --target-org myorg
 
 ### 1. Configure Named Credentials
 
-Sentinel requires Named Credentials for Slack and Teams integrations.
+Prometheion requires Named Credentials for Slack and Teams integrations.
 
 #### Slack Webhook Setup
 
@@ -97,7 +97,7 @@ Sentinel requires Named Credentials for Slack and Teams integrations.
 1. Navigate to **Setup → Apex → Schedule Apex**
 2. Click **Schedule Apex**
 3. **Apex Class:** `WeeklyScorecardScheduler`
-4. **Job Name:** `Sentinel Weekly Scorecard`
+4. **Job Name:** `Prometheion Weekly Scorecard`
 5. **Frequency:** Weekly
 6. **Preferred Start Time:** 9:00 AM
 7. **Preferred Start Day:** Monday
@@ -149,19 +149,19 @@ Check your Slack/Teams channel for the scorecard notification.
 
 ```apex
 // Test Slack notification
-SlackNotifier.notifyAsync('🧪 Test notification from Sentinel');
+SlackNotifier.notifyAsync('🧪 Test notification from Prometheion');
 
 // Test Teams notification
-TeamsNotifier.notifyAsync('🧪 Test notification from Sentinel');
+TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
 ```
 
 ---
 
 ## 📊 Run Your First Compliance Scan
 
-1. **Navigate to Sentinel** in the App Launcher
+1. **Navigate to Prometheion** in the App Launcher
 2. **Click "Run Baseline Scan"** on the dashboard
-3. **Wait 30-60 seconds** while Sentinel analyzes your org
+3. **Wait 30-60 seconds** while Prometheion analyzes your org
 4. **View your Audit Readiness Score** and top risks
 5. **Export the report** (Markdown or PDF) for your compliance team
 
@@ -187,7 +187,7 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Sentinel');
 - Verify Named Credentials are configured correctly
 - Check Apex Debug Logs for errors
 - Run `WeeklyScorecardScheduler.sendTestScorecard()` to test manually
-- Verify score calculation: `SentinelComplianceScorer.calculateReadinessScore()`
+- Verify score calculation: `PrometheionComplianceScorer.calculateReadinessScore()`
 
 ### Compliance Copilot Not Responding
 
@@ -195,21 +195,21 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Sentinel');
 
 **Solutions:**
 - Check browser console for JavaScript errors
-- Verify user has `Sentinel_Admin` permission set assigned
+- Verify user has `Prometheion_Admin` permission set assigned
 - Check Apex Debug Logs for errors
-- Ensure `Sentinel_Compliance_Graph__b` BigObject has data (for some queries)
+- Ensure `Prometheion_Compliance_Graph__b` BigObject has data (for some queries)
 
 ### Permission Errors
 
 **Problem:** "Insufficient Privileges" errors
 
 **Solutions:**
-- Assign `Sentinel_Admin` permission set to user
+- Assign `Prometheion_Admin` permission set to user
 - Verify user has access to required objects:
-  - `Sentinel_Compliance_Graph__b`
+  - `Prometheion_Compliance_Graph__b`
   - `PermissionSetAssignment`
   - `User`
-  - Custom objects used by Sentinel
+  - Custom objects used by Prometheion
 
 ---
 
@@ -223,9 +223,9 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Sentinel');
 
 ## 🆘 Support
 
-- **Issues:** [GitHub Issues](https://github.com/YOUR_USERNAME/sentinel/issues)
+- **Issues:** [GitHub Issues](https://github.com/YOUR_USERNAME/prometheion/issues)
 - **Documentation:** [docs/](../docs/)
-- **Discussions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/sentinel/discussions)
+- **Discussions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/prometheion/discussions)
 
 ---
 
