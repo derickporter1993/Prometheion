@@ -27,6 +27,14 @@
     <apexClass>PrometheionEventMonitoringService</apexClass>
     <enabled>true</enabled>
   </classAccesses>
+  <classAccesses>
+    <apexClass>PrometheionDashboardController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>ComplianceScoreCardController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
   <objectPermissions>
     <object>Prometheion_Audit_Package__c</object>
     <allowCreate>false</allowCreate>
