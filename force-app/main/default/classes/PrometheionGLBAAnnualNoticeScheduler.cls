@@ -36,11 +36,11 @@ public with sharing class PrometheionGLBAAnnualNoticeScheduler implements Schedu
     }
 
     /**
-     * Schedule the job to run daily at 6 AM
+     * Schedule the job to run daily using CRON from Custom Metadata
      * @return Job ID
      */
     public static String scheduleDaily() {
-        String cronExp = '0 0 6 * * ?'; // 6 AM every day
+        String cronExp = SchedulerErrorHandler.getCronExpression('GLBAAnnualNotice', '0 0 6 * * ?');
         return System.schedule(
             'GLBA Annual Notice Distribution - Daily',
             cronExp,

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>ISO 27001 Monthly Privileged</label>
+    <protected>false</protected>
+    <values>
+        <field>Batch_Size__c</field>
+        <value xsi:type="xsd:double">200</value>
+    </values>
+    <values>
+        <field>CRON_Expression__c</field>
+        <value xsi:type="xsd:string">0 0 7 1 * ?</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Monthly privileged access reviews for ISO 27001 compliance. Runs on the 1st of each month at 7 AM.</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>
