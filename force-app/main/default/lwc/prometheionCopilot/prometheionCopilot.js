@@ -136,11 +136,15 @@ export default class PrometheionCopilot extends LightningElement {
     }
 
     extractErrorMessage(error) {
-        if (error.body && error.body.message) {
+        // Safely extract error message with null guards
+        if (error?.body?.message) {
             return error.body.message;
         }
-        if (error.message) {
+        if (error?.message) {
             return error.message;
+        }
+        if (typeof error === 'string') {
+            return error;
         }
         return 'An unexpected error occurred. Please try again.';
     }

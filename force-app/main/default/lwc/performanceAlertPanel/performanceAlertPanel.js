@@ -1,6 +1,6 @@
 import { LightningElement, track } from "lwc";
 import { subscribe, onError } from "lightning/empApi";
-import recent from "@salesforce/apex/AlertHistoryService.recent";
+import getRecentAlerts from "@salesforce/apex/AlertHistoryService.getRecentAlerts";
 
 export default class PerformanceAlertPanel extends LightningElement {
   channelName = "/event/Performance_Alert__e";
@@ -19,15 +19,19 @@ export default class PerformanceAlertPanel extends LightningElement {
   ];
 
   async connectedCallback() {
-    this.rows = (await recent({ limitSize: 25 })).map((r, idx) => ({
-      key: `${r.createdDate}-${idx}`,
-      ...r,
-    }));
-    this.handleSubscribe();
-    onError((error) => {
-      /* eslint-disable no-console */
-      console.error("EMP API error: ", error);
-    });
+    try {
+      this.rows = (await getRecentAlerts({ limitSize: 25 })).map((r, idx) => ({
+        key: `${r.createdDate}-${idx}`,
+        ...r,
+      }));
+      this.handleSubscribe();
+      onError(() => {
+        // EMP API error handled silently - alerts will continue via polling
+      });
+    } catch (_error) {
+      // Set empty array to prevent UI errors
+      this.rows = [];
+    }
   }
 
   disconnectedCallback() {
