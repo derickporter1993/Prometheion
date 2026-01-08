@@ -227,14 +227,12 @@ describe('c-compliance-copilot', () => {
         
         // Trigger a query
         const quickCommandButtons = element.shadowRoot.querySelectorAll('lightning-button[data-command]');
+        expect(quickCommandButtons.length).toBeGreaterThan(0);
+        quickCommandButtons[0].click();
         
-        if (quickCommandButtons.length > 0) {
-            quickCommandButtons[0].click();
-            
-            // Wait for error handling
-            await Promise.resolve();
-            await Promise.resolve();
-        }
+        // Wait for error handling
+        await Promise.resolve();
+        await Promise.resolve();
         
         // Component should still be functional
         expect(element.shadowRoot.querySelector('lightning-card')).not.toBeNull();

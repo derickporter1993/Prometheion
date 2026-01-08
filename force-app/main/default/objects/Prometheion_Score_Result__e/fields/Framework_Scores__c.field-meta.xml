@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Stack__c</fullName>
-    <label>Stack</label>
+    <fullName>Framework_Scores__c</fullName>
+    <label>Framework Scores</label>
     <length>32768</length>
     <visibleLines>5</visibleLines>
     <required>false</required>
