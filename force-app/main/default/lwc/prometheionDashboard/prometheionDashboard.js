@@ -1,13 +1,16 @@
 import { LightningElement, track, wire } from 'lwc';
 import calculateReadinessScore from '@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore';
+import getAuditPackages from '@salesforce/apex/PrometheionDashboardController.getAuditPackages';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class PrometheionDashboard extends LightningElement {
+export default class PrometheionDashboard extends NavigationMixin(LightningElement) {
     @track scoreResult = null;
     @track isLoading = true;
     @track lastUpdated = new Date();
     @track selectedFramework = 'ALL';
     @track showDrillDown = false;
+    @track auditPackages = [];
 
     @wire(calculateReadinessScore)
     wiredScore({ error, data }) {
@@ -133,6 +136,29 @@ export default class PrometheionDashboard extends LightningElement {
         return this.filteredTopRisks.length > 0;
     }
 
+    get hasAuditPackages() {
+        return this.auditPackages && this.auditPackages.length > 0;
+    }
+
+    handleAuditPackageClick(event) {
+        const packageId = event.currentTarget.dataset.packageId;
+        if (packageId) {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: packageId,
+                    actionName: 'view'
+                }
+            });
+        }
+    }
+
+    formatDate(dateValue) {
+        if (!dateValue) return '';
+        const date = new Date(dateValue);
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
     get showFrameworkGrid() {
         return !this.showDrillDown;
     }
@@ -181,6 +207,15 @@ export default class PrometheionDashboard extends LightningElement {
 
     handleGenerateHipaa() {
         this.showToast('Coming Soon', 'HIPAA report generation will be available in the next release.', 'info');
+    }
+
+    @wire(getAuditPackages, { framework: '$selectedFramework' })
+    wiredAuditPackages({ error, data }) {
+        if (data) {
+            this.auditPackages = data;
+        } else if (error) {
+            console.error('Error loading audit packages:', error);
+        }
     }
 
     handleFrameworkFilter(event) {

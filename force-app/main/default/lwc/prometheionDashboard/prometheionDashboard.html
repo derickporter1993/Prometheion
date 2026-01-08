@@ -183,6 +183,39 @@
       </div>
     </template>
 
+    <!-- Audit Packages Section -->
+    <template lwc:if={hasAuditPackages}>
+      <div class="audit-packages-section">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" />
+            <path d="M14 2V8H20" />
+          </svg>
+          Recent Audit Packages
+        </h3>
+        <div class="audit-packages-list">
+          <template for:each={auditPackages} for:item="pkg">
+            <div key={pkg.id} class="audit-package-card" data-package-id={pkg.id} onclick={handleAuditPackageClick}>
+              <div class="package-header">
+                <span class="package-name">{pkg.packageName}</span>
+                <span class="package-status status-{pkg.status.toLowerCase()}">{pkg.status}</span>
+              </div>
+              <div class="package-meta">
+                <span class="package-framework">{pkg.framework}</span>
+                <span class="package-period">
+                  {formatDate(pkg.periodStart)} - {formatDate(pkg.periodEnd)}
+                </span>
+              </div>
+              <div class="package-footer">
+                <span class="package-created">Created: {formatDate(pkg.createdDate)}</span>
+                <span class="package-created-by" lwc:if={pkg.createdBy}>by {pkg.createdBy}</span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+
     <!-- Quick Actions -->
     <div class="actions-section">
       <button
