@@ -1,606 +1,513 @@
 /**
- * @description Test Data Factory for Prometheion compliance testing.
- * Provides reusable test data creation methods for all compliance-related tests.
- *
- * IMPORTANT: Big Objects (Prometheion_Compliance_Graph__b) cannot be inserted in test context.
- * Use the mock methods to create in-memory instances for unit testing.
- *
- * Custom Metadata (Compliance_Policy__mdt) cannot be inserted in tests.
- * Use createMockPolicy() for unit tests, and deploy actual records for integration tests.
+ * @description Test data factory for Prometheion unit tests
+ * Provides mock data for Shield events, audit packages, and evidence items
+ * @group Tests
+ * @author Prometheion Team
  */
-@IsTest
+@isTest
 public class PrometheionTestDataFactory {
-
-    // ============================================
-    // CONSTANTS - Supported Frameworks
-    // ============================================
-    public static final Set<String> SUPPORTED_FRAMEWORKS = new Set<String>{
-        'SOC2', 'HIPAA', 'GDPR', 'ISO27001', 'PCI_DSS', 'NIST', 'CCPA', 'GLBA', 'FedRAMP'
-    };
-
-    // Entity Types
-    public static final String ENTITY_PERMISSION_SET = 'PERMISSION_SET';
-    public static final String ENTITY_FLOW = 'FLOW';
-    public static final String ENTITY_APEX_CLASS = 'APEX_CLASS';
-    public static final String ENTITY_APEX_TRIGGER = 'APEX_TRIGGER';
-    public static final String ENTITY_CUSTOM_OBJECT = 'CUSTOM_OBJECT';
-    public static final String ENTITY_FIELD = 'FIELD';
-    public static final String ENTITY_PROFILE = 'PROFILE';
-    public static final String ENTITY_USER = 'USER';
-    public static final String ENTITY_AI_ADJUDICATION = 'AI_ADJUDICATION';
-
-    // Drift Categories
-    public static final String DRIFT_POLICY_VIOLATION = 'POLICY_VIOLATION';
-    public static final String DRIFT_UNAUTHORIZED = 'UNAUTHORIZED';
-    public static final String DRIFT_ANOMALY = 'ANOMALY';
-    public static final String DRIFT_MANUAL_OVERRIDE = 'MANUAL_OVERRIDE';
-
-    // Risk Score Thresholds
-    public static final Decimal RISK_CRITICAL = 9.0;
-    public static final Decimal RISK_HIGH = 7.0;
-    public static final Decimal RISK_MEDIUM = 5.0;
-    public static final Decimal RISK_LOW = 3.0;
-    public static final Decimal RISK_MINIMAL = 1.0;
-
-    // ============================================
-    // COMPLIANCE GRAPH NODE - Mock Creation
-    // ============================================
-
+    
+    // ═══════════════════════════════════════════════════════════════
+    // MOCK EVENT DATA
+    // ═══════════════════════════════════════════════════════════════
+    
     /**
-     * @description Creates a mock Prometheion_Compliance_Graph__b node (in-memory only).
-     * Big Objects cannot be inserted in test context.
+     * @description Create mock Login event data
+     * @return Map of event fields simulating a Login event
      */
-    public static Prometheion_Compliance_Graph__b createMockComplianceNode(
-        String entityType,
-        String entityRecordId,
-        String framework,
-        Decimal riskScore
-    ) {
-        return new Prometheion_Compliance_Graph__b(
-            Graph_Node_Id__c = generateTestHash(entityType, entityRecordId, framework),
-            Parent_Node_Id__c = null,
-            Timestamp__c = System.now(),
-            Entity_Type__c = entityType,
-            Entity_Record_Id__c = entityRecordId,
-            Compliance_Framework__c = framework,
-            Risk_Score__c = riskScore,
-            Drift_Category__c = determineDriftCategory(riskScore),
-            Node_Metadata__c = '{"test": true}',
-            AI_Confidence__c = 0.85,
-            Human_Adjudicated__c = false,
-            Graph_Version__c = 'v3.0'
+    public static Map&lt;String, Object&gt; createMockLoginEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'Login',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'USER_NAME' =&gt; UserInfo.getUserName(),
+            'SOURCE_IP' =&gt; '192.168.1.100',
+            'LOGIN_STATUS' =&gt; 'Success',
+            'LOGIN_TYPE' =&gt; 'Application',
+            'AUTHENTICATION_METHOD_REFERENCE' =&gt; 'Password',
+            'BROWSER_TYPE' =&gt; 'Chrome',
+            'PLATFORM_TYPE' =&gt; 'Windows',
+            'CIPHER_SUITE' =&gt; 'TLS_AES_256_GCM_SHA384',
+            'TLS_PROTOCOL' =&gt; 'TLSv1.3',
+            'CITY' =&gt; 'San Francisco',
+            'SUBDIVISION' =&gt; 'California',
+            'COUNTRY' =&gt; 'United States',
+            'SESSION_KEY' =&gt; 'abc123session',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'MEDIUM'
+        };
+    }
+    
+    /**
+     * @description Create mock LoginAs event data (impersonation)
+     * @return Map of event fields simulating a LoginAs event
+     */
+    public static Map&lt;String, Object&gt; createMockLoginAsEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'LoginAs',
+            'DELEGATED_USER_ID' =&gt; UserInfo.getUserId(),
+            'DELEGATED_USER_NAME' =&gt; UserInfo.getUserName(),
+            'USER_ID' =&gt; '005000000000001AAA',
+            'USER_NAME' =&gt; 'target.user@test.com',
+            'SOURCE_IP' =&gt; '10.0.0.50',
+            'SESSION_KEY' =&gt; 'delegate123session',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'CRITICAL'
+        };
+    }
+    
+    /**
+     * @description Create mock ReportExport event data
+     * @return Map of event fields simulating a ReportExport event
+     */
+    public static Map&lt;String, Object&gt; createMockReportExportEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'ReportExport',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'REPORT_ID' =&gt; '00O000000000001AAA',
+            'REPORT_NAME' =&gt; 'Customer Data Export',
+            'EXPORT_TYPE' =&gt; 'CSV',
+            'NUMBER_OF_COLUMNS' =&gt; '15',
+            'ROWS_PROCESSED' =&gt; '5000',
+            'SOURCE_IP' =&gt; '192.168.1.100',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'CRITICAL'
+        };
+    }
+    
+    /**
+     * @description Create mock API event data
+     * @return Map of event fields simulating an API event
+     */
+    public static Map&lt;String, Object&gt; createMockApiEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'API',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'API_TYPE' =&gt; 'REST',
+            'API_VERSION' =&gt; '58.0',
+            'METHOD_NAME' =&gt; 'query',
+            'ENTITY_NAME' =&gt; 'Account',
+            'ROWS_PROCESSED' =&gt; '1500',
+            'CPU_TIME' =&gt; '500',
+            'RUN_TIME' =&gt; '1200',
+            'CLIENT_NAME' =&gt; 'External Integration',
+            'SOURCE_IP' =&gt; '203.0.113.50',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'HIGH'
+        };
+    }
+    
+    /**
+     * @description Create mock ContentDistribution event
+     * @return Map of event fields simulating a ContentDistribution event
+     */
+    public static Map&lt;String, Object&gt; createMockContentDistributionEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'ContentDistribution',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'CONTENT_DOCUMENT_ID' =&gt; '069000000000001AAA',
+            'DISTRIBUTION_TYPE' =&gt; 'Public',
+            'EXPIRATION_DATE' =&gt; String.valueOf(Date.today().addDays(30)),
+            'IS_PASSWORD_PROTECTED' =&gt; 'false',
+            'SOURCE_IP' =&gt; '192.168.1.100',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'CRITICAL'
+        };
+    }
+    
+    /**
+     * @description Create mock ApexExecution event
+     * @return Map of event fields simulating an ApexExecution event
+     */
+    public static Map&lt;String, Object&gt; createMockApexExecutionEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'ApexExecution',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'ENTRY_POINT' =&gt; 'MyController.doSomething',
+            'QUIDDITY' =&gt; 'SYNCHRONOUS',
+            'CPU_TIME' =&gt; '2500',
+            'EXEC_TIME' =&gt; '5000',
+            'CALLOUT_TIME' =&gt; '1000',
+            'DB_TOTAL_TIME' =&gt; '1500',
+            'DML_ROWS' =&gt; '100',
+            'SOQL_QUERIES' =&gt; '5',
+            'SUCCESS' =&gt; 'true',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'MEDIUM'
+        };
+    }
+    
+    /**
+     * @description Create mock PermissionSetEventLog
+     * @return Map of event fields simulating a PermissionSetEvent
+     */
+    public static Map&lt;String, Object&gt; createMockPermissionSetEvent() {
+        return new Map&lt;String, Object&gt;{
+            'EVENT_TYPE' =&gt; 'PermissionSetEventLog',
+            'USER_ID' =&gt; UserInfo.getUserId(),
+            'PERMISSION_SET_ID' =&gt; '0PS000000000001AAA',
+            'OPERATION' =&gt; 'PermissionSetAssignment',
+            'DELEGATE_USER' =&gt; '005000000000002AAA',
+            'SOURCE_IP' =&gt; '192.168.1.100',
+            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+            'RISK_LEVEL' =&gt; 'HIGH'
+        };
+    }
+    
+    /**
+     * @description Create high-risk event for alert testing
+     * @return Map of event fields with maximum risk factors
+     */
+    public static Map&lt;String, Object&gt; createHighRiskEvent() {
+        Map&lt;String, Object&gt; event = createMockLoginAsEvent();
+        event.put('ROWS_PROCESSED', '50000'); // Large data volume
+        event.put('COUNTRY', 'Russia'); // Non-US location
+        event.put('HOUR', '3'); // Outside business hours
+        return event;
+    }
+    
+    /**
+     * @description Create mock event with specific risk level
+     * @param riskLevel The desired risk level (CRITICAL, HIGH, MEDIUM, LOW)
+     * @return Map of event fields with specified risk level
+     */
+    public static Map&lt;String, Object&gt; createMockEventWithRiskLevel(String riskLevel) {
+        Map&lt;String, Object&gt; event;
+        
+        if (riskLevel == 'CRITICAL') {
+            event = createMockLoginAsEvent();
+        } else if (riskLevel == 'HIGH') {
+            event = createMockApiEvent();
+        } else if (riskLevel == 'MEDIUM') {
+            event = createMockLoginEvent();
+        } else {
+            event = new Map&lt;String, Object&gt;{
+                'EVENT_TYPE' =&gt; 'Logout',
+                'USER_ID' =&gt; UserInfo.getUserId(),
+                'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
+                'RISK_LEVEL' =&gt; 'LOW'
+            };
+        }
+        
+        event.put('RISK_LEVEL', riskLevel);
+        return event;
+    }
+    
+    // ═══════════════════════════════════════════════════════════════
+    // CSV DATA FOR EVENTLOGFILE PARSING
+    // ═══════════════════════════════════════════════════════════════
+    
+    /**
+     * @description Create mock CSV content for Login events
+     * @param rowCount Number of rows to generate
+     * @return CSV string with header and data rows
+     */
+    public static String createMockLoginCSV(Integer rowCount) {
+        String csv = 'EVENT_TYPE,USER_ID,USER_NAME,SOURCE_IP,LOGIN_STATUS,LOGIN_TYPE,TIMESTAMP\n';
+        
+        for (Integer i = 0; i &lt; rowCount; i++) {
+            csv += 'Login,' + UserInfo.getUserId() + ',testuser' + i + '@test.com,192.168.1.' + 
+                   Math.mod(i, 255) + ',Success,Application,' + String.valueOf(Datetime.now().addHours(-i)) + '\n';
+        }
+        
+        return csv;
+    }
+    
+    /**
+     * @description Create mock CSV content with various event types
+     * @return CSV string with multiple event types
+     */
+    public static String createMockMixedEventCSV() {
+        String csv = 'EVENT_TYPE,USER_ID,SOURCE_IP,TIMESTAMP,ROWS_PROCESSED\n';
+        csv += 'Login,' + UserInfo.getUserId() + ',192.168.1.1,' + Datetime.now() + ',0\n';
+        csv += 'API,' + UserInfo.getUserId() + ',192.168.1.2,' + Datetime.now().addMinutes(-5) + ',1000\n';
+        csv += 'ReportExport,' + UserInfo.getUserId() + ',192.168.1.3,' + Datetime.now().addMinutes(-10) + ',5000\n';
+        return csv;
+    }
+    
+    // ═══════════════════════════════════════════════════════════════
+    // CUSTOM OBJECT RECORDS
+    // ═══════════════════════════════════════════════════════════════
+    
+    /**
+     * @description Create Audit Package record
+     * @param framework The compliance framework (HIPAA, SOC2, GDPR, etc.)
+     * @return Inserted Prometheion_Audit_Package__c record
+     */
+    public static Prometheion_Audit_Package__c createAuditPackage(String framework) {
+        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+            Package_Name__c = 'Test Package - ' + framework + ' - ' + Date.today().format(),
+            Framework__c = framework,
+            Status__c = 'DRAFT',
+            Audit_Period_Start__c = Date.today().addDays(-30),
+            Audit_Period_End__c = Date.today()
+        );
+        insert pkg;
+        return pkg;
+    }
+    
+    /**
+     * @description Create Audit Package without insert
+     * @param framework The compliance framework
+     * @return Non-inserted Prometheion_Audit_Package__c record
+     */
+    public static Prometheion_Audit_Package__c buildAuditPackage(String framework) {
+        return new Prometheion_Audit_Package__c(
+            Package_Name__c = 'Test Package - ' + framework,
+            Framework__c = framework,
+            Status__c = 'DRAFT',
+            Audit_Period_Start__c = Date.today().addDays(-30),
+            Audit_Period_End__c = Date.today()
         );
     }
-
+    
     /**
-     * @description Creates multiple mock compliance nodes for bulk testing.
+     * @description Create Evidence Item record
+     * @param packageId The parent Audit Package ID
+     * @return Inserted Prometheion_Evidence_Item__c record
      */
-    public static List<Prometheion_Compliance_Graph__b> createMockComplianceNodes(
-        String framework,
-        Integer count
-    ) {
-        List<Prometheion_Compliance_Graph__b> nodes = new List<Prometheion_Compliance_Graph__b>();
-        for (Integer i = 0; i < count; i++) {
-            Decimal riskScore = Math.mod(i, 10) + 1; // Varies 1-10
-            nodes.add(createMockComplianceNode(
-                ENTITY_PERMISSION_SET,
-                'TestEntity' + i,
-                framework,
-                riskScore
-            ));
-        }
-        return nodes;
+    public static Prometheion_Evidence_Item__c createEvidenceItem(Id packageId) {
+        Prometheion_Evidence_Item__c item = new Prometheion_Evidence_Item__c(
+            Audit_Package__c = packageId,
+            Evidence_Type__c = 'Login',
+            Evidence_Date__c = Date.today(),
+            Description__c = 'Test evidence item',
+            Status__c = 'COLLECTED'
+        );
+        insert item;
+        return item;
     }
-
+    
     /**
-     * @description Creates a mock AI adjudication node.
+     * @description Create Evidence Item without insert
+     * @param packageId The parent Audit Package ID
+     * @return Non-inserted Prometheion_Evidence_Item__c record
      */
-    public static Prometheion_Compliance_Graph__b createMockAdjudicationNode(
-        String parentNodeHash,
-        Decimal confidence,
-        String explanation
-    ) {
-        return new Prometheion_Compliance_Graph__b(
-            Graph_Node_Id__c = generateTestHash(ENTITY_AI_ADJUDICATION, parentNodeHash, 'ADJUDICATION'),
-            Parent_Node_Id__c = parentNodeHash,
-            Timestamp__c = System.now(),
-            Entity_Type__c = ENTITY_AI_ADJUDICATION,
-            AI_Confidence__c = confidence,
-            AI_Explanation__c = explanation,
-            Human_Adjudicator__c = UserInfo.getUserId(),
-            Human_Adjudicated__c = true,
-            Graph_Version__c = 'v3.0'
+    public static Prometheion_Evidence_Item__c buildEvidenceItem(Id packageId) {
+        return new Prometheion_Evidence_Item__c(
+            Audit_Package__c = packageId,
+            Evidence_Type__c = 'Login',
+            Evidence_Date__c = Date.today(),
+            Description__c = 'Test evidence item',
+            Status__c = 'COLLECTED'
         );
     }
-
-    // ============================================
-    // COMPLIANCE POLICY - Mock Creation
-    // ============================================
-
+    
     /**
-     * @description Creates a mock Compliance_Policy__mdt record (in-memory only).
-     * Custom Metadata cannot be inserted in test context.
+     * @description Create multiple evidence items
+     * @param packageId The parent Audit Package ID
+     * @param count Number of items to create
+     * @return List of inserted Prometheion_Evidence_Item__c records
      */
-    public static Compliance_Policy__mdt createMockPolicy(
-        String developerName,
-        String framework,
-        String description,
-        String legalCitation,
-        String remediationSteps
-    ) {
-        Compliance_Policy__mdt policy = new Compliance_Policy__mdt();
-        policy.DeveloperName = developerName;
-        policy.Policy_Description__c = description;
-        policy.Legal_Citation__c = legalCitation;
-        policy.Remediation_Steps__c = remediationSteps;
-        // Note: Framework__c would need to be set if it exists as a field
-        return policy;
+    public static List&lt;Prometheion_Evidence_Item__c&gt; createEvidenceItems(Id packageId, Integer count) {
+        List&lt;Prometheion_Evidence_Item__c&gt; items = new List&lt;Prometheion_Evidence_Item__c&gt;();
+        
+        List&lt;String&gt; eventTypes = new List&lt;String&gt;{'Login', 'LoginAs', 'API', 'ReportExport', 'ApexExecution'};
+        List&lt;String&gt; statuses = new List&lt;String&gt;{'COLLECTED', 'REVIEWED', 'APPROVED'};
+        
+        for (Integer i = 0; i &lt; count; i++) {
+            items.add(new Prometheion_Evidence_Item__c(
+                Audit_Package__c = packageId,
+                Evidence_Type__c = eventTypes[Math.mod(i, eventTypes.size())],
+                Evidence_Date__c = Date.today().addDays(-i),
+                Description__c = 'Test evidence item ' + i,
+                Status__c = statuses[Math.mod(i, statuses.size())]
+            ));
+        }
+        
+        insert items;
+        return items;
     }
-
+    
     /**
-     * @description Returns SOC2-specific mock policies.
+     * @description Create Framework Mapping record
+     * @param framework The compliance framework
+     * @param requirementCode The requirement/control code
+     * @return Inserted Prometheion_Framework_Mapping__c record
      */
-    public static List<Compliance_Policy__mdt> createSOC2Policies() {
-        List<Compliance_Policy__mdt> policies = new List<Compliance_Policy__mdt>();
-
-        // CC6.1 - Logical and Physical Access Controls
-        policies.add(createMockPolicy(
-            'SOC2_CC6_1_Access_Control',
-            'SOC2',
-            'Logical and physical access controls must restrict access to authorized personnel',
-            'SOC2 CC6.1',
-            'Review permission sets, remove excessive permissions, implement least privilege'
-        ));
-
-        // CC6.2 - User Registration and Authorization
-        policies.add(createMockPolicy(
-            'SOC2_CC6_2_User_Registration',
-            'SOC2',
-            'User registration and authorization processes must be documented',
-            'SOC2 CC6.2',
-            'Document user provisioning process, implement approval workflows'
-        ));
-
-        // CC6.3 - Access Removal
-        policies.add(createMockPolicy(
-            'SOC2_CC6_3_Access_Removal',
-            'SOC2',
-            'Access must be removed when no longer required',
-            'SOC2 CC6.3',
-            'Implement automated deprovisioning, conduct periodic access reviews'
-        ));
-
-        // CC7.1 - Configuration Management
-        policies.add(createMockPolicy(
-            'SOC2_CC7_1_Config_Mgmt',
-            'SOC2',
-            'Configuration changes must be authorized and documented',
-            'SOC2 CC7.1',
-            'Implement change management process, require approvals for metadata changes'
-        ));
-
-        return policies;
-    }
-
-    /**
-     * @description Returns HIPAA-specific mock policies.
-     */
-    public static List<Compliance_Policy__mdt> createHIPAAPolicies() {
-        List<Compliance_Policy__mdt> policies = new List<Compliance_Policy__mdt>();
-
-        // 164.312(a)(1) - Access Control
-        policies.add(createMockPolicy(
-            'HIPAA_164_312_a_Access',
-            'HIPAA',
-            'Implement technical policies to allow access only to authorized persons',
-            'HIPAA 164.312(a)(1)',
-            'Review user access, implement role-based access control, enable MFA'
-        ));
-
-        // 164.312(b) - Audit Controls
-        policies.add(createMockPolicy(
-            'HIPAA_164_312_b_Audit',
-            'HIPAA',
-            'Implement hardware, software, and procedural mechanisms to record and examine access',
-            'HIPAA 164.312(b)',
-            'Enable field audit trail, configure event monitoring, retain logs'
-        ));
-
-        // 164.312(c)(1) - Integrity
-        policies.add(createMockPolicy(
-            'HIPAA_164_312_c_Integrity',
-            'HIPAA',
-            'Implement policies to protect ePHI from improper alteration or destruction',
-            'HIPAA 164.312(c)(1)',
-            'Enable field history tracking, implement validation rules'
-        ));
-
-        // 164.312(d) - Authentication
-        policies.add(createMockPolicy(
-            'HIPAA_164_312_d_Auth',
-            'HIPAA',
-            'Implement procedures to verify person or entity seeking access is authorized',
-            'HIPAA 164.312(d)',
-            'Implement MFA, SSO integration, session timeout policies'
-        ));
-
-        return policies;
-    }
-
-    /**
-     * @description Returns GDPR-specific mock policies.
-     */
-    public static List<Compliance_Policy__mdt> createGDPRPolicies() {
-        List<Compliance_Policy__mdt> policies = new List<Compliance_Policy__mdt>();
-
-        // Article 17 - Right to Erasure
-        policies.add(createMockPolicy(
-            'GDPR_Art17_Erasure',
-            'GDPR',
-            'Data subjects have the right to obtain erasure of personal data',
-            'GDPR Article 17',
-            'Implement data deletion workflows, document retention policies'
-        ));
-
-        // Article 20 - Data Portability
-        policies.add(createMockPolicy(
-            'GDPR_Art20_Portability',
-            'GDPR',
-            'Data subjects have the right to receive their data in a portable format',
-            'GDPR Article 20',
-            'Implement data export functionality, support standard formats (JSON, CSV)'
-        ));
-
-        // Article 25 - Privacy by Design
-        policies.add(createMockPolicy(
-            'GDPR_Art25_Privacy_Design',
-            'GDPR',
-            'Data protection must be implemented by design and by default',
-            'GDPR Article 25',
-            'Review data minimization, implement purpose limitation controls'
-        ));
-
-        // Article 32 - Security of Processing
-        policies.add(createMockPolicy(
-            'GDPR_Art32_Security',
-            'GDPR',
-            'Implement appropriate technical and organizational security measures',
-            'GDPR Article 32',
-            'Enable encryption, implement access controls, conduct security assessments'
-        ));
-
-        // Article 33 - Breach Notification
-        policies.add(createMockPolicy(
-            'GDPR_Art33_Breach_Notify',
-            'GDPR',
-            'Personal data breaches must be reported within 72 hours',
-            'GDPR Article 33',
-            'Implement breach detection, establish notification procedures'
-        ));
-
-        return policies;
-    }
-
-    // ============================================
-    // AI SETTINGS - Test Data
-    // ============================================
-
-    /**
-     * @description Creates default AI settings for testing.
-     */
-    public static Prometheion_AI_Settings__c createAISettings(
-        Boolean enableAI,
-        Decimal confidenceThreshold,
-        Boolean requireHumanApproval
-    ) {
-        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
-            SetupOwnerId = UserInfo.getOrganizationId(),
-            Enable_AI_Reasoning__c = enableAI,
-            Confidence_Threshold__c = confidenceThreshold,
-            Require_Human_Approval__c = requireHumanApproval,
-            Auto_Remediation_Enabled__c = false,
-            Blacklisted_Users__c = ''
+    public static Prometheion_Framework_Mapping__c createFrameworkMapping(String framework, String requirementCode) {
+        Prometheion_Framework_Mapping__c mapping = new Prometheion_Framework_Mapping__c(
+            Framework__c = framework,
+            Requirement_Code__c = requirementCode,
+            Requirement_Description__c = 'Test requirement for ' + requirementCode,
+            Entity_Type__c = 'PermissionSet',
+            Is_Active__c = true
         );
-        insert settings;
-        return settings;
+        insert mapping;
+        return mapping;
     }
-
+    
     /**
-     * @description Creates AI settings with AI disabled (fallback mode).
+     * @description Create multiple framework mappings for a framework
+     * @param framework The compliance framework
+     * @return List of inserted Prometheion_Framework_Mapping__c records
      */
-    public static Prometheion_AI_Settings__c createAISettingsDisabled() {
-        return createAISettings(false, 0.85, true);
-    }
-
-    /**
-     * @description Creates AI settings with strict thresholds.
-     */
-    public static Prometheion_AI_Settings__c createAISettingsStrict() {
-        return createAISettings(true, 0.95, true);
-    }
-
-    /**
-     * @description Creates AI settings with lenient thresholds.
-     */
-    public static Prometheion_AI_Settings__c createAISettingsLenient() {
-        return createAISettings(true, 0.70, false);
-    }
-
-    // ============================================
-    // PERMISSION SETS - Test Data
-    // ============================================
-
-    /**
-     * @description Creates a test permission set with documentation.
-     */
-    public static PermissionSet createDocumentedPermissionSet(String name, String description) {
-        PermissionSet ps = new PermissionSet(
-            Name = name,
-            Label = name.replace('_', ' '),
-            Description = description
-        );
-        insert ps;
-        return ps;
-    }
-
-    /**
-     * @description Creates multiple permission sets for compliance scoring tests.
-     */
-    public static List<PermissionSet> createPermissionSetBatch(Integer count, Boolean withDescriptions) {
-        List<PermissionSet> permSets = new List<PermissionSet>();
-        for (Integer i = 0; i < count; i++) {
-            permSets.add(new PermissionSet(
-                Name = 'TestPS_' + i + '_' + System.currentTimeMillis(),
-                Label = 'Test Permission Set ' + i,
-                Description = withDescriptions ? 'Description for PS ' + i : null
+    public static List&lt;Prometheion_Framework_Mapping__c&gt; createFrameworkMappings(String framework) {
+        List&lt;Prometheion_Framework_Mapping__c&gt; mappings = new List&lt;Prometheion_Framework_Mapping__c&gt;();
+        
+        Map&lt;String, List&lt;String&gt;&gt; frameworkControls = new Map&lt;String, List&lt;String&gt;&gt;{
+            'HIPAA' =&gt; new List&lt;String&gt;{'164.312(b)', '164.312(c)', '164.312(d)', '164.312(e)'},
+            'SOC2' =&gt; new List&lt;String&gt;{'CC6.1', 'CC6.2', 'CC6.3', 'CC7.2'},
+            'NIST' =&gt; new List&lt;String&gt;{'AC-1', 'AC-2', 'AU-2', 'AU-3'},
+            'GDPR' =&gt; new List&lt;String&gt;{'Article 30', 'Article 32', 'Article 33', 'Article 34'},
+            'FINRA' =&gt; new List&lt;String&gt;{'Rule 3110', 'Rule 4511', 'Rule 4370'},
+            'FedRAMP' =&gt; new List&lt;String&gt;{'AC-2', 'AU-2', 'CA-7', 'SC-8'}
+        };
+        
+        List&lt;String&gt; controls = frameworkControls.containsKey(framework) 
+            ? frameworkControls.get(framework) 
+            : new List&lt;String&gt;{'CTRL-001', 'CTRL-002', 'CTRL-003'};
+        
+        for (String controlId : controls) {
+            mappings.add(new Prometheion_Framework_Mapping__c(
+                Framework__c = framework,
+                Requirement_Code__c = controlId,
+                Requirement_Description__c = 'Control ' + controlId,
+                Entity_Type__c = 'PermissionSet',
+                Is_Active__c = true
             ));
         }
-        insert permSets;
-        return permSets;
+        
+        insert mappings;
+        return mappings;
     }
-
-    // ============================================
-    // FLOW EXECUTION - Test Data
-    // ============================================
-
+    
+    // ═══════════════════════════════════════════════════════════════
+    // MOCK HTTP RESPONSES
+    // ═══════════════════════════════════════════════════════════════
+    
     /**
-     * @description Creates flow execution records for testing.
+     * @description Create mock Claude API response for compliance analysis
+     * @return JSON string mimicking Claude API response
      */
-    public static List<Flow_Execution__c> createFlowExecutions(
-        String flowName,
-        Integer successCount,
-        Integer faultCount
-    ) {
-        List<Flow_Execution__c> executions = new List<Flow_Execution__c>();
-
-        for (Integer i = 0; i < successCount; i++) {
-            executions.add(new Flow_Execution__c(
-                Flow_Name__c = flowName,
-                Status__c = 'SUCCESS',
-                Run_Time__c = Datetime.now().addHours(-i),
-                CPU__c = 100 + (Math.random() * 200).intValue(),
-                SOQL__c = 5 + Math.mod(i, 10),
-                DML__c = 2 + Math.mod(i, 5)
-            ));
-        }
-
-        for (Integer i = 0; i < faultCount; i++) {
-            executions.add(new Flow_Execution__c(
-                Flow_Name__c = flowName,
-                Status__c = 'Fault',
-                Run_Time__c = Datetime.now().addHours(-i),
-                CPU__c = 500 + (Math.random() * 500).intValue(),
-                SOQL__c = 20 + Math.mod(i, 30),
-                DML__c = 10 + Math.mod(i, 10)
-            ));
-        }
-
-        insert executions;
-        return executions;
+    public static String createMockClaudeResponse() {
+        Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
+            'id' =&gt; 'msg_' + String.valueOf(Datetime.now().getTime()),
+            'type' =&gt; 'message',
+            'role' =&gt; 'assistant',
+            'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
+                new Map&lt;String, Object&gt;{
+                    'type' =&gt; 'text',
+                    'text' =&gt; JSON.serialize(new Map&lt;String, Object&gt;{
+                        'recommendation' =&gt; 'Review user access patterns for potential unauthorized activity.',
+                        'severity' =&gt; 'HIGH',
+                        'relatedControls' =&gt; new List&lt;String&gt;{'164.312(b)', 'CC6.1'},
+                        'suggestedActions' =&gt; new List&lt;String&gt;{
+                            'Enable additional authentication factors',
+                            'Review login patterns for anomalies'
+                        },
+                        'confidence' =&gt; 85
+                    })
+                }
+            },
+            'model' =&gt; 'claude-sonnet-4-20250514',
+            'stop_reason' =&gt; 'end_turn'
+        };
+        return JSON.serialize(response);
     }
-
+    
     /**
-     * @description Creates flow executions for multiple flows.
+     * @description Create mock risk prediction response
+     * @return JSON string with risk predictions
      */
-    public static List<Flow_Execution__c> createMultipleFlowExecutions(Integer flowCount, Integer execsPerFlow) {
-        List<Flow_Execution__c> allExecutions = new List<Flow_Execution__c>();
-
-        for (Integer f = 0; f < flowCount; f++) {
-            String flowName = 'TestFlow_' + f;
-            Integer faults = Math.mod(f, 3); // 0, 1, or 2 faults per flow
-            allExecutions.addAll(createFlowExecutionRecords(flowName, execsPerFlow - faults, faults));
-        }
-
-        insert allExecutions;
-        return allExecutions;
+    public static String createMockRiskPredictionResponse() {
+        List&lt;Map&lt;String, Object&gt;&gt; predictions = new List&lt;Map&lt;String, Object&gt;&gt;{
+            new Map&lt;String, Object&gt;{
+                'controlId' =&gt; '164.312(b)',
+                'riskProbability' =&gt; 75,
+                'riskReason' =&gt; 'Increasing login failures detected',
+                'predictedDate' =&gt; String.valueOf(Date.today().addDays(14))
+            },
+            new Map&lt;String, Object&gt;{
+                'controlId' =&gt; 'CC6.1',
+                'riskProbability' =&gt; 60,
+                'riskReason' =&gt; 'Access pattern anomalies',
+                'predictedDate' =&gt; String.valueOf(Date.today().addDays(30))
+            }
+        };
+        
+        Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
+            'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
+                new Map&lt;String, Object&gt;{
+                    'type' =&gt; 'text',
+                    'text' =&gt; JSON.serialize(predictions)
+                }
+            }
+        };
+        return JSON.serialize(response);
     }
-
-    private static List<Flow_Execution__c> createFlowExecutionRecords(
-        String flowName, Integer successCount, Integer faultCount
-    ) {
-        List<Flow_Execution__c> records = new List<Flow_Execution__c>();
-        for (Integer i = 0; i < successCount; i++) {
-            records.add(new Flow_Execution__c(
-                Flow_Name__c = flowName,
-                Status__c = 'SUCCESS',
-                Run_Time__c = Datetime.now().addMinutes(-i),
-                CPU__c = 100,
-                SOQL__c = 5,
-                DML__c = 2
-            ));
-        }
-        for (Integer i = 0; i < faultCount; i++) {
-            records.add(new Flow_Execution__c(
-                Flow_Name__c = flowName,
-                Status__c = 'Fault',
-                Run_Time__c = Datetime.now().addMinutes(-i),
-                CPU__c = 500,
-                SOQL__c = 25,
-                DML__c = 10
-            ));
-        }
-        return records;
-    }
-
-    // ============================================
-    // PERFORMANCE ALERTS - Test Data
-    // ============================================
-
+    
+    // ═══════════════════════════════════════════════════════════════
+    // USER &amp; PERMISSION SETUP
+    // ═══════════════════════════════════════════════════════════════
+    
     /**
-     * @description Creates performance alert history records.
+     * @description Create test user with specific profile
+     * @param profileName The profile name to assign
+     * @return Inserted User record
      */
-    public static List<Performance_Alert_History__c> createAlertHistory(Integer count) {
-        List<Performance_Alert_History__c> alerts = new List<Performance_Alert_History__c>();
-        String[] metrics = new String[]{'CPU', 'SOQL', 'DML', 'Heap', 'Callouts'};
-
-        for (Integer i = 0; i < count; i++) {
-            alerts.add(new Performance_Alert_History__c(
-                Metric__c = metrics[Math.mod(i, metrics.size())],
-                Value__c = 80 + (Math.random() * 20),
-                Threshold__c = 100,
-                Context_Record__c = 'TestContext_' + i
-            ));
-        }
-
-        insert alerts;
-        return alerts;
-    }
-
-    // ============================================
-    // API USAGE - Test Data
-    // ============================================
-
-    /**
-     * @description Creates API usage snapshot records.
-     */
-    public static List<API_Usage_Snapshot__c> createAPISnapshots(Integer count) {
-        List<API_Usage_Snapshot__c> snapshots = new List<API_Usage_Snapshot__c>();
-
-        for (Integer i = 0; i < count; i++) {
-            Decimal percentUsed = 50 + (Math.random() * 45);
-            snapshots.add(new API_Usage_Snapshot__c(
-                Taken_On__c = Datetime.now().addHours(-i),
-                Daily_Used__c = (percentUsed * 150).intValue(),
-                Daily_Limit__c = 15000,
-                Percent_Used__c = percentUsed,
-                Projected_Exhaustion__c = percentUsed > 80 ? Datetime.now().addHours(24 - i) : null
-            ));
-        }
-
-        insert snapshots;
-        return snapshots;
-    }
-
-    // ============================================
-    // USERS - Test Data
-    // ============================================
-
-    /**
-     * @description Creates a test user with minimal access.
-     */
-    public static User createMinimalAccessUser() {
-        Profile minProfile = [SELECT Id FROM Profile WHERE Name = 'Minimum Access - Salesforce' LIMIT 1];
-
+    public static User createTestUser(String profileName) {
+        Profile p = [SELECT Id FROM Profile WHERE Name = :profileName LIMIT 1];
+        
+        String uniqueId = String.valueOf(Datetime.now().getTime());
         User u = new User(
-            Alias = 'minuser',
-            Email = 'minuser@test.prometheion.com',
-            EmailEncodingKey = 'UTF-8',
-            LastName = 'Minimal User',
-            LanguageLocaleKey = 'en_US',
-            LocaleSidKey = 'en_US',
-            ProfileId = minProfile.Id,
+            FirstName = 'Test',
+            LastName = 'User' + uniqueId,
+            Email = 'testuser' + uniqueId + '@prometheion.test',
+            Username = 'testuser' + uniqueId + '@prometheion.test',
+            Alias = 'tu' + uniqueId.right(6),
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'minuser' + DateTime.now().getTime() + '@test.prometheion.com'
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'en_US',
+            ProfileId = p.Id
         );
         insert u;
         return u;
     }
-
+    
     /**
-     * @description Creates a test user with System Administrator profile.
+     * @description Assign permission set to user
+     * @param userId The user ID to assign to
+     * @param permissionSetName The permission set name
      */
-    public static User createAdminUser() {
-        Profile adminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-
-        User u = new User(
-            Alias = 'admuser',
-            Email = 'adminuser@test.prometheion.com',
-            EmailEncodingKey = 'UTF-8',
-            LastName = 'Admin User',
-            LanguageLocaleKey = 'en_US',
-            LocaleSidKey = 'en_US',
-            ProfileId = adminProfile.Id,
-            TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'adminuser' + DateTime.now().getTime() + '@test.prometheion.com'
-        );
-        insert u;
-        return u;
+    public static void assignPermissionSet(Id userId, String permissionSetName) {
+        List&lt;PermissionSet&gt; psList = [
+            SELECT Id FROM PermissionSet WHERE Name = :permissionSetName LIMIT 1
+        ];
+        
+        if (!psList.isEmpty()) {
+            insert new PermissionSetAssignment(
+                AssigneeId = userId,
+                PermissionSetId = psList[0].Id
+            );
+        }
     }
-
-    // ============================================
-    // HELPER METHODS
-    // ============================================
-
-    private static String generateTestHash(String entityType, String entityId, String framework) {
-        String input = entityType + '|' + entityId + '|' + framework + '|' + System.now().getTime();
-        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
-        return EncodingUtil.base64Encode(hash).substring(0, 50);
-    }
-
-    private static String determineDriftCategory(Decimal riskScore) {
-        if (riskScore >= 8.0) return DRIFT_POLICY_VIOLATION;
-        if (riskScore >= 5.0) return DRIFT_UNAUTHORIZED;
-        if (riskScore >= 3.0) return DRIFT_ANOMALY;
-        return DRIFT_MANUAL_OVERRIDE;
-    }
-
-    // ============================================
-    // SCENARIO BUILDERS - Complex Test Scenarios
-    // ============================================
-
+    
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITY METHODS
+    // ═══════════════════════════════════════════════════════════════
+    
     /**
-     * @description Creates a complete SOC2 audit scenario with mixed compliance states.
+     * @description Generate a random IP address
+     * @return Random IP address string
      */
-    public static void createSOC2AuditScenario() {
-        // Create permission sets with varying documentation
-        createPermissionSetBatch(5, true);  // Documented
-        createPermissionSetBatch(3, false); // Undocumented (compliance gap)
-
-        // Create flow executions with varying health
-        createFlowExecutions('Compliant_Flow', 50, 2);      // 96% success
-        createFlowExecutions('Problematic_Flow', 30, 15);   // 67% success
-        createFlowExecutions('Critical_Flow', 10, 8);       // 56% success
-
-        // Create AI settings
-        createAISettings(true, 0.85, true);
+    public static String generateRandomIP() {
+        return String.valueOf(Math.floor(Math.random() * 255)) + '.' +
+               String.valueOf(Math.floor(Math.random() * 255)) + '.' +
+               String.valueOf(Math.floor(Math.random() * 255)) + '.' +
+               String.valueOf(Math.floor(Math.random() * 255));
     }
-
+    
     /**
-     * @description Creates a HIPAA compliance scenario with PHI-related entities.
+     * @description Generate event data with specific timestamp
+     * @param eventType The event type
+     * @param hoursAgo Hours in the past for the timestamp
+     * @return Map of event data
      */
-    public static void createHIPAAComplianceScenario() {
-        // Create strict AI settings for healthcare
-        createAISettingsStrict();
-
-        // Create permission sets for PHI access
-        createDocumentedPermissionSet('PHI_Read_Access', 'Read-only access to Protected Health Information');
-        createDocumentedPermissionSet('PHI_Write_Access', 'Write access to Protected Health Information - requires approval');
-        createDocumentedPermissionSet('PHI_Admin', 'Full administrative access to PHI - audit logged');
-
-        // Create alert history for PHI access monitoring
-        createAlertHistory(20);
-    }
-
-    /**
-     * @description Creates a GDPR data privacy scenario.
-     */
-    public static void createGDPRPrivacyScenario() {
-        // Create AI settings with human review required
-        createAISettings(true, 0.90, true);
-
-        // Create permission sets for data subject rights
-        createDocumentedPermissionSet('Data_Export', 'Allows data portability exports per GDPR Art. 20');
-        createDocumentedPermissionSet('Data_Erasure', 'Allows data erasure per GDPR Art. 17');
-        createDocumentedPermissionSet('Consent_Manager', 'Manages consent records per GDPR Art. 7');
+    public static Map&lt;String, Object&gt; createEventWithTimestamp(String eventType, Integer hoursAgo) {
+        Map&lt;String, Object&gt; event = createMockEventWithRiskLevel('MEDIUM');
+        event.put('EVENT_TYPE', eventType);
+        event.put('TIMESTAMP', String.valueOf(Datetime.now().addHours(-hoursAgo)));
+        return event;
     }
 }
