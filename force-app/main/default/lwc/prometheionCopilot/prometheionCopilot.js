@@ -29,7 +29,8 @@ export default class PrometheionCopilot extends LightningElement {
                 isWarning: cmd.icon === 'utility:warning'
             }));
         } else if (error) {
-            console.error('Error loading quick commands:', error);
+            const errorMessage = this.extractErrorMessage(error);
+            this.showToast('Error', errorMessage, 'error');
             // Set default commands if wire fails
             this.quickCommands = this.getDefaultQuickCommands();
         }
@@ -98,7 +99,6 @@ export default class PrometheionCopilot extends LightningElement {
             clearTimeout(this._debounceTimer);
         }
 
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
         this._debounceTimer = setTimeout(() => {
             this.handleSubmit();
         }, DEBOUNCE_DELAY);
@@ -165,7 +165,6 @@ export default class PrometheionCopilot extends LightningElement {
     }
 
     scrollToBottom() {
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
         setTimeout(() => {
             const chatContainer = this.template.querySelector('.chat-container');
             if (chatContainer) {

@@ -23,19 +23,17 @@ export default class PrometheionScoreListener extends LightningElement {
      */
     subscribeToScoreEvents() {
         const messageCallback = (response) => {
-            console.log('New score result received: ', JSON.stringify(response));
             this.handleScoreUpdate(response.data.payload);
         };
 
         // Subscribe to the Platform Event
         subscribe('/event/Prometheion_Score_Result__e', -1, messageCallback).then(response => {
-            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
             this.subscription = response;
             this.isSubscribed = true;
             this.error = undefined;
         }).catch(error => {
-            console.error('Subscription error: ', JSON.stringify(error));
             this.error = error;
+            this.showToast('Subscription Error', 'Unable to subscribe to score updates.', 'error');
         });
     }
 
@@ -43,8 +41,7 @@ export default class PrometheionScoreListener extends LightningElement {
      * Unsubscribe from Platform Event
      */
     unsubscribeFromScoreEvents() {
-        unsubscribe(this.subscription, response => {
-            console.log('Unsubscribed from channel: ', JSON.stringify(response));
+        unsubscribe(this.subscription, () => {
             this.isSubscribed = false;
         });
     }
@@ -54,8 +51,8 @@ export default class PrometheionScoreListener extends LightningElement {
      */
     registerErrorListener() {
         onError(error => {
-            console.error('Received error from server: ', JSON.stringify(error));
             this.error = error;
+            this.showToast('Streaming Error', 'An error occurred while listening for score updates.', 'error');
         });
     }
 
@@ -99,4 +96,3 @@ export default class PrometheionScoreListener extends LightningElement {
         return this.isSubscribed ? 'Subscribed' : 'Not Subscribed';
     }
 }
-

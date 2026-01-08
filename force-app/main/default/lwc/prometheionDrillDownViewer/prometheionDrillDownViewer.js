@@ -15,6 +15,7 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     @track pageSize = 50;
     @track currentOffset = 0;
     @track hasMore = false;
+    _context;
 
     connectedCallback() {
         if (this.contextJson) {
@@ -23,12 +24,17 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     }
 
     loadRecords() {
+        this.loadRecordsWithContext();
+    }
+
+    loadRecordsWithContext(contextOverride) {
         this.isLoading = true;
         this.hasError = false;
 
-        const context = JSON.parse(this.contextJson);
+        const context = contextOverride ? { ...contextOverride } : this.getContext();
         context.pageSize = this.pageSize;
         context.offset = this.currentOffset;
+        this._context = context;
 
         getRecords({ contextJson: JSON.stringify(context) })
             .then(result => {
@@ -52,7 +58,6 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     }
 
     handleRowAction(event) {
-        const action = event.detail.action;
         const row = event.detail.row;
 
         // Navigate to record detail page
@@ -66,12 +71,11 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     }
 
     handleSort(event) {
-        const context = JSON.parse(this.contextJson);
+        const context = this.getContext();
         context.orderBy = event.detail.fieldName;
         context.orderDirection = event.detail.sortDirection === 'asc' ? 'ASC' : 'DESC';
-        this.contextJson = JSON.stringify(context);
         this.currentOffset = 0;
-        this.loadRecords();
+        this.loadRecordsWithContext(context);
     }
 
     handleLoadMore() {
@@ -83,7 +87,7 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
 
     handleExport() {
         this.isLoading = true;
-        const context = JSON.parse(this.contextJson);
+        const context = this.getContext();
 
         exportToCSV({ contextJson: JSON.stringify(context) })
             .then(csvData => {
@@ -111,6 +115,13 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
 
     get isExportDisabled() {
         return this.isLoading || !this.hasRecords;
+    }
+
+    getContext() {
+        if (this._context) {
+            return { ...this._context };
+        }
+        return JSON.parse(this.contextJson);
     }
 
     showError(message) {

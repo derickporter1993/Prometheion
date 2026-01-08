@@ -16,8 +16,8 @@ export default class PrometheionDashboard extends LightningElement {
             this.scoreResult = data;
             this.lastUpdated = new Date();
         } else if (error) {
-            console.error('Error loading score:', error);
-            this.showToast('Error', 'Failed to load compliance score', 'error');
+            const errorMessage = this.extractErrorMessage(error);
+            this.showToast('Error', errorMessage, 'error');
         }
     }
 
@@ -169,9 +169,9 @@ export default class PrometheionDashboard extends LightningElement {
                 this.isLoading = false;
             })
             .catch(error => {
-                console.error('Refresh error:', error);
                 this.isLoading = false;
-                this.showToast('Error', 'Failed to refresh data', 'error');
+                const errorMessage = this.extractErrorMessage(error);
+                this.showToast('Error', errorMessage, 'error');
             });
     }
 
@@ -204,6 +204,16 @@ export default class PrometheionDashboard extends LightningElement {
     handleRiskClick(event) {
         const nodeId = event.currentTarget.dataset.nodeId;
         this.showToast('Risk Details', `Viewing details for risk: ${nodeId}`, 'info');
+    }
+
+    extractErrorMessage(error) {
+        if (error?.body?.message) {
+            return error.body.message;
+        }
+        if (error?.message) {
+            return error.message;
+        }
+        return 'An unexpected error occurred. Please try again.';
     }
 
     showToast(title, message, variant) {

@@ -49,7 +49,8 @@ export default class ComplianceCopilot extends LightningElement {
         if (data) {
             this.quickCommands = data;
         } else if (error) {
-            console.error('Error loading quick commands:', error);
+            const errorMessage = this.extractErrorMessage(error);
+            this.showToast(ERROR_TITLE, errorMessage, 'error');
         }
     }
 
@@ -74,7 +75,6 @@ export default class ComplianceCopilot extends LightningElement {
         }
 
         // Set new timer
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
         this._debounceTimer = setTimeout(() => {
             this.handleSubmit();
         }, DEBOUNCE_DELAY);
@@ -148,7 +148,6 @@ export default class ComplianceCopilot extends LightningElement {
      * Scroll chat container to bottom
      */
     scrollToBottom() {
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
         setTimeout(() => {
             const chatContainer = this.template.querySelector('.chat-container');
             if (chatContainer) {
