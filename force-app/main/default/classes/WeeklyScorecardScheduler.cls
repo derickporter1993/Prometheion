@@ -281,12 +281,13 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     }
 
     /**
-     * Generate cron expression for weekly schedule (every Monday at 9 AM)
+     * Generate cron expression for weekly schedule using Custom Metadata
      */
     private static String getCronExpression(Datetime dt) {
+        // Get CRON from Custom Metadata, fallback to default
         // Format: second minute hour day_of_month month day_of_week year
-        // For weekly: 0 0 9 ? * MON *
-        return '0 0 9 ? * MON *';
+        // For weekly: 0 0 9 ? * MON
+        return SchedulerErrorHandler.getCronExpression('WeeklyScorecard', '0 0 9 ? * MON');
     }
 
     /**
