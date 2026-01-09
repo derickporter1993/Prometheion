@@ -193,12 +193,21 @@ global without sharing class PrometheionScoreCallback {
             }));
             
         } catch (Exception e) {
-            // Return error response (sanitized - no stack trace exposed)
-            System.debug(LoggingLevel.ERROR, 'PrometheionScoreCallback error: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
+            // Log detailed error server-side with correlation ID (not exposed to client)
+            String errorCategory = categorizeError(e);
+            logSecurityEvent('SCORE_CALLBACK_ERROR', correlationId, getClientIp(req), errorCategory);
+            
+            // Log full details to debug logs (not exposed to client)
+            System.debug(LoggingLevel.ERROR, 
+                'PrometheionScoreCallback error [CorrelationId: ' + correlationId + ']: ' + 
+                errorCategory + ' - ' + e.getMessage());
+            
+            // Return sanitized error response (no stack trace, no internal details)
             res.statusCode = 500;
             res.responseBody = Blob.valueOf(JSON.serialize(new Map<String, Object>{
                 'success' => false,
-                'error' => 'An internal error occurred'
+                'error' => 'An internal error occurred',
+                'correlationId' => correlationId
             }));
         }
     }
