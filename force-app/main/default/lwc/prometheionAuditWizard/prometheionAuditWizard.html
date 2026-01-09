@@ -179,11 +179,11 @@
 
                 <!-- Step 5: Generate -->
                 <template if:true={isStep5}>
-                    <section class="step-panel slds-text-align_center" aria-labelledby="step5-heading">
+                    <section class="step-panel slds-text-align_center">
                         <template if:true={isGenerating}>
                             <div role="status" aria-live="polite" aria-busy="true">
                                 <lightning-spinner alternative-text="Generating audit package" size="large"></lightning-spinner>
-                                <h2 id="step5-heading" class="slds-text-heading_medium slds-var-m-top_large">Generating Audit Package...</h2>
+                                <h2 id="step5-heading-generating" class="slds-text-heading_medium slds-var-m-top_large">Generating Audit Package...</h2>
                                 <p class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small" aria-live="polite">{generationStatus}</p>
                                 <lightning-progress-bar
                                     value={generationProgress}
@@ -198,7 +198,7 @@
                             <template if:true={generationComplete}>
                                 <div role="status" aria-live="polite">
                                     <lightning-icon icon-name="utility:success" size="xx-large" variant="success" alternative-text="Success"></lightning-icon>
-                                    <h2 id="step5-heading" class="slds-text-heading_medium slds-var-m-top_medium">Audit Package Generated!</h2>
+                                    <h2 id="step5-heading-complete" class="slds-text-heading_medium slds-var-m-top_medium">Audit Package Generated!</h2>
                                     <p class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small">
                                         Your audit package has been created successfully.
                                     </p>
@@ -211,7 +211,7 @@
                             </template>
                             <template if:false={generationComplete}>
                                 <lightning-icon icon-name="utility:file" size="xx-large" class="icon-muted" alternative-text="File icon"></lightning-icon>
-                                <h2 id="step5-heading" class="slds-text-heading_medium slds-var-m-top_medium">Ready to Generate</h2>
+                                <h2 id="step5-heading-ready" class="slds-text-heading_medium slds-var-m-top_medium">Ready to Generate</h2>
                                 <p class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small">
                                     Click the button below to generate your audit package.
                                 </p>
