@@ -68,6 +68,15 @@ export default class ComplianceScoreCard extends NavigationMixin(LightningElemen
     return this.latestAuditPackage !== null && this.latestAuditPackage !== undefined;
   }
 
+  get formattedLatestPackage() {
+    if (!this.latestAuditPackage) return null;
+    return {
+      ...this.latestAuditPackage,
+      formattedPeriodStart: this.formatDate(this.latestAuditPackage.periodStart),
+      formattedPeriodEnd: this.formatDate(this.latestAuditPackage.periodEnd),
+    };
+  }
+
   formatDate(dateValue) {
     if (!dateValue) return "";
     const date = new Date(dateValue);

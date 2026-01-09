@@ -1,6 +1,6 @@
 <template>
   <lightning-card title="Compliance Copilot" icon-name="utility:bot">
-    <div class="slds-p-around_medium">
+    <div class="slds-var-p-around_medium">
       <!-- Chat Container -->
       <div
         class="chat-container slds-scrollable_y"
@@ -16,13 +16,13 @@
       >
         <!-- Welcome Message -->
         <template lwc:if={showQuickCommands}>
-          <div class="slds-text-align_center slds-m-vertical_large">
+          <div class="slds-text-align_center slds-var-m-vertical_large">
             <lightning-icon
               icon-name="utility:bot"
               size="large"
-              class="slds-m-bottom_small"
+              class="slds-var-m-bottom_small"
             ></lightning-icon>
-            <h2 class="slds-text-heading_medium slds-m-bottom_small">{labels.welcome}</h2>
+            <h2 class="slds-text-heading_medium slds-var-m-bottom_small">{labels.welcome}</h2>
             <p class="slds-text-color_weak">{labels.welcomeSubtitle}</p>
           </div>
         </template>
@@ -30,13 +30,13 @@
         <!-- Messages -->
         <template lwc:if={hasMessages}>
           <template for:each={messageList} for:item="message">
-            <div key={message.id} class="slds-m-bottom_medium">
+            <div key={message.id} class="slds-var-m-bottom_medium">
               <!-- User Message -->
               <template lwc:if={message.isUser}>
                 <div class="slds-chat-message">
                   <div class="slds-chat-message__body" style="text-align: right">
                     <div
-                      class="slds-chat-message__text slds-p-around_small"
+                      class="slds-chat-message__text slds-var-p-around_small"
                       style="
                         background-color: #0176d3;
                         color: white;
@@ -61,11 +61,11 @@
                     <lightning-icon
                       icon-name="utility:bot"
                       size="small"
-                      class="slds-m-top_x-small"
+                      class="slds-var-m-top_x-small"
                     ></lightning-icon>
                     <div style="flex: 1">
                       <div
-                        class="slds-chat-message__text slds-p-around_small"
+                        class="slds-chat-message__text slds-var-p-around_small"
                         style="
                           background-color: white;
                           border: 1px solid #d8dde6;
@@ -73,24 +73,24 @@
                           max-width: 85%;
                         "
                       >
-                        <lightning-formatted-rich-text
+                        <lightning-formatted-text
                           value={message.content}
                           class="slds-text-longform"
-                        ></lightning-formatted-rich-text>
+                        ></lightning-formatted-text>
 
                         <!-- Evidence List -->
                         <template lwc:if={message.hasEvidence}>
-                          <div class="slds-m-top_small">
-                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                          <div class="slds-var-m-top_small">
+                            <h3 class="slds-text-heading_small slds-var-m-bottom_x-small">
                               {labels.evidence}
                             </h3>
                             <ul class="slds-list_dotted">
                               <template for:each={message.evidenceList} for:item="evidence">
-                                <li key={evidence.nodeId} class="slds-m-bottom_x-small">
+                                <li key={evidence.nodeId} class="slds-var-m-bottom_x-small">
                                   <strong>{evidence.entityType}</strong>
                                   - {evidence.description}
                                   <template lwc:if={evidence.formattedRiskScore}>
-                                    <span class="slds-badge slds-m-left_x-small"
+                                    <span class="slds-badge slds-var-m-left_x-small"
                                       >{evidence.formattedRiskScore}</span
                                     >
                                   </template>
@@ -102,7 +102,7 @@
 
                         <!-- Action Buttons -->
                         <template lwc:if={message.hasActions}>
-                          <div class="slds-m-top_small">
+                          <div class="slds-var-m-top_small">
                             <template
                               for:each={message.copilotResponse.actions}
                               for:item="action"
@@ -111,7 +111,7 @@
                                 key={action.actionType}
                                 label={action.label}
                                 variant="brand"
-                                class="slds-m-right_x-small slds-m-bottom_x-small"
+                                class="slds-var-m-right_x-small slds-var-m-bottom_x-small"
                                 data-action-type={action.actionType}
                                 data-node-id={action.nodeId}
                                 onclick={handleActionClick}
@@ -139,7 +139,7 @@
               <lightning-icon
                 icon-name="utility:bot"
                 size="small"
-                class="slds-m-top_x-small"
+                class="slds-var-m-top_x-small"
               ></lightning-icon>
               <div style="flex: 1">
                 <div class="slds-spinner_container">
@@ -153,8 +153,8 @@
 
       <!-- Quick Commands -->
       <template lwc:if={showQuickCommands}>
-        <div class="slds-m-bottom_medium">
-          <h3 class="slds-text-heading_small slds-m-bottom_small">{labels.quickCommands}</h3>
+        <div class="slds-var-m-bottom_medium">
+          <h3 class="slds-text-heading_small slds-var-m-bottom_small">{labels.quickCommands}</h3>
           <div class="slds-grid slds-gutters slds-wrap">
             <template for:each={quickCommands} for:item="command">
               <div key={command.command} class="slds-col slds-size_1-of-2">
@@ -162,7 +162,7 @@
                   label={command.command}
                   icon-name={command.icon}
                   variant="neutral"
-                  class="slds-m-bottom_x-small full-width-button"
+                  class="slds-var-m-bottom_x-small full-width-button"
                   data-command={command.command}
                   onclick={handleQuickCommand}
                 >
@@ -183,7 +183,7 @@
             onchange={handleQueryChange}
             onkeypress={handleKeyPress}
             placeholder={labels.inputPlaceholder}
-            class="slds-m-bottom_small"
+            class="slds-var-m-bottom_small"
             disabled={isLoading}
           >
           </lightning-input>
@@ -202,7 +202,7 @@
             label={labels.clearChat}
             variant="neutral"
             onclick={clearChat}
-            class="slds-m-left_small"
+            class="slds-var-m-left_small"
           >
           </lightning-button>
         </div>

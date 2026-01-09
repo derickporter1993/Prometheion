@@ -310,15 +310,8 @@ public with sharing class PrometheionISO27001AccessReviewService {
     public static Map<String, Object> getComplianceMetrics() {
         Map<String, Object> metrics = new Map<String, Object>();
 
-        // Total reviews this quarter
-        metrics.put('reviewsThisQuarter', [
-            SELECT COUNT()
-            FROM Access_Review__c
-            WHERE CreatedDate = THIS_QUARTER
-            WITH USER_MODE
-        ]);
-
-        // Completion rate
+        // Optimized: Use separate queries (SOQL doesn't support CASE WHEN)
+        // Total reviews due
         Integer total = [
             SELECT COUNT()
             FROM Access_Review__c
@@ -326,6 +319,7 @@ public with sharing class PrometheionISO27001AccessReviewService {
             WITH USER_MODE
         ];
 
+        // Completed reviews
         Integer completed = [
             SELECT COUNT()
             FROM Access_Review__c
@@ -334,17 +328,27 @@ public with sharing class PrometheionISO27001AccessReviewService {
             WITH USER_MODE
         ];
 
-        metrics.put('completionRate', total > 0 ?
-            (Decimal.valueOf(completed) / total * 100).setScale(2) : 100);
-
-        // Overdue count
-        metrics.put('overdueCount', [
+        // Overdue reviews
+        Integer overdue = [
             SELECT COUNT()
             FROM Access_Review__c
             WHERE Due_Date__c < TODAY
             AND Review_Status__c IN ('Pending', 'In Progress')
             WITH USER_MODE
-        ]);
+        ];
+
+        // Reviews this quarter
+        Integer thisQuarter = [
+            SELECT COUNT()
+            FROM Access_Review__c
+            WHERE CreatedDate = THIS_QUARTER
+            WITH USER_MODE
+        ];
+
+        metrics.put('reviewsThisQuarter', thisQuarter);
+        metrics.put('overdueCount', overdue);
+        metrics.put('completionRate', total > 0 ?
+            (Decimal.valueOf(completed) / total * 100).setScale(2) : 100);
 
         // Privileged users count
         Set<Id> privUserIds = new Set<Id>();
@@ -355,24 +359,31 @@ public with sharing class PrometheionISO27001AccessReviewService {
         ]) {
             privUserIds.add(psa.AssigneeId);
         }
-        metrics.put('privilegedUsersCount', [
+
+        // Optimized: Use separate queries for User counts (SOQL doesn't support CASE WHEN)
+        Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
+        
+        // Privileged users
+        Integer privileged = [
             SELECT COUNT()
             FROM User
             WHERE IsActive = true
             AND (Profile.Name = 'System Administrator' OR Id IN :privUserIds)
             WITH USER_MODE
-        ]);
+        ];
 
         // Dormant accounts
-        Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
-        metrics.put('dormantAccountsCount', [
+        Integer dormant = [
             SELECT COUNT()
             FROM User
             WHERE IsActive = true
-            AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
             AND UserType = 'Standard'
+            AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
             WITH USER_MODE
-        ]);
+        ];
+
+        metrics.put('privilegedUsersCount', privileged);
+        metrics.put('dormantAccountsCount', dormant);
 
         return metrics;
     }

@@ -12,18 +12,26 @@ public with sharing class PrometheionGLBAAnnualNoticeBatch implements Database.B
     private Integer errors = 0;
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // Find contacts due for annual notice
-        Date today = Date.today();
-        return Database.getQueryLocator([
-            SELECT Id, Contact__c, Account__c, Contact__r.Email,
-                   Next_Annual_Notice_Due__c
-            FROM Privacy_Notice__c
-            WHERE Next_Annual_Notice_Due__c <= :today
-            AND Notice_Type__c IN ('Initial', 'Annual')
-            AND Contact__c != null
-            WITH USER_MODE
-            ORDER BY Next_Annual_Notice_Due__c ASC
-        ]);
+        System.debug(LoggingLevel.INFO, 'GLBA Batch start() - Job ID: ' + bc.getJobId());
+
+        try {
+            // Find contacts due for annual notice
+            Date today = Date.today();
+            return Database.getQueryLocator([
+                SELECT Id, Contact__c, Account__c, Contact__r.Email,
+                       Next_Annual_Notice_Due__c
+                FROM Privacy_Notice__c
+                WHERE Next_Annual_Notice_Due__c <= :today
+                AND Notice_Type__c IN ('Initial', 'Annual')
+                AND Contact__c != null
+                WITH USER_MODE
+                ORDER BY Next_Annual_Notice_Due__c ASC
+            ]);
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Query failed: ' + e.getMessage());
+            SchedulerErrorHandler.logError('PrometheionGLBAAnnualNoticeBatch.start', e);
+            throw e;
+        }
     }
 
     public void execute(Database.BatchableContext bc, List<Privacy_Notice__c> scope) {
@@ -60,7 +68,17 @@ public with sharing class PrometheionGLBAAnnualNoticeBatch implements Database.B
         }
 
         if (!newNotices.isEmpty()) {
-            Database.insert(newNotices, AccessLevel.USER_MODE);
+            List<Database.SaveResult> results = Database.insert(newNotices, false);
+            for (Integer i = 0; i < results.size(); i++) {
+                if (!results[i].isSuccess()) {
+                    errors++;
+                    for (Database.Error err : results[i].getErrors()) {
+                        System.debug(LoggingLevel.ERROR, 'Insert failed for notice ' + i + ': ' + err.getMessage());
+                    }
+                } else {
+                    noticesSent++;
+                }
+            }
 
             // Publish compliance events using generic Prometheion_Raw_Event__e
             List<Prometheion_Raw_Event__e> events = new List<Prometheion_Raw_Event__e>();
@@ -87,17 +105,42 @@ public with sharing class PrometheionGLBAAnnualNoticeBatch implements Database.B
     }
 
     public void finish(Database.BatchableContext bc) {
-        // Send summary email to compliance team
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setSubject('GLBA Annual Notice Distribution Complete');
-        mail.setPlainTextBody(
-            'GLBA Annual Notice Distribution Summary:\n\n' +
+        System.debug(LoggingLevel.INFO, 'GLBA Batch finish() - Notices sent: ' + noticesSent + ', Errors: ' + errors);
+
+        // Query job status
+        AsyncApexJob job;
+        try {
+            job = [
+                SELECT Id, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
+                FROM AsyncApexJob
+                WHERE Id = :bc.getJobId()
+                LIMIT 1
+            ];
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Failed to query job status: ' + e.getMessage());
+            job = null;
+        }
+
+        // Build summary
+        String summary = 'GLBA Annual Notice Batch Complete\n' +
+            'Status: ' + (job != null ? job.Status : 'Unknown') + '\n' +
+            'Items Processed: ' + (job != null ? job.JobItemsProcessed : 'Unknown') + '/' + (job != null ? job.TotalJobItems : 'Unknown') + '\n' +
             'Notices Sent: ' + noticesSent + '\n' +
-            'Errors: ' + errors + '\n' +
-            'Completed: ' + System.now().format()
-        );
-        // In production, would set toAddresses to compliance team
-        // Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            'Errors: ' + (errors + (job != null ? job.NumberOfErrors : 0));
+
+        // Send summary email to compliance team
+        if (job != null && String.isNotBlank(job.CreatedBy.Email)) {
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setToAddresses(new String[] { job.CreatedBy.Email });
+            mail.setSubject('GLBA Annual Notice Batch Complete');
+            mail.setPlainTextBody(summary);
+
+            try {
+                Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            } catch (Exception e) {
+                System.debug(LoggingLevel.ERROR, 'Failed to send notification email: ' + e.getMessage());
+            }
+        }
 
         System.debug(LoggingLevel.INFO,
             '[PrometheionGLBAAnnualNoticeBatch] Completed. Sent: ' + noticesSent + ', Errors: ' + errors);

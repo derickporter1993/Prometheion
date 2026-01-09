@@ -2,7 +2,7 @@
     <lightning-card title="Compliance Gaps">
         <template if:true={hasGaps}>
             <template for:each={gaps} for:item="gap">
-                <div key={gap.Id} class="slds-p-around_small slds-border_bottom">
+                <div key={gap.Id} class="slds-var-p-around_small slds-border_bottom">
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_2-of-3">
                             <div class="slds-text-heading_small">{gap.Policy_Reference__c}</div>
@@ -17,7 +17,7 @@
             </template>
         </template>
         <template if:false={hasGaps}>
-            <div class="slds-p-around_medium">
+            <div class="slds-var-p-around_medium">
                 <p>No compliance gaps found.</p>
             </div>
         </template>

@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Risk Heatmap" icon-name="standard:warning">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <div class="slds-grid slds-gutters">
                 <template for:each={risks} for:item="risk">
                     <div key={risk.id} class="slds-col slds-size_1-of-4">
@@ -13,7 +13,7 @@
                 </template>
             </div>
             <template if:false={risks}>
-                <div class="slds-text-align_center slds-p-around_medium">
+                <div class="slds-text-align_center slds-var-p-around_medium">
                     <p>No risk data available</p>
                 </div>
             </template>

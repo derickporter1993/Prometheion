@@ -1,0 +1,74 @@
+/* Step Content */
+.step-content {
+    min-height: 400px;
+}
+
+.step-panel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Framework Cards */
+.framework-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    min-height: 150px;
+    width: 100%;
+    background: white;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+.framework-card:hover,
+.framework-card:focus {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.framework-card:focus-visible {
+    outline: 2px solid #0176d3;
+    outline-offset: 2px;
+}
+
+.framework-card.selected {
+    border-color: #0176d3;
+    background-color: #f3f3f3;
+}
+
+/* Control List */
+.control-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+.control-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.control-item:last-child {
+    border-bottom: none;
+}
+
+.control-meta {
+    display: flex;
+    align-items: center;
+}
+
+/* Preview Box */
+.preview-box {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Icon Muted */
+.icon-muted {
+    color: #706e6b;
+}

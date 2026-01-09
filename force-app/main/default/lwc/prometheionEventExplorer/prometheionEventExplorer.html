@@ -1,0 +1,205 @@
+<template>
+    <lightning-card title="Event Explorer" icon-name="standard:event">
+        <!-- Filters Section -->
+        <div slot="actions">
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                alternative-text="Refresh"
+                title="Refresh"
+                onclick={handleRefresh}
+                class="slds-var-m-right_x-small">
+            </lightning-button-icon>
+            <lightning-button
+                label="Export CSV"
+                icon-name="utility:download"
+                onclick={handleExportCSV}
+                variant="neutral">
+            </lightning-button>
+        </div>
+
+        <div class="slds-var-p-around_medium">
+            <!-- Filter Controls -->
+            <div class="slds-grid slds-gutters slds-wrap slds-var-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-combobox
+                        name="eventType"
+                        label="Event Type"
+                        value={selectedEventType}
+                        placeholder="All Event Types"
+                        options={eventTypeOptions}
+                        onchange={handleEventTypeChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-combobox
+                        name="riskLevel"
+                        label="Risk Level"
+                        value={selectedRiskLevel}
+                        placeholder="All Risk Levels"
+                        options={riskLevelOptions}
+                        onchange={handleRiskLevelChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        name="startDate"
+                        label="Start Date"
+                        value={startDate}
+                        onchange={handleStartDateChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        name="endDate"
+                        label="End Date"
+                        value={endDate}
+                        onchange={handleEndDateChange}>
+                    </lightning-input>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="slds-var-m-bottom_medium">
+                <lightning-input
+                    type="search"
+                    label="Search Events"
+                    placeholder="Search by user, description, or event ID..."
+                    value={searchTerm}
+                    onchange={handleSearchChange}>
+                </lightning-input>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="slds-grid slds-gutters slds-wrap slds-var-m-bottom_medium" role="region" aria-label="Event statistics" aria-live="polite" aria-atomic="true">
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <div class="stat-card total" role="status" aria-label={totalEventsAriaLabel}>
+                        <div class="stat-value" aria-hidden="true">{totalEvents}</div>
+                        <div class="stat-label">Total Events</div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <div class="stat-card critical" role="status" aria-label={criticalAriaLabel}>
+                        <div class="stat-value" aria-hidden="true">{criticalCount}</div>
+                        <div class="stat-label">Critical</div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <div class="stat-card high" role="status" aria-label={highRiskAriaLabel}>
+                        <div class="stat-value" aria-hidden="true">{highRiskCount}</div>
+                        <div class="stat-label">High Risk</div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <div class="stat-card medium" role="status" aria-label={mediumRiskAriaLabel}>
+                        <div class="stat-value" aria-hidden="true">{mediumRiskCount}</div>
+                        <div class="stat-label">Medium Risk</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Data Table -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+
+            <template if:false={isLoading}>
+                <template if:true={hasEvents}>
+                    <lightning-datatable
+                        key-field="id"
+                        data={filteredEvents}
+                        columns={columns}
+                        sorted-by={sortedBy}
+                        sorted-direction={sortedDirection}
+                        onsort={handleSort}
+                        onrowaction={handleRowAction}
+                        show-row-number-column
+                        max-row-selection="1">
+                    </lightning-datatable>
+                </template>
+
+                <template if:false={hasEvents}>
+                    <div class="slds-illustration slds-illustration_small" role="status" aria-live="polite">
+                        <div class="slds-text-align_center">
+                            <p class="slds-text-body_regular slds-text-color_weak">
+                                No events found matching your criteria.
+                            </p>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Event Detail Modal -->
+    <template if:true={showModal}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            class="slds-modal slds-fade-in-open"
+            aria-modal="true"
+            aria-labelledby="modal-heading"
+            aria-describedby="modal-content"
+            onkeydown={handleModalKeydown}
+        >
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button
+                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        onclick={closeModal}
+                        aria-label="Close event details modal"
+                        title="Close"
+                        type="button"
+                    >
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="Close"></lightning-icon>
+                    </button>
+                    <h2 id="modal-heading" class="slds-modal__title">Event Details</h2>
+                </header>
+                <div id="modal-content" class="slds-modal__content slds-var-p-around_medium">
+                    <template if:true={selectedEvent}>
+                        <dl class="slds-dl_horizontal" role="list" aria-label="Event details">
+                            <dt class="slds-dl_horizontal__label">Event ID:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.id}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Event Type:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.eventType}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Risk Level:</dt>
+                            <dd class="slds-dl_horizontal__detail">
+                                <lightning-badge label={selectedEvent.riskLevel} class={selectedEvent.riskClass}></lightning-badge>
+                            </dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Risk Score:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.riskScore}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">User:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.userName}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Timestamp:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.formattedTimestamp}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Source IP:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.sourceIp}</dd>
+                            
+                            <dt class="slds-dl_horizontal__label">Description:</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedEvent.description}</dd>
+                        </dl>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={closeModal}></lightning-button>
+                    <lightning-button variant="brand" label="Analyze Root Cause" onclick={handleAnalyze}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div
+            class="slds-backdrop slds-backdrop_open"
+            onclick={closeModal}
+            onkeydown={handleBackdropKeydown}
+            tabindex="-1"
+            role="presentation"
+            aria-hidden="true"
+        ></div>
+    </template>
+</template>

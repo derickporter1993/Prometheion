@@ -1,14 +1,14 @@
 <template>
     <lightning-card title="Compliance Timeline" icon-name="standard:event">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <template if:true={hasEvents}>
-                <ul class="slds-timeline">
+                <ul class="slds-list_vertical slds-has-dividers_bottom">
                     <template for:each={sortedEvents} for:item="event">
-                        <li key={event.id} class="slds-timeline__item">
-                            <div class="slds-timeline__marker">
+                        <li key={event.id} class="slds-item slds-media">
+                            <div class="slds-media__figure">
                                 <lightning-icon icon-name={event.iconName} size="small"></lightning-icon>
                             </div>
-                            <div class="slds-timeline__item_content">
+                            <div class="slds-media__body">
                                 <div class="slds-text-heading_small">{event.title}</div>
                                 <div class="slds-text-body_small">{event.description}</div>
                                 <div class="slds-text-body_small slds-text-color_weak">
@@ -20,7 +20,7 @@
                 </ul>
             </template>
             <template if:false={hasEvents}>
-                <div class="slds-text-align_center slds-p-around_medium">
+                <div class="slds-text-align_center slds-var-p-around_medium">
                     <p>No timeline events available</p>
                 </div>
             </template>

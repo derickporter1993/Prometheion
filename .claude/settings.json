@@ -1,0 +1,63 @@
+{
+  "$schema": "https://code.claude.ai/schemas/settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(sf org create scratch:*)",
+      "Bash(sf org delete scratch:*)",
+      "Bash(sf org open:*)",
+      "Bash(sf org list:*)",
+      "Bash(sf org display:*)",
+      "Bash(sf project deploy start:*)",
+      "Bash(sf project deploy preview:*)",
+      "Bash(sf project deploy report:*)",
+      "Bash(sf project retrieve start:*)",
+      "Bash(sf apex run test:*)",
+      "Bash(sf apex run:*)",
+      "Bash(sf apex tail log:*)",
+      "Bash(sf apex get log:*)",
+      "Bash(sf apex list log:*)",
+      "Bash(sf data query:*)",
+      "Bash(sf data create record:*)",
+      "Bash(sf data update record:*)",
+      "Bash(sf data delete record:*)",
+      "Bash(sf data import tree:*)",
+      "Bash(sf data export tree:*)",
+      "Bash(sf lightning generate component:*)",
+      "Bash(sf lightning generate event:*)",
+      "Bash(sf lightning generate interface:*)",
+      "Bash(sf package create:*)",
+      "Bash(sf package version create:*)",
+      "Bash(sf package version list:*)",
+      "Bash(sf package install:*)",
+      "Bash(sf staticresource generate:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run prettier:*)",
+      "Write(/Users/derickporter/sentinel-code/*)",
+      "Write(/Users/derickporter/sentinel-code/force-app/*)",
+      "Write(/Users/derickporter/sentinel-code/.claude/*)",
+      "Write(/Users/derickporter/sentinel-code/docs/*)",
+      "Write(/Users/derickporter/sentinel-code/scripts/*)",
+      "Write(/Users/derickporter/sentinel-code/config/*)"
+    ],
+    "deny": [
+      "Bash(sf org delete scratch -o prometheion-prod:*)",
+      "Bash(rm -rf force-app)",
+      "Bash(rm -rf node_modules)"
+    ]
+  },
+  "env": {
+    "SF_ORG_ALIAS": "prometheion-dev",
+    "SF_DEFAULT_DEV_HUB": "prod-org",
+    "SF_LOG_LEVEL": "warn"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    ".sfdx/**",
+    ".sf/**",
+    "coverage/**",
+    "deploy-output.log",
+    "*.log",
+    ".DS_Store"
+  ]
+}

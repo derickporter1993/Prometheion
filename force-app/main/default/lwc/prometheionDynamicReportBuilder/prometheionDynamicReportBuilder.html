@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Prometheion Dynamic Report Builder" icon-name="custom:custom63">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <!-- Object Selection -->
             <lightning-combobox
                 label="Select Object"
@@ -12,7 +12,7 @@
 
             <!-- Field Selection -->
             <template if:true={fieldsLoaded}>
-                <div class="slds-m-top_medium">
+                <div class="slds-var-m-top_medium">
                     <lightning-dual-listbox
                         label="Select Fields"
                         source-label="Available Fields"
@@ -28,10 +28,10 @@
 
             <!-- Filters Section -->
             <template if:true={showFilters}>
-                <div class="slds-m-top_medium">
+                <div class="slds-var-m-top_medium">
                     <h3 class="slds-text-heading_small">Filters</h3>
                     <template for:each={filters} for:item="filter">
-                        <div key={filter.id} class="slds-grid slds-gutters slds-m-top_small">
+                        <div key={filter.id} class="slds-grid slds-gutters slds-var-m-top_small">
                             <div class="slds-col slds-size_1-of-4">
                                 <lightning-combobox
                                     label="Field"
@@ -64,7 +64,7 @@
                                     alternative-text="Remove filter"
                                     onclick={handleRemoveFilter}
                                     data-filter-id={filter.id}
-                                    class="slds-m-top_large">
+                                    class="slds-var-m-top_large">
                                 </lightning-button-icon>
                             </div>
                         </div>
@@ -72,14 +72,14 @@
                     <lightning-button
                         label="Add Filter"
                         onclick={handleAddFilter}
-                        class="slds-m-top_small">
+                        class="slds-var-m-top_small">
                     </lightning-button>
                 </div>
             </template>
 
             <!-- Sort Options -->
             <template if:true={showSortOptions}>
-                <div class="slds-m-top_medium">
+                <div class="slds-var-m-top_medium">
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_1-of-2">
                             <lightning-combobox
@@ -102,7 +102,7 @@
             </template>
 
             <!-- Row Limit -->
-            <div class="slds-m-top_medium">
+            <div class="slds-var-m-top_medium">
                 <lightning-input
                     type="number"
                     label="Maximum Rows"
@@ -114,13 +114,13 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="slds-m-top_large">
+            <div class="slds-var-m-top_large">
                 <lightning-button
                     variant="brand"
                     label="Run Report"
                     onclick={handleRunReport}
                     disabled={isRunDisabled}
-                    class="slds-m-right_small">
+                    class="slds-var-m-right_small">
                 </lightning-button>
                 <lightning-button
                     variant="neutral"
@@ -132,7 +132,7 @@
 
             <!-- Results Section -->
             <template if:true={hasResults}>
-                <div class="slds-m-top_large">
+                <div class="slds-var-m-top_large">
                     <h3 class="slds-text-heading_small">
                         Results ({recordCount} records)
                     </h3>
@@ -153,7 +153,7 @@
 
             <!-- Error Message -->
             <template if:true={hasError}>
-                <div class="slds-m-top_medium">
+                <div class="slds-var-m-top_medium">
                     <lightning-alert
                         variant="error"
                         message={errorMessage}>

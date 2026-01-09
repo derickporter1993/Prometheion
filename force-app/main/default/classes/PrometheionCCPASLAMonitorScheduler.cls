@@ -20,9 +20,17 @@ public with sharing class PrometheionCCPASLAMonitorScheduler implements Schedula
      * @param sc - SchedulableContext
      */
     public void execute(SchedulableContext sc) {
-        checkApproachingDeadlines();
-        markOverdueRequests();
-        generateDailyReport();
+        Savepoint sp = Database.setSavepoint();
+        try {
+            checkApproachingDeadlines();
+            markOverdueRequests();
+            generateDailyReport();
+            SchedulerErrorHandler.logSuccess('PrometheionCCPASLAMonitorScheduler', 'CCPA SLA Monitor completed successfully');
+        } catch (Exception e) {
+            Database.rollback(sp);
+            SchedulerErrorHandler.logError('PrometheionCCPASLAMonitorScheduler', e);
+            SchedulerErrorHandler.notifyOnFailure('PrometheionCCPASLAMonitorScheduler', e);
+        }
     }
 
     /**
@@ -86,7 +94,14 @@ public with sharing class PrometheionCCPASLAMonitorScheduler implements Schedula
             request.Status__c = 'Overdue';
         }
 
-        Database.update(overdueRequests, AccessLevel.USER_MODE);
+        List<Database.SaveResult> results = Database.update(overdueRequests, false);
+        for (Database.SaveResult sr : results) {
+            if (!sr.isSuccess()) {
+                for (Database.Error err : sr.getErrors()) {
+                    System.debug(LoggingLevel.ERROR, '[CCPASLAMonitorScheduler] Update failed: ' + err.getMessage());
+                }
+            }
+        }
 
         System.debug(LoggingLevel.WARN,
             '[CCPASLAMonitorScheduler] Marked ' + overdueRequests.size() + ' requests as overdue');

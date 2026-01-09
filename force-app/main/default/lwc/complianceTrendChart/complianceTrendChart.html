@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Compliance Trend" icon-name="standard:chart">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <template if:true={hasData}>
                 <div class="chart-container">
                     <!-- Chart would be rendered here using Chart.js or similar -->
@@ -8,7 +8,7 @@
                 </div>
             </template>
             <template if:false={hasData}>
-                <div class="slds-text-align_center slds-p-around_medium">
+                <div class="slds-text-align_center slds-var-p-around_medium">
                     <p>No trend data available</p>
                 </div>
             </template>

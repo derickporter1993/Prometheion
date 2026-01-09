@@ -1,8 +1,8 @@
 <template>
     <lightning-card title="Prometheion Comparative Analytics" icon-name="custom:custom63">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <!-- Configuration Section -->
-            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+            <div class="slds-grid slds-gutters slds-var-m-bottom_medium">
                 <div class="slds-col slds-size_1-of-3">
                     <lightning-combobox
                         label="Object"
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="slds-m-bottom_medium">
+            <div class="slds-var-m-bottom_medium">
                 <lightning-input
                     label="Aggregate Expression (e.g., SUM(Amount))"
                     value={aggregateExpression}
@@ -46,7 +46,7 @@
 
             <!-- Results Matrix -->
             <template if:true={hasResults}>
-                <div class="slds-m-top_large">
+                <div class="slds-var-m-top_large">
                     <h3 class="slds-text-heading_small">Matrix Results</h3>
                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                         <thead>

@@ -1,8 +1,8 @@
 <template>
     <lightning-card title="Prometheion Trend Analyzer" icon-name="custom:custom63">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <!-- Configuration -->
-            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+            <div class="slds-grid slds-gutters slds-var-m-bottom_medium">
                 <div class="slds-col slds-size_1-of-4">
                     <lightning-combobox
                         label="Object"
@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div class="slds-m-bottom_medium">
+            <div class="slds-var-m-bottom_medium">
                 <lightning-input
                     type="number"
                     label="Months Back"
@@ -57,7 +57,7 @@
 
             <!-- Trend Chart Data -->
             <template if:true={hasResults}>
-                <div class="slds-m-top_large">
+                <div class="slds-var-m-top_large">
                     <h3 class="slds-text-heading_small">Trend Analysis</h3>
                     <div class="slds-text-body_regular">
                         <p>Total: {trendTotal}</p>
@@ -65,7 +65,7 @@
                         <p>Trend Direction: {trendDirection}</p>
                     </div>
                     <!-- Chart would be rendered here using a charting library -->
-                    <div class="slds-m-top_medium">
+                    <div class="slds-var-m-top_medium">
                         <table class="slds-table slds-table_bordered">
                             <thead>
                                 <tr>

@@ -1,7 +1,45 @@
+# Dependencies
 node_modules/
-.DS_Store
-.cache/
-.sfdx/
-sf/
-coverage/
+package-lock.json
+
+# Build artifacts and patches
+*.zip
+*.tar.gz
+*.rar
+
+# Logs and temporary files
 *.log
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+.history/
+
+# Salesforce
+.sfdx/
+.sf/
+.localdevserver/
+.salesforce/
+
+# Cache and coverage
+.cache/
+coverage/
+sf/
+
+# Temporary documentation and analysis files
+FAILED_PRS_SUMMARY.md
+*_TEMP.md
+*_ANALYSIS.md
+*_SUMMARY.md
+
+# Legacy directories (consider removing)
+# Sentinel-main/

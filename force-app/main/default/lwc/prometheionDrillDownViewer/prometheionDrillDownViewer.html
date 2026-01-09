@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Prometheion Drill-Down Viewer" icon-name="custom:custom63">
-        <div class="slds-p-around_medium">
+        <div class="slds-var-p-around_medium">
             <lightning-datatable
                 key-field="Id"
                 data={records}
@@ -20,7 +20,7 @@
                 <lightning-alert variant="error" message={errorMessage}></lightning-alert>
             </template>
 
-            <div class="slds-m-top_medium slds-text-align_center">
+            <div class="slds-var-m-top_medium slds-text-align_center">
                 <lightning-button
                     label="Export to CSV"
                     onclick={handleExport}
