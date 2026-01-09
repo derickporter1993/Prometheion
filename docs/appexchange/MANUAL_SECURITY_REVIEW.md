@@ -16,18 +16,19 @@
 |------------------|-------|--------|
 | `@AuraEnabled` | 30+ | ✅ Reviewed |
 | `@InvocableMethod` | 5+ | ✅ Reviewed |
-| `@RestResource` | 0 | ✅ None found |
+| `@RestResource` | 1 | ✅ Reviewed (PrometheionScoreCallback) |
 | `@future` | 2 | ✅ Reviewed (deprecated) |
-| `global class` | 0 | ✅ None found |
+| `global class` | 1 | ✅ Reviewed (PrometheionScoreCallback) |
 | `webservice` | 0 | ✅ None found |
 
 ### Sharing Model Review
 
-**Classes with `without sharing`**: 1
+**Classes with `without sharing`**: 2
 
 | Class | Justification | Status |
 |-------|---------------|--------|
 | `PrometheionReasoningEngine` | Big Object queries require system-level access | ✅ Documented |
+| `PrometheionScoreCallback` | External API callback requires system context for Compliance_Score__c updates. CRUD/FLS enforced via Security.stripInaccessible and AccessLevel.USER_MODE. | ✅ Documented |
 
 ---
 
@@ -60,10 +61,11 @@
 
 ### ✅ P1 - High Priority Issues (All Resolved)
 
-1. **Secrets Management** - ✅ No hardcoded credentials
-   - Named Credentials used for callouts
-   - No API keys in code
-   - No passwords in code
+1. **Secrets Management** - ✅ Secure credential handling
+   - Named Credentials used for outbound callouts
+   - API keys stored in Custom Metadata (Prometheion_API_Config__mdt)
+   - No hardcoded API keys or passwords in code
+   - REST endpoint (PrometheionScoreCallback) uses API key header authentication with Custom Metadata lookup
 
 2. **Error Handling** - ✅ Improved
    - Structured logging with correlation IDs
