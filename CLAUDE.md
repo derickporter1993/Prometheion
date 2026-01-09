@@ -377,10 +377,13 @@ The project was previously named "Sentinel" - some references may still exist in
 **Fix implemented**:
 
 Updated `.claude/settings.json` allow list entry from:
+
 ```json
 "Bash(npm run prettier:*)"
 ```
+
 to:
+
 ```json
 "Bash(npm run fmt:*)"
 ```
