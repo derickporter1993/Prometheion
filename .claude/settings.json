@@ -32,7 +32,7 @@
       "Bash(sf staticresource generate:*)",
       "Bash(npm run lint:*)",
       "Bash(npm run test:*)",
-      "Bash(npm run prettier:*)",
+      "Bash(npm run fmt:*)",
       "Write(/Users/derickporter/sentinel-code/*)",
       "Write(/Users/derickporter/sentinel-code/force-app/*)",
       "Write(/Users/derickporter/sentinel-code/.claude/*)",
