@@ -72,9 +72,7 @@ describe("c-prometheion-audit-wizard", () => {
     it("renders the wizard with step 1 active", async () => {
       const element = await createComponent();
 
-      const progressIndicator = element.shadowRoot.querySelector(
-        "lightning-progress-indicator"
-      );
+      const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
       expect(progressIndicator).not.toBeNull();
       expect(progressIndicator.currentStep).toBe("1");
     });
@@ -90,9 +88,7 @@ describe("c-prometheion-audit-wizard", () => {
     it("renders all framework cards", async () => {
       const element = await createComponent();
 
-      const frameworkCards = element.shadowRoot.querySelectorAll(
-        ".framework-card"
-      );
+      const frameworkCards = element.shadowRoot.querySelectorAll(".framework-card");
       expect(frameworkCards.length).toBe(8); // HIPAA, SOC2, GDPR, FINRA, NIST, FedRAMP, PCI_DSS, ISO27001
     });
 
@@ -100,9 +96,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const prevButton = Array.from(buttons).find(
-        (btn) => btn.label === "Previous"
-      );
+      const prevButton = Array.from(buttons).find((btn) => btn.label === "Previous");
       expect(prevButton).not.toBeNull();
       expect(prevButton.disabled).toBe(true);
     });
@@ -111,9 +105,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       expect(nextButton.disabled).toBe(true);
     });
   });
@@ -122,15 +114,11 @@ describe("c-prometheion-audit-wizard", () => {
     it("selects framework when card is clicked", async () => {
       const element = await createComponent();
 
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
-      const selectedCard = element.shadowRoot.querySelector(
-        ".framework-card.selected"
-      );
+      const selectedCard = element.shadowRoot.querySelector(".framework-card.selected");
       expect(selectedCard).not.toBeNull();
       expect(selectedCard.dataset.value).toBe("HIPAA");
     });
@@ -138,25 +126,19 @@ describe("c-prometheion-audit-wizard", () => {
     it("enables Next button after framework selection", async () => {
       const element = await createComponent();
 
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       expect(nextButton.disabled).toBe(false);
     });
 
     it("supports keyboard selection with Enter key", async () => {
       const element = await createComponent();
 
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
 
       const event = new KeyboardEvent("keydown", {
         key: "Enter",
@@ -172,9 +154,7 @@ describe("c-prometheion-audit-wizard", () => {
     it("supports keyboard selection with Space key", async () => {
       const element = await createComponent();
 
-      const soc2Card = element.shadowRoot.querySelector(
-        '.framework-card[data-value="SOC2"]'
-      );
+      const soc2Card = element.shadowRoot.querySelector('.framework-card[data-value="SOC2"]');
 
       const event = new KeyboardEvent("keydown", {
         key: " ",
@@ -193,23 +173,17 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       // Select framework first
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       // Click Next
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       nextButton.click();
       await flushPromises();
 
-      const progressIndicator = element.shadowRoot.querySelector(
-        "lightning-progress-indicator"
-      );
+      const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
       expect(progressIndicator.currentStep).toBe("2");
     });
 
@@ -217,30 +191,22 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       // Go to step 2
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       nextButton.click();
       await flushPromises();
 
       // Go back
-      const prevButton = Array.from(buttons).find(
-        (btn) => btn.label === "Previous"
-      );
+      const prevButton = Array.from(buttons).find((btn) => btn.label === "Previous");
       if (prevButton) {
         prevButton.click();
         await flushPromises();
 
-        const progressIndicator = element.shadowRoot.querySelector(
-          "lightning-progress-indicator"
-        );
+        const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
         expect(progressIndicator.currentStep).toBe("1");
       }
     });
@@ -249,23 +215,19 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       // Select framework and go to step 2
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       nextButton.click();
       await flushPromises();
 
       // Check Previous button is enabled
-      const prevButton = Array.from(
-        element.shadowRoot.querySelectorAll("lightning-button")
-      ).find((btn) => btn.label === "Previous");
+      const prevButton = Array.from(element.shadowRoot.querySelectorAll("lightning-button")).find(
+        (btn) => btn.label === "Previous"
+      );
       expect(prevButton).not.toBeNull();
       expect(prevButton.disabled).toBe(false);
     });
@@ -275,15 +237,11 @@ describe("c-prometheion-audit-wizard", () => {
 
       // On step 1, Next should be disabled without framework
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       expect(nextButton.disabled).toBe(true);
 
       // Select framework
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
@@ -297,16 +255,12 @@ describe("c-prometheion-audit-wizard", () => {
 
   describe("Date Range Selection (Step 2)", () => {
     async function goToStep2(element) {
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       nextButton.click();
       await flushPromises();
     }
@@ -315,9 +269,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
       await goToStep2(element);
 
-      const dateInputs = element.shadowRoot.querySelectorAll(
-        'lightning-input[type="date"]'
-      );
+      const dateInputs = element.shadowRoot.querySelectorAll('lightning-input[type="date"]');
       expect(dateInputs.length).toBe(2);
     });
 
@@ -325,9 +277,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
       await goToStep2(element);
 
-      const dateInputs = element.shadowRoot.querySelectorAll(
-        'lightning-input[type="date"]'
-      );
+      const dateInputs = element.shadowRoot.querySelectorAll('lightning-input[type="date"]');
       dateInputs.forEach((input) => {
         expect(input.required).toBe(true);
       });
@@ -358,9 +308,7 @@ describe("c-prometheion-audit-wizard", () => {
         'lightning-input[type="date"][label="End Date"]'
       );
       if (endDateInput) {
-        endDateInput.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "2024-12-31" } })
-        );
+        endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2024-12-31" } }));
         await flushPromises();
 
         expect(element).not.toBeNull();
@@ -371,9 +319,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
       await goToStep2(element);
 
-      const buttonGroup = element.shadowRoot.querySelector(
-        "lightning-button-group"
-      );
+      const buttonGroup = element.shadowRoot.querySelector("lightning-button-group");
       expect(buttonGroup).not.toBeNull();
     });
 
@@ -382,9 +328,7 @@ describe("c-prometheion-audit-wizard", () => {
       await goToStep2(element);
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const lastMonthBtn = Array.from(buttons).find(
-        (btn) => btn.label === "Last Month"
-      );
+      const lastMonthBtn = Array.from(buttons).find((btn) => btn.label === "Last Month");
       if (lastMonthBtn) {
         lastMonthBtn.click();
         await flushPromises();
@@ -399,9 +343,7 @@ describe("c-prometheion-audit-wizard", () => {
       await goToStep2(element);
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const lastQuarterBtn = Array.from(buttons).find(
-        (btn) => btn.label === "Last Quarter"
-      );
+      const lastQuarterBtn = Array.from(buttons).find((btn) => btn.label === "Last Quarter");
       if (lastQuarterBtn) {
         lastQuarterBtn.click();
         await flushPromises();
@@ -415,9 +357,7 @@ describe("c-prometheion-audit-wizard", () => {
       await goToStep2(element);
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const lastYearBtn = Array.from(buttons).find(
-        (btn) => btn.label === "Last Year"
-      );
+      const lastYearBtn = Array.from(buttons).find((btn) => btn.label === "Last Year");
       if (lastYearBtn) {
         lastYearBtn.click();
         await flushPromises();
@@ -453,18 +393,12 @@ describe("c-prometheion-audit-wizard", () => {
       );
 
       if (startDateInput && endDateInput) {
-        startDateInput.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "" } })
-        );
-        endDateInput.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "" } })
-        );
+        startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "" } }));
+        endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "" } }));
         await flushPromises();
 
         const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-        const nextButton = Array.from(buttons).find(
-          (btn) => btn.label === "Next"
-        );
+        const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
         // Next should be disabled if dates are required but empty
         expect(nextButton).not.toBeNull();
       }
@@ -473,18 +407,14 @@ describe("c-prometheion-audit-wizard", () => {
 
   describe("Control Selection (Step 3)", () => {
     async function goToStep3(element) {
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       // Go through steps 1 -> 2 -> 3
       for (let i = 0; i < 2; i++) {
         const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-        const nextButton = Array.from(buttons).find(
-          (btn) => btn.label === "Next"
-        );
+        const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
         nextButton.click();
         await flushPromises();
       }
@@ -503,9 +433,7 @@ describe("c-prometheion-audit-wizard", () => {
       await goToStep3(element);
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const selectAllBtn = Array.from(buttons).find(
-        (btn) => btn.label === "Select All"
-      );
+      const selectAllBtn = Array.from(buttons).find((btn) => btn.label === "Select All");
       expect(selectAllBtn).not.toBeNull();
     });
 
@@ -514,9 +442,7 @@ describe("c-prometheion-audit-wizard", () => {
       await goToStep3(element);
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const clearAllBtn = Array.from(buttons).find(
-        (btn) => btn.label === "Clear All"
-      );
+      const clearAllBtn = Array.from(buttons).find((btn) => btn.label === "Clear All");
       expect(clearAllBtn).not.toBeNull();
     });
 
@@ -524,9 +450,7 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
       await goToStep3(element);
 
-      const countDisplay = element.shadowRoot.querySelector(
-        '[role="status"][aria-live="polite"]'
-      );
+      const countDisplay = element.shadowRoot.querySelector('[role="status"][aria-live="polite"]');
       expect(countDisplay).not.toBeNull();
       expect(countDisplay.textContent).toContain("controls selected");
     });
@@ -545,9 +469,7 @@ describe("c-prometheion-audit-wizard", () => {
     it("updates aria-checked when framework is selected", async () => {
       const element = await createComponent();
 
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
@@ -564,9 +486,7 @@ describe("c-prometheion-audit-wizard", () => {
     it("has progress indicator with step labels", async () => {
       const element = await createComponent();
 
-      const steps = element.shadowRoot.querySelectorAll(
-        "lightning-progress-step"
-      );
+      const steps = element.shadowRoot.querySelectorAll("lightning-progress-step");
       expect(steps.length).toBe(5);
 
       const stepLabels = Array.from(steps).map((s) => s.label);
@@ -581,16 +501,12 @@ describe("c-prometheion-audit-wizard", () => {
       const element = await createComponent();
 
       // Go to step 2 for date inputs
-      const hipaaCard = element.shadowRoot.querySelector(
-        '.framework-card[data-value="HIPAA"]'
-      );
+      const hipaaCard = element.shadowRoot.querySelector('.framework-card[data-value="HIPAA"]');
       hipaaCard.click();
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
       nextButton.click();
       await flushPromises();
 
@@ -608,9 +524,7 @@ describe("c-prometheion-audit-wizard", () => {
 
       // Try to click Next without selecting framework
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const nextButton = Array.from(buttons).find(
-        (btn) => btn.label === "Next"
-      );
+      const nextButton = Array.from(buttons).find((btn) => btn.label === "Next");
 
       expect(nextButton.disabled).toBe(true);
     });
