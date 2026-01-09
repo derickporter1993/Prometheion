@@ -358,6 +358,53 @@ npm run precommit
 
 The project was previously named "Sentinel" - some references may still exist in configuration files. The current branding is **Prometheion**.
 
+## Configuration Issues & Fixes
+
+### Formatting Command Mismatch (Fixed 2026-01-09)
+
+**Issue**: An inconsistency existed between `.claude/settings.json`, `package.json`, and `CLAUDE.md` regarding formatting commands. The Claude allow list permitted `Bash(npm run prettier:*)`, but the repo does not define any `prettier` npm script. The repo's formatting scripts are `fmt` (write) and `fmt:check` (check). This mismatch prevented the documented formatting workflow from being properly allowed/controlled.
+
+**What was wrong**:
+
+1. **Bug 1 (workflow mismatch)**:
+   - `CLAUDE.md` instructs developers to run `npm run fmt` and `npm run fmt:check`.
+   - `.claude/settings.json` did not allow `npm run fmt:*` and instead allowed `npm run prettier:*`.
+
+2. **Bug 2 (non-existent script permission)**:
+   - `.claude/settings.json` allowed `Bash(npm run prettier:*)`.
+   - `package.json` has no `prettier` script; only `fmt` and `fmt:check`.
+
+**Fix implemented**:
+
+Updated `.claude/settings.json` allow list entry from:
+```json
+"Bash(npm run prettier:*)"
+```
+to:
+```json
+"Bash(npm run fmt:*)"
+```
+
+**Why `fmt:*` is sufficient**:
+
+`npm run fmt` and `npm run fmt:check` both match `npm run fmt:*` (because `fmt:check` begins with `fmt:`). A separate allow entry for `fmt:check` is optional.
+
+**Verification steps**:
+
+1. Confirm scripts exist:
+   - `package.json` includes `"fmt"` and `"fmt:check"`.
+
+2. Confirm documentation alignment:
+   - `CLAUDE.md` references `npm run fmt` and `npm run fmt:check`.
+
+3. Confirm Claude allow list alignment:
+   - `.claude/settings.json` includes `Bash(npm run fmt:*)` and does not include `Bash(npm run prettier:*)`.
+
+4. Run:
+   ```bash
+   npm run fmt:check  # Should execute successfully
+   ```
+
 ## Useful Resources
 
 - [README.md](README.md) - Project overview and quick start
