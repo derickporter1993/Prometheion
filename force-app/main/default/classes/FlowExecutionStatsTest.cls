@@ -87,10 +87,10 @@ private class FlowExecutionStatsTest {
     
     @IsTest
     static void testGetTopFlows_EmptyData() {
-        // Delete all test data
-        delete [SELECT Id FROM Flow_Execution__c];
-        
         Test.startTest();
+        // Delete all test data inside test context to preserve DML limits
+        delete [SELECT Id FROM Flow_Execution__c];
+
         List<FlowExecutionStats.ExecAgg> results = FlowExecutionStats.getTopFlows(5);
         Test.stopTest();
         
