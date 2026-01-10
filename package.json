@@ -18,7 +18,14 @@
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
     "validate": "npm run precommit",
     "build": "echo '✅ Prometheion build validation complete'",
-    "deploy": "echo '📦 Ready for deployment'"
+    "org:create": "sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-dev -d 30",
+    "org:open": "sf org open -o prometheion-dev",
+    "org:delete": "sf org delete scratch -o prometheion-dev -p",
+    "sf:deploy": "sf project deploy start -o prometheion-dev",
+    "sf:deploy:validate": "sf project deploy start -o prometheion-dev --dry-run",
+    "sf:retrieve": "sf project retrieve start -o prometheion-dev",
+    "test:apex": "sf apex run test -o prometheion-dev -c -r human -w 10",
+    "test:all": "npm run test && npm run test:apex"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
