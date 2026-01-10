@@ -27,7 +27,7 @@ private class PrometheionSalesforceThreatDetectorTest {
             FirstName = 'Inactive',
             LastName = 'User',
             Email = 'inactive@test.com',
-            Username = 'inactive@test.com',
+            Username = 'inactive' + System.now().getTime() + '@test.com',
             Alias = 'inactive',
             ProfileId = p.Id,
             TimeZoneSidKey = 'America/New_York',
