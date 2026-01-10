@@ -55,7 +55,7 @@ private class PrometheionAlertTriggerTest {
         insert alerts;
         Test.stopTest();
 
-        List<Alert__c> insertedAlerts = [SELECT Id FROM Alert__c];
+        List<Alert__c> insertedAlerts = [SELECT Id FROM Alert__c WHERE Title__c LIKE 'Bulk Alert%'];
         System.assertEquals(200, insertedAlerts.size(), 'Should insert all alerts');
     }
 }
