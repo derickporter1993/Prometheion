@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Tech Debt Manager</label>
+
+    <!-- App access will be granted via app permissions after app creation -->
+
+    <!-- Object Permissions -->
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>TechDebt__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>TechDebtChecklist__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>TechDebtDependency__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+
+    <!-- Field Permissions for TechDebt__c -->
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Title__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Description__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Category__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Subcategory__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.ComponentType__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.ComponentApiName__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Severity__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Risk__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Effort__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.CustomerImpact__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Status__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.TargetRelease__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Squad__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Repository__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Branch__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.DevOpsWorkItemId__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.PullRequests__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.ComplianceFlags__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.SLADueDate__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.Tags__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>false</editable><field>TechDebt__c.PriorityScore__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebt__c.CreatedFrom__c</field><readable>true</readable></fieldPermissions>
+
+    <!-- Field Permissions for TechDebtChecklist__c -->
+    <fieldPermissions><editable>true</editable><field>TechDebtChecklist__c.TechDebt__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebtChecklist__c.Item__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebtChecklist__c.IsRequired__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebtChecklist__c.IsComplete__c</field><readable>true</readable></fieldPermissions>
+
+    <!-- Field Permissions for TechDebtDependency__c -->
+    <fieldPermissions><editable>true</editable><field>TechDebtDependency__c.SourceDebt__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebtDependency__c.TargetDebt__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>TechDebtDependency__c.DependencyType__c</field><readable>true</readable></fieldPermissions>
+
+    <!-- Tab Visibility -->
+    <tabSettings>
+        <tab>TechDebt__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>TechDebtChecklist__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>TechDebtDependency__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

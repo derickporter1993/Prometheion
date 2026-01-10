@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tech Debt</label>
+    <pluralLabel>Tech Debt</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <displayFormat>TD-{00000}</displayFormat>
+        <label>Tech Debt Number</label>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>true</enableActivities>
+    <enableReports>true</enableReports>
+    <enableHistory>true</enableHistory>
+    <enableSearch>true</enableSearch>
+
+    <!-- Fields -->
+    <fields>
+        <fullName>Title__c</fullName>
+        <label>Title</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+    </fields>
+
+    <fields>
+        <fullName>Description__c</fullName>
+        <label>Description</label>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+        <length>32768</length>
+    </fields>
+
+    <fields>
+        <fullName>Category__c</fullName>
+        <label>Category</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Security</fullName>
+                    <default>false</default>
+                    <label>Security</label>
+                </value>
+                <value>
+                    <fullName>Performance</fullName>
+                    <default>false</default>
+                    <label>Performance</label>
+                </value>
+                <value>
+                    <fullName>Maintainability</fullName>
+                    <default>false</default>
+                    <label>Maintainability</label>
+                </value>
+                <value>
+                    <fullName>Reliability</fullName>
+                    <default>false</default>
+                    <label>Reliability</label>
+                </value>
+                <value>
+                    <fullName>UX</fullName>
+                    <default>false</default>
+                    <label>UX</label>
+                </value>
+                <value>
+                    <fullName>Data</fullName>
+                    <default>false</default>
+                    <label>Data</label>
+                </value>
+                <value>
+                    <fullName>Compliance</fullName>
+                    <default>false</default>
+                    <label>Compliance</label>
+                </value>
+                <value>
+                    <fullName>Architecture</fullName>
+                    <default>false</default>
+                    <label>Architecture</label>
+                </value>
+                <value>
+                    <fullName>Build/Deploy</fullName>
+                    <default>false</default>
+                    <label>Build/Deploy</label>
+                </value>
+                <value>
+                    <fullName>Observability</fullName>
+                    <default>false</default>
+                    <label>Observability</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>Subcategory__c</fullName>
+        <label>Subcategory</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>Code Smell</fullName><default>false</default><label>Code Smell</label></value>
+                <value><fullName>Test Coverage</fullName><default>false</default><label>Test Coverage</label></value>
+                <value><fullName>Deprecated API</fullName><default>false</default><label>Deprecated API</label></value>
+                <value><fullName>Hotspot</fullName><default>false</default><label>Hotspot</label></value>
+                <value><fullName>Documentation</fullName><default>false</default><label>Documentation</label></value>
+                <value><fullName>Data Model</fullName><default>false</default><label>Data Model</label></value>
+                <value><fullName>Access Control</fullName><default>false</default><label>Access Control</label></value>
+                <value><fullName>Perf Query</fullName><default>false</default><label>Perf Query</label></value>
+                <value><fullName>Transaction Limits</fullName><default>false</default><label>Transaction Limits</label></value>
+                <value><fullName>Other</fullName><default>false</default><label>Other</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>ComponentType__c</fullName>
+        <label>Affected Component Type</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>ApexClass</fullName><default>false</default><label>Apex Class</label></value>
+                <value><fullName>LWC</fullName><default>false</default><label>LWC</label></value>
+                <value><fullName>Aura</fullName><default>false</default><label>Aura</label></value>
+                <value><fullName>Flow</fullName><default>false</default><label>Flow</label></value>
+                <value><fullName>PermissionSet</fullName><default>false</default><label>Permission Set</label></value>
+                <value><fullName>Profile</fullName><default>false</default><label>Profile</label></value>
+                <value><fullName>Page</fullName><default>false</default><label>Page</label></value>
+                <value><fullName>Object</fullName><default>false</default><label>Object</label></value>
+                <value><fullName>Field</fullName><default>false</default><label>Field</label></value>
+                <value><fullName>CustomMetadata</fullName><default>false</default><label>Custom Metadata</label></value>
+                <value><fullName>NamedCredential</fullName><default>false</default><label>Named Credential</label></value>
+                <value><fullName>Other</fullName><default>false</default><label>Other</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>ComponentApiName__c</fullName>
+        <label>Affected Component API Name</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+
+    <fields>
+        <fullName>Severity__c</fullName>
+        <label>Severity</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>Blocker</fullName><default>false</default><label>Blocker</label></value>
+                <value><fullName>Critical</fullName><default>false</default><label>Critical</label></value>
+                <value><fullName>Major</fullName><default>false</default><label>Major</label></value>
+                <value><fullName>Minor</fullName><default>false</default><label>Minor</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>Risk__c</fullName>
+        <label>Risk</label>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <description>Relative risk (0-10)</description>
+    </fields>
+
+    <fields>
+        <fullName>Effort__c</fullName>
+        <label>Effort</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>XS</fullName><default>false</default><label>XS</label></value>
+                <value><fullName>S</fullName><default>false</default><label>S</label></value>
+                <value><fullName>M</fullName><default>false</default><label>M</label></value>
+                <value><fullName>L</fullName><default>false</default><label>L</label></value>
+                <value><fullName>XL</fullName><default>false</default><label>XL</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>CustomerImpact__c</fullName>
+        <label>Customer Impact</label>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <description>Impact on customers (0-10)</description>
+    </fields>
+
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>New</fullName><default>true</default><label>New</label></value>
+                <value><fullName>Triaged</fullName><default>false</default><label>Triaged</label></value>
+                <value><fullName>Planned</fullName><default>false</default><label>Planned</label></value>
+                <value><fullName>In_Progress</fullName><default>false</default><label>In Progress</label></value>
+                <value><fullName>Blocked</fullName><default>false</default><label>Blocked</label></value>
+                <value><fullName>Deferred</fullName><default>false</default><label>Deferred</label></value>
+                <value><fullName>Done</fullName><default>false</default><label>Done</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>TargetRelease__c</fullName>
+        <label>Target Release</label>
+        <type>Text</type>
+        <length>80</length>
+    </fields>
+
+    <fields>
+        <fullName>Squad__c</fullName>
+        <label>Squad</label>
+        <type>Text</type>
+        <length>80</length>
+    </fields>
+
+    <fields>
+        <fullName>Repository__c</fullName>
+        <label>Repository</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+
+    <fields>
+        <fullName>Branch__c</fullName>
+        <label>Branch</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+
+    <fields>
+        <fullName>DevOpsWorkItemId__c</fullName>
+        <label>DevOps Work Item Id</label>
+        <type>Text</type>
+        <length>80</length>
+    </fields>
+
+    <fields>
+        <fullName>PullRequests__c</fullName>
+        <label>Pull Requests</label>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+        <length>32768</length>
+    </fields>
+
+    <fields>
+        <fullName>ComplianceFlags__c</fullName>
+        <label>Compliance Flags</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+
+    <fields>
+        <fullName>SLADueDate__c</fullName>
+        <label>SLA Due Date</label>
+        <type>Date</type>
+    </fields>
+
+    <fields>
+        <fullName>Tags__c</fullName>
+        <label>Tags</label>
+        <type>Text</type>
+        <length>255</length>
+        <description>Semi-colon delimited tags</description>
+    </fields>
+
+    <fields>
+        <fullName>CreatedFrom__c</fullName>
+        <label>Created From</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>Manual</fullName><default>true</default><label>Manual</label></value>
+                <value><fullName>Analyzer</fullName><default>false</default><label>Analyzer</label></value>
+                <value><fullName>Incident</fullName><default>false</default><label>Incident</label></value>
+                <value><fullName>CustomerFeedback</fullName><default>false</default><label>Customer Feedback</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>PriorityScore__c</fullName>
+        <label>Priority Score</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <description>Calculated score; to be populated by Flow initially</description>
+    </fields>
+
+    <validationRules>
+        <fullName>RequireTitle</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Title__c)</errorConditionFormula>
+        <errorMessage>Title is required.</errorMessage>
+    </validationRules>
+
+    <!-- List Views -->
+    <listViews>
+        <fullName>All</fullName>
+        <label>All</label>
+        <filterScope>Everything</filterScope>
+        <columns>NAME</columns>
+        <columns>Title__c</columns>
+        <columns>Category__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>OwnerId</columns>
+    </listViews>
+
+    <compactLayouts>
+        <fullName>TechDebt_Compact</fullName>
+        <label>Tech Debt Compact</label>
+        <fields>Title__c</fields>
+        <fields>Category__c</fields>
+        <fields>Severity__c</fields>
+        <fields>Status__c</fields>
+    </compactLayouts>
+
+    <recordTypes>
+        <fullName>Default</fullName>
+        <active>true</active>
+        <label>Default</label>
+    </recordTypes>
+</CustomObject>
