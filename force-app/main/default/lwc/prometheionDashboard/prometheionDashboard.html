@@ -228,7 +228,7 @@
           Recent Audit Packages
         </h3>
         <div class="audit-packages-list">
-          <template for:each={auditPackages} for:item="pkg">
+          <template for:each={formattedAuditPackages} for:item="pkg">
             <div
               key={pkg.id}
               class="audit-package-card"
@@ -242,11 +242,11 @@
               <div class="package-meta">
                 <span class="package-framework">{pkg.framework}</span>
                 <span class="package-period">
-                  {formatDate(pkg.periodStart)} - {formatDate(pkg.periodEnd)}
+                  {pkg.formattedPeriodStart} - {pkg.formattedPeriodEnd}
                 </span>
               </div>
               <div class="package-footer">
-                <span class="package-created">Created: {formatDate(pkg.createdDate)}</span>
+                <span class="package-created">Created: {pkg.formattedCreatedDate}</span>
                 <span class="package-created-by" lwc:if={pkg.createdBy}>by {pkg.createdBy}</span>
               </div>
             </div>

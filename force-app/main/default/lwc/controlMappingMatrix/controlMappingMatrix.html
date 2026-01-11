@@ -56,11 +56,11 @@
       </div>
 
       <!-- Matrix Table -->
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:false={isLoading}>
+      <template lwc:else>
         <div class="matrix-container" role="region" aria-label="Control mapping matrix table">
           <table
             class="slds-table slds-table_bordered slds-table_fixed-layout matrix-table"
@@ -103,7 +103,7 @@
                       data-framework={mapping.framework}
                       aria-label={mapping.ariaLabel}
                     >
-                      <template if:true={mapping.hasMapping}>
+                      <template lwc:if={mapping.hasMapping}>
                         <div class="mapping-content">
                           <span class="mapping-code">{mapping.targetCode}</span>
                           <lightning-icon
@@ -113,7 +113,7 @@
                           ></lightning-icon>
                         </div>
                       </template>
-                      <template if:false={mapping.hasMapping}>
+                      <template lwc:else>
                         <span class="slds-text-color_weak" aria-label="No mapping">—</span>
                       </template>
                     </td>
@@ -171,7 +171,7 @@
   </lightning-card>
 
   <!-- Mapping Detail Modal -->
-  <template if:true={showMappingModal}>
+  <template lwc:if={showMappingModal}>
     <section
       role="dialog"
       class="slds-modal slds-fade-in-open"
@@ -199,7 +199,7 @@
           <h2 id="mapping-modal-heading" class="slds-modal__title">Control Mapping Details</h2>
         </header>
         <div id="mapping-modal-content" class="slds-modal__content slds-var-p-around_medium">
-          <template if:true={selectedMapping}>
+          <template lwc:if={selectedMapping}>
             <div class="slds-grid slds-gutters">
               <div class="slds-col slds-size_1-of-2">
                 <section class="slds-box slds-theme_shade" aria-labelledby="source-control-heading">
