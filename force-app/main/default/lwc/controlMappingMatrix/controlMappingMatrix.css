@@ -1,0 +1,139 @@
+/* Matrix Container */
+.matrix-container {
+    overflow-x: auto;
+    max-height: 500px;
+}
+
+.matrix-table {
+    min-width: 800px;
+}
+
+/* Headers */
+.control-header {
+    min-width: 200px;
+    background-color: #032d60 !important;
+    color: white;
+}
+
+.framework-header {
+    min-width: 120px;
+    background-color: #032d60 !important;
+    color: white;
+    text-align: center;
+}
+
+.coverage-header {
+    min-width: 100px;
+    background-color: #032d60 !important;
+    color: white;
+    text-align: center;
+}
+
+/* Cells */
+.control-cell {
+    background-color: #f3f3f3;
+}
+
+.mapping-cell {
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mapping-cell:hover {
+    background-color: #e5e5e5;
+}
+
+.mapping-cell.direct {
+    background-color: #e8f5e9;
+}
+
+.mapping-cell.partial {
+    background-color: #fff8e1;
+}
+
+.mapping-cell.none {
+    background-color: #fafafa;
+}
+
+.mapping-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.mapping-code {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.coverage-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Legend */
+.legend {
+    padding: 0.5rem;
+    background-color: #f3f3f3;
+    border-radius: 0.25rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.legend-dot.direct {
+    background-color: #4caf50;
+}
+
+.legend-dot.partial {
+    background-color: #ff9800;
+}
+
+.legend-dot.none {
+    background-color: #e0e0e0;
+}
+
+/* Statistics */
+.stat-box {
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    background-color: #f3f3f3;
+    border-left: 4px solid #032d60;
+}
+
+.stat-box.direct {
+    border-left-color: #4caf50;
+}
+
+.stat-box.partial {
+    border-left-color: #ff9800;
+}
+
+.stat-box.none {
+    border-left-color: #9e9e9e;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #032d60;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    text-transform: uppercase;
+}

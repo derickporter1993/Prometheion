@@ -5,8 +5,8 @@
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Framework"
-            value="{selectedFramework}"
-            options="{frameworks}"
+            value{selectedFramework}
+            options{frameworks}
             onchange="
               {
                 handleFrameworkChange;
@@ -19,7 +19,7 @@
           <lightning-input
             type="date"
             label="Start Date"
-            value="{startDate}"
+            value{startDate}
             onchange="
               {
                 handleStartDateChange;
@@ -32,7 +32,7 @@
           <lightning-input
             type="date"
             label="End Date"
-            value="{endDate}"
+            value{endDate}
             onchange="
               {
                 handleEndDateChange;
@@ -52,7 +52,7 @@
               handleGenerateReport;
             }
           "
-          disabled="{loading}"
+          disabled{loading}
         >
         </lightning-button>
         <template lwc:if={reportData}>
@@ -64,7 +64,7 @@
                 handleExportPDF;
               }
             "
-            disabled="{loading}"
+            disabled{loading}
             class="slds-m-left_small"
           >
           </lightning-button>

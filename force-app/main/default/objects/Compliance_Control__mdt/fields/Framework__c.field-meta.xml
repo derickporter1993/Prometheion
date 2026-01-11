@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Framework__c</fullName>
-    <description>Parent compliance framework</description>
+    <description>The compliance framework this control belongs to (e.g., GDPR, CCPA, PCI-DSS)</description>
+    <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Framework</label>
-    <length>50</length>
+    <length>80</length>
     <required>true</required>
     <type>Text</type>
-    <unique>false</unique>
 </CustomField>

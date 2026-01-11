@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Auto_Remediate__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Whether this control should be auto-remediated when violations are detected</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Auto Remediate</label>
+    <type>Checkbox</type>
+</CustomField>

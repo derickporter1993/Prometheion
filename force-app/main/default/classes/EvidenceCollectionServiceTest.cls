@@ -73,4 +73,48 @@ private class EvidenceCollectionServiceTest {
         }
         Test.stopTest();
     }
+    
+    @IsTest
+    static void testCollectEvidence_BulkMultipleFrameworks() {
+        // Test evidence collection across all supported frameworks
+        List<String> frameworks = new List<String>{
+            'HIPAA', 'SOC2', 'NIST', 'FedRAMP', 'GDPR', 
+            'SOX', 'PCI_DSS', 'CCPA', 'GLBA', 'ISO27001'
+        };
+        Date startDate = System.today().addDays(-30);
+        Date endDate = System.today();
+        
+        Test.startTest();
+        List<Compliance_Evidence__c> allEvidence = new List<Compliance_Evidence__c>();
+        for (String framework : frameworks) {
+            List<Compliance_Evidence__c> evidence = 
+                EvidenceCollectionService.collectEvidence(framework, startDate, endDate);
+            allEvidence.addAll(evidence);
+        }
+        Test.stopTest();
+        
+        System.assert(!allEvidence.isEmpty(), 'Should collect evidence for all frameworks');
+        
+        // Verify evidence was inserted for each framework
+        Integer totalEvidenceCount = [
+            SELECT COUNT() FROM Compliance_Evidence__c
+        ];
+        System.assert(totalEvidenceCount >= frameworks.size(), 
+            'Should have at least one evidence record per framework');
+    }
+    
+    @IsTest
+    static void testCollectEvidence_LargeDateRange() {
+        // Test with a large date range (6 months)
+        Date startDate = System.today().addMonths(-6);
+        Date endDate = System.today();
+        
+        Test.startTest();
+        List<Compliance_Evidence__c> evidence = 
+            EvidenceCollectionService.collectEvidence('HIPAA', startDate, endDate);
+        Test.stopTest();
+        
+        System.assertNotEquals(null, evidence, 'Evidence list should not be null');
+        System.assert(!evidence.isEmpty(), 'Should collect evidence for large date range');
+    }
 }

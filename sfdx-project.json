@@ -3,18 +3,18 @@
     {
       "path": "force-app",
       "default": true,
-      "package": "sentinel",
+      "package": "prometheion",
       "versionName": "v3.0 Enterprise",
       "versionNumber": "3.0.0.NEXT",
-      "definitionFile": "config/sentinel-scratch-def.json"
+      "definitionFile": "config/prometheion-scratch-def.json"
     }
   ],
-  "name": "Sentinel Enterprise",
+  "name": "Prometheion",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "63.0",
+  "sourceApiVersion": "65.0",
   "packageAliases": {
-    "sentinel": "0HoXXXXXXXXXXXX"
+    "prometheion": "0HoXXXXXXXXXXXX"
   },
   "plugins": {}
 }

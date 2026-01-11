@@ -1,0 +1,89 @@
+/* Compliance Dashboard - Mobile-first responsive design */
+
+.compliance-dashboard-container {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Mobile: Stack everything (max-width: 767px) */
+@media (max-width: 767px) {
+  .compliance-dashboard-container {
+    grid-template-columns: 1fr;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .card-header {
+    font-size: 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-section {
+    margin-bottom: 1rem;
+  }
+
+  /* Stack framework cards */
+  .framework-card {
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Tablet: 2 columns (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .compliance-dashboard-container {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+  }
+
+  .framework-card {
+    width: 100%;
+  }
+}
+
+/* Desktop: 3 columns (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .compliance-dashboard-container {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1.25rem;
+  }
+}
+
+/* Large Desktop: 4 columns (min-width: 1280px) */
+@media (min-width: 1280px) {
+  .compliance-dashboard-container {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1.5rem;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 767px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Responsive tables */
+@media (max-width: 767px) {
+  .slds-table {
+    font-size: 0.875rem;
+  }
+
+  .slds-table th,
+  .slds-table td {
+    padding: 0.5rem;
+  }
+}

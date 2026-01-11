@@ -93,12 +93,67 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
         : "slds-text-color_error slds-text-heading_medium";
   }
 
+  @track selectedFramework = "";
+  @track frameworkMetrics = {};
+  @track frameworkRecommendations = [];
+
+  handleFrameworkChange(event) {
+    this.selectedFramework = event.detail?.framework || "";
+    this.loadFrameworkMetrics();
+  }
+
+  loadFrameworkMetrics() {
+    if (!this.selectedFramework) {
+      return;
+    }
+
+    // Load framework-specific metrics and recommendations
+    // In production, would call Apex to get framework-specific data
+    this.frameworkMetrics = {
+      GDPR: {
+        dataSubjectRequests: 0,
+        breachesReported: 0,
+        consentsRecorded: 0,
+        recommendation: "Ensure all data processing activities are documented in ROPA",
+      },
+      CCPA: {
+        consumerRequests: 0,
+        optOutsProcessed: 0,
+        dataSalesIdentified: 0,
+        recommendation: "Maintain accurate data inventory and honor opt-out requests",
+      },
+      "PCI-DSS": {
+        accessReviews: 0,
+        securityEvents: 0,
+        encryptionValidated: 0,
+        recommendation: "Ensure all cardholder data is encrypted and access is restricted",
+      },
+    };
+
+    const metrics = this.frameworkMetrics[this.selectedFramework];
+    if (metrics) {
+      this.frameworkRecommendations = [metrics.recommendation];
+    }
+  }
+
   handleGenerateSoc2() {
     this.generatePack("SOC2");
   }
 
   handleGenerateHipaa() {
     this.generatePack("HIPAA");
+  }
+
+  handleGenerateGDPR() {
+    this.generatePack("GDPR");
+  }
+
+  handleGenerateCCPA() {
+    this.generatePack("CCPA");
+  }
+
+  handleGeneratePCI() {
+    this.generatePack("PCI-DSS");
   }
 
   generatePack(framework) {

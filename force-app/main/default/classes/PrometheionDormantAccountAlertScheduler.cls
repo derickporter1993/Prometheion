@@ -20,27 +20,45 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
      * @param sc - SchedulableContext
      */
     public void execute(SchedulableContext sc) {
-        detectDormantAccounts();
-        detectApproachingDormant();
-        generateSecurityReport();
+        try {
+            detectDormantAccounts();
+            detectApproachingDormant();
+            generateSecurityReport();
+            SchedulerErrorHandler.logSuccess('PrometheionDormantAccountAlertScheduler', 'Dormant account check completed successfully');
+        } catch (Exception e) {
+            SchedulerErrorHandler.logError('PrometheionDormantAccountAlertScheduler', e);
+            SchedulerErrorHandler.notifyOnFailure('PrometheionDormantAccountAlertScheduler', e);
+        }
     }
 
     /**
      * Detect and process dormant accounts (90+ days inactive)
      */
     private void detectDormantAccounts() {
-        Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
+        try {
+            Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
 
-        List<User> dormantUsers = [
-            SELECT Id, Name, Username, Email, Profile.Name, ManagerId, Manager.Email,
-                   LastLoginDate, IsActive
-            FROM User
-            WHERE IsActive = true
-            AND UserType = 'Standard'
-            AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
-            WITH USER_MODE
-            LIMIT 500
-        ];
+            // Get batch size from Custom Metadata, default to 500
+            Integer batchLimit = 500;
+            try {
+                Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance('DormantAccountAlert');
+                if (config != null && config.Batch_Size__c != null) {
+                    batchLimit = config.Batch_Size__c.intValue();
+                }
+            } catch (Exception e) {
+                System.debug(LoggingLevel.WARN, 'Could not load Custom Metadata, using default batch size: ' + e.getMessage());
+            }
+
+            List<User> dormantUsers = [
+                SELECT Id, Name, Username, Email, Profile.Name, ManagerId, Manager.Email,
+                       LastLoginDate, IsActive
+                FROM User
+                WHERE IsActive = true
+                AND UserType = 'Standard'
+                AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
+                WITH USER_MODE
+                LIMIT :batchLimit
+            ];
 
         if (dormantUsers.isEmpty()) {
             System.debug(LoggingLevel.INFO,
@@ -79,14 +97,19 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
             // Alert security team
             sendDormantAccountAlert(dormantUsers);
         }
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, '[DormantAccountAlertScheduler] Error in detectDormantAccounts: ' + e.getMessage());
+            throw e; // Re-throw to stop execution
+        }
     }
 
     /**
      * Detect accounts approaching dormant threshold (60-90 days)
      */
     private void detectApproachingDormant() {
-        Date warningThreshold = Date.today().addDays(-WARNING_THRESHOLD_DAYS);
-        Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
+        try {
+            Date warningThreshold = Date.today().addDays(-WARNING_THRESHOLD_DAYS);
+            Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
 
         List<User> warningUsers = [
             SELECT Id, Name, Username, Email, Profile.Name, Manager.Email, LastLoginDate
@@ -112,13 +135,18 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
                     ' - ' + daysSinceLogin + ' days since last login');
             }
         }
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, '[DormantAccountAlertScheduler] Error in detectApproachingDormant: ' + e.getMessage());
+            throw e; // Re-throw to stop execution
+        }
     }
 
     /**
      * Generate daily security report
      */
     private void generateSecurityReport() {
-        Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
+        try {
+            Date dormantThreshold = Date.today().addDays(-DORMANT_THRESHOLD_DAYS);
 
         // Count active vs dormant
         Integer totalActive = [SELECT COUNT() FROM User WHERE IsActive = true AND UserType = 'Standard' WITH USER_MODE];
@@ -154,6 +182,10 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
             'Dormant Accounts: ' + dormantCount + ', ' +
             'Privileged Dormant: ' + privilegedDormant + ', ' +
             'Pending Reviews: ' + pendingReviews);
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, '[DormantAccountAlertScheduler] Error in generateSecurityReport: ' + e.getMessage());
+            throw e; // Re-throw to stop execution
+        }
     }
 
     /**

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>App for managing technical debt: capture, triage, dependencies, and checklists.</description>
+    <label>Tech Debt Manager</label>
+    <logo>LightningGreen</logo>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isServiceCloudConsole>false</isServiceCloudConsole>
+    <navType>Standard</navType>
+    <tabs>standard-Home</tabs>
+    <tabs>TechDebt__c</tabs>
+    <tabs>TechDebtChecklist__c</tabs>
+    <tabs>TechDebtDependency__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar></utilityBar>
+</CustomApplication>

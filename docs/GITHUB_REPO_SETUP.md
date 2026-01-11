@@ -27,7 +27,7 @@ The new name immediately tells visitors:
 
 **⚠️ Important**: After renaming, update your local git remote:
 ```bash
-git remote set-url origin https://github.com/YOUR_USERNAME/prometheion-salesforce-compliance-drift-guard.git
+git remote set-url origin https://github.com/derickporter1993/prometheion-salesforce-compliance-drift-guard.git
 ```
 
 ---
@@ -111,7 +111,7 @@ If you create a documentation site (e.g., GitHub Pages, GitBook), add it to your
 
 ### Recommended Sites
 
-- **GitHub Pages**: `https://YOUR_USERNAME.github.io/prometheion`
+- **GitHub Pages**: `https://derickporter1993.github.io/prometheion`
 - **ReadTheDocs**: `https://prometheion.readthedocs.io`
 - **Custom Domain**: `https://prometheion.dev`
 
@@ -187,9 +187,9 @@ Already done in the new README, but verify these badges work:
 
 ### Optional Badges to Add
 
-- **Code Coverage**: `[![Coverage](https://img.shields.io/codecov/c/github/YOUR_USERNAME/prometheion)](https://codecov.io)`
-- **Issues**: `[![GitHub issues](https://img.shields.io/github/issues/YOUR_USERNAME/prometheion)](https://github.com/YOUR_USERNAME/prometheion/issues)`
-- **Contributors**: `[![Contributors](https://img.shields.io/github/contributors/YOUR_USERNAME/prometheion)](https://github.com/YOUR_USERNAME/prometheion/graphs/contributors)`
+- **Code Coverage**: `[![Coverage](https://img.shields.io/codecov/c/github/derickporter1993/prometheion)](https://codecov.io)`
+- **Issues**: `[![GitHub issues](https://img.shields.io/github/issues/derickporter1993/prometheion)](https://github.com/derickporter1993/prometheion/issues)`
+- **Contributors**: `[![Contributors](https://img.shields.io/github/contributors/derickporter1993/prometheion)](https://github.com/derickporter1993/prometheion/graphs/contributors)`
 
 ---
 
@@ -254,8 +254,8 @@ Thank you for your interest in contributing to Prometheion!
 
 ## Ways to Contribute
 
-- 🐛 Report bugs via [GitHub Issues](https://github.com/YOUR_USERNAME/prometheion/issues)
-- 💡 Suggest features via [GitHub Discussions](https://github.com/YOUR_USERNAME/prometheion/discussions)
+- 🐛 Report bugs via [GitHub Issues](https://github.com/derickporter1993/prometheion/issues)
+- 💡 Suggest features via [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions)
 - 📖 Improve documentation
 - 🧪 Add test coverage
 - 🔧 Fix bugs or implement features
@@ -290,7 +290,7 @@ See [README.md](README.md#development) for setup instructions.
 
 ## Questions?
 
-Ask in [GitHub Discussions](https://github.com/YOUR_USERNAME/prometheion/discussions).
+Ask in [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions).
 ```
 
 ---
@@ -404,10 +404,10 @@ If your CI/CD workflow is named something other than `ci.yml`, update the badge 
 ### Dynamic Badge (shows actual CI status)
 
 ```markdown
-[![CI](https://github.com/YOUR_USERNAME/prometheion/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/prometheion/actions)
+[![CI](https://github.com/derickporter1993/prometheion/workflows/CI/badge.svg)](https://github.com/derickporter1993/prometheion/actions)
 ```
 
-Replace `YOUR_USERNAME` and ensure workflow name matches (`.github/workflows/ci.yml`).
+Replace `derickporter1993` and ensure workflow name matches (`.github/workflows/ci.yml`).
 
 ---
 

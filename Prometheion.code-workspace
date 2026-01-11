@@ -41,7 +41,8 @@
 			"editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex"
 		},
 		"prettier.enable": true,
-		"prettier.configPath": ".prettierrc"
+		"prettier.configPath": ".prettierrc",
+		"xml.preferences.showSchemaDocumentationType": "none"
 	},
 	"extensions": {
 		"recommendations": [

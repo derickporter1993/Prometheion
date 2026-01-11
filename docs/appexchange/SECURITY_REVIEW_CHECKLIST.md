@@ -42,15 +42,18 @@
 - [x] All entry points secured with permission sets
   - [x] All `@AuraEnabled` methods mapped to permission sets
   - [x] All `@InvocableMethod` methods documented
-  - [x] REST resources use Named Credentials
+  - [x] REST resource (PrometheionScoreCallback) uses API key authentication via Custom Metadata
+  - [x] REST resource implements replay protection, rate limiting, and HMAC validation
   - [x] Entry Point Audit document complete
 
 ### CRUD/FLS Enforcement
 
 - [x] CRUD/FLS enforced on all DML operations
   - [x] `Security.stripInaccessible` used in PrometheionAISettingsController
+  - [x] `Security.stripInaccessible` and `AccessLevel.USER_MODE` used in PrometheionScoreCallback
   - [x] `WITH USER_MODE` used in all user-initiated queries
   - [x] `WITH SECURITY_ENFORCED` used where appropriate
+  - [x] System context classes (without sharing) documented with justification
 
 ### Input Validation
 
@@ -64,8 +67,9 @@
 
 - [x] Error messages don't leak sensitive data
   - [x] No stack traces in user-facing error messages
-  - [x] All `AuraHandledException` messages are user-safe
-  - [x] Stack traces only logged to System.debug (not exposed to UI)
+  - [x] All `AuraHandledException` messages are user-safe (generic messages, no internal details)
+  - [x] Stack traces only logged to System.debug with correlation IDs (not exposed to UI)
+  - [x] REST endpoint returns sanitized error responses with correlation IDs
 
 ---
 

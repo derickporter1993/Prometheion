@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Data_Categories__c</fullName>
+    <description>Categories of personal data processed (e.g., Contact Info, Financial, Health, etc.)</description>
+    <externalId>false</externalId>
+    <label>Data Categories</label>
+    <length>32768</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

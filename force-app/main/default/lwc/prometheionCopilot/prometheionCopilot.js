@@ -27,6 +27,7 @@ export default class PrometheionCopilot extends LightningElement {
         isUser: cmd.icon === "utility:user",
         isShield: cmd.icon === "utility:shield",
         isWarning: cmd.icon === "utility:warning",
+        ariaLabel: `Quick command: ${cmd.command}`,
       }));
     } else if (error) {
       // Set default commands if wire fails
@@ -35,7 +36,7 @@ export default class PrometheionCopilot extends LightningElement {
   }
 
   getDefaultQuickCommands() {
-    return [
+    const commands = [
       { command: "Why did my score drop?", icon: "utility:trending_down", isTrendDown: true },
       { command: "Show me risky Flows", icon: "utility:flow", isFlow: true },
       { command: "Generate HIPAA evidence", icon: "utility:file", isFile: true },
@@ -43,6 +44,10 @@ export default class PrometheionCopilot extends LightningElement {
       { command: "SOC2 compliance status", icon: "utility:shield", isShield: true },
       { command: "Show recent violations", icon: "utility:warning", isWarning: true },
     ];
+    return commands.map((cmd) => ({
+      ...cmd,
+      ariaLabel: `Quick command: ${cmd.command}`,
+    }));
   }
 
   get showWelcome() {
@@ -54,24 +59,44 @@ export default class PrometheionCopilot extends LightningElement {
   }
 
   get messageList() {
-    return this.messages.map((msg) => ({
-      ...msg,
-      isUser: msg.role === "user",
-      isAssistant: msg.role === "assistant",
-      containerClass: "message-wrapper",
-      hasEvidence:
-        msg.copilotResponse &&
-        msg.copilotResponse.evidence &&
-        msg.copilotResponse.evidence.length > 0,
-      hasActions:
-        msg.copilotResponse &&
-        msg.copilotResponse.actions &&
-        msg.copilotResponse.actions.length > 0,
-      evidenceList: msg.copilotResponse?.evidence?.map((ev) => ({
-        ...ev,
-        riskClass: this.getRiskClass(ev.riskScore),
-      })),
-    }));
+    return this.messages.map((msg) => {
+      const isUser = msg.role === "user";
+      const isAssistant = msg.role === "assistant";
+      return {
+        ...msg,
+        isUser,
+        isAssistant,
+        containerClass: "message-wrapper",
+        ariaLabel: isUser ? `You said: ${msg.content}` : `Prometheion responded: ${msg.content}`,
+        hasEvidence:
+          msg.copilotResponse &&
+          msg.copilotResponse.evidence &&
+          msg.copilotResponse.evidence.length > 0,
+        hasActions:
+          msg.copilotResponse &&
+          msg.copilotResponse.actions &&
+          msg.copilotResponse.actions.length > 0,
+        evidenceList: msg.copilotResponse?.evidence?.map((ev) => ({
+          ...ev,
+          riskClass: this.getRiskClass(ev.riskScore),
+          ariaLabel: `${ev.entityType}: ${ev.description}${ev.riskScore ? `, Risk score ${ev.riskScore} out of 10` : ""}`,
+          entityTypeAriaLabel: `Entity type: ${ev.entityType}`,
+          riskAriaLabel: ev.riskScore ? `Risk score: ${ev.riskScore} out of 10` : "",
+          frameworkAriaLabel: ev.framework ? `Framework: ${ev.framework}` : "",
+        })),
+        copilotResponse: msg.copilotResponse
+          ? {
+              ...msg.copilotResponse,
+              actions: msg.copilotResponse.actions?.map((action) => ({
+                ...action,
+                ariaLabel: action.canAutoFix
+                  ? `${action.label} - Auto-fix available`
+                  : action.label,
+              })),
+            }
+          : null,
+      };
+    });
   }
 
   getRiskClass(riskScore) {
@@ -151,6 +176,13 @@ export default class PrometheionCopilot extends LightningElement {
     const command = event.currentTarget.dataset.command;
     this.query = command;
     this.handleSubmit();
+  }
+
+  handleQuickCommandKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.handleQuickCommand(event);
+    }
   }
 
   addMessage(role, content, copilotResponse = null) {

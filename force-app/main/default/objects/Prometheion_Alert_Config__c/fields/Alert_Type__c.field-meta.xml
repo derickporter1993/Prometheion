@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alert_Type__c</fullName>
+    <description>Type of event that triggers this alert</description>
+    <externalId>false</externalId>
+    <label>Alert Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Login</fullName>
+                <default>false</default>
+                <label>Login</label>
+            </value>
+            <value>
+                <fullName>LoginAs</fullName>
+                <default>false</default>
+                <label>LoginAs</label>
+            </value>
+            <value>
+                <fullName>ReportExport</fullName>
+                <default>false</default>
+                <label>Report Export</label>
+            </value>
+            <value>
+                <fullName>API</fullName>
+                <default>false</default>
+                <label>API</label>
+            </value>
+            <value>
+                <fullName>PermissionChange</fullName>
+                <default>false</default>
+                <label>Permission Change</label>
+            </value>
+            <value>
+                <fullName>DataExport</fullName>
+                <default>false</default>
+                <label>Data Export</label>
+            </value>
+            <value>
+                <fullName>Compliance</fullName>
+                <default>false</default>
+                <label>Compliance</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

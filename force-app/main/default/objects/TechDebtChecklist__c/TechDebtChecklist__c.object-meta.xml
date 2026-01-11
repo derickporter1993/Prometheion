@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tech Debt Checklist</label>
+    <pluralLabel>Tech Debt Checklists</pluralLabel>
+    <nameField>
+        <type>Text</type>
+        <label>Checklist Item Name</label>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableReports>true</enableReports>
+    <enableHistory>true</enableHistory>
+    <enableSearch>true</enableSearch>
+
+    <!-- Fields -->
+    <fields>
+        <fullName>TechDebt__c</fullName>
+        <label>Tech Debt</label>
+        <type>Lookup</type>
+        <referenceTo>TechDebt__c</referenceTo>
+        <relationshipLabel>Checklist Items</relationshipLabel>
+        <relationshipName>ChecklistItems</relationshipName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <required>true</required>
+    </fields>
+
+    <fields>
+        <fullName>Item__c</fullName>
+        <label>Item</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+    </fields>
+
+    <fields>
+        <fullName>IsRequired__c</fullName>
+        <label>Is Required</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+    </fields>
+
+    <fields>
+        <fullName>IsComplete__c</fullName>
+        <label>Is Complete</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+    </fields>
+
+    <validationRules>
+        <fullName>RequireItemName</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Item__c)</errorConditionFormula>
+        <errorMessage>Item is required.</errorMessage>
+    </validationRules>
+
+    <!-- List View -->
+    <listViews>
+        <fullName>All</fullName>
+        <label>All</label>
+        <filterScope>Everything</filterScope>
+        <columns>NAME</columns>
+        <columns>TechDebt__c</columns>
+        <columns>Item__c</columns>
+        <columns>IsRequired__c</columns>
+        <columns>IsComplete__c</columns>
+        <columns>OwnerId</columns>
+    </listViews>
+
+    <compactLayouts>
+        <fullName>Checklist_Compact</fullName>
+        <label>Checklist Compact</label>
+        <fields>TechDebt__c</fields>
+        <fields>Item__c</fields>
+        <fields>IsRequired__c</fields>
+        <fields>IsComplete__c</fields>
+    </compactLayouts>
+</CustomObject>

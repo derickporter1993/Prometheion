@@ -42,4 +42,84 @@ private class PrometheionGraphIndexerTest {
         }
         Test.stopTest();
     }
+    
+    @IsTest
+    static void testIndexChange_InvalidFramework() {
+        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'TestPS' LIMIT 1];
+        Test.startTest();
+        try {
+            PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'INVALID_FRAMEWORK');
+            System.assert(false, 'Should have thrown exception for invalid framework');
+        } catch (Exception e) {
+            System.assert(e.getMessage().contains('Unsupported framework'), 'Expected framework validation error');
+        }
+        Test.stopTest();
+    }
+    
+    @IsTest
+    static void testIndexChangeBulk_MultiplePermissionSets() {
+        // Create 200+ permission sets for bulk testing
+        List<PermissionSet> permSets = new List<PermissionSet>();
+        for (Integer i = 0; i < 200; i++) {
+            permSets.add(new PermissionSet(
+                Name = 'BulkPS' + i,
+                Label = 'Bulk Test PS ' + i
+            ));
+        }
+        insert permSets;
+        
+        // Create bulk input
+        List<PrometheionGraphIndexer.IndexInput> inputs = new List<PrometheionGraphIndexer.IndexInput>();
+        for (PermissionSet ps : permSets) {
+            PrometheionGraphIndexer.IndexInput input = new PrometheionGraphIndexer.IndexInput();
+            input.entityType = 'PERMISSION_SET';
+            input.entityId = ps.Id;
+            input.framework = 'SOC2';
+            inputs.add(input);
+        }
+        
+        Test.startTest();
+        Map<String, String> results = PrometheionGraphIndexer.indexChangeBulk(inputs);
+        Test.stopTest();
+        
+        System.assertEquals(200, results.size(), 'Should process all 200 records');
+        
+        // Verify nodes were created
+        List<Prometheion_Compliance_Graph__b> nodes = [
+            SELECT Graph_Node_Id__c FROM Prometheion_Compliance_Graph__b
+            WHERE Entity_Type__c = 'PERMISSION_SET'
+        ];
+        System.assertEquals(200, nodes.size(), 'Should create 200 graph nodes');
+    }
+    
+    @IsTest
+    static void testIndexChangeBulk_MixedFrameworks() {
+        // Create test permission sets
+        List<PermissionSet> permSets = new List<PermissionSet>();
+        for (Integer i = 0; i < 30; i++) {
+            permSets.add(new PermissionSet(
+                Name = 'MixedPS' + i,
+                Label = 'Mixed Test PS ' + i
+            ));
+        }
+        insert permSets;
+        
+        // Create inputs with different frameworks
+        List<String> frameworks = new List<String>{'SOC2', 'HIPAA', 'GDPR', 'NIST', 'PCI_DSS'};
+        List<PrometheionGraphIndexer.IndexInput> inputs = new List<PrometheionGraphIndexer.IndexInput>();
+        Integer fwIndex = 0;
+        for (PermissionSet ps : permSets) {
+            PrometheionGraphIndexer.IndexInput input = new PrometheionGraphIndexer.IndexInput();
+            input.entityType = 'PERMISSION_SET';
+            input.entityId = ps.Id;
+            input.framework = frameworks[Math.mod(fwIndex++, frameworks.size())];
+            inputs.add(input);
+        }
+        
+        Test.startTest();
+        Map<String, String> results = PrometheionGraphIndexer.indexChangeBulk(inputs);
+        Test.stopTest();
+        
+        System.assertEquals(30, results.size(), 'Should process all 30 records with mixed frameworks');
+    }
 }
