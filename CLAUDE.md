@@ -412,6 +412,55 @@ jest.mock("c/pollingManager", () => {
 // RIGHT: expect(element.shadowRoot.querySelector("lightning-datatable")).not.toBeNull()
 ```
 
+## Git Workflow (MANDATORY)
+
+### Before Starting Work
+
+```bash
+# Always sync with remote first
+git fetch origin
+git pull origin <current-branch>
+```
+
+### After Making Changes (ALWAYS DO THIS)
+
+```bash
+# 1. Check what changed
+git status
+
+# 2. Run quality checks
+npm run lint
+npm run test:unit
+npm run fmt
+
+# 3. Stage and commit
+git add -A
+git commit -m "type: Description of changes"
+
+# 4. Push to remote
+git push -u origin <current-branch>
+
+# 5. Verify sync
+git status
+```
+
+### Commit Message Format
+
+```
+type: Brief description
+
+Types: feat, fix, test, docs, refactor, style
+```
+
+### IMPORTANT
+
+- ALWAYS commit and push after completing work
+- ALWAYS pull before starting new work
+- NEVER leave uncommitted changes
+- Check that local and remote are in sync before ending session
+
+---
+
 ### Legacy Note
 
 The project was previously named "Sentinel" - some references may still exist in configuration files. The current branding is **Prometheion**.
