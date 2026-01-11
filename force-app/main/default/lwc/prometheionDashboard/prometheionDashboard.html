@@ -24,12 +24,8 @@
       <div class="header-actions">
         <button
           class="refresh-btn"
-          onclick="
-            {
-              refreshData;
-            }
-          "
-          disabled="{isLoading}"
+          onclick={refreshData}
+          disabled={isLoading}
           aria-label="Refresh dashboard data"
           title="Refresh dashboard data"
         >
@@ -38,7 +34,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            class="{refreshIconClass}"
+            class={refreshIconClass}
             aria-hidden="true"
           >
             <path d="M23 4V10H17M1 20V14H7" />
@@ -54,14 +50,14 @@
     <!-- Main Score Card -->
     <div class="main-score-section">
       <div class="score-ring-container">
-        <div class="score-ring" style="{scoreRingStyle}">
+        <div class="score-ring" style={scoreRingStyle}>
           <div class="score-inner">
             <span class="score-value">{displayScore}</span>
             <span class="score-label">Overall Score</span>
           </div>
         </div>
         <div class="score-rating">
-          <span class="{ratingBadgeClass}">{rating}</span>
+          <span class={ratingBadgeClass}>{rating}</span>
         </div>
       </div>
 
@@ -71,31 +67,23 @@
           <h3 class="section-title">Framework Compliance</h3>
           <lightning-combobox
             label="Filter by Framework"
-            value="{selectedFramework}"
-            options="{frameworkOptions}"
-            onchange="
-              {
-                handleFrameworkFilter;
-              }
-            "
+            value={selectedFramework}
+            options={frameworkOptions}
+            onchange={handleFrameworkFilter}
             class="framework-filter"
           ></lightning-combobox>
         </div>
-        <template lwc:if="{showDrillDown}">
+        <template lwc:if={showDrillDown}>
           <div class="drill-down-view">
             <button
               class="back-button"
-              onclick="
-                {
-                  handleBackToAll;
-                }
-              "
+              onclick={handleBackToAll}
               aria-label="Back to all frameworks view"
               title="Back to all frameworks view"
             >
               ← Back to All Frameworks
             </button>
-            <template lwc:if="{selectedFrameworkDetails}">
+            <template lwc:if={selectedFrameworkDetails}>
               <div class="framework-detail-card">
                 <h4>{selectedFrameworkDetails.name}</h4>
                 <p class="framework-description">{selectedFrameworkDetails.description}</p>
@@ -106,32 +94,28 @@
                 <div class="progress-bar-large">
                   <div
                     class="progress-fill-large"
-                    style="{selectedFrameworkDetails.progressStyle}"
+                    style={selectedFrameworkDetails.progressStyle}
                   ></div>
                 </div>
               </div>
             </template>
           </div>
         </template>
-        <template lwc:if="{showFrameworkGrid}">
+        <template lwc:if={showFrameworkGrid}>
           <div class="framework-grid">
-            <template for:each="{frameworkList}" for:item="fw">
+            <template for:each={frameworkList} for:item="fw">
               <div
-                key="{fw.name}"
+                key={fw.name}
                 class="framework-card"
-                data-framework="{fw.key}"
-                onclick="
-                  {
-                    handleFrameworkClick;
-                  }
-                "
+                data-framework={fw.key}
+                onclick={handleFrameworkClick}
               >
                 <div class="framework-header">
                   <span class="framework-name">{fw.name}</span>
-                  <span class="{fw.scoreClass}">{fw.score}%</span>
+                  <span class={fw.scoreClass}>{fw.score}%</span>
                 </div>
                 <div class="progress-bar">
-                  <div class="progress-fill" style="{fw.progressStyle}"></div>
+                  <div class="progress-fill" style={fw.progressStyle}></div>
                 </div>
                 <p class="framework-description-small">{fw.description}</p>
               </div>
@@ -156,18 +140,18 @@
         Score Breakdown
       </h3>
       <div class="factors-grid">
-        <template for:each="{factors}" for:item="factor">
-          <div key="{factor.name}" class="factor-card">
+        <template for:each={factors} for:item="factor">
+          <div key={factor.name} class="factor-card">
             <div class="factor-header">
               <span class="factor-name">{factor.name}</span>
-              <span class="{factor.statusClass}">{factor.status}</span>
+              <span class={factor.statusClass}>{factor.status}</span>
             </div>
             <div class="factor-score">
               <span class="factor-value">{factor.score}</span>
               <span class="factor-max">/100</span>
             </div>
             <div class="factor-bar">
-              <div class="factor-fill" style="{factor.barStyle}"></div>
+              <div class="factor-fill" style={factor.barStyle}></div>
             </div>
             <p class="factor-detail">{factor.detail}</p>
             <div class="factor-weight">
@@ -180,7 +164,7 @@
     </div>
 
     <!-- Top Risks -->
-    <template lwc:if="{hasRisks}">
+    <template lwc:if={hasRisks}>
       <div class="risks-section">
         <h3 class="section-title">
           <svg
@@ -198,10 +182,10 @@
           Top Risks
         </h3>
         <div class="risks-list">
-          <template for:each="{filteredTopRisks}" for:item="risk">
-            <div key="{risk.nodeId}" class="risk-card">
-              <div class="risk-severity" data-severity="{risk.severity}">
-                <span class="{risk.severityClass}">{risk.severity}</span>
+          <template for:each={filteredTopRisks} for:item="risk">
+            <div key={risk.nodeId} class="risk-card">
+              <div class="risk-severity" data-severity={risk.severity}>
+                <span class={risk.severityClass}>{risk.severity}</span>
               </div>
               <div class="risk-content">
                 <h4 class="risk-title">{risk.title}</h4>
@@ -210,14 +194,10 @@
                   <span class="risk-framework">{risk.framework}</span>
                   <button
                     class="risk-action"
-                    data-node-id="{risk.nodeId}"
-                    onclick="
-                      {
-                        handleRiskClick;
-                      }
-                    "
-                    aria-label="{risk.viewDetailsLabel}"
-                    title="{risk.viewDetailsLabel}"
+                    data-node-id={risk.nodeId}
+                    onclick={handleRiskClick}
+                    aria-label={risk.viewDetailsLabel}
+                    title={risk.viewDetailsLabel}
                   >
                     View Details →
                   </button>
@@ -230,7 +210,7 @@
     </template>
 
     <!-- Audit Packages Section -->
-    <template lwc:if="{hasAuditPackages}">
+    <template lwc:if={hasAuditPackages}>
       <div class="audit-packages-section">
         <h3 class="section-title">
           <svg
@@ -248,16 +228,12 @@
           Recent Audit Packages
         </h3>
         <div class="audit-packages-list">
-          <template for:each="{auditPackages}" for:item="pkg">
+          <template for:each={auditPackages} for:item="pkg">
             <div
-              key="{pkg.id}"
+              key={pkg.id}
               class="audit-package-card"
-              data-package-id="{pkg.id}"
-              onclick="
-                {
-                  handleAuditPackageClick;
-                }
-              "
+              data-package-id={pkg.id}
+              onclick={handleAuditPackageClick}
             >
               <div class="package-header">
                 <span class="package-name">{pkg.packageName}</span>
@@ -271,7 +247,7 @@
               </div>
               <div class="package-footer">
                 <span class="package-created">Created: {formatDate(pkg.createdDate)}</span>
-                <span class="package-created-by" lwc:if="{pkg.createdBy}">by {pkg.createdBy}</span>
+                <span class="package-created-by" lwc:if={pkg.createdBy}>by {pkg.createdBy}</span>
               </div>
             </div>
           </template>
@@ -283,11 +259,7 @@
     <div class="actions-section">
       <button
         class="action-btn primary"
-        onclick="
-          {
-            handleGenerateSoc2;
-          }
-        "
+        onclick={handleGenerateSoc2}
         aria-label="Generate SOC2 Report"
         title="Generate SOC2 Report"
       >
@@ -307,11 +279,7 @@
       </button>
       <button
         class="action-btn secondary"
-        onclick="
-          {
-            handleGenerateHipaa;
-          }
-        "
+        onclick={handleGenerateHipaa}
         aria-label="Generate HIPAA Report"
         title="Generate HIPAA Report"
       >
@@ -330,7 +298,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <template lwc:if="{isLoading}">
+    <template lwc:if={isLoading}>
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <span>Calculating compliance scores...</span>
