@@ -201,6 +201,7 @@ sf apex run test \
 ### Issue: Permission Sets Not Available
 
 **Solution**: Verify permission sets were deployed:
+
 ```bash
 sf project deploy start --source-dir force-app/main/default/permissionsets -o prometheion-demo
 ```
@@ -208,20 +209,23 @@ sf project deploy start --source-dir force-app/main/default/permissionsets -o pr
 ### Issue: Custom Metadata Missing
 
 **Solution**: Redeploy custom metadata:
+
 ```bash
 sf project deploy start --source-dir force-app/main/default/customMetadata -o prometheion-demo
 ```
 
 ### Issue: No Data in Dashboards
 
-**Solution**: 
+**Solution**:
+
 1. Verify sample data was created
 2. Check that data is within date ranges used by dashboards
 3. Verify permission sets allow read access to custom objects
 
 ### Issue: AI Features Not Working
 
-**Solution**: 
+**Solution**:
+
 1. Verify Named Credentials are configured
 2. Check API endpoint is accessible
 3. Review debug logs for API errors
@@ -280,6 +284,7 @@ sf project deploy start \
 ## Support
 
 For issues or questions:
+
 - Review logs: `sf apex get log -o prometheion-demo`
 - Check deployment status: `sf project deploy report -o prometheion-demo`
 - Review documentation: `docs/` directory

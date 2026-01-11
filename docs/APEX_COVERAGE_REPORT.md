@@ -77,6 +77,7 @@ sf apex run test \
 ### Step 6: Verify Coverage Threshold
 
 The output will show:
+
 - **Total Coverage**: Must be ≥75%
 - **Class-by-Class Coverage**: Each production class should have ≥75% coverage
 - **Test Results**: All tests must pass
@@ -85,11 +86,11 @@ The output will show:
 
 ### Coverage Targets
 
-| Category | Target | Minimum |
-|----------|--------|---------|
-| Overall Coverage | 85%+ | 75% |
-| Production Classes | 85%+ | 75% |
-| Test Classes | N/A | N/A (not counted) |
+| Category           | Target | Minimum           |
+| ------------------ | ------ | ----------------- |
+| Overall Coverage   | 85%+   | 75%               |
+| Production Classes | 85%+   | 75%               |
+| Test Classes       | N/A    | N/A (not counted) |
 
 ### Coverage by Class
 
@@ -108,6 +109,7 @@ After running tests, verify coverage for key classes:
 If any class has <75% coverage:
 
 1. Identify untested methods:
+
    ```bash
    # View detailed coverage for specific class
    sf apex run test \
@@ -197,7 +199,7 @@ Coverage checks should be integrated into CI/CD pipeline:
       --code-coverage \
       --result-format json \
       --output-file coverage.json
-    
+
     # Verify coverage threshold
     node scripts/verifyCoverage.js coverage.json 75
 ```

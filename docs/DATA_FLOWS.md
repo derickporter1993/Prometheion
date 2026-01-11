@@ -22,12 +22,12 @@ graph TD
     D -->|SOC2| F[SOC2ComplianceService]
     D -->|GDPR| G[GDPRComplianceService]
     D -->|PCI-DSS| H[PCIDSSComplianceService]
-    
+
     E --> I[PrometheionComplianceScorer]
     F --> I
     G --> I
     H --> I
-    
+
     I --> J[Query Salesforce Metadata]
     J --> K[WITH SECURITY_ENFORCED]
     K --> L[Calculate Compliance Score]
@@ -35,13 +35,14 @@ graph TD
     M --> N[Store Compliance_Score__c]
     N --> O[Store Compliance_Gap__c]
     O --> P[Update Dashboard UI]
-    
+
     style K fill:#90EE90
     style N fill:#87CEEB
     style O fill:#87CEEB
 ```
 
 **Security Points:**
+
 - All SOQL queries use `WITH SECURITY_ENFORCED`
 - CRUD/FLS checks via `PrometheionSecurityUtils` before DML
 - Results stripped of inaccessible fields before returning to UI
@@ -58,7 +59,7 @@ sequenceDiagram
     participant Security as PrometheionSecurityUtils
     participant API as Claude API (Named Credential)
     participant DB as Salesforce Database
-    
+
     User->>LWC: Ask compliance question
     LWC->>Controller: askCopilot(query)
     Controller->>Security: Validate user access
@@ -75,6 +76,7 @@ sequenceDiagram
 ```
 
 **Security Points:**
+
 - All queries use `WITH SECURITY_ENFORCED`
 - Data stripped before sending to external API
 - Named Credential for secure API authentication
@@ -91,21 +93,21 @@ graph LR
     B -->|Teams| D[TeamsNotifier]
     B -->|PagerDuty| E[PagerDutyIntegration]
     B -->|Claude AI| F[PrometheionComplianceCopilotService]
-    
+
     C --> G[Named Credential: Slack_Webhook]
     D --> H[Named Credential: Teams_Webhook]
     E --> I[Named Credential: PagerDuty_API]
     F --> J[Named Credential: Prometheion_Claude_API]
-    
+
     G --> K[External Service]
     H --> K
     I --> K
     J --> K
-    
+
     K --> L[Response Handler]
     L --> M[Error Logging]
     L --> N[Success Confirmation]
-    
+
     style G fill:#FFD700
     style H fill:#FFD700
     style I fill:#FFD700
@@ -113,6 +115,7 @@ graph LR
 ```
 
 **Security Points:**
+
 - All external callouts use Named Credentials (no hardcoded endpoints)
 - Sensitive data stripped before transmission
 - Error handling prevents data leakage
@@ -139,7 +142,7 @@ graph TD
     M --> N[Link to Audit Package]
     N --> O[Prometheion_Audit_Package__c]
     O --> P[Generate Audit Report]
-    
+
     style E fill:#90EE90
     style H fill:#87CEEB
     style K fill:#87CEEB
@@ -148,6 +151,7 @@ graph TD
 ```
 
 **Security Points:**
+
 - All queries use `WITH SECURITY_ENFORCED` or `WITH USER_MODE`
 - Big Object queries use system context (documented `without sharing`)
 - Evidence items respect FLS before storage
@@ -167,26 +171,27 @@ graph TD
     F -->|GDPR| G[PrometheionGDPRDataErasureService]
     F -->|CCPA| H[PrometheionCCPADataInventoryService]
     F -->|GLBA| I[PrometheionGLBAPrivacyNoticeService]
-    
+
     G --> J[Validate Erasure Request]
     H --> J
     I --> J
-    
+
     J --> K[Check for Blockers]
     K --> L{Can Erase?}
     L -->|Yes| M[Delete Records]
     L -->|No| N[Log Blocker]
-    
+
     M --> O[Log Erasure Event]
     N --> P[Notify User]
     O --> Q[Audit Trail Updated]
-    
+
     style E fill:#90EE90
     style J fill:#FFD700
     style M fill:#FF6B6B
 ```
 
 **Security Points:**
+
 - All queries use `WITH SECURITY_ENFORCED`
 - Erasure requests validated before processing
 - Audit trail maintained for compliance
@@ -203,7 +208,7 @@ sequenceDiagram
     participant Apex as Apex Controller
     participant Security as PrometheionSecurityUtils
     participant DB as Salesforce Database
-    
+
     User->>LWC: Request data
     LWC->>Apex: @AuraEnabled method
     Apex->>Security: validateCRUDAccess()
@@ -222,6 +227,7 @@ sequenceDiagram
 ```
 
 **Security Points:**
+
 - All controllers use `with sharing`
 - CRUD/FLS validation before queries
 - Results stripped before returning to UI
@@ -284,13 +290,13 @@ req.setMethod('POST');
 
 ## Data Flow Summary
 
-| Flow | Security Enforcement | Data Validation | External Integration |
-|------|---------------------|-----------------|---------------------|
-| Compliance Scoring | ✅ WITH SECURITY_ENFORCED | ✅ Object whitelisting | ❌ None |
-| AI Integration | ✅ WITH SECURITY_ENFORCED | ✅ Input sanitization | ✅ Named Credential |
-| External Callouts | ✅ N/A (outbound) | ✅ Data stripping | ✅ Named Credentials |
-| Audit Trail | ✅ WITH SECURITY_ENFORCED | ✅ Correlation IDs | ❌ None |
-| Data Retention | ✅ WITH SECURITY_ENFORCED | ✅ Erasure validation | ❌ None |
+| Flow               | Security Enforcement      | Data Validation        | External Integration |
+| ------------------ | ------------------------- | ---------------------- | -------------------- |
+| Compliance Scoring | ✅ WITH SECURITY_ENFORCED | ✅ Object whitelisting | ❌ None              |
+| AI Integration     | ✅ WITH SECURITY_ENFORCED | ✅ Input sanitization  | ✅ Named Credential  |
+| External Callouts  | ✅ N/A (outbound)         | ✅ Data stripping      | ✅ Named Credentials |
+| Audit Trail        | ✅ WITH SECURITY_ENFORCED | ✅ Correlation IDs     | ❌ None              |
+| Data Retention     | ✅ WITH SECURITY_ENFORCED | ✅ Erasure validation  | ❌ None              |
 
 ---
 
@@ -312,6 +318,7 @@ req.setMethod('POST');
 6. **Error handling** prevents sensitive data leakage
 
 For detailed security implementation, see:
+
 - `PrometheionSecurityUtils.cls` - Centralized security utilities
 - `docs/SECURITY.md` - Security documentation
 - `CLAUDE.md` - Development guidelines

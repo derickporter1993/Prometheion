@@ -701,7 +701,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 - [ ] **DAST scanning completed (if external endpoints exist):**
   - [ ] OWASP ZAP scan
   - [ ] Burp Suite scan
-  - [ ] Other: **************\_\_**************
+  - [ ] Other: ******\*\*******\_\_******\*\*******
 - [ ] DAST report attached
 
 **Status:** ⚠️ **PARTIAL** - No external endpoint testing documented
@@ -910,11 +910,11 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ---
 
-**Engineering Lead:** ************\_\_************ **Date:** ****\_\_****
+**Engineering Lead:** ****\*\*\*\*****\_\_****\*\*\*\***** **Date:** \***\*\_\_\*\***
 
-**Security / AppSec:** ************\_************ **Date:** ****\_\_****
+**Security / AppSec:** ****\*\*\*\*****\_****\*\*\*\***** **Date:** \***\*\_\_\*\***
 
-**Product Owner:** ************\_\_\_\_************ **Date:** ****\_\_****
+**Product Owner:** ****\*\*\*\*****\_\_\_\_****\*\*\*\***** **Date:** \***\*\_\_\*\***
 
 ---
 
