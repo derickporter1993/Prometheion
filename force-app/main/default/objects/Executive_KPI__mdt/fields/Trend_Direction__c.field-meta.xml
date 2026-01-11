@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trend_Direction__c</fullName>
+    <description>Direction that indicates good performance (higher_is_better or lower_is_better)</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Trend Direction</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>higher_is_better</fullName>
+                <default>true</default>
+                <label>Higher is Better</label>
+            </value>
+            <value>
+                <fullName>lower_is_better</fullName>
+                <default>false</default>
+                <label>Lower is Better</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

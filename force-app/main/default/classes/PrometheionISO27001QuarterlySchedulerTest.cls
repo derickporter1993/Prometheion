@@ -1,13 +1,13 @@
 /**
- * ISO27001QuarterlyReviewSchedulerTest
+ * PrometheionISO27001QuarterlySchedulerTest
  * 
- * Test class for ISO27001QuarterlyReviewScheduler
+ * Test class for PrometheionISO27001QuarterlyScheduler
  * 
  * @author Prometheion
  * @version 1.0
  */
 @IsTest
-private class ISO27001QuarterlyReviewSchedulerTest {
+private class PrometheionISO27001QuarterlySchedulerTest {
     
     @TestSetup
     static void setupTestData() {
@@ -46,7 +46,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
     static void testQuarterlyReviewExecution() {
         Test.startTest();
         
-        ISO27001QuarterlyReviewScheduler scheduler = new ISO27001QuarterlyReviewScheduler('quarterly');
+        PrometheionISO27001QuarterlyScheduler scheduler = new PrometheionISO27001QuarterlyScheduler('quarterly');
         String jobId = System.schedule('Test Quarterly Review', '0 0 12 1 1 ?', scheduler);
         
         // Execute synchronously for testing
@@ -68,7 +68,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
     static void testPrivilegedReviewExecution() {
         Test.startTest();
         
-        ISO27001QuarterlyReviewScheduler scheduler = new ISO27001QuarterlyReviewScheduler('privileged');
+        PrometheionISO27001QuarterlyScheduler scheduler = new PrometheionISO27001QuarterlyScheduler('privileged');
         scheduler.execute(null);
         
         Test.stopTest();
@@ -88,7 +88,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
     static void testScheduleQuarterly() {
         Test.startTest();
         
-        String jobId = ISO27001QuarterlyReviewScheduler.scheduleQuarterly();
+        String jobId = PrometheionISO27001QuarterlyScheduler.scheduleQuarterly();
         
         Test.stopTest();
         
@@ -108,7 +108,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
     static void testScheduleMonthlyPrivileged() {
         Test.startTest();
         
-        String jobId = ISO27001QuarterlyReviewScheduler.scheduleMonthlyPrivileged();
+        String jobId = PrometheionISO27001QuarterlyScheduler.scheduleMonthlyPrivileged();
         
         Test.stopTest();
         
@@ -119,7 +119,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
     static void testDefaultConstructor() {
         Test.startTest();
         
-        ISO27001QuarterlyReviewScheduler scheduler = new ISO27001QuarterlyReviewScheduler();
+        PrometheionISO27001QuarterlyScheduler scheduler = new PrometheionISO27001QuarterlyScheduler();
         
         Test.stopTest();
         
@@ -131,7 +131,7 @@ private class ISO27001QuarterlyReviewSchedulerTest {
         // This test verifies error handling
         Test.startTest();
         
-        ISO27001QuarterlyReviewScheduler scheduler = new ISO27001QuarterlyReviewScheduler('invalid');
+        PrometheionISO27001QuarterlyScheduler scheduler = new PrometheionISO27001QuarterlyScheduler('invalid');
         // Should not throw exception
         try {
             scheduler.execute(null);

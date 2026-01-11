@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Executive KPI</label>
+    <pluralLabel>Executive KPIs</pluralLabel>
+    <visibility>Public</visibility>
+    <description>Executive KPI metrics configuration for the Prometheion Executive KPI Dashboard</description>
+</CustomObject>

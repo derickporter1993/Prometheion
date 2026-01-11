@@ -20,12 +20,27 @@ export default class RiskHeatmap extends LightningElement {
     return matrix;
   }
 
-  get riskClass() {
-    return (severity) => {
-      if (severity === "CRITICAL") return "risk-critical";
-      if (severity === "HIGH") return "risk-high";
-      if (severity === "MEDIUM") return "risk-medium";
-      return "risk-low";
-    };
+  get risksWithClasses() {
+    if (!this.risks || this.risks.length === 0) {
+      return [];
+    }
+    return this.risks.map((risk) => {
+      let severityClass = "risk-low";
+      if (risk.severity === "CRITICAL") {
+        severityClass = "risk-critical";
+      } else if (risk.severity === "HIGH") {
+        severityClass = "risk-high";
+      } else if (risk.severity === "MEDIUM") {
+        severityClass = "risk-medium";
+      }
+      return {
+        ...risk,
+        combinedClass: `slds-box slds-text-align_center ${severityClass}`,
+      };
+    });
+  }
+
+  get hasRisks() {
+    return this.risks && this.risks.length > 0;
   }
 }

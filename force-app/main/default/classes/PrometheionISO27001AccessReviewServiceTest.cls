@@ -11,7 +11,7 @@
  * Target Coverage: 90%+
  */
 @IsTest
-private class ISO27001AccessReviewServiceTest {
+private class PrometheionISO27001AccessReviewServiceTest {
     
     @TestSetup
     static void setupTestData() {
@@ -257,7 +257,7 @@ private class ISO27001AccessReviewServiceTest {
             }
         }
     }
-    
+
     // Helper method to create limited user for permission testing
     private static User createLimitedUser() {
         Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];

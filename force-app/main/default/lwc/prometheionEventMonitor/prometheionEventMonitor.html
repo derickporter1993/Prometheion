@@ -1,7 +1,7 @@
 <template>
   <lightning-card title="Prometheion Event Monitor" icon-name="standard:event">
     <div class="slds-var-p-around_medium">
-      <template if:true={hasEvents}>
+      <template lwc:if={hasEvents}>
         <table
           class="slds-table slds-table_cell-buffer slds-table_bordered"
           role="table"
@@ -29,7 +29,7 @@
           </tbody>
         </table>
       </template>
-      <template if:false={hasEvents}>
+      <template lwc:if={!hasEvents}>
         <p class="slds-text-align_center slds-var-p-around_medium">
           No events received yet. Waiting for events...
         </p>

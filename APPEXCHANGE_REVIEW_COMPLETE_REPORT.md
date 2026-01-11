@@ -17,16 +17,16 @@
 
 ### Quick Stats
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| **LWC Test Pass Rate** | 100% (168/168) | 95%+ | ✅ **EXCEEDS** |
-| **LWC Component Coverage** | 18% (6/33) | 75%+ | ❌ **CRITICAL GAP** |
-| **Code Formatting** | 100% | 100% | ✅ **PASS** |
-| **ESLint Compliance** | 100% | 100% | ✅ **PASS** |
-| **Security Enforcement (SOQL)** | 108 instances | Required | ✅ **EXCELLENT** |
-| **Sharing Keywords** | 107/122 classes | Required | ✅ **GOOD** |
-| **CI/CD Pipeline** | 2 systems, 10 jobs | Functional | ✅ **OPERATIONAL** |
-| **Permission Sets** | 5 defined | 4+ recommended | ✅ **GOOD** |
+| Metric                          | Current            | Target         | Status              |
+| ------------------------------- | ------------------ | -------------- | ------------------- |
+| **LWC Test Pass Rate**          | 100% (168/168)     | 95%+           | ✅ **EXCEEDS**      |
+| **LWC Component Coverage**      | 18% (6/33)         | 75%+           | ❌ **CRITICAL GAP** |
+| **Code Formatting**             | 100%               | 100%           | ✅ **PASS**         |
+| **ESLint Compliance**           | 100%               | 100%           | ✅ **PASS**         |
+| **Security Enforcement (SOQL)** | 108 instances      | Required       | ✅ **EXCELLENT**    |
+| **Sharing Keywords**            | 107/122 classes    | Required       | ✅ **GOOD**         |
+| **CI/CD Pipeline**              | 2 systems, 10 jobs | Functional     | ✅ **OPERATIONAL**  |
+| **Permission Sets**             | 5 defined          | 4+ recommended | ✅ **GOOD**         |
 
 ---
 
@@ -58,16 +58,18 @@
 
 ### ❌ **CRITICAL ISSUES**
 
-1. **Missing Metadata Type: Executive_KPI__mdt** ⚠️ **DEPLOYMENT BLOCKER**
+1. **Missing Metadata Type: Executive_KPI\_\_mdt** ⚠️ **DEPLOYMENT BLOCKER**
    - **Location:** Referenced in `PrometheionExecutiveKPIController.cls`
    - **Impact:** Deployment will fail in fresh orgs
    - **Code Reference:** `PrometheionExecutiveKPIController.cls:29-32`
+
    ```apex
    List<Executive_KPI__mdt> kpiConfigs = [
        SELECT Id, Label, ...
        FROM Executive_KPI__mdt
    ];
    ```
+
    - **Required Action:** Create `Executive_KPI__mdt` custom metadata type definition with required fields
    - **Files to Create:**
      - `force-app/main/default/objects/Executive_KPI__mdt/Executive_KPI__mdt.object-meta.xml`
@@ -104,6 +106,7 @@
 - **Dedicated Security Utility:** `PrometheionSecurityUtils.cls` provides centralized CRUD/FLS validation
 
 **Evidence:**
+
 ```apex
 // ComplianceDashboardController.cls:44-52
 summary.recentGaps = [
@@ -118,6 +121,7 @@ summary.recentGaps = [
 ```
 
 **PrometheionSecurityUtils Implementation:**
+
 - Provides `stripInaccessibleFields()` wrapper for `Security.stripInaccessible()`
 - Supports all AccessType values: READABLE, CREATABLE, UPDATABLE, UPSERTABLE
 - Processes `SObjectAccessDecision.getRecords()` and `getRemovedFields()`
@@ -138,9 +142,10 @@ summary.recentGaps = [
   3. `PrometheionScoreCallback.cls` - REST endpoint for external callbacks
   4. `PrometheionEventPublisher.cls` - Platform Events (Salesforce best practice)
   5. `PrometheionAuditTrailPoller.cls` - Scheduled job context
-  6. *(2 others identified)*
+  6. _(2 others identified)_
 
 **Documented Justification Example:**
+
 ```apex
 // PrometheionReasoningEngine.cls:7-9
 /**
@@ -164,6 +169,7 @@ public without sharing class PrometheionReasoningEngine {
 `PrometheionDrillDownController.cls` demonstrates defense-in-depth:
 
 1. **Object Whitelisting** (lines 19-32)
+
 ```apex
 private static final Set<String> ALLOWED_OBJECTS = new Set<String>{
     'Account', 'Contact', 'Opportunity', 'Case', 'Lead', 'Task', 'Event',
@@ -173,6 +179,7 @@ private static final Set<String> ALLOWED_OBJECTS = new Set<String>{
 ```
 
 2. **Operator Whitelisting** (lines 35-37)
+
 ```apex
 private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
     '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IN', 'NOT IN', 'INCLUDES', 'EXCLUDES'
@@ -185,6 +192,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 6. **Input Sanitization**
 
 **Other Dynamic SOQL Files:**
+
 - `PrometheionComplianceAlert.cls:208`
 - `PrometheionDrillDownController.cls:75,118`
 - `PrometheionTrendController.cls:81`
@@ -212,14 +220,15 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 - **No dangerous JavaScript patterns detected**
 
 **Safe Implementation Example:**
+
 ```html
 <!-- complianceTrendChart.html:7-12 -->
 <canvas
-    lwc:dom="manual"
-    data-chart-data={chartData}
-    aria-label="Compliance trend chart showing score over time"
-    role="img"
->
+  lwc:dom="manual"
+  data-chart-data="{chartData}"
+  aria-label="Compliance trend chart showing score over time"
+  role="img"
+></canvas>
 ```
 
 **Grade: A** ✅
@@ -232,11 +241,12 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 - **REST Endpoints:** 2 total
   1. `@RestResource(urlMapping='/prometheion/score/callback')` - PrometheionScoreCallback
-  2. *(1 other identified)*
+  2. _(1 other identified)_
 
 - **@AuraEnabled Methods:** 602 total (requires validation that all are properly secured)
 
 **Recommendation:**
+
 - Audit all @AuraEnabled methods to ensure proper parameter validation
 - Verify REST endpoints have authentication/authorization checks
 - Document API authentication model for reviewers
@@ -296,6 +306,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
    - **Gap:** 57 percentage points below requirement
 
 **Untested Components (0% Coverage):**
+
 ```
 - apiUsageDashboard
 - batchJobMonitor
@@ -341,6 +352,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
    - ❌ No edge case tests (null inputs, empty lists)
 
 **Impact on AppExchange Review:**
+
 - **BLOCKER:** Cannot pass security review with <75% test coverage
 - **Estimated Timeline:** 2-3 sprints minimum to achieve 75% coverage
 - **Priority:** CRITICAL - Must be resolved before submission
@@ -360,7 +372,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 2. **GitHub Actions Configuration**
    - File: `.github/workflows/prometheion-ci.yml`
-   - Triggers: Push to main, develop, release/*, claude/*
+   - Triggers: Push to main, develop, release/_, claude/_
    - Node version: 20.17.0 (current LTS) ✅
    - Jobs run in parallel where possible
    - SARIF report generation for GitHub Security tab
@@ -371,7 +383,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
    - Resource optimization: Medium executor, parallelism=2 for ESLint
    - Dependency caching implemented
    - Workspace persistence for efficiency
-   - Nightly builds configured (cron: "0 0 * * *")
+   - Nightly builds configured (cron: "0 0 \* \* \*")
    - **Current Status:** Operational ✅
 
 4. **Pre-Commit Hooks**
@@ -390,14 +402,16 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 2. **Code Analyzer Not Using AppExchange Selectors** 🚨 **GAP**
    - **Current Command (line 71-74):**
+
    ```yaml
    sf scanner run --target "force-app/main/default/classes" \
-     --category "Security,Best Practices,Error Prone" \
-     --format table \
-     --severity-threshold 2
+   --category "Security,Best Practices,Error Prone" \
+   --format table \
+   --severity-threshold 2
    ```
 
    - **Required for AppExchange:**
+
    ```bash
    sf scanner run --target "force-app" \
      --rule-selector AppExchange \
@@ -427,17 +441,17 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ### 📊 **CI/CD Comparison Matrix**
 
-| Feature | GitHub Actions | CircleCI | Status |
-|---------|---------------|----------|--------|
-| Format Check | Non-blocking | Blocking | ⚠️ Inconsistent |
-| Lint Check | Non-blocking | Blocking | ⚠️ Inconsistent |
-| Security Scan | Non-blocking | Blocking | ⚠️ Inconsistent |
-| HTML Reports | ❌ No | ❌ No | ❌ Missing |
-| AppExchange Selectors | ❌ No | ❌ No | 🚨 **Critical** |
-| Artifact Upload | ⚠️ SARIF only | ⚠️ Table only | ⚠️ Incomplete |
-| LWC Tests | ✅ Yes | ❌ No | ✅ Partial |
-| Apex Tests | ❌ No | ❌ No | ❌ Missing |
-| Coverage Reports | ❌ No | ❌ No | ❌ Missing |
+| Feature               | GitHub Actions | CircleCI      | Status          |
+| --------------------- | -------------- | ------------- | --------------- |
+| Format Check          | Non-blocking   | Blocking      | ⚠️ Inconsistent |
+| Lint Check            | Non-blocking   | Blocking      | ⚠️ Inconsistent |
+| Security Scan         | Non-blocking   | Blocking      | ⚠️ Inconsistent |
+| HTML Reports          | ❌ No          | ❌ No         | ❌ Missing      |
+| AppExchange Selectors | ❌ No          | ❌ No         | 🚨 **Critical** |
+| Artifact Upload       | ⚠️ SARIF only  | ⚠️ Table only | ⚠️ Incomplete   |
+| LWC Tests             | ✅ Yes         | ❌ No         | ✅ Partial      |
+| Apex Tests            | ❌ No          | ❌ No         | ❌ Missing      |
+| Coverage Reports      | ❌ No          | ❌ No         | ❌ Missing      |
 
 ---
 
@@ -465,7 +479,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ### ❌ **DEPLOYMENT BLOCKERS**
 
-1. **Missing Executive_KPI__mdt** 🚨 **CRITICAL**
+1. **Missing Executive_KPI\_\_mdt** 🚨 **CRITICAL**
    - See Section 1 for details
    - **Estimated Fix Time:** 2-4 hours
 
@@ -554,6 +568,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ✅ **COMPLETE** - All entry points identified
 
 **Notes:**
+
 - 602 @AuraEnabled methods across 122 production classes
 - 2 REST endpoints: PrometheionScoreCallback.cls (@RestResource)
 - All triggers have handlers with proper security enforcement
@@ -576,6 +591,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 - [x] Zero unresolved CRUD/FLS scanner findings
 
 **stripInaccessible() Implementation Details:**
+
 - AccessType values used: [x] READABLE [x] CREATABLE [x] UPDATABLE [x] UPSERTABLE
 - SObjectAccessDecision processed: [x] getRecords() [x] getRemovedFields()
 - Location: `PrometheionSecurityUtils.cls:98-110`
@@ -583,6 +599,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ✅ **EXEMPLARY** - Superior multi-layer enforcement
 
 **Evidence:**
+
 - PrometheionSecurityUtils provides centralized validation
 - All dynamic SOQL includes WITH SECURITY_ENFORCED
 - stripInaccessible() properly processes SObjectAccessDecision
@@ -602,6 +619,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 - [x] **Triggers:** Execute in system context; sharing enforcement handled in called classes
 
 **Without Sharing Justifications:**
+
 1. PrometheionReasoningEngine.cls - Big Object queries require system access
 2. SchedulerErrorHandler.cls - Error logging must work regardless of permissions
 3. PrometheionScoreCallback.cls - REST endpoint for external callbacks
@@ -628,6 +646,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ✅ **ADVANCED** - Sophisticated whitelisting implementation
 
 **Evidence:**
+
 - Object whitelisting in PrometheionDrillDownController.cls
 - Operator whitelisting (=, !=, >, <, >=, <=, LIKE, IN, NOT IN, INCLUDES, EXCLUDES)
 - Field validation against Schema
@@ -651,6 +670,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ✅ **CLEAN** - Zero XSS vulnerabilities detected
 
 **Evidence:**
+
 - Only 1 lwc:dom="manual" usage (safe Chart.js canvas)
 - No innerHTML vulnerabilities found
 - No Visualforce escape issues
@@ -681,12 +701,13 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 - [ ] **DAST scanning completed (if external endpoints exist):**
   - [ ] OWASP ZAP scan
   - [ ] Burp Suite scan
-  - [ ] Other: ______________________________
+  - [ ] Other: **************\_\_**************
 - [ ] DAST report attached
 
 **Status:** ⚠️ **PARTIAL** - No external endpoint testing documented
 
 **Notes:**
+
 - No hardcoded secrets detected
 - HTTPS enforcement verified
 - Named Credentials usage not documented
@@ -707,6 +728,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ⚠️ **PARTIAL** - No hardcoded secrets, encryption not documented
 
 **Evidence:**
+
 - Zero hardcoded credentials found
 - Custom metadata used for configuration
 - No PII leakage in debug logs
@@ -724,6 +746,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ✅ **COMPLIANT** - Bulkification patterns implemented
 
 **Evidence:**
+
 - No SOQL/DML in loops detected
 - Triggers follow bulkification best practices
 - Pagination limits prevent heap overflow
@@ -740,6 +763,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ⚠️ **PARTIAL** - npm audit clean, RetireJS report missing
 
 **Evidence:**
+
 - npm audit: 0 vulnerabilities
 - Modern dependencies (Node 20, Jest 30, Prettier 3)
 - RetireJS scan report required for AppExchange
@@ -761,6 +785,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ❌ **INCOMPLETE** - Not using AppExchange selectors, no HTML reports
 
 **Current Implementation:**
+
 - Using basic categories (Security, Best Practices, Error Prone)
 - Output format: table (console)
 - **REQUIRED:** Update CI/CD to use `--rule-selector AppExchange --rule-selector Recommended:Security`
@@ -798,6 +823,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ⚠️ **PARTIAL** - Unit tests passing, security tests missing
 
 **Evidence:**
+
 - 168/168 LWC tests passing (100% pass rate)
 - 85 Apex test classes exist
 - Mock classes implemented (ApiLimitsCalloutMock.cls)
@@ -817,6 +843,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Status:** ⚠️ **PARTIAL** - Code documented, submission package incomplete
 
 **Evidence:**
+
 - Comprehensive CLAUDE.md with security patterns
 - 5 permission sets defined
 - Org initialization scripts present
@@ -841,6 +868,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 ### Completed Sections: 8/14 (57%)
 
 #### ✅ **COMPLETE (8 sections)**
+
 1. Entry Point Inventory
 2. CRUD/FLS Enforcement ⭐ **EXEMPLARY**
 3. Sharing & Authorization
@@ -851,11 +879,13 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 8. Sales-Engineering Readiness
 
 #### ⚠️ **PARTIAL (3 sections)**
+
 9. External Integrations & Endpoints (no DAST, no SSL Labs)
 10. Secret & Sensitive Data Handling (encryption not documented)
 11. Documentation for Review (missing data flows, demo org)
 
 #### ❌ **INCOMPLETE (3 sections)**
+
 12. Third-Party Dependencies (RetireJS report missing)
 13. Scanners & Artifacts (AppExchange selectors not used, no Checkmarx)
 14. Testing Expectations (security tests not implemented)
@@ -867,6 +897,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 **Current State:** NOT READY FOR SIGNATURE
 
 **Blocking Items Before Sign-Off:**
+
 1. Code Analyzer with AppExchange selectors + HTML reports
 2. Checkmarx scan via Partner Security Portal
 3. LWC test coverage to 75%+ (currently 18%)
@@ -879,11 +910,11 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ---
 
-**Engineering Lead:** __________________________ **Date:** __________
+**Engineering Lead:** ************\_\_************ **Date:** ****\_\_****
 
-**Security / AppSec:** _________________________ **Date:** __________
+**Security / AppSec:** ************\_************ **Date:** ****\_\_****
 
-**Product Owner:** ____________________________ **Date:** __________
+**Product Owner:** ************\_\_\_\_************ **Date:** ****\_\_****
 
 ---
 
@@ -891,34 +922,38 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ### Component Scores
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| **Security Implementation** | 30% | 90/100 | 27.0 |
-| **Test Coverage** | 25% | 50/100 | 12.5 |
-| **CI/CD Pipeline** | 15% | 80/100 | 12.0 |
-| **Deployment Readiness** | 10% | 60/100 | 6.0 |
-| **Documentation** | 10% | 80/100 | 8.0 |
-| **AppExchange Compliance** | 10% | 57/100 | 5.7 |
-| **TOTAL** | 100% | **71.2/100** | **71.2** |
+| Category                    | Weight | Score        | Weighted |
+| --------------------------- | ------ | ------------ | -------- |
+| **Security Implementation** | 30%    | 90/100       | 27.0     |
+| **Test Coverage**           | 25%    | 50/100       | 12.5     |
+| **CI/CD Pipeline**          | 15%    | 80/100       | 12.0     |
+| **Deployment Readiness**    | 10%    | 60/100       | 6.0      |
+| **Documentation**           | 10%    | 80/100       | 8.0      |
+| **AppExchange Compliance**  | 10%    | 57/100       | 5.7      |
+| **TOTAL**                   | 100%   | **71.2/100** | **71.2** |
 
 ### Adjusted Grade with Criticality Factors
 
 **Base Score:** 71.2/100 (C+)
 
 **Critical Blockers Penalty:** -10 points
-- Missing Executive_KPI__mdt (-5)
+
+- Missing Executive_KPI\_\_mdt (-5)
 - LWC test coverage 18% vs 75% required (-5)
 
 **Security Excellence Bonus:** +20 points
+
 - Exceptional CRUD/FLS enforcement (+10)
 - Advanced injection prevention (+5)
 - Clean XSS security (+5)
 
 **Test Quality Bonus:** +4 points
+
 - 100% test pass rate (+2)
 - Zero lint/format errors (+2)
 
 **Final Calculation:**
+
 ```
 71.2 (base) - 10 (blockers) + 20 (security) + 4 (quality) = 85.2/100
 ```
@@ -940,7 +975,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
    - **Estimated Effort:** 40-60 hours
    - **Priority:** P0 - Critical
 
-2. 🚨 **Missing Executive_KPI__mdt Metadata Type**
+2. 🚨 **Missing Executive_KPI\_\_mdt Metadata Type**
    - **Impact:** Deployment fails in fresh orgs
    - **Estimated Effort:** 2-4 hours
    - **Priority:** P0 - Critical
@@ -974,10 +1009,12 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 
 ### Phase 1: Immediate Blockers (P0) - 1 Week
 
-#### Task 1.1: Fix Executive_KPI__mdt (2-4 hours)
+#### Task 1.1: Fix Executive_KPI\_\_mdt (2-4 hours)
+
 **Owner:** Engineering Lead
 
 **Steps:**
+
 1. Create custom metadata type definition
 2. Add all referenced fields from `PrometheionExecutiveKPIController.cls`
 3. Create sample metadata records
@@ -985,6 +1022,7 @@ private static final Set<String> ALLOWED_OPERATORS = new Set<String>{
 5. Update documentation
 
 **Files to Create:**
+
 ```
 force-app/main/default/objects/Executive_KPI__mdt/
   ├── Executive_KPI__mdt.object-meta.xml
@@ -999,11 +1037,13 @@ force-app/main/default/customMetadata/
 ```
 
 #### Task 1.2: Implement LWC Tests (40-60 hours, 1-2 sprints)
+
 **Owner:** Engineering Team
 
 **Priority Components (75% coverage target = 25 components tested):**
 
 **Sprint 1 (20 hours):**
+
 1. `apiUsageDashboard` (2h)
 2. `batchJobMonitor` (2h)
 3. `complianceScoreCard` (2h)
@@ -1015,55 +1055,55 @@ force-app/main/default/customMetadata/
 9. `frameworkSelector` (1.5h)
 10. `performanceAlertPanel` (2.5h)
 
-**Sprint 2 (20 hours):**
-11. `prometheionAiSettings` (2h)
-12. `prometheionAuditPackageBuilder` (2.5h)
-13. `prometheionComparativeAnalytics` (4h) ⭐ High complexity
-14. `prometheionDrillDownViewer` (3h)
-15. `prometheionDynamicReportBuilder` (5h) ⭐ Highest complexity
-16. `prometheionEventMonitor` (2h)
-17. `prometheionExecutiveKPIDashboard` (2h)
-18. `systemMonitorDashboard` (2h)
-19. `riskHeatmap` (1.5h)
+**Sprint 2 (20 hours):** 11. `prometheionAiSettings` (2h) 12. `prometheionAuditPackageBuilder` (2.5h) 13. `prometheionComparativeAnalytics` (4h) ⭐ High complexity 14. `prometheionDrillDownViewer` (3h) 15. `prometheionDynamicReportBuilder` (5h) ⭐ Highest complexity 16. `prometheionEventMonitor` (2h) 17. `prometheionExecutiveKPIDashboard` (2h) 18. `systemMonitorDashboard` (2h) 19. `riskHeatmap` (1.5h)
 
 **Test Template:**
+
 ```javascript
-import { createElement } from 'lwc';
-import { createLdsTestWireAdapter } from '@salesforce/wire-service-jest-util';
-import ComponentName from 'c/componentName';
-import getMethod from '@salesforce/apex/Controller.getMethod';
+import { createElement } from "lwc";
+import { createLdsTestWireAdapter } from "@salesforce/wire-service-jest-util";
+import ComponentName from "c/componentName";
+import getMethod from "@salesforce/apex/Controller.getMethod";
 
 const getMethodAdapter = createLdsTestWireAdapter(getMethod);
 
-describe('c-component-name', () => {
+describe("c-component-name", () => {
   afterEach(() => {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
   });
 
-  it('renders correctly with data', async () => {
-    const element = createElement('c-component-name', { is: ComponentName });
+  it("renders correctly with data", async () => {
+    const element = createElement("c-component-name", { is: ComponentName });
     document.body.appendChild(element);
 
     getMethodAdapter.emit({ data: mockData });
     await Promise.resolve();
 
-    expect(element.shadowRoot.querySelector('.expected-class')).toBeTruthy();
+    expect(element.shadowRoot.querySelector(".expected-class")).toBeTruthy();
   });
 
-  it('handles null/empty data', async () => { /* ... */ });
-  it('handles errors gracefully', async () => { /* ... */ });
-  it('validates user inputs', async () => { /* ... */ });
+  it("handles null/empty data", async () => {
+    /* ... */
+  });
+  it("handles errors gracefully", async () => {
+    /* ... */
+  });
+  it("validates user inputs", async () => {
+    /* ... */
+  });
 });
 ```
 
 #### Task 1.3: Update CI/CD to Use AppExchange Selectors (1 hour)
+
 **Owner:** DevOps
 
 **Changes Required:**
 
 **GitHub Actions (`.github/workflows/prometheion-ci.yml`):**
+
 ```yaml
 - name: Run AppExchange Code Analyzer
   run: |
@@ -1085,6 +1125,7 @@ describe('c-component-name', () => {
 ```
 
 **CircleCI (`.circleci/config.yml`):**
+
 ```yaml
 - run:
     name: Run AppExchange Code Analyzer
@@ -1103,9 +1144,11 @@ describe('c-component-name', () => {
 ```
 
 #### Task 1.4: Verify Apex Test Coverage (4 hours)
+
 **Owner:** Engineering Lead
 
 **Steps:**
+
 1. Deploy to scratch org: `sf org create scratch -f config/prometheion-scratch-def.json -a review-org -d 7`
 2. Push source: `sf project deploy start -o review-org`
 3. Run all tests: `sf apex run test -o review-org -c -r human -w 30`
@@ -1118,9 +1161,11 @@ describe('c-component-name', () => {
 ### Phase 2: Required for Submission (P1) - 1 Week
 
 #### Task 2.1: Generate Checkmarx Scan Report
+
 **Owner:** Security Lead
 
 **Steps:**
+
 1. Access Partner Security Portal
 2. Submit complete source code for scanning
 3. Wait 24-48 hours for results
@@ -1132,9 +1177,11 @@ describe('c-component-name', () => {
    - Remediation evidence for valid issues
 
 #### Task 2.2: Implement HTML Artifact Generation
+
 **Owner:** DevOps (completed in Task 1.3)
 
 #### Task 2.3: Create AppExchange Documentation Package
+
 **Owner:** Product Owner + Technical Writer
 
 **Required Documents:**
@@ -1178,6 +1225,7 @@ describe('c-component-name', () => {
 **Test Types to Add:**
 
 1. **Permission Denial Tests** (all controllers)
+
 ```apex
 @isTest
 static void testInsufficientPermissions() {
@@ -1202,9 +1250,11 @@ static void testInsufficientPermissions() {
 5. **Security-Negative Tests** (attempt to bypass FLS/CRUD)
 
 #### Task 3.2: WCAG 2.1 AA Accessibility Audit (4 hours)
+
 **Owner:** UX/Engineering
 
 **Steps:**
+
 1. Run axe-core scan: `npm run test:a11y`
 2. Manual keyboard navigation testing
 3. Screen reader testing (NVDA/JAWS/VoiceOver)
@@ -1213,9 +1263,11 @@ static void testInsufficientPermissions() {
 6. Remediate critical issues
 
 #### Task 3.3: RetireJS & Dependency Scanning (2 hours)
+
 **Owner:** Security Lead
 
 **Steps:**
+
 ```bash
 # Install RetireJS
 npm install -g retire
@@ -1228,9 +1280,11 @@ retire --outputformat html --outputpath reports/retirejs-scan.html
 ```
 
 #### Task 3.4: DAST Scanning (if external endpoints exist) (4 hours)
+
 **Owner:** Security Lead
 
 **Steps:**
+
 ```bash
 # OWASP ZAP scan
 docker run -t owasp/zap2docker-stable zap-baseline.py \
@@ -1261,22 +1315,24 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 
 ### Critical Path Analysis
 
-| Phase | Duration | Parallelizable | Blockers |
-|-------|----------|----------------|----------|
-| **P0: Immediate Blockers** | 1-2 weeks | Partial | None |
-| **P1: Required for Submission** | 1 week | Yes | P0 complete |
-| **P2: Quality Enhancements** | 1-2 weeks | Yes | None |
-| **P3: Polish** | Ongoing | Yes | None |
+| Phase                           | Duration  | Parallelizable | Blockers    |
+| ------------------------------- | --------- | -------------- | ----------- |
+| **P0: Immediate Blockers**      | 1-2 weeks | Partial        | None        |
+| **P1: Required for Submission** | 1 week    | Yes            | P0 complete |
+| **P2: Quality Enhancements**    | 1-2 weeks | Yes            | None        |
+| **P3: Polish**                  | Ongoing   | Yes            | None        |
 
 ### Realistic Timeline
 
 **Minimum (Aggressive):** 3 weeks
+
 - P0: 1 week (with full team focus)
 - P1: 1 week (parallel with P0 tasks)
 - P2: 1 week (parallel with P1)
 - Buffer: Submit for review
 
 **Recommended (Quality-Focused):** 5-6 weeks
+
 - P0: 2 weeks (thorough testing of all changes)
 - P1: 1.5 weeks (complete documentation)
 - P2: 1.5 weeks (comprehensive security testing)
@@ -1284,6 +1340,7 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 - Buffer: Final review before submission
 
 **Conservative (Low-Risk):** 8 weeks
+
 - P0: 2.5 weeks (with fallback time)
 - P1: 2 weeks (external dependencies like Checkmarx)
 - P2: 2 weeks (full accessibility audit + remediation)
@@ -1296,7 +1353,7 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 ### Critical Gaps (Blocks Submission)
 
 1. ❌ **LWC Test Coverage** - 18% vs 75% required
-2. ❌ **Executive_KPI__mdt** - Metadata type missing
+2. ❌ **Executive_KPI\_\_mdt** - Metadata type missing
 3. ❌ **Apex Test Coverage Verification** - Unknown if ≥75%
 4. ❌ **Code Analyzer AppExchange Selectors** - Not using required rules
 5. ❌ **Checkmarx Scan Report** - Mandatory for submission
@@ -1355,7 +1412,7 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 
 ### Immediate Actions (This Week)
 
-1. **Create Executive_KPI__mdt** (Task 1.1)
+1. **Create Executive_KPI\_\_mdt** (Task 1.1)
    - Priority: P0
    - Effort: 2-4 hours
    - Owner: Engineering Lead
@@ -1383,16 +1440,18 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 ### Quality Improvements
 
 6. **Make GitHub Actions Failures Blocking**
+
    ```yaml
    # Remove all || echo instances
    - name: Format Check
-     run: npm run fmt:check  # Will fail CI if formatting issues
+     run: npm run fmt:check # Will fail CI if formatting issues
 
    - name: Lint Code
-     run: npm run lint  # Will fail CI if lint errors
+     run: npm run lint # Will fail CI if lint errors
    ```
 
 7. **Add Coverage Badges to README**
+
    ```markdown
    ![LWC Coverage](https://img.shields.io/badge/LWC%20Coverage-75%25-green)
    ![Apex Coverage](https://img.shields.io/badge/Apex%20Coverage-82%25-green)
@@ -1487,13 +1546,15 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 ### For Immediate Submission (3-Week Plan)
 
 **Week 1: Critical Blockers**
-- [ ] Fix Executive_KPI__mdt metadata (2-4h)
+
+- [ ] Fix Executive_KPI\_\_mdt metadata (2-4h)
 - [ ] Update CI to AppExchange selectors (1h)
 - [ ] Deploy to scratch org, verify Apex coverage (4h)
 - [ ] Submit to Checkmarx (1h + 24-48h wait)
 - [ ] Start LWC test development (20h in week 1)
 
 **Week 2: Required Artifacts**
+
 - [ ] Complete LWC tests (20h remaining)
 - [ ] Generate all HTML scanner reports (2h)
 - [ ] Create installation guide (4h)
@@ -1501,6 +1562,7 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 - [ ] Review Checkmarx results, document findings (4h)
 
 **Week 3: Final Polish**
+
 - [ ] Complete AppExchange security checklist (6h)
 - [ ] Create data flow diagrams (4h)
 - [ ] Implement critical security tests (8h)
@@ -1512,6 +1574,7 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 ### For Quality-Focused Submission (5-6 Week Plan)
 
 **Add to above:**
+
 - Week 4: WCAG audit + remediation (16h)
 - Week 4-5: Additional test coverage (Apex to 85%, LWC to 85%) (24h)
 - Week 5: Security test suite (permission/sharing/bulk tests) (16h)
@@ -1528,8 +1591,9 @@ curl "https://api.ssllabs.com/api/v3/analyze?host=your-endpoint.com"
 Prometheion is a **well-architected, security-conscious Salesforce application** with exceptional CRUD/FLS enforcement, advanced injection prevention, and clean code quality. The codebase demonstrates mature development practices and attention to security details that exceed typical AppExchange submissions.
 
 However, the application **cannot pass AppExchange review in its current state** due to:
+
 1. Insufficient test coverage (18% LWC vs 75% required)
-2. Missing critical metadata (Executive_KPI__mdt)
+2. Missing critical metadata (Executive_KPI\_\_mdt)
 3. Incomplete security documentation package
 4. Missing required scanner artifacts
 
@@ -1538,12 +1602,14 @@ With focused effort on test coverage and documentation, this application can ach
 ### Grade Justification
 
 **B+ (85/100)** reflects:
+
 - **Exceptional security implementation** (+20 points bonus)
 - **Critical test coverage gap** (-10 points penalty)
 - **Strong foundation** with clear path to approval
 - **Quality codebase** that exceeds basic requirements in most areas
 
 This is a **high B+** that could easily become an **A** with:
+
 - LWC test coverage to 75%+ (6 points)
 - Complete AppExchange documentation (4 points)
 - Checkmarx scan with all findings resolved (3 points)
@@ -1556,6 +1622,7 @@ This is a **high B+** that could easily become an **A** with:
 ## FINAL VERDICT
 
 ### ✅ **STRENGTHS**
+
 - World-class security implementation
 - Clean, maintainable codebase
 - Strong CI/CD foundation
@@ -1564,14 +1631,16 @@ This is a **high B+** that could easily become an **A** with:
 - 100% test pass rate (for tested components)
 
 ### ❌ **MUST FIX BEFORE SUBMISSION**
+
 1. LWC test coverage to 75%+ (currently 18%)
-2. Create Executive_KPI__mdt metadata type
+2. Create Executive_KPI\_\_mdt metadata type
 3. Verify Apex test coverage ≥75%
 4. Generate Checkmarx scan report
 5. Use AppExchange Code Analyzer selectors
 6. Generate HTML scanner artifacts
 
 ### ⚠️ **SHOULD FIX BEFORE SUBMISSION**
+
 7. Complete AppExchange security checklist (all 14 sections)
 8. Create installation guide
 9. Implement security test suite
@@ -1589,7 +1658,7 @@ The application has a strong foundation and demonstrates security expertise. The
 
 **Report Generated:** January 11, 2026
 **Reviewer:** Claude Code AI Assistant
-**Next Review:** After P0 tasks complete (Executive_KPI__mdt + 50% LWC coverage milestone)
+**Next Review:** After P0 tasks complete (Executive_KPI\_\_mdt + 50% LWC coverage milestone)
 
 ---
 
@@ -1598,7 +1667,8 @@ The application has a strong foundation and demonstrates security expertise. The
 ### Pre-Submission Checklist
 
 **Critical (P0) - Must Complete:**
-- [ ] Executive_KPI__mdt metadata type created and tested ❌ **BLOCKER**
+
+- [ ] Executive_KPI\_\_mdt metadata type created and tested ❌ **BLOCKER**
 - [ ] LWC test coverage ≥75% (currently 18%) ❌ **BLOCKER**
 - [ ] Apex test coverage ≥75% (currently unknown) ⚠️ **NEEDS VERIFICATION**
 - [ ] Code Analyzer using `--rule-selector AppExchange` ❌ **BLOCKER**
@@ -1606,6 +1676,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [ ] HTML scanner artifacts generated ❌ **BLOCKER**
 
 **Required (P1) - Strongly Recommended:**
+
 - [ ] AppExchange security checklist complete (14/14 sections) (currently 8/14 complete)
 - [ ] Installation guide created
 - [ ] Demo org setup documented
@@ -1614,6 +1685,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [ ] Cross-tool finding reconciliation complete
 
 **Quality (P2) - Should Complete:**
+
 - [ ] Permission denial tests implemented
 - [ ] Sharing violation tests implemented
 - [ ] Bulk tests (200+ records) implemented
@@ -1623,6 +1695,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [ ] DAST scan (if external endpoints)
 
 **Polish (P3) - Nice to Have:**
+
 - [ ] Apex coverage ≥85%
 - [ ] LWC coverage ≥85%
 - [ ] Integration tests
@@ -1634,6 +1707,7 @@ The application has a strong foundation and demonstrates security expertise. The
 ### What's Already Complete ✅
 
 **Code Quality:**
+
 - [x] Code formatting (Prettier) 100% compliant
 - [x] ESLint checks passing (0 errors, 0 warnings)
 - [x] npm audit clean (0 vulnerabilities)
@@ -1641,6 +1715,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [x] Git hooks configured (Husky pre-commit)
 
 **Security Implementation:**
+
 - [x] WITH SECURITY_ENFORCED (108 instances)
 - [x] Sharing keywords (107/122 classes = 87.7%)
 - [x] Security.stripInaccessible() (13 instances with proper AccessType)
@@ -1653,6 +1728,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [x] Bulkification patterns (no SOQL/DML in loops)
 
 **Infrastructure:**
+
 - [x] CI/CD operational (GitHub Actions + CircleCI, 10 jobs)
 - [x] Test framework configured (Jest for LWC)
 - [x] 5 permission sets defined
@@ -1661,6 +1737,7 @@ The application has a strong foundation and demonstrates security expertise. The
 - [x] Scratch org scripts (scripts/orgInit.sh)
 
 **Repository Structure:**
+
 - [x] 207 Apex classes (122 production, 85 test)
 - [x] 33 LWC components
 - [x] 46 custom objects
@@ -1673,11 +1750,13 @@ The application has a strong foundation and demonstrates security expertise. The
 ## APPENDIX B: CONTACT INFORMATION FOR FOLLOW-UP
 
 **Questions about this review?**
+
 - Review Document Version: 1.0
 - Review Date: January 11, 2026
 - Codebase Commit: claude/review-prometheion-app-0BLu9
 
 **Next Steps:**
+
 1. Review this report with engineering and security teams
 2. Prioritize tasks in Appendix A checklist
 3. Allocate resources for 3-6 week sprint
@@ -1686,4 +1765,4 @@ The application has a strong foundation and demonstrates security expertise. The
 
 ---
 
-*End of Report*
+_End of Report_

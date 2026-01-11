@@ -12,6 +12,7 @@
 **Overall Repository Health: GOOD (82/100)**
 
 The Prometheion repository is well-maintained with minimal technical debt. The codebase is clean with:
+
 - ✅ No backup files (.bak, .old, .tmp)
 - ✅ No commented-out code blocks
 - ✅ Only 1 TODO comment
@@ -39,11 +40,13 @@ The Prometheion repository is well-maintained with minimal technical debt. The c
 ```
 
 **Recommendation:**
+
 - Create a GitHub issue to track Einstein Platform integration
 - Add target date or milestone
 - Document placeholder implementation
 
 **Action:**
+
 ```bash
 # Create issue
 gh issue create --title "Implement Einstein Platform callout in PrometheionGraphIndexer" \
@@ -59,15 +62,16 @@ gh issue create --title "Implement Einstein Platform callout in PrometheionGraph
 
 These test classes don't match their corresponding production class names due to missing "Prometheion" prefix:
 
-| Test Class | Expected Class | Actual Class | Status |
-|------------|----------------|--------------|--------|
-| `GDPRDataPortabilityServiceTest.cls` | `GDPRDataPortabilityService.cls` | `PrometheionGDPRDataPortabilityService.cls` | ❌ Mismatch |
-| `ISO27001AccessReviewServiceTest.cls` | `ISO27001AccessReviewService.cls` | `PrometheionISO27001AccessReviewService.cls` | ❌ Mismatch |
-| `ISO27001QuarterlyReviewSchedulerTest.cls` | `ISO27001QuarterlyReviewScheduler.cls` | *Missing* | ❌ Orphaned |
-| `PerformanceAlertEventTriggerTest.cls` | `PerformanceAlertEventTrigger.cls` | *Missing* | ❌ Orphaned |
-| `PrometheionAlertTriggerTest.cls` | `PrometheionAlertTrigger.cls` | `PrometheionAlertQueueable.cls` | ❌ Mismatch |
+| Test Class                                 | Expected Class                         | Actual Class                                 | Status      |
+| ------------------------------------------ | -------------------------------------- | -------------------------------------------- | ----------- |
+| `GDPRDataPortabilityServiceTest.cls`       | `GDPRDataPortabilityService.cls`       | `PrometheionGDPRDataPortabilityService.cls`  | ❌ Mismatch |
+| `ISO27001AccessReviewServiceTest.cls`      | `ISO27001AccessReviewService.cls`      | `PrometheionISO27001AccessReviewService.cls` | ❌ Mismatch |
+| `ISO27001QuarterlyReviewSchedulerTest.cls` | `ISO27001QuarterlyReviewScheduler.cls` | _Missing_                                    | ❌ Orphaned |
+| `PerformanceAlertEventTriggerTest.cls`     | `PerformanceAlertEventTrigger.cls`     | _Missing_                                    | ❌ Orphaned |
+| `PrometheionAlertTriggerTest.cls`          | `PrometheionAlertTrigger.cls`          | `PrometheionAlertQueueable.cls`              | ❌ Mismatch |
 
 **Impact:**
+
 - Test coverage calculations may be inaccurate
 - IDE test discovery may fail
 - Confusing for new developers
@@ -75,6 +79,7 @@ These test classes don't match their corresponding production class names due to
 **Recommended Actions:**
 
 ### Option 1: Rename Test Classes (Preferred)
+
 ```bash
 # Rename to match actual class names
 mv force-app/main/default/classes/GDPRDataPortabilityServiceTest.cls \
@@ -91,6 +96,7 @@ mv force-app/main/default/classes/ISO27001AccessReviewServiceTest.cls-meta.xml \
 ```
 
 ### Option 2: Investigate Missing Classes
+
 ```bash
 # Search for ISO27001QuarterlyReviewScheduler
 grep -r "ISO27001QuarterlyReview" force-app/ --include="*.cls"
@@ -100,6 +106,7 @@ grep -r "PerformanceAlertEvent" force-app/ --include="*.cls" --include="*.trigge
 ```
 
 **If classes are truly missing:**
+
 - Delete orphaned test classes
 - Or create missing production classes based on test expectations
 
@@ -110,6 +117,7 @@ grep -r "PerformanceAlertEvent" force-app/ --include="*.cls" --include="*.trigge
 ### ✅ **CLEAN** - No Unnecessary Files
 
 **Checked for:**
+
 - ❌ Backup files (.bak, .old, .tmp): **None found** ✅
 - ❌ Editor swap files (.swp, ~): **None found** ✅
 - ❌ OS files (.DS_Store, Thumbs.db): **None found** ✅
@@ -145,6 +153,7 @@ grep -r "PerformanceAlertEvent" force-app/ --include="*.cls" --include="*.trigge
 ### ⚠️ **Issues Found**
 
 #### 1. `.cursor/` Directory
+
 **Current Status:** Not in `.gitignore`
 
 **Recommendation:** Add to `.gitignore`
@@ -157,9 +166,11 @@ echo ".cursor/" >> .gitignore
 **Justification:** IDE-specific settings should not be tracked to avoid conflicts between team members using different editors.
 
 #### 2. `destructiveChanges/` Directory
+
 **Current Status:** Tracked in Git (6 files)
 
 **Files:**
+
 - `destructiveChanges-all-old.xml`
 - `destructiveChanges-lwc.xml`
 - `destructiveChanges-tabs-old.xml`
@@ -172,11 +183,13 @@ echo ".cursor/" >> .gitignore
 **Options:**
 
 **A. Keep if actively used for cleanup operations:**
+
 - Document purpose in README.md
 - Add usage instructions
 - Create a `docs/DEPLOYMENT_DESTRUCTIVE_CHANGES.md`
 
 **B. Archive if historical:**
+
 ```bash
 # Create archive
 mkdir -p docs/archive
@@ -185,6 +198,7 @@ echo "docs/archive/" >> .gitignore
 ```
 
 **C. Remove if obsolete:**
+
 ```bash
 # Only if confirmed these are old cleanup manifests no longer needed
 rm -rf destructiveChanges/
@@ -200,6 +214,7 @@ git rm -r destructiveChanges/
 **npm audit:** 0 vulnerabilities ✅
 
 **Latest versions confirmed:**
+
 - Node: 20.x (current LTS) ✅
 - Jest: 30.2.0 ✅
 - Prettier: 3.7.4 ✅
@@ -215,12 +230,13 @@ git rm -r destructiveChanges/
 ### Current .gitignore: **GOOD**
 
 **Properly excludes:**
+
 - ✅ node_modules/
 - ✅ coverage/
 - ✅ .vscode/
 - ✅ .sfdx/, .sf/, .salesforce/
 - ✅ Logs, temp files, OS files
-- ✅ *_TEMP.md, *_ANALYSIS.md, *_SUMMARY.md
+- ✅ _\_TEMP.md, _\_ANALYSIS.md, \*\_SUMMARY.md
 
 ### ⚠️ **Missing Entries**
 
@@ -268,10 +284,11 @@ deployments/*.zip
 ### ✅ **WELL-ORGANIZED**
 
 **33 LWC components:**
+
 - All have proper directory structure
 - All have .js, .html, .js-meta.xml files
 - jsconfig.json properly configured
-- __tests__ directory for shared test utils
+- **tests** directory for shared test utils
 
 **No issues found** ✅
 
@@ -282,6 +299,7 @@ deployments/*.zip
 ### ✅ **EXCELLENT**
 
 **Existing documentation:**
+
 - CLAUDE.md (comprehensive) ✅
 - README.md ✅
 - TECHNICAL_DEEP_DIVE.md ✅
@@ -290,6 +308,7 @@ deployments/*.zip
 - APPEXCHANGE_REVIEW_COMPLETE_REPORT.md (newly added) ✅
 
 **Recommended additions:**
+
 - [ ] INSTALLATION_GUIDE.md (AppExchange requirement)
 - [ ] DEMO_ORG_SETUP.md (AppExchange requirement)
 - [ ] CONTRIBUTING.md (open source best practice)
@@ -304,12 +323,14 @@ deployments/*.zip
 ### ⚠️ **INCONSISTENT PREFIXING**
 
 **Pattern 1: "Prometheion" prefix (majority)**
+
 - `PrometheionSecurityUtils.cls`
 - `PrometheionDashboardController.cls`
 - `PrometheionGDPRDataPortabilityService.cls`
 - (100+ classes)
 
 **Pattern 2: No prefix (minority)**
+
 - `AlertHistoryService.cls`
 - `AnomalyDetectionService.cls`
 - `ApiUsageSnapshot.cls`
@@ -318,16 +339,19 @@ deployments/*.zip
 **Recommendation:**
 
 **Option A: Keep as-is** (if intentional domain separation)
+
 - Document naming convention in CLAUDE.md
 - "Prometheion" prefix = core platform classes
 - No prefix = utility/service classes
 
 **Option B: Standardize all to "Prometheion" prefix**
+
 - More consistent branding
 - Easier namespace management if migrating to managed package
 - Clearer separation from standard Salesforce classes
 
 **Option C: Use namespace when packaging**
+
 - Register namespace (e.g., `prom`)
 - All classes automatically prefixed: `prom__SecurityUtils`
 
@@ -338,6 +362,7 @@ deployments/*.zip
 ### ✅ **CLEAN** - No Build Artifacts Committed
 
 **Checked for:**
+
 - ❌ .zip files: **None found** ✅
 - ❌ .tar.gz files: **None found** ✅
 - ❌ .class files: **None found** ✅
@@ -352,6 +377,7 @@ deployments/*.zip
 #### 1.1 Fix Orphaned Test Classes (30 min)
 
 **Script:**
+
 ```bash
 #!/bin/bash
 # fix-test-naming.sh
@@ -436,6 +462,7 @@ gh issue create \
 #### 1.4 Evaluate destructiveChanges/ (30 min)
 
 **Investigation:**
+
 ```bash
 # Check when files were last modified
 ls -l destructiveChanges/
@@ -461,6 +488,7 @@ grep -r "destructiveChanges" docs/ README.md CLAUDE.md
 See Section 8 for list of required documentation.
 
 **Create:**
+
 - INSTALLATION_GUIDE.md
 - DEMO_ORG_SETUP.md
 - CONTRIBUTING.md
@@ -477,17 +505,20 @@ Add to CLAUDE.md:
 ### Apex Classes
 
 **Pattern 1: Core Platform Classes (with Prometheion prefix)**
+
 - `Prometheion*Controller` - Lightning Web Component controllers
 - `Prometheion*Service` - Business logic services
 - `Prometheion*Utils` - Utility classes
 - `Prometheion*Queueable` - Asynchronous job classes
 
 **Pattern 2: Domain-Specific Utility Classes (no prefix)**
+
 - `*Service` - Generic service classes
 - `*Utils` - Generic utility classes
 - `Api*` - API integration classes
 
 **Test Classes:**
+
 - Always suffix with `Test`
 - Must match production class name exactly: `PrometheionSecurityUtilsTest`
 ```
@@ -575,12 +606,14 @@ echo "✅ All test classes have matching production classes"
 ## CLEANUP CHECKLIST
 
 ### Immediate (Do Today)
+
 - [ ] Fix orphaned test class names
 - [ ] Update .gitignore with .cursor/ and test artifacts
 - [ ] Create GitHub issue for TODO comment
 - [ ] Evaluate destructiveChanges/ directory (keep, archive, or delete)
 
 ### Short-Term (This Week)
+
 - [ ] Create INSTALLATION_GUIDE.md
 - [ ] Create DEMO_ORG_SETUP.md
 - [ ] Create CONTRIBUTING.md
@@ -589,6 +622,7 @@ echo "✅ All test classes have matching production classes"
 - [ ] Add GitHub issue templates
 
 ### Long-Term (Next Sprint/Version)
+
 - [ ] Consider standardizing all class names with "Prometheion" prefix
 - [ ] Add pre-commit hooks for naming validation
 - [ ] Create automated cleanup scripts
@@ -598,29 +632,32 @@ echo "✅ All test classes have matching production classes"
 
 ## METRICS SUMMARY
 
-| Category | Score | Status |
-|----------|-------|--------|
-| **Code Quality** | 95/100 | ✅ Excellent |
-| **File Hygiene** | 100/100 | ✅ Perfect |
-| **Dependency Management** | 100/100 | ✅ Perfect |
-| **Naming Consistency** | 70/100 | ⚠️ Needs Work |
-| **Documentation** | 80/100 | ✅ Good |
-| **Overall Repository Health** | **82/100** | ✅ Good |
+| Category                      | Score      | Status        |
+| ----------------------------- | ---------- | ------------- |
+| **Code Quality**              | 95/100     | ✅ Excellent  |
+| **File Hygiene**              | 100/100    | ✅ Perfect    |
+| **Dependency Management**     | 100/100    | ✅ Perfect    |
+| **Naming Consistency**        | 70/100     | ⚠️ Needs Work |
+| **Documentation**             | 80/100     | ✅ Good       |
+| **Overall Repository Health** | **82/100** | ✅ Good       |
 
 ---
 
 ## COST-BENEFIT ANALYSIS
 
 ### High ROI Cleanups (Do First)
+
 1. ✅ Fix orphaned test classes (30 min, high impact on testability)
 2. ✅ Update .gitignore (5 min, prevents IDE conflicts)
 3. ✅ Create GitHub issue for TODO (15 min, tracks technical debt)
 
 ### Medium ROI Cleanups
+
 4. ⚠️ Create missing documentation (3 hours, AppExchange requirement)
 5. ⚠️ Document naming conventions (30 min, developer onboarding)
 
 ### Low ROI Cleanups (Optional)
+
 6. ❌ Rename all classes for consistency (8+ hours, high risk, low priority)
 
 ---
@@ -643,4 +680,4 @@ The Prometheion repository is **well-maintained with minimal technical debt**. T
 
 ---
 
-*End of Cleanup Report*
+_End of Cleanup Report_

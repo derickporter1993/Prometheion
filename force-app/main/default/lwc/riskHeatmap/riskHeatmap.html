@@ -1,21 +1,23 @@
 <template>
   <lightning-card title="Risk Heatmap" icon-name="standard:warning">
     <div class="slds-var-p-around_medium">
-      <div class="slds-grid slds-gutters" role="list" aria-label="Risk heatmap">
-        <template for:each={risks} for:item="risk">
-          <div key={risk.id} class="slds-col slds-size_1-of-4" role="listitem">
-            <div
-              class="slds-box slds-text-align_center {riskClass(risk.severity)}"
-              aria-label="Risk for {risk.framework}: {risk.severity}, Score {risk.score}"
-            >
-              <div class="slds-text-heading_small">{risk.framework}</div>
-              <div class="slds-text-body_small">{risk.severity}</div>
-              <div class="slds-text-body_small">Score: {risk.score}</div>
+      <template lwc:if={hasRisks}>
+        <div class="slds-grid slds-gutters" role="list" aria-label="Risk heatmap">
+          <template for:each={risksWithClasses} for:item="risk">
+            <div key={risk.id} class="slds-col slds-size_1-of-4" role="listitem">
+              <div
+                class={risk.combinedClass}
+                aria-label="Risk for {risk.framework}: {risk.severity}, Score {risk.score}"
+              >
+                <div class="slds-text-heading_small">{risk.framework}</div>
+                <div class="slds-text-body_small">{risk.severity}</div>
+                <div class="slds-text-body_small">Score: {risk.score}</div>
+              </div>
             </div>
-          </div>
-        </template>
-      </div>
-      <template if:false={risks}>
+          </template>
+        </div>
+      </template>
+      <template lwc:if={!hasRisks}>
         <div
           class="slds-text-align_center slds-var-p-around_medium"
           role="status"

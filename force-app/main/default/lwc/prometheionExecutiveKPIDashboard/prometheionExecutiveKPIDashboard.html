@@ -11,19 +11,19 @@
             <div class="slds-card slds-var-m-bottom_small" aria-label="KPI: {metric.label}">
               <div class="slds-card__body slds-card__body_inner">
                 <div class="slds-text-heading_small slds-var-m-bottom_x-small">{metric.label}</div>
-                <template if:true={metric.hasError}>
+                <template lwc:if={metric.hasError}>
                   <div class="slds-text-color_error" role="alert" aria-live="assertive">
                     {metric.errorMessage}
                   </div>
                 </template>
-                <template if:false={metric.hasError}>
+                <template lwc:if={!metric.hasError}>
                   <div class="slds-text-heading_large slds-var-m-vertical_small">
                     {metric.formattedValue}
                   </div>
-                  <template if:true={metric.targetValue}>
+                  <template lwc:if={metric.targetValue}>
                     <div class="slds-text-body_small">
                       Target: {metric.formattedTarget}
-                      <template if:true={metric.percentOfTarget}>
+                      <template lwc:if={metric.percentOfTarget}>
                         ({metric.percentOfTarget}%)
                       </template>
                     </div>
@@ -39,11 +39,11 @@
         </template>
       </div>
 
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading KPIs" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
+      <template lwc:if={hasError}>
         <lightning-alert variant="error" message={errorMessage}></lightning-alert>
       </template>
     </div>

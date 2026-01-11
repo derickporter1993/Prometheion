@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SOQL_Query__c</fullName>
+    <description>SOQL query string (must use aggregate functions) to calculate the KPI metric value</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>SOQL Query</label>
+    <length>32768</length>
+    <required>true</required>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>
