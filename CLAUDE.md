@@ -381,10 +381,12 @@ Never quote template bindings - this causes compile errors:
 <lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
 <lightning-button onclick="{handleClick}"></lightning-button>
 
-<!-- RIGHT -->
-<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
-<lightning-button onclick="{handleClick}"></lightning-button>
+<!-- RIGHT - No quotes around bindings -->
+<lightning-datatable data={rows} columns={columns}></lightning-datatable>
+<lightning-button onclick={handleClick}></lightning-button>
 ```
+
+**Note:** Prettier can corrupt LWC HTML files by adding quotes. LWC HTML files are excluded in `.prettierignore` to prevent this.
 
 ### LWC Jest Testing Patterns
 
@@ -466,6 +468,110 @@ Types: feat, fix, test, docs, refactor, style
 - ALWAYS pull before starting new work
 - NEVER leave uncommitted changes
 - Check that local and remote are in sync before ending session
+
+---
+
+## Code Quality Checks (MANDATORY)
+
+### Before Coding
+
+1. **Check for LWC Template Syntax Violations** (if modifying LWC templates):
+   ```bash
+   # Find any quoted bindings that will cause LWC1034 errors
+   grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null | grep -v node_modules
+   ```
+   - If found, fix BEFORE making other changes
+   - Pattern: `data="{rows}"` must become `data={rows}`
+
+2. **Check for SOQL Without Security**:
+   ```bash
+   # Find SOQL queries missing WITH SECURITY_ENFORCED
+   grep -rn "SELECT.*FROM" force-app/main/default/classes/*.cls | grep -v "WITH SECURITY_ENFORCED" | grep -v "Test.cls"
+   ```
+
+3. **Check for Hardcoded Record IDs**:
+   ```bash
+   # Find potential hardcoded Salesforce IDs (15 or 18 char)
+   grep -rn "['\"][a-zA-Z0-9]\{15,18\}['\"]" force-app/main/default/classes/*.cls
+   ```
+
+4. **Check for System.debug in Production Code**:
+   ```bash
+   # Find debug statements (should be removed before commit)
+   grep -rn "System.debug" force-app/main/default/classes/*.cls | grep -v Test.cls
+   ```
+
+5. **Check for API Version Consistency**:
+   ```bash
+   # All metadata should use API version 63.0
+   grep -rn "apiVersion" force-app/main/default/**/*.xml | grep -v "63.0"
+   ```
+
+### After Coding
+
+Run these checks EVERY TIME before committing:
+
+```bash
+# 1. Lint check (must pass with 0 warnings for LWC)
+npm run lint
+
+# 2. Format check
+npm run fmt:check
+
+# 3. Unit tests (all 67 must pass)
+npm run test:unit
+
+# 4. Check for LWC template corruption
+grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null | head -5
+
+# 5. Verify no uncommitted changes remain
+git status
+```
+
+### Quick Pre-Commit Validation Script
+
+```bash
+#!/bin/bash
+# Run this before every commit
+
+echo "=== Pre-Commit Validation ==="
+
+# Check for LWC template violations
+if grep -rq '="{' force-app/main/default/lwc/**/*.html 2>/dev/null; then
+    echo "❌ FAIL: LWC template has quoted bindings (will cause LWC1034)"
+    grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null
+    exit 1
+fi
+echo "✅ LWC templates OK"
+
+# Run lint
+if ! npm run lint --silent; then
+    echo "❌ FAIL: Lint errors"
+    exit 1
+fi
+echo "✅ Lint OK"
+
+# Run tests
+if ! npm run test:unit --silent; then
+    echo "❌ FAIL: Unit tests failed"
+    exit 1
+fi
+echo "✅ Tests OK"
+
+echo "=== All checks passed ==="
+```
+
+### Common Violations Checklist
+
+| Issue | Detection | Fix |
+|-------|-----------|-----|
+| LWC quoted bindings | `grep '="{' *.html` | Remove quotes: `data={rows}` |
+| Missing SECURITY_ENFORCED | grep SOQL without clause | Add `WITH SECURITY_ENFORCED` |
+| SOQL in loop | Manual review | Bulkify queries outside loop |
+| DML in loop | Manual review | Collect records, single DML |
+| Unused catch variable | ESLint warning | Use `catch { }` or `catch (_e)` |
+| Missing test coverage | sf apex run test | Add test methods |
+| Wrong API version | grep apiVersion | Update to 63.0 |
 
 ---
 
