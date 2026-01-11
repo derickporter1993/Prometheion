@@ -126,7 +126,7 @@ public with sharing class PrometheionGraphIndexer {
         // Einstein Platform integration - fallback to rule-based scoring if not available
         // In production, if Einstein is required, ensure it's installed before deployment
         try {
-            // TODO: Implement Einstein Platform callout when available
+            // TODO: Implement Einstein Platform callout (see docs/GITHUB_ISSUE_TODO_EINSTEIN_PLATFORM.md)
             // For now, fallback to rule-based scoring
             return calculateFallbackRiskScore(metadata, framework);
         } catch (Exception e) {

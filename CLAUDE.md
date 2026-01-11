@@ -18,7 +18,7 @@ This document provides guidance for AI assistants working with the Prometheion c
 
 | Layer        | Technology                                |
 | ------------ | ----------------------------------------- |
-| Backend      | Apex (Salesforce), API v63.0              |
+| Backend      | Apex (Salesforce), API v65.0              |
 | Frontend     | Lightning Web Components (LWC)            |
 | UI Framework | SLDS (Salesforce Lightning Design System) |
 | Testing      | Jest (LWC), Apex Test Classes             |
@@ -32,11 +32,11 @@ This document provides guidance for AI assistants working with the Prometheion c
 ```
 prometheion/
 ├── force-app/main/default/      # Salesforce source code
-│   ├── classes/                 # Apex classes (~78 production + ~66 test)
-│   ├── lwc/                     # Lightning Web Components (30 components)
-│   ├── objects/                 # Custom objects (~33 objects)
+│   ├── classes/                 # Apex classes (122 production + 85 test = 207 total)
+│   ├── lwc/                     # Lightning Web Components (33 components)
+│   ├── objects/                 # Custom objects (46 objects)
 │   ├── triggers/                # Apex triggers
-│   ├── permissionsets/          # Permission sets (4 sets)
+│   ├── permissionsets/          # Permission sets (5 sets)
 │   ├── events/                  # Platform events
 │   ├── flexipages/              # Flex pages for UI layouts
 │   ├── customMetadata/          # Custom metadata types
@@ -60,7 +60,7 @@ prometheion/
 
 | File                | Purpose                                                     |
 | ------------------- | ----------------------------------------------------------- |
-| `sfdx-project.json` | Salesforce project config (API v63.0)                       |
+| `sfdx-project.json` | Salesforce project config (API v65.0)                       |
 | `package.json`      | NPM dependencies & scripts                                  |
 | `jest.config.js`    | Jest test framework configuration                           |
 | `eslint.config.js`  | ESLint rules (ES2021, LWC plugin)                           |
