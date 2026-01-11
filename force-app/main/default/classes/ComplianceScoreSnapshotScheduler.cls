@@ -105,12 +105,12 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
                 result.violationCount = violations != null ? violations.size() : 0;
             }
 
-            // Count active gaps for this framework
+            // Count active gaps for this framework (exclude verified/accepted)
             result.gapCount = [
                 SELECT COUNT()
                 FROM Compliance_Gap__c
                 WHERE Framework__c = :framework
-                AND Status__c != 'Closed'
+                AND Status__c NOT IN ('VERIFIED', 'ACCEPTED_RISK')
                 WITH SECURITY_ENFORCED
             ];
 
