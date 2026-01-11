@@ -134,9 +134,13 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!assignmentsToRemove.isEmpty()) {
             try {
-                // Delete permission set assignments directly
-                delete assignmentsToRemove;
-                result.assignmentsRemoved.addAll(assignmentsToRemove);
+                // Delete permission set assignments with CRUD check
+                if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
+                    result.messages.add('Insufficient permissions to delete permission set assignments');
+                } else {
+                    delete assignmentsToRemove;
+                    result.assignmentsRemoved.addAll(assignmentsToRemove);
+                }
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception deleting assignments: ' + e.getMessage());
                 result.messages.add('Error removing permission set assignments: ' + e.getMessage());
@@ -233,16 +237,24 @@ public with sharing class PrometheionQuickActionsService {
                 ];
                 
                 if (!assignments.isEmpty()) {
-                    delete assignments;
+                    if (Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
+                        delete assignments;
+                    } else {
+                        result.messages.add('Insufficient permissions to delete permission set assignments');
+                    }
                 }
             } catch (Exception e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] Error removing assignments: ' + e.getMessage());
                 result.messages.add('Error removing permission set assignments: ' + e.getMessage());
             }
-            
+
             // Then delete the permission sets
             try {
-                delete setsToRemove;
+                if (!Schema.sObjectType.PermissionSet.isDeletable()) {
+                    result.messages.add('Insufficient permissions to delete permission sets');
+                } else {
+                    delete setsToRemove;
+                }
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception deleting permission sets: ' + e.getMessage());
                 result.messages.add('Error deleting permission sets: ' + e.getMessage());
@@ -335,10 +347,14 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!toRemove.isEmpty()) {
             try {
-                delete toRemove;
-                result.assignmentsRemoved.addAll(toRemove);
-                result.messages.add('Removed ' + toRemove.size() + 
-                    ' excessive permission set assignments.');
+                if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
+                    result.messages.add('Insufficient permissions to delete permission set assignments');
+                } else {
+                    delete toRemove;
+                    result.assignmentsRemoved.addAll(toRemove);
+                    result.messages.add('Removed ' + toRemove.size() +
+                        ' excessive permission set assignments.');
+                }
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception removing assignments: ' + e.getMessage());
                 result.messages.add('Error removing excessive assignments: ' + e.getMessage());

@@ -228,10 +228,11 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
             VersionData = Blob.valueOf(reportContent),
             Origin = 'H'
         );
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
+        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
 
         SOC2ChangeManagementService service = new SOC2ChangeManagementService();
         service.logAuditEntry('REPORT_GENERATED', 'Generated SOC2 change report for ' + startDate + ' to ' + endDate, cv.ContentDocumentId);

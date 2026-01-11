@@ -3,60 +3,40 @@
     <div class="slds-p-around_medium">
       <lightning-input
         label="Package Name"
-        value="{packageName}"
-        onchange="
-          {
-            handlePackageNameChange;
-          }
-        "
+        value={packageName}
+        onchange={handlePackageNameChange}
         required
       ></lightning-input>
 
       <lightning-combobox
         label="Framework"
-        value="{framework}"
-        options="{frameworks}"
-        onchange="
-          {
-            handleFrameworkChange;
-          }
-        "
+        value={framework}
+        options={frameworks}
+        onchange={handleFrameworkChange}
         required
       ></lightning-combobox>
 
       <lightning-input
         type="date"
         label="Audit Period Start"
-        value="{startDate}"
-        onchange="
-          {
-            handleStartDateChange;
-          }
-        "
+        value={startDate}
+        onchange={handleStartDateChange}
         required
       ></lightning-input>
 
       <lightning-input
         type="date"
         label="Audit Period End"
-        value="{endDate}"
-        onchange="
-          {
-            handleEndDateChange;
-          }
-        "
+        value={endDate}
+        onchange={handleEndDateChange}
         required
       ></lightning-input>
 
       <lightning-button
         label="Generate Audit Package"
         variant="brand"
-        onclick="
-          {
-            handleGenerate;
-          }
-        "
-        disabled="{isLoading}"
+        onclick={handleGenerate}
+        disabled={isLoading}
         class="slds-m-top_medium"
       ></lightning-button>
     </div>

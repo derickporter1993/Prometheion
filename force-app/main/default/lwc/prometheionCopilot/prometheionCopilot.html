@@ -35,15 +35,7 @@
           </div>
         </div>
         <div class="header-actions">
-          <button
-            class="icon-button"
-            onclick="
-              {
-                clearChat;
-              }
-            "
-            title="Clear conversation"
-          >
+          <button class="icon-button" onclick={clearChat} title="Clear conversation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path
                 d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
@@ -57,7 +49,7 @@
     <!-- Chat Container -->
     <div class="chat-container">
       <!-- Welcome State -->
-      <template lwc:if="{showWelcome}">
+      <template lwc:if={showWelcome}>
         <div class="welcome-section">
           <div class="welcome-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -77,25 +69,21 @@
 
           <!-- Quick Actions Grid -->
           <div class="quick-actions-grid">
-            <template for:each="{quickCommands}" for:item="cmd">
+            <template for:each={quickCommands} for:item="cmd">
               <button
-                key="{cmd.command}"
+                key={cmd.command}
                 class="quick-action-card"
-                data-command="{cmd.command}"
-                onclick="
-                  {
-                    handleQuickCommand;
-                  }
-                "
+                data-command={cmd.command}
+                onclick={handleQuickCommand}
               >
-                <div class="action-icon" data-icon="{cmd.iconType}">
-                  <template lwc:if="{cmd.isTrendDown}">
+                <div class="action-icon" data-icon={cmd.iconType}>
+                  <template lwc:if={cmd.isTrendDown}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M23 18L13.5 8.5L8.5 13.5L1 6" />
                       <path d="M17 18H23V12" />
                     </svg>
                   </template>
-                  <template lwc:if="{cmd.isFlow}">
+                  <template lwc:if={cmd.isFlow}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="3" y="3" width="6" height="6" rx="1" />
                       <rect x="15" y="3" width="6" height="6" rx="1" />
@@ -103,7 +91,7 @@
                       <path d="M6 9V12H12M18 9V12H12M12 12V15" />
                     </svg>
                   </template>
-                  <template lwc:if="{cmd.isFile}">
+                  <template lwc:if={cmd.isFile}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path
                         d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
@@ -111,7 +99,7 @@
                       <path d="M14 2V8H20" />
                     </svg>
                   </template>
-                  <template lwc:if="{cmd.isUser}">
+                  <template lwc:if={cmd.isUser}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path
                         d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
@@ -119,13 +107,13 @@
                       <circle cx="12" cy="7" r="4" />
                     </svg>
                   </template>
-                  <template lwc:if="{cmd.isShield}">
+                  <template lwc:if={cmd.isShield}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
                       <path d="M9 12L11 14L15 10" />
                     </svg>
                   </template>
-                  <template lwc:if="{cmd.isWarning}">
+                  <template lwc:if={cmd.isWarning}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path
                         d="M10.29 3.86L1.82 18C1.64 18.3 1.55 18.64 1.55 19C1.55 19.36 1.64 19.7 1.82 20C2 20.3 2.26 20.55 2.57 20.73C2.88 20.91 3.24 21 3.6 21H20.4C20.76 21 21.12 20.91 21.43 20.73C21.74 20.55 22 20.3 22.18 20C22.36 19.7 22.45 19.36 22.45 19C22.45 18.64 22.36 18.3 22.18 18L13.71 3.86C13.53 3.56 13.27 3.32 12.96 3.15C12.65 2.98 12.3 2.89 11.95 2.89C11.6 2.89 11.25 2.98 10.94 3.15C10.63 3.32 10.37 3.56 10.19 3.86H10.29Z"
@@ -142,16 +130,16 @@
       </template>
 
       <!-- Messages -->
-      <template lwc:if="{hasMessages}">
+      <template lwc:if={hasMessages}>
         <div class="messages-container">
-          <template for:each="{messageList}" for:item="message">
-            <div key="{message.id}" class="{message.containerClass}">
+          <template for:each={messageList} for:item="message">
+            <div key={message.id} class={message.containerClass}>
               <!-- User Message -->
-              <template lwc:if="{message.isUser}">
+              <template lwc:if={message.isUser}>
                 <div class="user-message">
                   <div class="message-content">
                     <lightning-formatted-rich-text
-                      value="{message.content}"
+                      value={message.content}
                     ></lightning-formatted-rich-text>
                   </div>
                   <div class="user-avatar">
@@ -165,7 +153,7 @@
               </template>
 
               <!-- Assistant Message -->
-              <template lwc:if="{message.isAssistant}">
+              <template lwc:if={message.isAssistant}>
                 <div class="assistant-message">
                   <div class="assistant-avatar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -176,12 +164,12 @@
                   </div>
                   <div class="message-content">
                     <lightning-formatted-rich-text
-                      value="{message.content}"
+                      value={message.content}
                       class="message-text"
                     ></lightning-formatted-rich-text>
 
                     <!-- Evidence Cards -->
-                    <template lwc:if="{message.hasEvidence}">
+                    <template lwc:if={message.hasEvidence}>
                       <div class="evidence-section">
                         <h4 class="evidence-title">
                           <svg
@@ -198,16 +186,16 @@
                           Evidence
                         </h4>
                         <div class="evidence-cards">
-                          <template for:each="{message.evidenceList}" for:item="ev">
-                            <div key="{ev.nodeId}" class="evidence-card">
+                          <template for:each={message.evidenceList} for:item="ev">
+                            <div key={ev.nodeId} class="evidence-card">
                               <div class="evidence-header">
                                 <span class="entity-badge">{ev.entityType}</span>
-                                <template lwc:if="{ev.riskScore}">
-                                  <span class="{ev.riskClass}">Risk: {ev.riskScore}/10</span>
+                                <template lwc:if={ev.riskScore}>
+                                  <span class={ev.riskClass}>Risk: {ev.riskScore}/10</span>
                                 </template>
                               </div>
                               <p class="evidence-description">{ev.description}</p>
-                              <template lwc:if="{ev.framework}">
+                              <template lwc:if={ev.framework}>
                                 <span class="framework-tag">{ev.framework}</span>
                               </template>
                             </div>
@@ -217,21 +205,17 @@
                     </template>
 
                     <!-- Action Buttons -->
-                    <template lwc:if="{message.hasActions}">
+                    <template lwc:if={message.hasActions}>
                       <div class="actions-section">
-                        <template for:each="{message.copilotResponse.actions}" for:item="action">
+                        <template for:each={message.copilotResponse.actions} for:item="action">
                           <button
-                            key="{action.actionType}"
+                            key={action.actionType}
                             class="action-button"
-                            data-action-type="{action.actionType}"
-                            data-node-id="{action.nodeId}"
-                            onclick="
-                              {
-                                handleActionClick;
-                              }
-                            "
+                            data-action-type={action.actionType}
+                            data-node-id={action.nodeId}
+                            onclick={handleActionClick}
                           >
-                            <template lwc:if="{action.canAutoFix}">
+                            <template lwc:if={action.canAutoFix}>
                               <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
@@ -258,7 +242,7 @@
       </template>
 
       <!-- Loading State -->
-      <template lwc:if="{isLoading}">
+      <template lwc:if={isLoading}>
         <div class="loading-message">
           <div class="assistant-avatar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -283,28 +267,12 @@
           type="text"
           class="chat-input"
           placeholder="Ask about compliance, violations, or generate evidence..."
-          value="{query}"
-          onchange="
-            {
-              handleQueryChange;
-            }
-          "
-          onkeypress="
-            {
-              handleKeyPress;
-            }
-          "
-          disabled="{isLoading}"
+          value={query}
+          onchange={handleQueryChange}
+          onkeypress={handleKeyPress}
+          disabled={isLoading}
         />
-        <button
-          class="send-button"
-          onclick="
-            {
-              handleSubmit;
-            }
-          "
-          disabled="{isLoading}"
-        >
+        <button class="send-button" onclick={handleSubmit} disabled={isLoading}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" />
           </svg>

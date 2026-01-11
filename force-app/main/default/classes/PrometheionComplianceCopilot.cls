@@ -199,6 +199,7 @@ public with sharing class PrometheionComplianceCopilot {
             SELECT CreatedDate, CreatedById, CreatedBy.Name, Action, Section, Display
             FROM SetupAuditTrail
             WHERE CreatedDate >= LAST_N_DAYS:7
+            WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
             LIMIT 10
         ];
@@ -292,7 +293,7 @@ public with sharing class PrometheionComplianceCopilot {
         String framework = classification.framework != null ? classification.framework : PrometheionConstants.FRAMEWORK_SOC2;
 
         // Get audit trail stats
-        Integer totalChanges = [SELECT COUNT() FROM SetupAuditTrail WHERE CreatedDate >= LAST_N_DAYS:30];
+        Integer totalChanges = [SELECT COUNT() FROM SetupAuditTrail WHERE CreatedDate >= LAST_N_DAYS:30 WITH SECURITY_ENFORCED];
 
         response.answer = '📊 *' + Label.Copilot_Evidence_Summary.replace('{0}', framework) + '*\n\n' +
             '• Configuration changes (30 days): ' + totalChanges + '\n' +
@@ -323,6 +324,7 @@ public with sharing class PrometheionComplianceCopilot {
             FROM SetupAuditTrail
             WHERE CreatedDate >= LAST_N_DAYS:30
             AND (Action LIKE '%permission%' OR Action LIKE '%delete%' OR Action LIKE '%removed%')
+            WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
             LIMIT 20
         ];
@@ -501,6 +503,7 @@ public with sharing class PrometheionComplianceCopilot {
                 FROM SetupAuditTrail
                 WHERE CreatedDate >= LAST_N_DAYS:30
                 AND (Action LIKE '%permission%' OR Action LIKE '%delete%' OR Action LIKE '%removed%' OR Action LIKE '%field%')
+                WITH SECURITY_ENFORCED
                 ORDER BY CreatedDate DESC
                 LIMIT 20
             ];

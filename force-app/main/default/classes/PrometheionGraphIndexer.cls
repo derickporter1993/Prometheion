@@ -221,7 +221,7 @@ public with sharing class PrometheionGraphIndexer {
     private static String generateCorrelationId(String entityType, String entityId) {
         // Use only stable inputs - no time component for deterministic correlation
         String input = entityType + '|' + entityId + '|' + UserInfo.getUserId();
-        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
         return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 

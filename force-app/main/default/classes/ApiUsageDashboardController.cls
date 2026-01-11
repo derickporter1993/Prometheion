@@ -33,10 +33,7 @@ public with sharing class ApiUsageDashboardController {
                 Percent_Used__c,
                 Projected_Exhaustion__c
             FROM API_Usage_Snapshot__c
-<<<<<<< HEAD
-=======
             WITH SECURITY_ENFORCED
->>>>>>> open-repo-f518a
             ORDER BY Taken_On__c DESC
             LIMIT :limit
         ]) {
@@ -44,15 +41,4 @@ public with sharing class ApiUsageDashboardController {
         }
         return out;
     }
-<<<<<<< HEAD
-=======
-    
-    /**
-     * Legacy method - Use getRecentSnapshots instead
-     */
-    @AuraEnabled(cacheable = true)
-    public static List<Row> recent(Integer limitSize) {
-        return getRecentSnapshots(limitSize);
-    }
->>>>>>> open-repo-f518a
 }

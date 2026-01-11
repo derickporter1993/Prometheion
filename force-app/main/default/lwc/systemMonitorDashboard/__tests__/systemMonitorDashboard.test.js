@@ -168,7 +168,7 @@ describe("c-system-monitor-dashboard", () => {
 
       const loadingText = element.shadowRoot.querySelector("p");
       if (loadingText) {
-        expect(loadingText.textContent.trim()).toBe("Loading…");
+        expect(loadingText.textContent.trim()).toBe("Loading...");
       }
     });
 

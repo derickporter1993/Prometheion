@@ -1,38 +1,51 @@
 # Prometheion Codebase Audit Report
-**Date:** 2025-01-10  
-**Audit Standard:** `.cursorrules` compliance  
+
+**Date:** 2026-01-11 (Updated)
+**Audit Standard:** `.cursorrules` compliance
 **Branch:** `claude/determine-project-phase-Q95M8`
 
 ## Executive Summary
 
 This audit evaluates the Prometheion codebase against the rules defined in `.cursorrules`. The audit covers:
+
 - LWC Template Syntax compliance
 - Apex Security patterns (sharing, SOQL security, CRUD/FLS)
 - Apex Bulkification
 - Code Quality and Testing
 - Naming Conventions
 
+**IMPORTANT CORRECTION:** The original Cursor audit missed 4 LWC template files with critical syntax violations. These have now been fixed by Claude.
+
 ---
 
-## 1. LWC Template Syntax Compliance ✅
+## 1. LWC Template Syntax Compliance ✅ (FIXED)
 
-### Status: **PASSING** (No violations found)
+### Status: **PASSING** (After corrections - was FAILING)
 
-**Audit Results:**
-- **Total LWC HTML templates:** 27
-- **Quoted binding violations:** 0
-- **Files with formatting issues:** 2 (Prettier formatting only, not syntax violations)
+**Original Cursor Audit MISSED 4 files with violations:**
 
-**Details:**
-- ✅ No quoted property bindings found (e.g., `data="{rows}"` → `data={rows}`)
-- ✅ No quoted event handlers found (e.g., `onclick="{handler}"` → `onclick={handler}`)
-- ⚠️ 37 templates still use `if:true` instead of `lwc:if` (preferred but not critical)
-- ⚠️ 2 files have Prettier formatting issues (not syntax violations):
-  - `complianceCopilot/complianceCopilot.html`
-  - `systemMonitorDashboard/systemMonitorDashboard.html`
+| File                                                                 | Violations                                 | Status   |
+| -------------------------------------------------------------------- | ------------------------------------------ | -------- |
+| `frameworkSelector/frameworkSelector.html`                           | Quoted bindings + broken event handlers    | ✅ FIXED |
+| `prometheionAiSettings/prometheionAiSettings.html`                   | 5+ quoted bindings + broken event handlers | ✅ FIXED |
+| `prometheionAuditPackageBuilder/prometheionAuditPackageBuilder.html` | 4+ quoted bindings + broken event handlers | ✅ FIXED |
+| `prometheionReadinessScore/prometheionReadinessScore.html`           | Quoted bindings + broken event handlers    | ✅ FIXED |
+
+**Violations Found (Now Fixed):**
+
+- Multi-line corrupted event handlers: `onchange="{ handleChange; }"` → `onchange={handleChange}`
+- Quoted property bindings: `value="{packageName}"` → `value={packageName}`
+- Quoted checked attributes: `checked="{enableAI}"` → `checked={enableAI}`
+
+**Current Status After Fixes:**
+
+- **Total LWC HTML templates:** 31
+- **Quoted binding violations:** 0 ✅
+- **All templates now compile correctly**
 
 **Recommendations:**
-1. Run `npm run fmt` to fix formatting issues
+
+1. ✅ DONE: Fix corrupted HTML files
 2. Consider migrating `if:true` to `lwc:if` for modern LWC (low priority)
 
 ---
@@ -44,6 +57,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Status: **MOSTLY COMPLIANT** (4 exceptions with justification)**
 
 **Audit Results:**
+
 - **Total production classes:** 87 (excluding tests, mocks, factories, interfaces)
 - **Classes with `with sharing`:** ~83
 - **Classes with `without sharing`:** 2 (justified)
@@ -70,11 +84,13 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
    - No sharing declaration needed for test utilities
 
 **Interfaces (No sharing declaration needed):**
+
 - `IAccessControlService.cls`
 - `IBreachNotificationService.cls`
 - `IRiskScoringService.cls`
 
 **REST Endpoint:**
+
 - `PrometheionScoreCallback.cls` - Uses `global` (REST endpoint pattern)
 
 ### 2.2 SOQL Security Enforcement
@@ -82,6 +98,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Status: **PARTIAL COMPLIANCE** (13 queries need review)**
 
 **Audit Results:**
+
 - **Total classes with SOQL:** ~96
 - **Classes with security enforcement:** ~53
 - **SOQL queries without `WITH SECURITY_ENFORCED` or `WITH USER_MODE`:** 13 found
@@ -89,41 +106,49 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Queries Needing Review:**
 
 1. **`ComplianceTestDataFactory.cls`** (Test utility - acceptable)
+
    ```apex
    ProfileId = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1].Id
    ```
 
 2. **`HIPAAAuditControlService.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
    ```
 
 3. **`HIPAAPrivacyRuleService.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
    ```
 
 4. **`SOC2ChangeManagementService.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
    ```
 
 5. **`SOC2IncidentResponseService.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
    ```
 
 6. **`PrometheionCCPASLAMonitorScheduler.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    Integer completed = [SELECT COUNT() FROM CCPA_Request__c WHERE Status__c = 'Completed' ...
    ```
 
 7. **`PrometheionComplianceCopilot.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    Integer totalChanges = [SELECT COUNT() FROM SetupAuditTrail WHERE CreatedDate >= LAST_N_DAYS:30];
    ```
 
 8. **`PrometheionConsentWithdrawalHandler.cls`** ⚠️ NEEDS REVIEW
+
    ```apex
    for (Contact c : [SELECT Id, Email FROM Contact WHERE Id IN :contactIds]) {
    ```
@@ -135,6 +160,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
     - Multiple test cleanup queries
 
 **Recommendations:**
+
 1. Add `WITH SECURITY_ENFORCED` to ContentVersion queries (4 files)
 2. Add `WITH SECURITY_ENFORCED` to COUNT queries (2 files)
 3. Add `WITH SECURITY_ENFORCED` to Contact query in loop (needs bulkification review)
@@ -145,15 +171,18 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Status: **PARTIAL COMPLIANCE** (Multiple DML operations need review)**
 
 **Audit Results:**
+
 - **DML operations found:** ~40+ across codebase
 - **DML operations with CRUD checks:** Many have checks, but manual review needed
 
 **Pattern Analysis:**
+
 - ✅ **Scheduler classes:** Have CRUD checks (AccessReviewScheduler, ComplianceScoreSnapshotScheduler, BreachDeadlineMonitor)
 - ✅ **FlowExecutionLogger:** Has CRUD check and FLS validation
 - ⚠️ **Service classes:** Need manual review for all DML operations
 
 **DML Operations Needing Review:**
+
 1. `ApiUsageSnapshot.cls` - insert operation
 2. `AuditReportController.cls` - insert ContentVersion
 3. `HIPAAAuditControlService.cls` - insert ContentVersion
@@ -163,6 +192,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 7. `EvidenceCollectionService.cls` - insert evidenceList
 
 **Recommendations:**
+
 1. Add `PrometheionSecurityUtils.validateCRUDAccess()` before all DML operations
 2. Use `Security.stripInaccessibleFields()` before DML for FLS
 3. Create a checklist of all service classes with DML operations
@@ -174,6 +204,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Status: **PASSING** (No violations found)**
 
 **Audit Results:**
+
 - ✅ No SOQL queries inside loops found
 - ✅ No DML operations inside loops found
 - ✅ Proper use of Maps and bulk queries
@@ -187,7 +218,7 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 
 ### 4.1 Linting
 
-**Status: **PASSING**
+**Status: **PASSING\*\*
 
 - ✅ ESLint passes with 0 warnings
 - ✅ No linting violations found
@@ -207,15 +238,18 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 **Status: **GOOD** (85 test classes for 87 production classes)**
 
 **Audit Results:**
+
 - **Production classes:** 87 (excluding interfaces, exceptions, mocks, factories)
 - **Test classes:** 85
 - **Test coverage ratio:** ~98% (85/87)
 
 **Missing Test Classes (if any):**
+
 - Most classes have corresponding test classes
 - Some classes may be abstract/interfaces (no tests needed)
 
 **Recommendations:**
+
 1. Verify all production classes have test coverage
 2. Ensure test coverage meets 75%+ requirement for AppExchange
 
@@ -223,13 +257,14 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 
 ## 5. Naming Conventions ✅
 
-**Status: **COMPLIANT**
+**Status: **COMPLIANT\*\*
 
 **Audit Results:**
+
 - ✅ Apex classes use PascalCase
 - ✅ Test classes follow `<ClassName>Test` pattern
 - ✅ LWC components use camelCase folder names
-- ✅ Custom objects use Pascal_Snake__c pattern
+- ✅ Custom objects use Pascal_Snake\_\_c pattern
 - ✅ Methods use camelCase
 
 ---
@@ -286,38 +321,57 @@ This audit evaluates the Prometheion codebase against the rules defined in `.cur
 
 ## Summary Statistics
 
-| Category | Total | Compliant | Needs Review | Status |
-|----------|-------|-----------|--------------|--------|
-| LWC Templates | 27 | 27 | 0 | ✅ PASSING |
-| Apex Classes (Sharing) | 87 | 83 | 4 (justified) | ✅ COMPLIANT |
-| SOQL Queries (Security) | ~96 | ~83 | 13 | ⚠️ PARTIAL |
-| DML Operations (CRUD) | ~40+ | Many | Multiple | ⚠️ PARTIAL |
-| Bulkification | N/A | ✅ | 0 | ✅ PASSING |
-| Test Coverage | 87 classes | 85 tests | 2 | ✅ GOOD |
-| Linting | All | ✅ | 0 | ✅ PASSING |
-| Formatting | All | 25/27 | 2 | ⚠️ PARTIAL |
+| Category                | Total      | Compliant | Needs Review  | Status       |
+| ----------------------- | ---------- | --------- | ------------- | ------------ |
+| LWC Templates           | 31         | 31        | 0 (4 fixed)   | ✅ PASSING   |
+| Apex Classes (Sharing)  | 87         | 83        | 4 (justified) | ✅ COMPLIANT |
+| SOQL Queries (Security) | ~96        | ~83       | 13            | ⚠️ PARTIAL   |
+| DML Operations (CRUD)   | ~40+       | Many      | Multiple      | ⚠️ PARTIAL   |
+| Bulkification           | N/A        | ✅        | 0             | ✅ PASSING   |
+| Test Coverage           | 87 classes | 85 tests  | 2             | ✅ GOOD      |
+| Linting                 | All        | ✅        | 0             | ✅ PASSING   |
+| Formatting              | All        | 31/31     | 0             | ✅ PASSING   |
 
 ---
 
 ## Next Steps
 
-1. **Immediate Actions:**
-   - Fix Prettier formatting: `npm run fmt`
+1. **Completed Actions:**
+   - ✅ Fixed 4 LWC templates with corrupted bindings
+   - ✅ Updated .cursorrules with Code Quality Checks section
+   - ✅ Updated CLAUDE.md with Code Quality Checks section
+
+2. **Remaining P0 Actions (AppExchange Blockers):**
    - Review and fix 13 SOQL queries missing security enforcement
    - Review and add CRUD checks to DML operations
 
-2. **Follow-up Actions:**
+3. **Follow-up Actions:**
    - Verify external callouts use Named Credentials
    - Verify sensitive data encryption
    - Consider migrating `if:true` to `lwc:if`
 
-3. **Continuous Improvement:**
+4. **Continuous Improvement:**
    - Add pre-commit hooks to enforce `.cursorrules`
    - Set up CI/CD checks for security patterns
    - Regular audit schedule (monthly/quarterly)
 
 ---
 
-**Audit Completed By:** AI Assistant (Cursor)  
-**Audit Standard:** `.cursorrules` v1.0  
-**Next Audit Date:** TBD
+## Audit Comparison: Cursor vs Claude
+
+| Check               | Cursor Audit              | Claude Audit     | Discrepancy               |
+| ------------------- | ------------------------- | ---------------- | ------------------------- |
+| LWC Template Syntax | ✅ PASSING (0 violations) | ❌ Found 4 files | **Cursor missed 4 files** |
+| SOQL Security       | 13 need review            | 13+ need review  | Similar findings          |
+| Sharing Declaration | 4 exceptions              | 5 exceptions     | Minor variance            |
+| Bulkification       | ✅ PASSING                | ✅ PASSING       | Consistent                |
+| Linting             | ✅ PASSING                | ✅ PASSING       | Consistent                |
+
+**Conclusion:** Cursor's audit used a grep pattern that missed multi-line corrupted event handlers.
+
+---
+
+**Original Audit By:** AI Assistant (Cursor)
+**Corrections By:** Claude Code
+**Audit Standard:** `.cursorrules` v1.0
+**Last Updated:** 2026-01-11

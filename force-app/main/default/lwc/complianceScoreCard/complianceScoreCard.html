@@ -1,5 +1,5 @@
 <template>
-  <lightning-card title="{framework.framework}" class="{scoreClass}">
+  <lightning-card title={framework.framework} class={scoreClass}>
     <div class="slds-p-around_medium">
       <div class="slds-grid slds-gutters">
         <div class="slds-col slds-size_1-of-2">
@@ -7,7 +7,7 @@
           <div class="slds-text-body_small">Compliance Score</div>
         </div>
         <div class="slds-col slds-size_1-of-2">
-          <lightning-icon icon-name="{statusIcon}" size="large"></lightning-icon>
+          <lightning-icon icon-name={statusIcon} size="large"></lightning-icon>
           <div class="slds-text-body_small">{framework.status}</div>
         </div>
       </div>
@@ -19,7 +19,7 @@
       </div>
 
       <!-- Phase 1 Framework Details -->
-      <template lwc:if="{hasFrameworkDetails}">
+      <template lwc:if={hasFrameworkDetails}>
         <div class="slds-m-top_medium slds-border_top">
           <div class="slds-text-body_small slds-m-top_small">
             <strong>Framework Mappings:</strong> {mappingCount}
@@ -27,7 +27,7 @@
           <div class="slds-text-body_small"><strong>Evidence Items:</strong> {evidenceCount}</div>
           <div class="slds-text-body_small"><strong>Requirements:</strong> {requirementCount}</div>
 
-          <template lwc:if="{hasLatestPackage}">
+          <template lwc:if={hasLatestPackage}>
             <div class="slds-m-top_small slds-border_top">
               <div class="slds-text-body_small slds-text-title">
                 <strong>Latest Audit Package:</strong>
@@ -48,12 +48,8 @@
                 variant="base"
                 size="x-small"
                 class="slds-m-top_x-small"
-                data-package-id="{latestAuditPackage.id}"
-                onclick="
-                  {
-                    handleViewAuditPackage;
-                  }
-                "
+                data-package-id={latestAuditPackage.id}
+                onclick={handleViewAuditPackage}
               ></lightning-button>
             </div>
           </template>

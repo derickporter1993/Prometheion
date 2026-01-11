@@ -2,6 +2,9 @@
 **/*.xml
 **/*-meta.xml
 
+# LWC HTML templates (use non-standard attribute syntax)
+force-app/**/*.html
+
 # Dependencies
 node_modules/
 package-lock.json
