@@ -45,6 +45,187 @@ public with sharing class MyClass {
 
 ---
 
+## Apex Bulkification (CRITICAL)
+
+### Never SOQL/DML in Loops
+```apex
+// WRONG - Governor limit violation
+for (Account acc : accounts) {
+    Contact c = [SELECT Id FROM Contact WHERE AccountId = :acc.Id];  // NO!
+    update acc;  // NO!
+}
+
+// RIGHT - Bulkified
+Map<Id, Contact> contactMap = new Map<Id, Contact>([
+    SELECT Id, AccountId FROM Contact WHERE AccountId IN :accountIds
+]);
+update accounts;  // Single DML outside loop
+```
+
+### Trigger Handler Pattern
+- One trigger per object
+- Logic in handler classes, not in trigger
+```apex
+// Trigger (minimal code)
+trigger AccountTrigger on Account (before insert, after update) {
+    AccountTriggerHandler.handle(Trigger.new, Trigger.oldMap, Trigger.operationType);
+}
+```
+
+---
+
+## SOQL Best Practices
+
+- Always use `LIMIT` when querying potentially large datasets
+- Use `WHERE` clauses with indexed fields (Id, Name, CreatedDate, custom indexed)
+- Avoid `SELECT *` pattern - only query needed fields
+- Use relationship queries instead of multiple queries
+
+```apex
+// WRONG
+List<Account> accounts = [SELECT Id FROM Account];
+for (Account a : accounts) {
+    List<Contact> contacts = [SELECT Id FROM Contact WHERE AccountId = :a.Id];
+}
+
+// RIGHT
+List<Account> accounts = [
+    SELECT Id, Name, (SELECT Id, Name FROM Contacts)
+    FROM Account
+    WHERE CreatedDate = LAST_N_DAYS:30
+    WITH SECURITY_ENFORCED
+    LIMIT 200
+];
+```
+
+---
+
+## Error Handling
+
+### Use try-catch with specific exceptions
+```apex
+try {
+    insert records;
+} catch (DmlException e) {
+    Logger.error('DML failed: ' + e.getMessage());
+    throw new AuraHandledException(e.getMessage());
+} catch (Exception e) {
+    Logger.error('Unexpected error: ' + e.getMessage());
+    throw new AuraHandledException('An unexpected error occurred');
+}
+```
+
+### Never expose system details to UI
+```apex
+// WRONG
+throw new AuraHandledException(e.getStackTraceString());
+
+// RIGHT
+throw new AuraHandledException('Unable to save record. Please contact support.');
+```
+
+---
+
+## Test Class Requirements (75%+ for AppExchange)
+
+```apex
+@isTest
+private class MyClassTest {
+
+    @TestSetup
+    static void setup() {
+        // Create test data once, reuse across tests
+    }
+
+    @isTest
+    static void testMethod_positiveCase() {
+        Test.startTest();
+        // Test happy path
+        Test.stopTest();
+        System.assertEquals(expected, actual, 'Assertion message required');
+    }
+
+    @isTest
+    static void testMethod_bulkOperations() {
+        // Test with 200+ records to verify bulkification
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 200; i++) {
+            accounts.add(new Account(Name = 'Test ' + i));
+        }
+        Test.startTest();
+        insert accounts;
+        Test.stopTest();
+    }
+
+    @isTest
+    static void testMethod_negativeCase() {
+        // Test error handling
+        try {
+            // Call method with bad data
+            System.assert(false, 'Expected exception was not thrown');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('expected text'));
+        }
+    }
+
+    @isTest
+    static void testMethod_permissionDenied() {
+        // Test as user without permissions
+        User limitedUser = TestDataFactory.createLimitedUser();
+        System.runAs(limitedUser) {
+            // Verify proper access denied handling
+        }
+    }
+}
+```
+
+---
+
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Apex Class | PascalCase | `AccountService` |
+| Test Class | PascalCase + Test | `AccountServiceTest` |
+| Method | camelCase | `getAccountById()` |
+| Variable | camelCase | `accountList` |
+| Constant | UPPER_SNAKE | `MAX_RETRY_COUNT` |
+| Custom Object | Pascal_Snake__c | `Compliance_Score__c` |
+| Custom Field | Pascal_Snake__c | `Risk_Level__c` |
+| LWC Component | camelCase folder | `complianceDashboard` |
+| Platform Event | Pascal_Snake__e | `Performance_Alert__e` |
+
+---
+
+## Async Apex Patterns
+
+### Queueable (preferred for chaining)
+```apex
+public class MyQueueable implements Queueable {
+    public void execute(QueueableContext context) {
+        // Process work
+        // Chain if needed: System.enqueueJob(new NextQueueable());
+    }
+}
+```
+
+### Batch (for large data volumes)
+```apex
+public class MyBatch implements Database.Batchable<SObject>, Database.Stateful {
+    public Database.QueryLocator start(Database.BatchableContext bc) {
+        return Database.getQueryLocator([SELECT Id FROM Account WITH SECURITY_ENFORCED]);
+    }
+    public void execute(Database.BatchableContext bc, List<Account> scope) {
+        // Process batch
+    }
+    public void finish(Database.BatchableContext bc) {
+        // Cleanup
+    }
+}
+```
+
+---
+
 ## Jest Testing Rules
 
 ### Mock Salesforce Modules
@@ -85,6 +266,68 @@ expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
 
 ---
 
+## LWC JavaScript Patterns
+
+### Import only what you need
+```javascript
+import { LightningElement, api, wire } from 'lwc';
+import getAccounts from '@salesforce/apex/AccountController.getAccounts';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
+```
+
+### Handle wire errors properly
+```javascript
+@wire(getAccounts, { recordId: '$recordId' })
+wiredAccounts({ error, data }) {
+    if (data) {
+        this.accounts = data;
+        this.error = undefined;
+    } else if (error) {
+        this.error = error;
+        this.accounts = undefined;
+        this.showErrorToast(error);
+    }
+}
+```
+
+### Lifecycle hooks order
+1. `constructor()` - Don't access DOM here
+2. `connectedCallback()` - Component inserted into DOM
+3. `renderedCallback()` - After every render (use sparingly)
+4. `disconnectedCallback()` - Cleanup (unsubscribe, clear timers)
+
+---
+
+## Platform Events
+
+### Publishing (Apex)
+```apex
+Performance_Alert__e event = new Performance_Alert__e(
+    Metric__c = 'CPU',
+    Value__c = 8500,
+    Threshold__c = 10000
+);
+Database.SaveResult result = EventBus.publish(event);
+```
+
+### Subscribing (LWC)
+```javascript
+import { subscribe, unsubscribe, onError } from 'lightning/empApi';
+
+connectedCallback() {
+    this.subscription = subscribe('/event/Performance_Alert__e', -1, (message) => {
+        this.handleEvent(message);
+    });
+}
+
+disconnectedCallback() {
+    unsubscribe(this.subscription);
+}
+```
+
+---
+
 ## Before Committing
 
 1. Run `npm run lint` - fix all errors
@@ -113,3 +356,23 @@ expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
 | Missing `{ virtual: true }` | Add to all SF module mocks |
 | Class mock hoisting error | Use factory function pattern |
 | `if:true={value}` | Use `lwc:if={value}` |
+| SOQL in loop | Query once, use Map |
+| DML in loop | Collect records, single DML |
+| Missing `with sharing` | Add to all classes |
+| Missing `WITH SECURITY_ENFORCED` | Add to all SOQL |
+| Exposing stack trace | Return user-friendly message |
+
+---
+
+## AppExchange Security Checklist
+
+- [ ] No hardcoded IDs, URLs, or credentials
+- [ ] All SOQL uses `WITH SECURITY_ENFORCED`
+- [ ] All DML has CRUD/FLS checks via PrometheionSecurityUtils
+- [ ] All classes use `with sharing`
+- [ ] No `without sharing` unless explicitly justified
+- [ ] No dynamic SOQL with user input (SQL injection risk)
+- [ ] No `eval()` or dynamic Apex execution
+- [ ] All external callouts use Named Credentials
+- [ ] Sensitive data encrypted at rest
+- [ ] 75%+ code coverage with meaningful assertions

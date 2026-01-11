@@ -354,6 +354,64 @@ npm run precommit
 - Cache expensive operations where appropriate
 - Be mindful of governor limits
 
+### Apex Bulkification (CRITICAL)
+
+Never perform SOQL or DML inside loops:
+
+```apex
+// WRONG - Governor limit violation
+for (Account acc : accounts) {
+    Contact c = [SELECT Id FROM Contact WHERE AccountId = :acc.Id];  // NO!
+    update acc;  // NO!
+}
+
+// RIGHT - Bulkified
+Map<Id, Contact> contactMap = new Map<Id, Contact>([
+    SELECT Id, AccountId FROM Contact WHERE AccountId IN :accountIds
+]);
+update accounts;  // Single DML outside loop
+```
+
+### LWC Template Syntax (CRITICAL)
+
+Never quote template bindings - this causes compile errors:
+
+```html
+<!-- WRONG - Causes LWC1034 error -->
+<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
+<lightning-button onclick="{handleClick}"></lightning-button>
+
+<!-- RIGHT -->
+<lightning-datatable data={rows} columns={columns}></lightning-datatable>
+<lightning-button onclick={handleClick}></lightning-button>
+```
+
+### LWC Jest Testing Patterns
+
+```javascript
+// Always add { virtual: true } to Salesforce module mocks
+jest.mock("@salesforce/apex/Controller.method", () => ({
+  default: jest.fn()
+}), { virtual: true });
+
+// Use factory functions for class mocks (avoids hoisting issues)
+jest.mock("c/pollingManager", () => {
+  return class MockPollingManager {
+    constructor(callback, interval) {
+      this.callback = callback;
+      this.interval = interval;
+    }
+    start() {}
+    stop() {}
+    cleanup() {}
+  };
+}, { virtual: true });
+
+// Never access private properties in tests
+// WRONG: expect(element.rows).toEqual([])
+// RIGHT: expect(element.shadowRoot.querySelector("lightning-datatable")).not.toBeNull()
+```
+
 ### Legacy Note
 
 The project was previously named "Sentinel" - some references may still exist in configuration files. The current branding is **Prometheion**.
