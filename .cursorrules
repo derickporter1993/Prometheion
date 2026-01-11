@@ -4,19 +4,40 @@
 
 **CRITICAL**: After any work is created or a set of tasks are complete, you MUST follow this exact sequence:
 
-### 1. Commit Changes Locally
+### Quick Command (RECOMMENDED)
+
+Use the sync-all script for automatic workflow:
+
+```bash
+./scripts/sync-all.sh "Your commit message" "Optional merge message"
+```
+
+Or with just commit message (merge message auto-generated):
+
+```bash
+./scripts/sync-all.sh "Your commit message"
+```
+
+### Manual Workflow (Alternative)
+
+If you prefer manual steps:
+
+#### 1. Commit Changes Locally
+
 ```bash
 git add .
 git commit -m "Descriptive commit message"
 ```
 
-### 2. Push to Remote Feature Branch
+#### 2. Push to Remote Feature Branch
+
 ```bash
 BRANCH=$(git branch --show-current)
 git push origin $BRANCH
 ```
 
-### 3. Merge to Main and Push
+#### 3. Merge to Main and Push
+
 ```bash
 BRANCH=$(git branch --show-current)
 git checkout main
@@ -26,7 +47,8 @@ git push origin main
 git checkout $BRANCH  # Return to feature branch
 ```
 
-### Complete Workflow Script
+### Complete Manual Workflow Script
+
 ```bash
 # Get current branch name
 BRANCH=$(git branch --show-current)
@@ -56,12 +78,25 @@ git checkout $BRANCH
 - **NEVER** skip any of these steps - all three steps are mandatory
 
 ## Current Feature Branch
+
 - Default: `claude/review-prometheion-app-0BLu9` (check with `git branch --show-current`)
 
 ## Verification
-After completing the workflow, verify with:
+
+The `sync-all.sh` script automatically verifies synchronization. For manual verification:
+
 ```bash
 git status  # Should show "working tree clean"
 git rev-list --count origin/<feature-branch>..<feature-branch>  # Should be 0
 git rev-list --count origin/main..main  # Should be 0
 ```
+
+## Git Alias (Optional)
+
+You can also create a git alias for even faster access:
+
+```bash
+git config --global alias.sync-all '!f() { ./scripts/sync-all.sh "$@"; }; f'
+```
+
+Then use: `git sync-all "Your commit message"`
