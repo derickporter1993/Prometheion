@@ -15,6 +15,14 @@ public with sharing class PagerDutyIntegration {
      */
     @future(callout=true)
     public static void triggerIncident(String alertDataJson) {
+        // Get routing key from Custom Metadata
+        String routingKey = getRoutingKey();
+        if (String.isBlank(routingKey)) {
+            System.debug(LoggingLevel.WARN, 
+                '[PagerDutyIntegration] Cannot trigger incident: routing key not configured');
+            return;
+        }
+
         Map<String, Object> alertData = (Map<String, Object>)JSON.deserializeUntyped(alertDataJson);
         
         String severity = (String)alertData.get('severity');
@@ -22,7 +30,7 @@ public with sharing class PagerDutyIntegration {
         String dedupKey = 'prometheion-' + alertData.get('alertId');
         
         Map<String, Object> event = new Map<String, Object>{
-            'routing_key' => getRoutingKey(),
+            'routing_key' => routingKey,
             'event_action' => 'trigger',
             'dedup_key' => dedupKey,
             'payload' => new Map<String, Object>{
@@ -58,8 +66,16 @@ public with sharing class PagerDutyIntegration {
      */
     @future(callout=true)
     public static void resolveIncident(String dedupKey) {
+        // Get routing key from Custom Metadata
+        String routingKey = getRoutingKey();
+        if (String.isBlank(routingKey)) {
+            System.debug(LoggingLevel.WARN, 
+                '[PagerDutyIntegration] Cannot resolve incident: routing key not configured');
+            return;
+        }
+
         Map<String, Object> event = new Map<String, Object>{
-            'routing_key' => getRoutingKey(),
+            'routing_key' => routingKey,
             'event_action' => 'resolve',
             'dedup_key' => dedupKey
         };
@@ -73,8 +89,16 @@ public with sharing class PagerDutyIntegration {
      */
     @future(callout=true)
     public static void acknowledgeIncident(String dedupKey) {
+        // Get routing key from Custom Metadata
+        String routingKey = getRoutingKey();
+        if (String.isBlank(routingKey)) {
+            System.debug(LoggingLevel.WARN, 
+                '[PagerDutyIntegration] Cannot acknowledge incident: routing key not configured');
+            return;
+        }
+
         Map<String, Object> event = new Map<String, Object>{
-            'routing_key' => getRoutingKey(),
+            'routing_key' => routingKey,
             'event_action' => 'acknowledge',
             'dedup_key' => dedupKey
         };
@@ -118,7 +142,19 @@ public with sharing class PagerDutyIntegration {
         return new List<Map<String, Object>>();
     }
     
+    /**
+     * Send event to PagerDuty Events API v2
+     * @param event Event payload with routing_key
+     */
     private static void sendToPagerDuty(Map<String, Object> event) {
+        // Validate routing key is present
+        String routingKey = (String)event.get('routing_key');
+        if (String.isBlank(routingKey)) {
+            System.debug(LoggingLevel.ERROR, 
+                '[PagerDutyIntegration] Cannot send event: routing key is missing');
+            return;
+        }
+
         HttpRequest req = new HttpRequest();
         req.setEndpoint(EVENTS_API);
         req.setMethod('POST');
@@ -132,19 +168,55 @@ public with sharing class PagerDutyIntegration {
             
             if (res.getStatusCode() == 202) {
                 Map<String, Object> response = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
-                System.debug(LoggingLevel.INFO, 'PagerDuty event sent: ' + response.get('dedup_key'));
+                System.debug(LoggingLevel.INFO, 
+                    '[PagerDutyIntegration] Event sent successfully: ' + response.get('dedup_key'));
             } else {
-                System.debug(LoggingLevel.ERROR, 'PagerDuty error: ' + res.getBody());
+                System.debug(LoggingLevel.ERROR, 
+                    '[PagerDutyIntegration] API error (status ' + res.getStatusCode() + '): ' + res.getBody());
             }
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'PagerDuty integration error: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 
+                '[PagerDutyIntegration] Integration error: ' + e.getMessage());
         }
     }
     
+    /**
+     * Get PagerDuty routing key from Protected Custom Metadata
+     * @return Routing key or null if not configured
+     */
     private static String getRoutingKey() {
-        // In production, retrieve from Custom Metadata or Named Credential
-        // This is a placeholder
-        return 'your-pagerduty-routing-key';
+        try {
+            // Query Protected Custom Metadata for PagerDuty routing key
+            List<Prometheion_API_Config__mdt> configs = [
+                SELECT API_Key__c, Is_Active__c
+                FROM Prometheion_API_Config__mdt
+                WHERE DeveloperName = 'PagerDuty'
+                AND Is_Active__c = true
+                LIMIT 1
+            ];
+
+            if (configs.isEmpty()) {
+                System.debug(LoggingLevel.WARN, 
+                    '[PagerDutyIntegration] PagerDuty integration not configured. ' +
+                    'Create Prometheion_API_Config__mdt record with DeveloperName=PagerDuty');
+                return null;
+            }
+
+            String routingKey = configs[0].API_Key__c;
+
+            if (String.isBlank(routingKey) || routingKey.contains('PLACEHOLDER')) {
+                System.debug(LoggingLevel.ERROR, 
+                    '[PagerDutyIntegration] PagerDuty routing key not set. ' +
+                    'Update Prometheion_API_Config__mdt.PagerDuty record with actual routing key');
+                return null;
+            }
+
+            return routingKey;
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 
+                '[PagerDutyIntegration] Error retrieving routing key: ' + e.getMessage());
+            return null;
+        }
     }
     
     private static String mapSeverity(String severity) {
