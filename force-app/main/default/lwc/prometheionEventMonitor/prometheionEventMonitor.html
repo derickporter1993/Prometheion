@@ -1,7 +1,7 @@
 <template>
   <lightning-card title="Prometheion Event Monitor" icon-name="standard:event">
     <div class="slds-p-around_medium">
-      <template if:true={hasEvents}>
+      <template if:true="{hasEvents}">
         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
           <thead>
             <tr>
@@ -13,8 +13,8 @@
             </tr>
           </thead>
           <tbody>
-            <template for:each={events} for:item="event">
-              <tr key={event.id}>
+            <template for:each="{events}" for:item="event">
+              <tr key="{event.id}">
                 <td>{event.eventType}</td>
                 <td>{event.entityType}</td>
                 <td>{event.entityId}</td>
@@ -25,7 +25,7 @@
           </tbody>
         </table>
       </template>
-      <template if:false={hasEvents}>
+      <template if:false="{hasEvents}">
         <p class="slds-text-align_center slds-p-around_medium">
           No events received yet. Waiting for events...
         </p>

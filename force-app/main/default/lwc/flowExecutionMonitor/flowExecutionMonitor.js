@@ -28,7 +28,7 @@ export default class FlowExecutionMonitor extends LightningElement {
   async load() {
     try {
       this.rows = await getTopFlows({ limitSize: 20 });
-    } catch (_e) {
+    } catch {
       // Set empty array to prevent UI errors
       this.rows = [];
     }

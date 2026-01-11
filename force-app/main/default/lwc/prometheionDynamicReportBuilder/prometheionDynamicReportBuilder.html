@@ -4,8 +4,8 @@
       <!-- Object Selection -->
       <lightning-combobox
         label="Select Object"
-        value={selectedObject}
-        options={objectOptions}
+        value="{selectedObject}"
+        options="{objectOptions}"
         onchange="
           {
             handleObjectChange;
@@ -16,14 +16,14 @@
       </lightning-combobox>
 
       <!-- Field Selection -->
-      <template if:true={fieldsLoaded}>
+      <template if:true="{fieldsLoaded}">
         <div class="slds-m-top_medium">
           <lightning-dual-listbox
             label="Select Fields"
             source-label="Available Fields"
             selected-label="Selected Fields"
-            options={availableFields}
-            value={selectedFields}
+            options="{availableFields}"
+            value="{selectedFields}"
             onchange="
               {
                 handleFieldChange;
@@ -37,16 +37,16 @@
       </template>
 
       <!-- Filters Section -->
-      <template if:true={showFilters}>
+      <template if:true="{showFilters}">
         <div class="slds-m-top_medium">
           <h3 class="slds-text-heading_small">Filters</h3>
-          <template for:each={filters} for:item="filter">
-            <div key={filter.id} class="slds-grid slds-gutters slds-m-top_small">
+          <template for:each="{filters}" for:item="filter">
+            <div key="{filter.id}" class="slds-grid slds-gutters slds-m-top_small">
               <div class="slds-col slds-size_1-of-4">
                 <lightning-combobox
                   label="Field"
-                  value={filter.field}
-                  options={filterableFields}
+                  value="{filter.field}"
+                  options="{filterableFields}"
                   onchange="
                     {
                       handleFilterFieldChange;
@@ -59,8 +59,8 @@
               <div class="slds-col slds-size_1-of-4">
                 <lightning-combobox
                   label="Operator"
-                  value={filter.operator}
-                  options={operatorOptions}
+                  value="{filter.operator}"
+                  options="{operatorOptions}"
                   onchange="
                     {
                       handleFilterOperatorChange;
@@ -73,7 +73,7 @@
               <div class="slds-col slds-size_1-of-3">
                 <lightning-input
                   label="Value"
-                  value={filter.value}
+                  value="{filter.value}"
                   onchange="
                     {
                       handleFilterValueChange;
@@ -113,14 +113,14 @@
       </template>
 
       <!-- Sort Options -->
-      <template if:true={showSortOptions}>
+      <template if:true="{showSortOptions}">
         <div class="slds-m-top_medium">
           <div class="slds-grid slds-gutters">
             <div class="slds-col slds-size_1-of-2">
               <lightning-combobox
                 label="Sort By"
-                value={sortBy}
-                options={sortableFields}
+                value="{sortBy}"
+                options="{sortableFields}"
                 onchange="
                   {
                     handleSortByChange;
@@ -132,8 +132,8 @@
             <div class="slds-col slds-size_1-of-2">
               <lightning-combobox
                 label="Sort Direction"
-                value={sortDirection}
-                options={sortDirectionOptions}
+                value="{sortDirection}"
+                options="{sortDirectionOptions}"
                 onchange="
                   {
                     handleSortDirectionChange;
@@ -151,7 +151,7 @@
         <lightning-input
           type="number"
           label="Maximum Rows"
-          value={maxRows}
+          value="{maxRows}"
           min="1"
           max="10000"
           onchange="
@@ -173,7 +173,7 @@
               handleRunReport;
             }
           "
-          disabled={isRunDisabled}
+          disabled="{isRunDisabled}"
           class="slds-m-right_small"
         >
         </lightning-button>
@@ -185,19 +185,19 @@
               handleClear;
             }
           "
-          disabled={isLoading}
+          disabled="{isLoading}"
         >
         </lightning-button>
       </div>
 
       <!-- Results Section -->
-      <template if:true={hasResults}>
+      <template if:true="{hasResults}">
         <div class="slds-m-top_large">
           <h3 class="slds-text-heading_small">Results ({recordCount} records)</h3>
           <lightning-datatable
             key-field="Id"
-            data={reportData}
-            columns={columns}
+            data="{reportData}"
+            columns="{columns}"
             hide-checkbox-column
             show-row-number-column
           >
@@ -206,12 +206,12 @@
       </template>
 
       <!-- Loading Spinner -->
-      <template if:true={isLoading}>
+      <template if:true="{isLoading}">
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
       <!-- Error Message -->
-      <template if:true={hasError}>
+      <template if:true="{hasError}">
         <div class="slds-m-top_medium">
           <lightning-alert variant="error" message="{errorMessage}"> </lightning-alert>
         </div>

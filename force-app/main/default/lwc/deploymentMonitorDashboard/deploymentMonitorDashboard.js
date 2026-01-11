@@ -30,7 +30,7 @@ export default class DeploymentMonitorDashboard extends LightningElement {
   async load() {
     try {
       this.rows = await getRecentDeployments({ limitSize: 20 });
-    } catch (_e) {
+    } catch {
       // Set empty array to prevent UI errors
       this.rows = [];
     }

@@ -29,7 +29,7 @@
               refreshData;
             }
           "
-          disabled={isLoading}
+          disabled="{isLoading}"
           aria-label="Refresh dashboard data"
           title="Refresh dashboard data"
         >
@@ -71,8 +71,8 @@
           <h3 class="section-title">Framework Compliance</h3>
           <lightning-combobox
             label="Filter by Framework"
-            value={selectedFramework}
-            options={frameworkOptions}
+            value="{selectedFramework}"
+            options="{frameworkOptions}"
             onchange="
               {
                 handleFrameworkFilter;
@@ -81,7 +81,7 @@
             class="framework-filter"
           ></lightning-combobox>
         </div>
-        <template lwc:if={showDrillDown}>
+        <template lwc:if="{showDrillDown}">
           <div class="drill-down-view">
             <button
               class="back-button"
@@ -95,7 +95,7 @@
             >
               ← Back to All Frameworks
             </button>
-            <template lwc:if={selectedFrameworkDetails}>
+            <template lwc:if="{selectedFrameworkDetails}">
               <div class="framework-detail-card">
                 <h4>{selectedFrameworkDetails.name}</h4>
                 <p class="framework-description">{selectedFrameworkDetails.description}</p>
@@ -113,11 +113,11 @@
             </template>
           </div>
         </template>
-        <template lwc:if={showFrameworkGrid}>
+        <template lwc:if="{showFrameworkGrid}">
           <div class="framework-grid">
-            <template for:each={frameworkList} for:item="fw">
+            <template for:each="{frameworkList}" for:item="fw">
               <div
-                key={fw.name}
+                key="{fw.name}"
                 class="framework-card"
                 data-framework="{fw.key}"
                 onclick="
@@ -156,8 +156,8 @@
         Score Breakdown
       </h3>
       <div class="factors-grid">
-        <template for:each={factors} for:item="factor">
-          <div key={factor.name} class="factor-card">
+        <template for:each="{factors}" for:item="factor">
+          <div key="{factor.name}" class="factor-card">
             <div class="factor-header">
               <span class="factor-name">{factor.name}</span>
               <span class="{factor.statusClass}">{factor.status}</span>
@@ -180,7 +180,7 @@
     </div>
 
     <!-- Top Risks -->
-    <template lwc:if={hasRisks}>
+    <template lwc:if="{hasRisks}">
       <div class="risks-section">
         <h3 class="section-title">
           <svg
@@ -198,8 +198,8 @@
           Top Risks
         </h3>
         <div class="risks-list">
-          <template for:each={filteredTopRisks} for:item="risk">
-            <div key={risk.nodeId} class="risk-card">
+          <template for:each="{filteredTopRisks}" for:item="risk">
+            <div key="{risk.nodeId}" class="risk-card">
               <div class="risk-severity" data-severity="{risk.severity}">
                 <span class="{risk.severityClass}">{risk.severity}</span>
               </div>
@@ -230,7 +230,7 @@
     </template>
 
     <!-- Audit Packages Section -->
-    <template lwc:if={hasAuditPackages}>
+    <template lwc:if="{hasAuditPackages}">
       <div class="audit-packages-section">
         <h3 class="section-title">
           <svg
@@ -248,9 +248,9 @@
           Recent Audit Packages
         </h3>
         <div class="audit-packages-list">
-          <template for:each={auditPackages} for:item="pkg">
+          <template for:each="{auditPackages}" for:item="pkg">
             <div
-              key={pkg.id}
+              key="{pkg.id}"
               class="audit-package-card"
               data-package-id="{pkg.id}"
               onclick="
@@ -271,7 +271,7 @@
               </div>
               <div class="package-footer">
                 <span class="package-created">Created: {formatDate(pkg.createdDate)}</span>
-                <span class="package-created-by" lwc:if={pkg.createdBy}>by {pkg.createdBy}</span>
+                <span class="package-created-by" lwc:if="{pkg.createdBy}">by {pkg.createdBy}</span>
               </div>
             </div>
           </template>
@@ -330,7 +330,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <template lwc:if={isLoading}>
+    <template lwc:if="{isLoading}">
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <span>Calculating compliance scores...</span>

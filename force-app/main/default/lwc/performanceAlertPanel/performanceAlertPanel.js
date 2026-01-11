@@ -28,7 +28,7 @@ export default class PerformanceAlertPanel extends LightningElement {
       onError(() => {
         // EMP API error handled silently - alerts will continue via polling
       });
-    } catch (_error) {
+    } catch {
       // Set empty array to prevent UI errors
       this.rows = [];
     }

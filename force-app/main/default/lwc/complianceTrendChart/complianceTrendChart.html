@@ -1,13 +1,13 @@
 <template>
   <lightning-card title="Compliance Trend" icon-name="standard:chart">
     <div class="slds-p-around_medium">
-      <template if:true={hasData}>
+      <template if:true="{hasData}">
         <div class="chart-container">
           <!-- Chart would be rendered here using Chart.js or similar -->
           <canvas lwc:dom="manual" data-chart-data="{chartData}"></canvas>
         </div>
       </template>
-      <template if:false={hasData}>
+      <template if:false="{hasData}">
         <div class="slds-text-align_center slds-p-around_medium">
           <p>No trend data available</p>
         </div>

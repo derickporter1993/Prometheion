@@ -19,7 +19,7 @@
       </div>
 
       <!-- Phase 1 Framework Details -->
-      <template lwc:if={hasFrameworkDetails}>
+      <template lwc:if="{hasFrameworkDetails}">
         <div class="slds-m-top_medium slds-border_top">
           <div class="slds-text-body_small slds-m-top_small">
             <strong>Framework Mappings:</strong> {mappingCount}
@@ -27,7 +27,7 @@
           <div class="slds-text-body_small"><strong>Evidence Items:</strong> {evidenceCount}</div>
           <div class="slds-text-body_small"><strong>Requirements:</strong> {requirementCount}</div>
 
-          <template lwc:if={hasLatestPackage}>
+          <template lwc:if="{hasLatestPackage}">
             <div class="slds-m-top_small slds-border_top">
               <div class="slds-text-body_small slds-text-title">
                 <strong>Latest Audit Package:</strong>

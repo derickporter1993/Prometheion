@@ -219,7 +219,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
                 SELECT Related_Record_Id__c
                 FROM Compliance_Gap__c
                 WHERE Related_Record_Id__c IN :breachIds
-                AND Status__c NOT IN ('VERIFIED', 'ACCEPTED_RISK')
+                AND Status__c NOT IN ('Verified', 'Accepted Risk')
                 AND CreatedDate >= :DateTime.now().addDays(-1)
                 WITH SECURITY_ENFORCED
             ]) {

@@ -1,15 +1,15 @@
 <template>
   <lightning-card title="Executive KPI Dashboard" icon-name="standard:dashboard">
     <div class="slds-p-around_medium">
-      <template if:true={loading}>
+      <template if:true="{loading}">
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:true={error}>
+      <template if:true="{error}">
         <div class="slds-text-color_error">Error loading KPIs: {error.body.message}</div>
       </template>
 
-      <template if:true={dashboardData}>
+      <template if:true="{dashboardData}">
         <div class="slds-grid slds-gutters">
           <div class="slds-col slds-size_1-of-4">
             <div class="slds-text-align_center">

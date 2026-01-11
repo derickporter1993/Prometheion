@@ -4,7 +4,7 @@
       <lightning-input
         type="checkbox"
         label="Enable AI Reasoning"
-        checked={enableAI}
+        checked="{enableAI}"
         onchange="
           {
             handleToggleAI;
@@ -17,7 +17,7 @@
       <lightning-input
         type="checkbox"
         label="Require Human Approval for HIGH+ Risk"
-        checked={requireApproval}
+        checked="{requireApproval}"
         onchange="
           {
             handleToggleApproval;
@@ -30,7 +30,7 @@
       <lightning-input
         type="checkbox"
         label="Enable Auto-Remediation (DANGER: Bypasses human review)"
-        checked={autoRemediate}
+        checked="{autoRemediate}"
         onchange="
           {
             handleToggleRemediation;
@@ -43,7 +43,7 @@
       <lightning-input
         type="number"
         label="AI Confidence Threshold (0.0 - 1.0)"
-        value={confidenceThreshold}
+        value="{confidenceThreshold}"
         step="0.01"
         min="0.0"
         max="1.0"
@@ -62,7 +62,7 @@
       </div>
       <lightning-textarea
         label="Blacklisted Users (User IDs, comma-separated)"
-        value={blacklistedUsers}
+        value="{blacklistedUsers}"
         onchange="
           {
             handleBlacklistChange;

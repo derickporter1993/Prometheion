@@ -1,11 +1,11 @@
 <template>
   <lightning-card title="Governor Limits">
     <div class="slds-p-around_medium">
-      <template if:true={stats}>
+      <template if:true="{stats}">
         <div class="slds-grid slds-wrap slds-gutters">
           <div class="slds-col slds-size_1-of-2">
             <lightning-progress-ring
-              value={cpuPct}
+              value="{cpuPct}"
               variant="active"
               label="CPU (ms)"
             ></lightning-progress-ring>
@@ -13,7 +13,7 @@
           </div>
           <div class="slds-col slds-size_1-of-2">
             <lightning-progress-ring
-              value={heapPct}
+              value="{heapPct}"
               variant="warning"
               label="Heap (KB)"
             ></lightning-progress-ring>
@@ -22,11 +22,15 @@
         </div>
         <p class="slds-m-top_medium">SOQL: {stats.soql} / 100 • DML: {stats.dml} / 150</p>
       </template>
-      <template if:false={stats}><p>Loading…</p></template>
+      <template if:false="{stats}"><p>Loading…</p></template>
       <div class="slds-m-top_medium">
         <lightning-button
           label="Refresh"
-          onclick={refresh}
+          onclick="
+            {
+              refresh;
+            }
+          "
         ></lightning-button>
       </div>
     </div>

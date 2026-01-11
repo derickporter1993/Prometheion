@@ -6,8 +6,8 @@
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Object"
-            value={selectedObject}
-            options={objectOptions}
+            value="{selectedObject}"
+            options="{objectOptions}"
             onchange="
               {
                 handleObjectChange;
@@ -19,8 +19,8 @@
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Row Field"
-            value={rowField}
-            options={dimensionFields}
+            value="{rowField}"
+            options="{dimensionFields}"
             onchange="
               {
                 handleRowFieldChange;
@@ -32,8 +32,8 @@
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Column Field"
-            value={columnField}
-            options={dimensionFields}
+            value="{columnField}"
+            options="{dimensionFields}"
             onchange="
               {
                 handleColumnFieldChange;
@@ -47,7 +47,7 @@
       <div class="slds-m-bottom_medium">
         <lightning-input
           label="Aggregate Expression (e.g., SUM(Amount))"
-          value={aggregateExpression}
+          value="{aggregateExpression}"
           onchange="
             {
               handleAggregateChange;
@@ -64,31 +64,31 @@
             handleGenerate;
           }
         "
-        disabled={isButtonDisabled}
+        disabled="{isButtonDisabled}"
         variant="brand"
       >
       </lightning-button>
 
       <!-- Results Matrix -->
-      <template if:true={hasResults}>
+      <template if:true="{hasResults}">
         <div class="slds-m-top_large">
           <h3 class="slds-text-heading_small">Matrix Results</h3>
           <table class="slds-table slds-table_bordered slds-table_cell-buffer">
             <thead>
               <tr>
                 <th></th>
-                <template for:each={matrixColumns} for:item="col">
-                  <th key={col}>{col}</th>
+                <template for:each="{matrixColumns}" for:item="col">
+                  <th key="{col}">{col}</th>
                 </template>
                 <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <template for:each={computedMatrixData} for:item="rowData">
-                <tr key={rowData.row}>
+              <template for:each="{computedMatrixData}" for:item="rowData">
+                <tr key="{rowData.row}">
                   <td><strong>{rowData.row}</strong></td>
-                  <template for:each={rowData.cells} for:item="cell">
-                    <td key={cell.col}>{cell.value}</td>
+                  <template for:each="{rowData.cells}" for:item="cell">
+                    <td key="{cell.col}">{cell.value}</td>
                   </template>
                   <td><strong>{rowData.total}</strong></td>
                 </tr>
@@ -98,11 +98,11 @@
         </div>
       </template>
 
-      <template if:true={isLoading}>
+      <template if:true="{isLoading}">
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
+      <template if:true="{hasError}">
         <lightning-alert variant="error" message="{errorMessage}"></lightning-alert>
       </template>
     </div>

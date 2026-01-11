@@ -157,8 +157,8 @@ export default class PollingManager {
     if (this.callback && typeof this.callback === "function") {
       try {
         this.callback();
-      } catch (error) {
-        console.error("PollingManager callback error:", error);
+      } catch {
+        // Silently handle callback errors
       }
     }
   }

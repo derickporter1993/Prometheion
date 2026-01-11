@@ -382,30 +382,38 @@ Never quote template bindings - this causes compile errors:
 <lightning-button onclick="{handleClick}"></lightning-button>
 
 <!-- RIGHT -->
-<lightning-datatable data={rows} columns={columns}></lightning-datatable>
-<lightning-button onclick={handleClick}></lightning-button>
+<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
+<lightning-button onclick="{handleClick}"></lightning-button>
 ```
 
 ### LWC Jest Testing Patterns
 
 ```javascript
 // Always add { virtual: true } to Salesforce module mocks
-jest.mock("@salesforce/apex/Controller.method", () => ({
-  default: jest.fn()
-}), { virtual: true });
+jest.mock(
+  "@salesforce/apex/Controller.method",
+  () => ({
+    default: jest.fn(),
+  }),
+  { virtual: true }
+);
 
 // Use factory functions for class mocks (avoids hoisting issues)
-jest.mock("c/pollingManager", () => {
-  return class MockPollingManager {
-    constructor(callback, interval) {
-      this.callback = callback;
-      this.interval = interval;
-    }
-    start() {}
-    stop() {}
-    cleanup() {}
-  };
-}, { virtual: true });
+jest.mock(
+  "c/pollingManager",
+  () => {
+    return class MockPollingManager {
+      constructor(callback, interval) {
+        this.callback = callback;
+        this.interval = interval;
+      }
+      start() {}
+      stop() {}
+      cleanup() {}
+    };
+  },
+  { virtual: true }
+);
 
 // Never access private properties in tests
 // WRONG: expect(element.rows).toEqual([])

@@ -3,7 +3,7 @@
     <div class="slds-p-around_medium">
       <lightning-input
         label="Package Name"
-        value={packageName}
+        value="{packageName}"
         onchange="
           {
             handlePackageNameChange;
@@ -14,8 +14,8 @@
 
       <lightning-combobox
         label="Framework"
-        value={framework}
-        options={frameworks}
+        value="{framework}"
+        options="{frameworks}"
         onchange="
           {
             handleFrameworkChange;
@@ -27,7 +27,7 @@
       <lightning-input
         type="date"
         label="Audit Period Start"
-        value={startDate}
+        value="{startDate}"
         onchange="
           {
             handleStartDateChange;
@@ -39,7 +39,7 @@
       <lightning-input
         type="date"
         label="Audit Period End"
-        value={endDate}
+        value="{endDate}"
         onchange="
           {
             handleEndDateChange;
@@ -56,7 +56,7 @@
             handleGenerate;
           }
         "
-        disabled={isLoading}
+        disabled="{isLoading}"
         class="slds-m-top_medium"
       ></lightning-button>
     </div>

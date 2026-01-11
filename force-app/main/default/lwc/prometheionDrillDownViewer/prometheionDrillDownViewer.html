@@ -3,8 +3,8 @@
     <div class="slds-p-around_medium">
       <lightning-datatable
         key-field="Id"
-        data={records}
-        columns={columns}
+        data="{records}"
+        columns="{columns}"
         hide-checkbox-column
         show-row-number-column
         onrowaction="{handleRowAction}"
@@ -13,11 +13,11 @@
       >
       </lightning-datatable>
 
-      <template if:true={isLoading}>
+      <template if:true="{isLoading}">
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
+      <template if:true="{hasError}">
         <lightning-alert variant="error" message="{errorMessage}"></lightning-alert>
       </template>
 
@@ -29,7 +29,7 @@
               handleExport;
             }
           "
-          disabled={isExportDisabled}
+          disabled="{isExportDisabled}"
         >
         </lightning-button>
       </div>

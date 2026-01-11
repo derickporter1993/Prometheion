@@ -2,25 +2,25 @@
   <lightning-card title="Prometheion Executive KPI Dashboard" icon-name="custom:custom14">
     <div class="slds-p-around_medium">
       <div class="slds-grid slds-wrap slds-gutters">
-        <template for:each={kpiMetrics} for:item="metric">
+        <template for:each="{kpiMetrics}" for:item="metric">
           <div
-            key={metric.kpiName}
+            key="{metric.kpiName}"
             class="slds-col slds-size_1-of-3 slds-medium-size_1-of-2 slds-large-size_1-of-3"
           >
             <div class="slds-card slds-m-bottom_small">
               <div class="slds-card__body slds-card__body_inner">
                 <div class="slds-text-heading_small slds-m-bottom_x-small">{metric.label}</div>
-                <template if:true={metric.hasError}>
+                <template if:true="{metric.hasError}">
                   <div class="slds-text-color_error">{metric.errorMessage}</div>
                 </template>
-                <template if:false={metric.hasError}>
+                <template if:false="{metric.hasError}">
                   <div class="slds-text-heading_large slds-m-vertical_small">
                     {metric.formattedValue}
                   </div>
-                  <template if:true={metric.targetValue}>
+                  <template if:true="{metric.targetValue}">
                     <div class="slds-text-body_small">
                       Target: {metric.formattedTarget}
-                      <template if:true={metric.percentOfTarget}>
+                      <template if:true="{metric.percentOfTarget}">
                         ({metric.percentOfTarget}%)
                       </template>
                     </div>
@@ -36,11 +36,11 @@
         </template>
       </div>
 
-      <template if:true={isLoading}>
+      <template if:true="{isLoading}">
         <lightning-spinner alternative-text="Loading KPIs" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
+      <template if:true="{hasError}">
         <lightning-alert variant="error" message="{errorMessage}"></lightning-alert>
       </template>
     </div>

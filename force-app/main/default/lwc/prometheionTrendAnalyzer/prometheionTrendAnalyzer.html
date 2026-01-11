@@ -6,8 +6,8 @@
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Object"
-            value={selectedObject}
-            options={objectOptions}
+            value="{selectedObject}"
+            options="{objectOptions}"
             onchange="
               {
                 handleObjectChange;
@@ -19,8 +19,8 @@
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Date Field"
-            value={dateField}
-            options={dateFields}
+            value="{dateField}"
+            options="{dateFields}"
             onchange="
               {
                 handleDateFieldChange;
@@ -32,8 +32,8 @@
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Metric Field"
-            value={metricField}
-            options={metricFields}
+            value="{metricField}"
+            options="{metricFields}"
             onchange="
               {
                 handleMetricFieldChange;
@@ -45,8 +45,8 @@
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Granularity"
-            value={granularity}
-            options={granularityOptions}
+            value="{granularity}"
+            options="{granularityOptions}"
             onchange="
               {
                 handleGranularityChange;
@@ -61,7 +61,7 @@
         <lightning-input
           type="number"
           label="Months Back"
-          value={monthsBack}
+          value="{monthsBack}"
           min="1"
           max="36"
           onchange="
@@ -80,13 +80,13 @@
             handleAnalyze;
           }
         "
-        disabled={isButtonDisabled}
+        disabled="{isButtonDisabled}"
         variant="brand"
       >
       </lightning-button>
 
       <!-- Trend Chart Data -->
-      <template if:true={hasResults}>
+      <template if:true="{hasResults}">
         <div class="slds-m-top_large">
           <h3 class="slds-text-heading_small">Trend Analysis</h3>
           <div class="slds-text-body_regular">
@@ -106,8 +106,8 @@
                 </tr>
               </thead>
               <tbody>
-                <template for:each={trendBuckets} for:item="bucket">
-                  <tr key={bucket.bucketDate}>
+                <template for:each="{trendBuckets}" for:item="bucket">
+                  <tr key="{bucket.bucketDate}">
                     <td>{bucket.bucketDate}</td>
                     <td>{bucket.metricValue}</td>
                     <td>{bucket.changeFromPrevious}</td>
@@ -120,11 +120,11 @@
         </div>
       </template>
 
-      <template if:true={isLoading}>
+      <template if:true="{isLoading}">
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
+      <template if:true="{hasError}">
         <lightning-alert variant="error" message="{errorMessage}"></lightning-alert>
       </template>
     </div>

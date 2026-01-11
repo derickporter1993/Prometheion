@@ -1,15 +1,15 @@
 <template>
   <lightning-card title="Compliance Dashboard" icon-name="standard:audit">
     <div class="slds-p-around_medium">
-      <template if:true={loading}>
+      <template if:true="{loading}">
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:true={error}>
+      <template if:true="{error}">
         <div class="slds-text-color_error">Error loading dashboard: {error.body.message}</div>
       </template>
 
-      <template if:true={hasData}>
+      <template if:true="{hasData}">
         <div class="slds-grid slds-gutters">
           <div class="slds-col slds-size_1-of-1">
             <c-framework-selector frameworks="{frameworks}"></c-framework-selector>
@@ -17,8 +17,8 @@
         </div>
 
         <div class="slds-grid slds-gutters slds-m-top_medium">
-          <template for:each={frameworks} for:item="framework">
-            <div key={framework.framework} class="slds-col slds-size_1-of-3">
+          <template for:each="{frameworks}" for:item="framework">
+            <div key="{framework.framework}" class="slds-col slds-size_1-of-3">
               <c-compliance-score-card framework="{framework}"></c-compliance-score-card>
             </div>
           </template>
@@ -30,8 +30,8 @@
           </div>
           <div class="slds-col slds-size_1-of-2">
             <lightning-card title="Recent Evidence">
-              <template for:each={recentEvidence} for:item="evidence">
-                <div key={evidence.Id} class="slds-p-around_small">
+              <template for:each="{recentEvidence}" for:item="evidence">
+                <div key="{evidence.Id}" class="slds-p-around_small">
                   <div class="slds-text-heading_small">{evidence.Evidence_Type__c}</div>
                   <div class="slds-text-body_small">{evidence.Evidence_Date__c}</div>
                 </div>

@@ -9,8 +9,8 @@
       <div class="input-group">
         <label>Industry</label>
         <lightning-combobox
-          value={industry}
-          options={industryOptions}
+          value="{industry}"
+          options="{industryOptions}"
           onchange="
             {
               handleIndustryChange;
@@ -24,7 +24,7 @@
         <label>Organization Size (Users)</label>
         <lightning-input
           type="number"
-          value={orgSize}
+          value="{orgSize}"
           onchange="
             {
               handleOrgSizeChange;
@@ -38,7 +38,7 @@
         <label>Current Annual Audit Spend ($)</label>
         <lightning-input
           type="number"
-          value={currentAuditSpend}
+          value="{currentAuditSpend}"
           formatter="currency"
           onchange="
             {
@@ -53,7 +53,7 @@
         <label>Current Audit Prep Hours/Year</label>
         <lightning-input
           type="number"
-          value={currentAuditPrepHours}
+          value="{currentAuditPrepHours}"
           onchange="
             {
               handleHoursChange;
@@ -67,7 +67,7 @@
         <label>Compliance Analyst Hourly Rate ($)</label>
         <lightning-input
           type="number"
-          value={hourlyRate}
+          value="{hourlyRate}"
           formatter="currency"
           onchange="
             {
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <template if:true={showResults}>
+    <template if:true="{showResults}">
       <div class="roi-results">
         <div class="results-header">
           <h3>Your ROI Analysis</h3>
@@ -122,13 +122,13 @@
         </div>
 
         <div class="roi-summary">
-          <template if:true={hasPositiveROI}>
+          <template if:true="{hasPositiveROI}">
             <div class="summary-positive">
               <strong>Prometheion pays for itself in {roiResults.paybackWeeks} weeks</strong>
               <p>You'll save ${formattedNetBenefit} in the first year alone.</p>
             </div>
           </template>
-          <template if:false={hasPositiveROI}>
+          <template if:false="{hasPositiveROI}">
             <div class="summary-negative">
               <strong>Adjust your inputs to see potential savings</strong>
               <p>Most organizations see 80-85% reduction in audit prep time.</p>

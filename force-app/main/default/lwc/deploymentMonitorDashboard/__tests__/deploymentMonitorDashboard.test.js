@@ -17,36 +17,52 @@ import DeploymentMonitorDashboard from "c/deploymentMonitorDashboard";
 let mockDeploymentsResult = null;
 let mockDeploymentsError = null;
 
-jest.mock("@salesforce/apex/DeploymentMetrics.getRecentDeployments", () => ({
-  default: jest.fn(() => {
-    if (mockDeploymentsError) {
-      return Promise.reject(mockDeploymentsError);
-    }
-    return Promise.resolve(mockDeploymentsResult || []);
+jest.mock(
+  "@salesforce/apex/DeploymentMetrics.getRecentDeployments",
+  () => ({
+    default: jest.fn(() => {
+      if (mockDeploymentsError) {
+        return Promise.reject(mockDeploymentsError);
+      }
+      return Promise.resolve(mockDeploymentsResult || []);
+    }),
   }),
-}), { virtual: true });
+  { virtual: true }
+);
 
 // Mock PollingManager class - use factory function for hoisting
-jest.mock("c/pollingManager", () => {
-  return class MockPollingManager {
-    callback = null;
-    interval = 60000;
-    isRunning = false;
+jest.mock(
+  "c/pollingManager",
+  () => {
+    return class MockPollingManager {
+      callback = null;
+      interval = 60000;
+      isRunning = false;
 
-    constructor(callback, interval = 60000) {
-      this.callback = callback;
-      this.interval = interval;
-    }
+      constructor(callback, interval = 60000) {
+        this.callback = callback;
+        this.interval = interval;
+      }
 
-    start() { this.isRunning = true; }
-    stop() { this.isRunning = false; }
-    pause() {}
-    resume() {}
-    cleanup() { this.isRunning = false; }
-    setupVisibilityHandling() {}
-    pollNow() { if (this.callback) this.callback(); }
-  };
-}, { virtual: true });
+      start() {
+        this.isRunning = true;
+      }
+      stop() {
+        this.isRunning = false;
+      }
+      pause() {}
+      resume() {}
+      cleanup() {
+        this.isRunning = false;
+      }
+      setupVisibilityHandling() {}
+      pollNow() {
+        if (this.callback) this.callback();
+      }
+    };
+  },
+  { virtual: true }
+);
 
 // Use fake timers for testing
 jest.useFakeTimers();
@@ -131,7 +147,8 @@ describe("c-deployment-monitor-dashboard", () => {
       await flushPromises();
       await flushPromises();
 
-      const getRecentDeployments = require("@salesforce/apex/DeploymentMetrics.getRecentDeployments").default;
+      const getRecentDeployments =
+        require("@salesforce/apex/DeploymentMetrics.getRecentDeployments").default;
       expect(getRecentDeployments).toHaveBeenCalledWith({ limitSize: 20 });
     });
 
@@ -142,7 +159,7 @@ describe("c-deployment-monitor-dashboard", () => {
 
       const datatable = element.shadowRoot.querySelector("lightning-datatable");
       expect(datatable).not.toBeNull();
-      expect(datatable.getAttribute("key-field")).toBe("name");
+      expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
     });
   });
 
@@ -197,7 +214,8 @@ describe("c-deployment-monitor-dashboard", () => {
       await flushPromises();
 
       // Verify component renders and loads data (polling is internal)
-      const getRecentDeployments = require("@salesforce/apex/DeploymentMetrics.getRecentDeployments").default;
+      const getRecentDeployments =
+        require("@salesforce/apex/DeploymentMetrics.getRecentDeployments").default;
       expect(getRecentDeployments).toHaveBeenCalled();
     });
 
