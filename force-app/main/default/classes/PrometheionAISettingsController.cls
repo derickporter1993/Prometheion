@@ -113,11 +113,24 @@ public with sharing class PrometheionAISettingsController {
             logAuditEvent('AI_SETTINGS_CHANGED', 'Prometheion_AI_Settings__c', sanitizedSettings[0].Id, 
                 'AI Settings updated by ' + UserInfo.getUserName());
         } catch (DmlException e) {
-            System.debug(LoggingLevel.ERROR, 'DML error saving settings: ' + e.getMessage());
-            throw new AuraHandledException('Error saving settings: ' + getSafeDmlMessage(e));
+            // Log detailed error server-side with correlation ID
+            String correlationId = 'AI_SETTINGS-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
+            System.debug(LoggingLevel.ERROR, 
+                'DML error saving settings [CorrelationId: ' + correlationId + ']: ' + 
+                e.getMessage() + ' | DML: ' + getSafeDmlMessage(e));
+            
+            // Return user-safe generic message (no internal details)
+            throw new AuraHandledException('Unable to save settings. Please try again or contact your administrator.');
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Error saving settings: ' + e.getMessage());
-            throw new AuraHandledException('Error saving settings: ' + e.getMessage());
+            // Log detailed error server-side with correlation ID
+            String correlationId = 'AI_SETTINGS-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
+            String errorCategory = categorizeError(e);
+            System.debug(LoggingLevel.ERROR, 
+                'Error saving settings [CorrelationId: ' + correlationId + ', Category: ' + errorCategory + ']: ' + 
+                e.getMessage());
+            
+            // Return user-safe generic message (no internal details)
+            throw new AuraHandledException('Unable to save settings. Please try again or contact your administrator.');
         }
     }
     
@@ -165,5 +178,20 @@ public with sharing class PrometheionAISettingsController {
             return e != null ? e.getMessage() : 'Unknown DML error';
         }
         return e.getDmlMessage(0);
+    }
+    
+    /**
+     * Categorize error for logging (without exposing details)
+     */
+    private static String categorizeError(Exception e) {
+        if (e instanceof DmlException) {
+            return 'DML_ERROR';
+        } else if (e instanceof NullPointerException) {
+            return 'NULL_POINTER_ERROR';
+        } else if (e instanceof IllegalArgumentException) {
+            return 'VALIDATION_ERROR';
+        } else {
+            return 'GENERIC_ERROR';
+        }
     }
 }

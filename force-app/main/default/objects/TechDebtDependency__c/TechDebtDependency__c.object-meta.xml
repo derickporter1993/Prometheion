@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tech Debt Dependency</label>
+    <pluralLabel>Tech Debt Dependencies</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <displayFormat>TDD-{00000}</displayFormat>
+        <label>Dependency Number</label>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableReports>true</enableReports>
+    <enableHistory>true</enableHistory>
+    <enableSearch>true</enableSearch>
+
+    <!-- Fields -->
+    <fields>
+        <fullName>SourceDebt__c</fullName>
+        <label>Source Tech Debt</label>
+        <type>Lookup</type>
+        <referenceTo>TechDebt__c</referenceTo>
+        <relationshipLabel>Outgoing Dependencies</relationshipLabel>
+        <relationshipName>OutgoingDependencies</relationshipName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <required>true</required>
+    </fields>
+
+    <fields>
+        <fullName>TargetDebt__c</fullName>
+        <label>Target Tech Debt</label>
+        <type>Lookup</type>
+        <referenceTo>TechDebt__c</referenceTo>
+        <relationshipLabel>Incoming Dependencies</relationshipLabel>
+        <relationshipName>IncomingDependencies</relationshipName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <required>true</required>
+    </fields>
+
+    <fields>
+        <fullName>DependencyType__c</fullName>
+        <label>Dependency Type</label>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value><fullName>Blocks</fullName><default>true</default><label>Blocks</label></value>
+                <value><fullName>RelatesTo</fullName><default>false</default><label>Relates To</label></value>
+                <value><fullName>DuplicateOf</fullName><default>false</default><label>Duplicate Of</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <validationRules>
+        <fullName>SourceNotEqualTarget</fullName>
+        <active>true</active>
+        <errorConditionFormula>SourceDebt__c = TargetDebt__c</errorConditionFormula>
+        <errorMessage>Source and Target cannot be the same Tech Debt.</errorMessage>
+    </validationRules>
+
+    <!-- List View -->
+    <listViews>
+        <fullName>All</fullName>
+        <label>All</label>
+        <filterScope>Everything</filterScope>
+        <columns>NAME</columns>
+        <columns>SourceDebt__c</columns>
+        <columns>DependencyType__c</columns>
+        <columns>TargetDebt__c</columns>
+        <columns>OwnerId</columns>
+    </listViews>
+
+    <compactLayouts>
+        <fullName>Dependency_Compact</fullName>
+        <label>Dependency Compact</label>
+        <fields>SourceDebt__c</fields>
+        <fields>DependencyType__c</fields>
+        <fields>TargetDebt__c</fields>
+    </compactLayouts>
+</CustomObject>

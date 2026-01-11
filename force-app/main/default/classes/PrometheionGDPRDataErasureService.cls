@@ -37,6 +37,12 @@ public with sharing class PrometheionGDPRDataErasureService {
         Contact subject = contacts[0];
         String subjectEmail = subject.Email;
 
+        // Validate first
+        ValidationResult validation = validateForErasure(contactId);
+        if (!validation.canErase) {
+            throw new GDPRException('Erasure blocked: ' + String.join(validation.blockers, ', '));
+        }
+
         // Create audit log BEFORE deletion (survives record deletion)
         GDPR_Erasure_Request__c auditLog = new GDPR_Erasure_Request__c(
             Contact_Email__c = subjectEmail,
@@ -47,6 +53,9 @@ public with sharing class PrometheionGDPRDataErasureService {
             Requested_By__c = UserInfo.getUserId()
         );
         Database.insert(auditLog, AccessLevel.USER_MODE);
+
+        // Add savepoint for rollback
+        Savepoint sp = Database.setSavepoint();
 
         // Cascade delete related records
         try {
@@ -120,11 +129,29 @@ public with sharing class PrometheionGDPRDataErasureService {
 
             return new ErasureResult(true, auditLog.Id, 'Data successfully erased');
 
-        } catch (DmlException e) {
+        } catch (Exception e) {
+            // Rollback all changes
+            Database.rollback(sp);
+
+            // Log error
+            insert new Integration_Error__c(
+                Error_Type__c = 'GDPR_ERASURE_FAILURE',
+                Error_Message__c = e.getMessage() != null ? e.getMessage().left(255) : 'Unknown error',
+                Stack_Trace__c = e.getStackTraceString() != null ? e.getStackTraceString().left(32000) : '',
+                Context__c = 'ContactId: ' + contactId,
+                Timestamp__c = System.now()
+            );
+
+            // Update audit log to failed
             auditLog.Status__c = 'Failed';
             auditLog.Error_Message__c = e.getMessage();
-            Database.update(auditLog, AccessLevel.USER_MODE);
-            throw new GDPRException('Erasure failed: ' + e.getMessage());
+            try {
+                Database.update(auditLog, AccessLevel.USER_MODE);
+            } catch (Exception updateError) {
+                System.debug(LoggingLevel.ERROR, 'Failed to update audit log: ' + updateError.getMessage());
+            }
+
+            throw new GDPRException('Failed to complete erasure: ' + e.getMessage(), e);
         }
     }
 

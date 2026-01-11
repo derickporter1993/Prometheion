@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Control_Id__c</fullName>
-    <description>Unique control identifier (e.g., CC6.1, 164.312(a))</description>
-    <externalId>true</externalId>
+    <description>Unique identifier for the compliance control</description>
+    <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>Control ID</label>
-    <length>50</length>
+    <label>Control Id</label>
+    <length>80</length>
     <required>true</required>
     <type>Text</type>
-    <unique>false</unique>
+    <unique>true</unique>
 </CustomField>

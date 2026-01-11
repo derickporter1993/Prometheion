@@ -1,0 +1,64 @@
+/* Statistics Cards */
+.stat-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card.total {
+    background-color: #f3f3f3;
+    border-left: 4px solid #032d60;
+}
+
+.stat-card.critical {
+    background-color: #fef0f0;
+    border-left: 4px solid #c23934;
+}
+
+.stat-card.high {
+    background-color: #fef3e0;
+    border-left: 4px solid #e87722;
+}
+
+.stat-card.medium {
+    background-color: #fffbeb;
+    border-left: 4px solid #f7b924;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #032d60;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Risk Level Colors */
+.risk-critical {
+    color: #c23934;
+    font-weight: bold;
+}
+
+.risk-high {
+    color: #e87722;
+    font-weight: bold;
+}
+
+.risk-medium {
+    color: #f7b924;
+}
+
+.risk-low {
+    color: #4bca81;
+}
+
+/* Modal backdrop */
+.slds-backdrop {
+    position: fixed;
+}

@@ -6,8 +6,9 @@
   width: 100%;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
+/* Mobile-first responsive design */
+/* Mobile: Stack everything (max-width: 767px) */
+@media (max-width: 767px) {
   .datatable-wrapper {
     width: 100%;
     overflow-x: scroll;
@@ -16,5 +17,66 @@
   /* Ensure datatable is scrollable on mobile */
   .datatable-wrapper lightning-datatable {
     min-width: 600px;
+  }
+
+  /* Adjust card padding and spacing */
+  .slds-card {
+    padding: 12px;
+  }
+
+  .slds-card__header {
+    padding: 12px;
+  }
+
+  .slds-card__body {
+    padding: 12px;
+  }
+
+  /* Stack chart containers */
+  .chart-container {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+}
+
+/* Tablet: 2 columns (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .chart-container {
+    width: 48%;
+    display: inline-block;
+    margin-right: 2%;
+    margin-bottom: 16px;
+  }
+
+  .chart-container:nth-child(even) {
+    margin-right: 0;
+  }
+}
+
+/* Desktop: 3-4 columns (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .chart-container {
+    width: 32%;
+    display: inline-block;
+    margin-right: 1.33%;
+    margin-bottom: 16px;
+  }
+
+  .chart-container:nth-child(3n) {
+    margin-right: 0;
+  }
+}
+
+/* Large Desktop: 4+ columns (min-width: 1280px) */
+@media (min-width: 1280px) {
+  .chart-container {
+    width: 24%;
+    display: inline-block;
+    margin-right: 1%;
+    margin-bottom: 16px;
+  }
+
+  .chart-container:nth-child(4n) {
+    margin-right: 0;
   }
 }

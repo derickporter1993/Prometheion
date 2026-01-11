@@ -19,7 +19,7 @@ Complete setup instructions for deploying and configuring Prometheion in your Sa
 
 ```bash
 # Clone the repo (if not already done)
-git clone https://github.com/YOUR_USERNAME/prometheion.git
+git clone https://github.com/derickporter1993/Prometheion.git
 cd prometheion
 
 # Authenticate to your Salesforce org
@@ -223,9 +223,9 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
 
 ## 🆘 Support
 
-- **Issues:** [GitHub Issues](https://github.com/YOUR_USERNAME/prometheion/issues)
+- **Issues:** [GitHub Issues](https://github.com/derickporter1993/Prometheion/issues)
 - **Documentation:** [docs/](../docs/)
-- **Discussions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/prometheion/discussions)
+- **Discussions:** [GitHub Discussions](https://github.com/derickporter1993/Prometheion/discussions)
 
 ---
 

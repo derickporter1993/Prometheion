@@ -32,6 +32,10 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
     return this.scoreResult?.rating ?? "N/A";
   }
 
+  get overallScoreAriaLabel() {
+    return `Overall compliance score: ${this.displayScore} out of 100, rated ${this.rating}`;
+  }
+
   get ratingBadgeClass() {
     const rating = this.rating.toLowerCase();
     return `rating-badge rating-${rating === "needs_improvement" ? "fair" : rating}`;
@@ -112,13 +116,15 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
     }
 
     return filteredFrameworks.map((fw) => {
-      const score = this.scoreResult?.frameworkScores?.[fw.key] ?? 0;
+      const score = Math.round(this.scoreResult?.frameworkScores?.[fw.key] ?? 0);
       return {
         ...fw,
-        score: Math.round(score),
+        score,
         scoreClass: this.getScoreClass(score),
         progressStyle: `width: ${score}%; background: ${fw.color}`,
         isSelected: this.selectedFramework === fw.key,
+        ariaLabel: `${fw.name}: ${score}% compliance. ${fw.description}. Click to view details.`,
+        progressLabel: `${fw.name} compliance progress: ${score}%`,
       };
     });
   }
@@ -154,12 +160,18 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
   get factors() {
     if (!this.scoreResult?.factors) return [];
 
-    return this.scoreResult.factors.map((factor) => ({
-      ...factor,
-      statusClass: this.getStatusClass(factor.status),
-      barStyle: `width: ${factor.score}%; background: ${this.getBarColor(factor.score)}`,
-      weightPercent: Math.round(factor.weight * 100),
-    }));
+    return this.scoreResult.factors.map((factor) => {
+      const weightPercent = Math.round(factor.weight * 100);
+      return {
+        ...factor,
+        statusClass: this.getStatusClass(factor.status),
+        barStyle: `width: ${factor.score}%; background: ${this.getBarColor(factor.score)}`,
+        weightPercent,
+        ariaLabel: `${factor.name}: ${factor.score} out of 100, status ${factor.status}`,
+        progressLabel: `${factor.name} score progress: ${factor.score}%`,
+        weightAriaLabel: `Weight: ${weightPercent}%, Contribution: ${factor.weightedScore}`,
+      };
+    });
   }
 
   get topRisks() {
@@ -169,6 +181,8 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
       ...risk,
       severityClass: `severity-badge severity-${risk.severity.toLowerCase()}`,
       viewDetailsLabel: `View details for ${risk.title || "risk"}`,
+      severityAriaLabel: `Severity: ${risk.severity}`,
+      frameworkAriaLabel: `Framework: ${risk.framework}`,
     }));
   }
 
@@ -197,6 +211,22 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
     if (!dateValue) return "";
     const date = new Date(dateValue);
     return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  }
+
+  get formattedAuditPackages() {
+    if (!this.auditPackages || this.auditPackages.length === 0) return [];
+    return this.auditPackages.map((pkg) => {
+      const formattedPeriodStart = this.formatDate(pkg.periodStart);
+      const formattedPeriodEnd = this.formatDate(pkg.periodEnd);
+      const formattedCreatedDate = this.formatDate(pkg.createdDate);
+      return {
+        ...pkg,
+        formattedPeriodStart,
+        formattedPeriodEnd,
+        formattedCreatedDate,
+        ariaLabel: `${pkg.packageName}, ${pkg.framework} framework, status: ${pkg.status}, period: ${formattedPeriodStart} to ${formattedPeriodEnd}. Click to view details.`,
+      };
+    });
   }
 
   get showFrameworkGrid() {
@@ -277,6 +307,20 @@ export default class PrometheionDashboard extends NavigationMixin(LightningEleme
     if (frameworkKey) {
       this.selectedFramework = frameworkKey;
       this.showDrillDown = true;
+    }
+  }
+
+  handleFrameworkKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.handleFrameworkClick(event);
+    }
+  }
+
+  handleAuditPackageKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.handleAuditPackageClick(event);
     }
   }
 

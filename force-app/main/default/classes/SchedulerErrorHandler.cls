@@ -4,73 +4,70 @@
  * Provides centralized error logging, success logging, and configuration
  * retrieval from Custom Metadata for all Prometheion schedulers.
  *
+ * Security: Uses 'without sharing' to ensure error logging always works
+ * regardless of user permissions. This is intentional for system-level logging.
+ *
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class SchedulerErrorHandler {
+public without sharing class SchedulerErrorHandler {
+    // System context ensures error logging always works regardless of user permissions
 
     /**
-     * Log a scheduler error to Integration_Error__c
-     * @param schedulerName - Name of the scheduler that failed
-     * @param e - The exception that occurred
+     * Log scheduler error to Integration_Error__c
+     * @param schedulerName Name of the scheduler that failed
+     * @param e Exception that occurred
      */
     public static void logError(String schedulerName, Exception e) {
         try {
-            if (Schema.sObjectType.Integration_Error__c.isCreateable()) {
-                insert new Integration_Error__c(
-                    Error_Type__c = 'SCHEDULER_FAILURE',
-                    Error_Message__c = e.getMessage().left(255),
-                    Stack_Trace__c = e.getStackTraceString().left(32000),
-                    Context__c = schedulerName,
-                    Timestamp__c = System.now()
-                );
-            }
+            insert new Integration_Error__c(
+                Error_Type__c = 'SCHEDULER_FAILURE',
+                Error_Message__c = e.getMessage() != null ? e.getMessage().left(255) : 'Unknown error',
+                Stack_Trace__c = e.getStackTraceString() != null ? e.getStackTraceString().left(32000) : '',
+                Context__c = schedulerName,
+                Timestamp__c = System.now()
+            );
         } catch (Exception logError) {
-            System.debug(LoggingLevel.ERROR,
-                '[SchedulerErrorHandler] Failed to log error: ' + logError.getMessage());
+            System.debug(LoggingLevel.ERROR, 'SchedulerErrorHandler: Failed to log error: ' + logError.getMessage());
         }
     }
 
     /**
-     * Log a scheduler success to Integration_Error__c
-     * @param schedulerName - Name of the scheduler that succeeded
-     * @param details - Details about the successful execution
+     * Log scheduler success to Integration_Error__c
+     * @param schedulerName Name of the scheduler that succeeded
+     * @param details Success details message
      */
     public static void logSuccess(String schedulerName, String details) {
         try {
-            if (Schema.sObjectType.Integration_Error__c.isCreateable()) {
-                insert new Integration_Error__c(
-                    Error_Type__c = 'SCHEDULER_SUCCESS',
-                    Error_Message__c = details.left(255),
-                    Context__c = schedulerName,
-                    Timestamp__c = System.now()
-                );
-            }
+            insert new Integration_Error__c(
+                Error_Type__c = 'SCHEDULER_SUCCESS',
+                Error_Message__c = details != null ? details.left(255) : 'Scheduler completed successfully',
+                Context__c = schedulerName,
+                Timestamp__c = System.now()
+            );
         } catch (Exception logError) {
-            System.debug(LoggingLevel.ERROR,
-                '[SchedulerErrorHandler] Failed to log success: ' + logError.getMessage());
+            System.debug(LoggingLevel.ERROR, 'SchedulerErrorHandler: Failed to log success: ' + logError.getMessage());
         }
     }
 
     /**
-     * Send notification on scheduler failure
-     * @param schedulerName - Name of the scheduler that failed
-     * @param e - The exception that occurred
+     * Notify administrators of scheduler failure via Slack
+     * @param schedulerName Name of the scheduler that failed
+     * @param e Exception that occurred
      */
     public static void notifyOnFailure(String schedulerName, Exception e) {
         try {
-            String message = schedulerName + ' failed: ' + e.getMessage();
-            SlackNotifier.notifyAsync(message);
+            String message = schedulerName + ' failed: ' + (e.getMessage() != null ? e.getMessage() : 'Unknown error');
+            SlackNotifier.notifyAsyncQueueable(message);
         } catch (Exception notifyError) {
-            System.debug(LoggingLevel.ERROR,
-                '[SchedulerErrorHandler] Failed to notify: ' + notifyError.getMessage());
+            System.debug(LoggingLevel.ERROR, 'SchedulerErrorHandler: Failed to notify: ' + notifyError.getMessage());
         }
     }
 
     /**
      * Get CRON expression from Custom Metadata for a scheduler
-     * @param schedulerName - DeveloperName of the scheduler config record
-     * @param defaultCron - Default CRON expression if config not found
+     * @param schedulerName DeveloperName of the scheduler config record
+     * @param defaultCron Default CRON expression if config not found
      * @return CRON expression string
      */
     public static String getCronExpression(String schedulerName, String defaultCron) {
@@ -89,8 +86,8 @@ public with sharing class SchedulerErrorHandler {
 
     /**
      * Get batch size from Custom Metadata for a scheduler
-     * @param schedulerName - DeveloperName of the scheduler config record
-     * @param defaultSize - Default batch size if config not found
+     * @param schedulerName DeveloperName of the scheduler config record
+     * @param defaultSize Default batch size if config not found
      * @return Batch size integer
      */
     public static Integer getBatchSize(String schedulerName, Integer defaultSize) {
@@ -109,7 +106,7 @@ public with sharing class SchedulerErrorHandler {
 
     /**
      * Check if a scheduler is active based on Custom Metadata
-     * @param schedulerName - DeveloperName of the scheduler config record
+     * @param schedulerName DeveloperName of the scheduler config record
      * @return true if active, false if inactive or not found
      */
     public static Boolean isSchedulerActive(String schedulerName) {
