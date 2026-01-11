@@ -1,21 +1,43 @@
 <template>
   <lightning-card title="Risk Heatmap" icon-name="standard:warning">
     <div class="slds-p-around_medium">
-      <div class="slds-grid slds-gutters">
-        <template for:each={risks} for:item="risk">
-          <div key={risk.id} class="slds-col slds-size_1-of-4">
-            <div class="slds-box slds-text-align_center {riskClass(risk.severity)}">
-              <div class="slds-text-heading_small">{risk.framework}</div>
-              <div class="slds-text-body_small">{risk.severity}</div>
-              <div class="slds-text-body_small">Score: {risk.score}</div>
-            </div>
-          </div>
-        </template>
-      </div>
-      <template if:false={risks}>
-        <div class="slds-text-align_center slds-p-around_medium">
-          <p>No risk data available</p>
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading risk data" size="medium"></lightning-spinner>
         </div>
+      </template>
+
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_medium">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          {errorMessage}
+        </div>
+      </template>
+
+      <template lwc:if={isEmpty}>
+        <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
+          <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          No risk data available
+        </div>
+      </template>
+
+      <template if:false={isLoading}>
+        <template if:false={hasError}>
+          <template lwc:if={hasRisks}>
+            <div class="slds-grid slds-gutters">
+              <template for:each={risks} for:item="risk">
+                <div key={risk.id} class="slds-col slds-size_1-of-4">
+                  <div class="slds-box slds-text-align_center {riskClass(risk.severity)}" role="cell" aria-label="{risk.severity} risk for {risk.framework}, score: {risk.score}">
+                    <span class="slds-assistive-text">{risk.severity} risk:</span>
+                    <div class="slds-text-heading_small">{risk.framework}</div>
+                    <div class="slds-text-body_small">{risk.severity}</div>
+                    <div class="slds-text-body_small">Score: {risk.score}</div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </template>
       </template>
     </div>
   </lightning-card>

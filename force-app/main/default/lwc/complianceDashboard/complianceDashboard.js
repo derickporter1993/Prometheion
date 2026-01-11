@@ -35,4 +35,9 @@ export default class ComplianceDashboard extends LightningElement {
       ? this.dashboardData.recentEvidence
       : [];
   }
+
+  get errorMessage() {
+    if (!this.error) return '';
+    return this.error?.body?.message || this.error?.message || 'An unknown error occurred';
+  }
 }

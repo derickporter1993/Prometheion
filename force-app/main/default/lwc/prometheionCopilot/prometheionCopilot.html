@@ -5,7 +5,7 @@
       <div class="header-content">
         <div class="logo-container">
           <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path
                 d="M12 2L2 7L12 12L22 7L12 2Z"
                 stroke="currentColor"
@@ -36,7 +36,7 @@
         </div>
         <div class="header-actions">
           <button class="icon-button" onclick={clearChat} title="Clear conversation">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path
                 d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
               />
@@ -52,7 +52,7 @@
       <template lwc:if={showWelcome}>
         <div class="welcome-section">
           <div class="welcome-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
               <path
                 d="M12 16V12M12 8H12.01"
@@ -78,13 +78,13 @@
               >
                 <div class="action-icon" data-icon={cmd.iconType}>
                   <template lwc:if={cmd.isTrendDown}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M23 18L13.5 8.5L8.5 13.5L1 6" />
                       <path d="M17 18H23V12" />
                     </svg>
                   </template>
                   <template lwc:if={cmd.isFlow}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <rect x="3" y="3" width="6" height="6" rx="1" />
                       <rect x="15" y="3" width="6" height="6" rx="1" />
                       <rect x="9" y="15" width="6" height="6" rx="1" />
@@ -92,7 +92,7 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isFile}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
                       />
@@ -100,7 +100,7 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isUser}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
                       />
@@ -108,13 +108,13 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isShield}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
                       <path d="M9 12L11 14L15 10" />
                     </svg>
                   </template>
                   <template lwc:if={cmd.isWarning}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M10.29 3.86L1.82 18C1.64 18.3 1.55 18.64 1.55 19C1.55 19.36 1.64 19.7 1.82 20C2 20.3 2.26 20.55 2.57 20.73C2.88 20.91 3.24 21 3.6 21H20.4C20.76 21 21.12 20.91 21.43 20.73C21.74 20.55 22 20.3 22.18 20C22.36 19.7 22.45 19.36 22.45 19C22.45 18.64 22.36 18.3 22.18 18L13.71 3.86C13.53 3.56 13.27 3.32 12.96 3.15C12.65 2.98 12.3 2.89 11.95 2.89C11.6 2.89 11.25 2.98 10.94 3.15C10.63 3.32 10.37 3.56 10.19 3.86H10.29Z"
                       />
@@ -143,7 +143,7 @@
                     ></lightning-formatted-rich-text>
                   </div>
                   <div class="user-avatar">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path
                         d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
                       />
@@ -156,7 +156,7 @@
               <template lwc:if={message.isAssistant}>
                 <div class="assistant-message">
                   <div class="assistant-avatar">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M12 2L2 7L12 12L22 7L12 2Z" />
                       <path d="M2 17L12 22L22 17" />
                       <path d="M2 12L12 17L22 12" />
@@ -245,7 +245,7 @@
       <template lwc:if={isLoading}>
         <div class="loading-message">
           <div class="assistant-avatar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M12 2L2 7L12 12L22 7L12 2Z" />
               <path d="M2 17L12 22L22 17" />
               <path d="M2 12L12 17L22 12" />
@@ -273,7 +273,7 @@
           disabled={isLoading}
         />
         <button class="send-button" onclick={handleSubmit} disabled={isLoading}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" />
           </svg>
         </button>

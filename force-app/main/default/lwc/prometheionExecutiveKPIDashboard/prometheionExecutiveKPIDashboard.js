@@ -23,7 +23,7 @@ export default class PrometheionExecutiveKPIDashboard extends LightningElement {
     } else if (error) {
       this.hasError = true;
       this.errorMessage =
-        "Error loading KPIs: " + (error.body ? error.body.message : error.message);
+        "Error loading KPIs: " + (error?.body?.message || error?.message || 'An unknown error occurred');
       this.isLoading = false;
       this.showError(this.errorMessage);
     }

@@ -6,6 +6,8 @@ export default class ComplianceScoreCard extends NavigationMixin(LightningElemen
   @api framework;
   @track frameworkDetails = null;
   @track isLoadingDetails = false;
+  @track hasError = false;
+  @track errorMessage = "";
 
   get frameworkKey() {
     return this.framework?.framework || this.framework?.key || null;
@@ -16,11 +18,17 @@ export default class ComplianceScoreCard extends NavigationMixin(LightningElemen
     if (data) {
       this.frameworkDetails = data;
       this.isLoadingDetails = false;
+      this.hasError = false;
+      this.errorMessage = "";
     } else if (error) {
       // Error logged for debugging - framework details are optional
       this.isLoadingDetails = false;
+      this.hasError = true;
+      this.errorMessage = error?.body?.message || error?.message || "Failed to load framework details";
     } else {
       this.isLoadingDetails = true;
+      this.hasError = false;
+      this.errorMessage = "";
     }
   }
 

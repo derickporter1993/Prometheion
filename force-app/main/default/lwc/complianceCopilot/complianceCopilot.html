@@ -6,7 +6,7 @@
         <!-- Welcome Message -->
         <template lwc:if={showQuickCommands}>
           <div class="slds-text-align_center slds-m-vertical_large">
-            <lightning-icon icon-name="utility:bot" size="large" class="slds-m-bottom_small"></lightning-icon>
+            <lightning-icon icon-name="utility:bot" size="large" class="slds-m-bottom_small" aria-hidden="true"></lightning-icon>
             <h2 class="slds-text-heading_medium slds-m-bottom_small">{labels.welcome}</h2>
             <p class="slds-text-color_weak">{labels.welcomeSubtitle}</p>
           </div>
@@ -31,7 +31,7 @@
               <template lwc:if={message.isAssistant}>
                 <div class="slds-chat-message">
                   <div class="slds-chat-message__body" style="display: flex; align-items: flex-start; gap: 0.5rem">
-                    <lightning-icon icon-name="utility:bot" size="small" class="slds-m-top_x-small"></lightning-icon>
+                    <lightning-icon icon-name="utility:bot" size="small" class="slds-m-top_x-small" aria-hidden="true"></lightning-icon>
                     <div style="flex: 1">
                       <div class="slds-chat-message__text slds-p-around_small" style="background-color: white; border: 1px solid #d8dde6; border-radius: 8px; max-width: 85%;">
                         <lightning-formatted-rich-text value={message.content} class="slds-text-longform"></lightning-formatted-rich-text>
@@ -82,7 +82,7 @@
         <template lwc:if={isLoading}>
           <div class="slds-chat-message">
             <div class="slds-chat-message__body" style="display: flex; align-items: flex-start; gap: 0.5rem">
-              <lightning-icon icon-name="utility:bot" size="small" class="slds-m-top_x-small"></lightning-icon>
+              <lightning-icon icon-name="utility:bot" size="small" class="slds-m-top_x-small" aria-hidden="true"></lightning-icon>
               <div style="flex: 1">
                 <div class="slds-spinner_container">
                   <lightning-spinner alternative-text="Processing" size="small"></lightning-spinner>

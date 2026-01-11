@@ -1,12 +1,38 @@
 <template>
   <lightning-card title="Select Framework">
     <div class="slds-p-around_medium">
-      <lightning-combobox
-        label="Framework"
-        value={selectedFramework}
-        options={frameworkOptions}
-        onchange={handleFrameworkChange}
-      ></lightning-combobox>
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading frameworks" size="medium"></lightning-spinner>
+        </div>
+      </template>
+
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_medium">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          {errorMessage}
+        </div>
+      </template>
+
+      <template lwc:if={isEmpty}>
+        <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
+          <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          No frameworks available
+        </div>
+      </template>
+
+      <template if:false={isLoading}>
+        <template if:false={hasError}>
+          <template if:false={isEmpty}>
+            <lightning-combobox
+              label="Framework"
+              value={selectedFramework}
+              options={frameworkOptions}
+              onchange={handleFrameworkChange}
+            ></lightning-combobox>
+          </template>
+        </template>
+      </template>
     </div>
   </lightning-card>
 </template>

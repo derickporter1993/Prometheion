@@ -7,8 +7,8 @@
 
     <div class="calculator-inputs">
       <div class="input-group">
-        <label>Industry</label>
         <lightning-combobox
+          label="Industry"
           value{industry}
           options{industryOptions}
           onchange="
@@ -21,8 +21,8 @@
       </div>
 
       <div class="input-group">
-        <label>Organization Size (Users)</label>
         <lightning-input
+          label="Organization Size (Users)"
           type="number"
           value{orgSize}
           onchange="
@@ -35,8 +35,8 @@
       </div>
 
       <div class="input-group">
-        <label>Current Annual Audit Spend ($)</label>
         <lightning-input
+          label="Current Annual Audit Spend ($)"
           type="number"
           value{currentAuditSpend}
           formatter="currency"
@@ -50,8 +50,8 @@
       </div>
 
       <div class="input-group">
-        <label>Current Audit Prep Hours/Year</label>
         <lightning-input
+          label="Current Audit Prep Hours/Year"
           type="number"
           value{currentAuditPrepHours}
           onchange="
@@ -64,8 +64,8 @@
       </div>
 
       <div class="input-group">
-        <label>Compliance Analyst Hourly Rate ($)</label>
         <lightning-input
+          label="Compliance Analyst Hourly Rate ($)"
           type="number"
           value{hourlyRate}
           formatter="currency"

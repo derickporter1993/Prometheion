@@ -6,7 +6,7 @@
       </template>
 
       <template lwc:if={error}>
-        <div class="slds-text-color_error">Error loading KPIs: {error.body.message}</div>
+        <div class="slds-text-color_error">Error loading KPIs: {errorMessage}</div>
       </template>
 
       <template lwc:if={dashboardData}>
