@@ -65,27 +65,45 @@ jobs:
       - name: Install Code Analyzer
         run: sf plugins install @salesforce/sfdx-scanner
 
-      - name: Run Security Scan on Apex
-        run: |
-          echo "🔍 Running Salesforce Code Analyzer on Apex classes..."
-          sf scanner run --target "force-app/main/default/classes" \
-            --category "Security,Best Practices,Error Prone" \
-            --format table \
-            --severity-threshold 2 || echo "⚠️ Security scan found issues (non-blocking)"
+      - name: Create Scanner Reports Directory
+        run: mkdir -p scanner-reports
 
-      - name: Run Security Scan on LWC
+      - name: Run AppExchange Security Scan (HTML)
         run: |
-          echo "🔍 Running Salesforce Code Analyzer on LWC..."
-          sf scanner run --target "force-app/main/default/lwc" \
-            --category "Security,Best Practices" \
-            --format table \
-            --severity-threshold 2 || echo "⚠️ LWC scan found issues (non-blocking)"
+          echo "🔍 Running Salesforce Code Analyzer with AppExchange selectors..."
+          sf scanner run \
+            --target "force-app/" \
+            --rule-selector "AppExchange" \
+            --rule-selector "Recommended:Security" \
+            --format "html" \
+            --outfile "scanner-reports/code-analyzer-appexchange.html" \
+            --severity-threshold 2 || echo "⚠️ AppExchange scan found issues (review HTML report)"
+
+      - name: Run AppExchange Security Scan (JSON)
+        run: |
+          echo "📊 Generating JSON report for CI analysis..."
+          sf scanner run \
+            --target "force-app/" \
+            --rule-selector "AppExchange" \
+            --rule-selector "Recommended:Security" \
+            --format "json" \
+            --outfile "scanner-reports/code-analyzer-appexchange.json" || true
+
+      - name: Run AppExchange Security Scan (Table)
+        run: |
+          echo "📋 Displaying scan results in console..."
+          sf scanner run \
+            --target "force-app/" \
+            --rule-selector "AppExchange" \
+            --rule-selector "Recommended:Security" \
+            --format "table" \
+            --severity-threshold 2 || echo "⚠️ Review scanner reports for details"
 
       - name: Generate SARIF Report
         if: always()
         run: |
           sf scanner run --target "force-app" \
-            --category "Security" \
+            --rule-selector "Recommended:Security" \
             --format sarif \
             --outfile scanner-results.sarif || true
 
@@ -95,6 +113,14 @@ jobs:
         with:
           sarif_file: scanner-results.sarif
         continue-on-error: true
+
+      - name: Upload Scanner Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scanner-reports
+          path: scanner-reports/
+          retention-days: 30
 
   validate-metadata:
     runs-on: ubuntu-latest
