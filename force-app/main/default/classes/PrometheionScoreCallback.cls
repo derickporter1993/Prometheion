@@ -120,8 +120,8 @@ global class PrometheionScoreCallback {
     }
     
     /**
-     * Validates API key from request header
-     * Checks Custom Metadata Type for configured API key
+     * Validates API key from request header using secure hash comparison
+     * Checks Custom Metadata Type for configured API key hash
      * @param apiKey The API key from request header
      * @return true if valid, false otherwise
      */
@@ -129,36 +129,59 @@ global class PrometheionScoreCallback {
         if (String.isBlank(apiKey)) {
             return false;
         }
-        
-        // Check Custom Metadata Type for API key configuration
+
         try {
-            // Query Custom Metadata Type for API key (if it exists)
-            // For now, use a placeholder that can be configured
-            // In production, create Custom Metadata Type: Prometheion_API_Config__mdt
+            // Query Custom Metadata Type for API key hash
             List<Prometheion_API_Config__mdt> configs = [
-                SELECT API_Key__c, Is_Active__c 
-                FROM Prometheion_API_Config__mdt 
-                WHERE Is_Active__c = true 
+                SELECT API_Key_Hash__c, Is_Active__c
+                FROM Prometheion_API_Config__mdt
+                WHERE Is_Active__c = true
                 AND DeveloperName = 'Default'
                 LIMIT 1
             ];
-            
-            if (!configs.isEmpty() && String.isNotBlank(configs[0].API_Key__c)) {
-                return apiKey == configs[0].API_Key__c;
+
+            if (configs.isEmpty() || String.isBlank(configs[0].API_Key_Hash__c)) {
+                System.debug(LoggingLevel.WARN, 'PrometheionScoreCallback: API key hash not configured');
+                return false;
             }
-            
-            // Fallback: For development, allow if Custom Metadata doesn't exist
-            // In production, this should return false
-            System.debug(LoggingLevel.WARN, 'PrometheionScoreCallback: API key validation - Custom Metadata not configured');
-            return false;
-            
+
+            // Hash the input key and compare securely
+            String inputHash = generateApiKeyHash(apiKey);
+            return configs[0].API_Key_Hash__c.equalsIgnoreCase(inputHash);
+
         } catch (Exception e) {
             // If Custom Metadata doesn't exist or query fails, deny access
             System.debug(LoggingLevel.ERROR, 'PrometheionScoreCallback: API key validation error: ' + e.getMessage());
             return false;
         }
     }
-    
+
+    /**
+     * Generate SHA256 hash of API key
+     * Use this method to generate the hash to store in Custom Metadata
+     * @param apiKey The plaintext API key
+     * @return Hex-encoded SHA256 hash (64 characters)
+     */
+    @TestVisible
+    private static String generateApiKeyHash(String apiKey) {
+        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(apiKey));
+        return EncodingUtil.convertToHex(hash);
+    }
+
+    /**
+     * Utility method for admins to generate hash for a new API key
+     * Run in Execute Anonymous: PrometheionScoreCallback.generateHashForKey('your-api-key');
+     * @param apiKey The plaintext API key to hash
+     */
+    global static void generateHashForKey(String apiKey) {
+        if (String.isBlank(apiKey)) {
+            System.debug('Error: API key cannot be blank');
+            return;
+        }
+        String hash = generateApiKeyHash(apiKey);
+        System.debug('API Key Hash (copy to Custom Metadata API_Key_Hash__c field): ' + hash);
+    }
+
     /**
      * Calculates risk level based on score
      */
