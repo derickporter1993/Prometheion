@@ -200,42 +200,96 @@ HttpResponse res = http.send(req);
 
 ## 4. PagerDuty Events API
 
+⚠️ **SECURITY WARNING:** See [PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md](PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md) for critical security findings.
+
 ### Purpose
 Incident triggering, acknowledgment, and resolution for critical compliance alerts.
 
 ### Authentication
 - **Method:** Routing Key (Integration Key)
-- **Storage:** Protected Custom Metadata (`Prometheion_Integration_Settings__mdt`)
+- **Storage:** Protected Custom Metadata (`Prometheion_API_Config__mdt`)
 - **Endpoint:** `https://events.pagerduty.com/v2/enqueue`
 - **Protocol:** HTTPS (TLS 1.2+)
 
-### Configuration
+### ⚠️ Current Implementation Status
+
+**CRITICAL ISSUE IDENTIFIED (2026-01-11):**
+
+The `PagerDutyIntegration.cls` file currently contains a **hardcoded placeholder** for the routing key (line 144-148):
+
+```apex
+private static String getRoutingKey() {
+    // In production, retrieve from Custom Metadata or Named Credential
+    // This is a placeholder
+    return 'your-pagerduty-routing-key';
+}
+```
+
+**Impact:**
+- ❌ **Fails AppExchange Security Review** (hardcoded credentials)
+- ❌ **Integration non-functional** (placeholder key rejected by PagerDuty)
+- ❌ **Security violation** (credential visible in source code)
+
+**Fix Required (Cursor AI Task):**
+- Replace hardcoded placeholder with Custom Metadata query
+- Use existing `Prometheion_API_Config__mdt` metadata type
+- Create metadata record: `Prometheion_API_Config.PagerDuty`
+
+**See:** [PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md](PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md) for complete fix implementation.
+
+### Configuration (RECOMMENDED AFTER FIX)
+
 **Custom Metadata Record:**
+```xml
+<!-- File: force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-meta.xml -->
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>PagerDuty</label>
+    <protected>true</protected>
+    <values>
+        <field>API_Key__c</field>
+        <value xsi:type="xsd:string">PLACEHOLDER_SET_DURING_INSTALLATION</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>
 ```
-Prometheion_Integration_Settings__mdt:
-- DeveloperName: PagerDuty
-- Routing_Key__c: <customer_integration_key>
-- Enabled__c: true
-```
+
+**Note:** `API_Key__c` field stores PagerDuty routing key (semantically imperfect but functional).
 
 ### API Usage
 
 **Classes Using PagerDuty API:**
-- `PagerDutyIntegration.cls` - Primary integration
+- `PagerDutyIntegration.cls` - Primary integration (requires security fix)
 
 **Event Types:**
 1. **Trigger** - Create new incident
 2. **Acknowledge** - Acknowledge incident
 3. **Resolve** - Resolve incident
 
-**Request Pattern:**
+**Request Pattern (AFTER FIX):**
 ```apex
+// Routing key retrieved from Protected Custom Metadata
+String routingKey = getRoutingKey(); // Queries Prometheion_API_Config__mdt
+
+Map<String, Object> event = new Map<String, Object>{
+    'routing_key' => routingKey,
+    'event_action' => 'trigger',
+    'dedup_key' => 'prometheion-' + alertId,
+    'payload' => new Map<String, Object>{
+        'summary' => 'Prometheion Compliance Alert',
+        'severity' => 'critical',
+        'source' => 'Prometheion Compliance Platform'
+    }
+};
+
 HttpRequest req = new HttpRequest();
 req.setEndpoint('https://events.pagerduty.com/v2/enqueue');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json');
 req.setTimeout(30000);
-req.setBody(JSON.serialize(pdEvent));
+req.setBody(JSON.serialize(event));
 
 Http http = new Http();
 HttpResponse res = http.send(req);
@@ -246,17 +300,46 @@ HttpResponse res = http.send(req);
 - **Retry Logic:** None (idempotent with dedup_key)
 - **Dedup Key:** `prometheion-{alertId}` prevents duplicates
 - **Fallback:** Logs error, alert remains in Salesforce
+- **Validation:** Returns early if routing key is placeholder or null
 
 ### Rate Limits
 - **PagerDuty Limit:** 120 events per minute
 - **Implementation:** @future prevents bursts
 - **Deduplication:** Prevents duplicate incidents
 
-### Security Considerations
-- ✅ Routing key stored in Protected Custom Metadata
+### Security Considerations (POST-FIX)
+- ⚠️ **CURRENT:** Routing key hardcoded (SECURITY VIOLATION)
+- ✅ **AFTER FIX:** Routing key in Protected Custom Metadata
 - ✅ No PII in incident payloads
 - ✅ Dedup keys prevent replay attacks
 - ✅ HTTPS with TLS 1.2+
+- ✅ Credential rotation via Setup UI (no code changes)
+- ✅ Integration toggle via `Is_Active__c` checkbox
+
+### Required Permissions
+- **Admin:** `Prometheion_Admin` permission set required to configure routing key
+- **Users:** No direct access to Protected Custom Metadata (encrypted at rest)
+
+### Installation Steps (POST-FIX)
+
+1. **Post-Package Installation:**
+   - Navigate to: Setup → Custom Metadata Types → Prometheion API Config → Manage Records
+   - Edit "PagerDuty" record
+   - Update "API Key" field with PagerDuty routing key from PagerDuty Events API v2 integration
+   - Check "Is Active" to enable integration
+   - Save
+
+2. **Obtain PagerDuty Routing Key:**
+   - Log in to PagerDuty console
+   - Navigate to: Integrations → Events API v2
+   - Copy routing key (starts with `R...`)
+
+3. **Verify Configuration:**
+   ```apex
+   // Execute Anonymous Apex
+   String key = PagerDutyIntegration.getRoutingKey();
+   System.debug('PagerDuty Configured: ' + (key != null && !key.contains('PLACEHOLDER')));
+   ```
 
 ---
 
