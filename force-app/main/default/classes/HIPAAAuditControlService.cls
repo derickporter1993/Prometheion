@@ -265,10 +265,11 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
+        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
 
         service.logAuditEntry('HIPAA_Audit_Report_Generated', cv.ContentDocumentId,
             'Audit report generated for ' + startDate.format() + ' to ' + endDate.format());

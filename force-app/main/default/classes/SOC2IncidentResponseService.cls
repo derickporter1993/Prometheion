@@ -235,9 +235,10 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             VersionData = Blob.valueOf(report),
             Origin = 'H'
         );
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
+        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
 
         logAuditEntry('REPORT_GENERATED', 'Generated incident report for ' + incident.Name, cv.ContentDocumentId);
 

@@ -382,8 +382,8 @@ Never quote template bindings - this causes compile errors:
 <lightning-button onclick="{handleClick}"></lightning-button>
 
 <!-- RIGHT - No quotes around bindings -->
-<lightning-datatable data={rows} columns={columns}></lightning-datatable>
-<lightning-button onclick={handleClick}></lightning-button>
+<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
+<lightning-button onclick="{handleClick}"></lightning-button>
 ```
 
 **Note:** Prettier can corrupt LWC HTML files by adding quotes. LWC HTML files are excluded in `.prettierignore` to prevent this.
@@ -476,26 +476,31 @@ Types: feat, fix, test, docs, refactor, style
 ### Before Coding
 
 1. **Check for LWC Template Syntax Violations** (if modifying LWC templates):
+
    ```bash
    # Find any quoted bindings that will cause LWC1034 errors
    grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null | grep -v node_modules
    ```
+
    - If found, fix BEFORE making other changes
    - Pattern: `data="{rows}"` must become `data={rows}`
 
 2. **Check for SOQL Without Security**:
+
    ```bash
    # Find SOQL queries missing WITH SECURITY_ENFORCED
    grep -rn "SELECT.*FROM" force-app/main/default/classes/*.cls | grep -v "WITH SECURITY_ENFORCED" | grep -v "Test.cls"
    ```
 
 3. **Check for Hardcoded Record IDs**:
+
    ```bash
    # Find potential hardcoded Salesforce IDs (15 or 18 char)
    grep -rn "['\"][a-zA-Z0-9]\{15,18\}['\"]" force-app/main/default/classes/*.cls
    ```
 
 4. **Check for System.debug in Production Code**:
+
    ```bash
    # Find debug statements (should be removed before commit)
    grep -rn "System.debug" force-app/main/default/classes/*.cls | grep -v Test.cls
@@ -563,15 +568,15 @@ echo "=== All checks passed ==="
 
 ### Common Violations Checklist
 
-| Issue | Detection | Fix |
-|-------|-----------|-----|
-| LWC quoted bindings | `grep '="{' *.html` | Remove quotes: `data={rows}` |
-| Missing SECURITY_ENFORCED | grep SOQL without clause | Add `WITH SECURITY_ENFORCED` |
-| SOQL in loop | Manual review | Bulkify queries outside loop |
-| DML in loop | Manual review | Collect records, single DML |
-| Unused catch variable | ESLint warning | Use `catch { }` or `catch (_e)` |
-| Missing test coverage | sf apex run test | Add test methods |
-| Wrong API version | grep apiVersion | Update to 63.0 |
+| Issue                     | Detection                | Fix                             |
+| ------------------------- | ------------------------ | ------------------------------- |
+| LWC quoted bindings       | `grep '="{' *.html`      | Remove quotes: `data={rows}`    |
+| Missing SECURITY_ENFORCED | grep SOQL without clause | Add `WITH SECURITY_ENFORCED`    |
+| SOQL in loop              | Manual review            | Bulkify queries outside loop    |
+| DML in loop               | Manual review            | Collect records, single DML     |
+| Unused catch variable     | ESLint warning           | Use `catch { }` or `catch (_e)` |
+| Missing test coverage     | sf apex run test         | Add test methods                |
+| Wrong API version         | grep apiVersion          | Update to 63.0                  |
 
 ---
 

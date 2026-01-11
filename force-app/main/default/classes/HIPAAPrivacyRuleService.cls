@@ -213,9 +213,10 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             VersionData = Blob.valueOf(logContent),
             Origin = 'H'
         );
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
+        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
 
         HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
         service.logAuditEntry('DISCLOSURE_LOG_GENERATED', 'Generated HIPAA disclosure log', cv.ContentDocumentId);
