@@ -1,0 +1,67 @@
+# Cursor Rules for Prometheion
+
+## Git Workflow - MANDATORY After Task Completion
+
+**CRITICAL**: After any work is created or a set of tasks are complete, you MUST follow this exact sequence:
+
+### 1. Commit Changes Locally
+```bash
+git add .
+git commit -m "Descriptive commit message"
+```
+
+### 2. Push to Remote Feature Branch
+```bash
+BRANCH=$(git branch --show-current)
+git push origin $BRANCH
+```
+
+### 3. Merge to Main and Push
+```bash
+BRANCH=$(git branch --show-current)
+git checkout main
+git pull origin main  # Ensure main is up to date
+git merge $BRANCH --no-ff -m "Merge feature branch: <description>"
+git push origin main
+git checkout $BRANCH  # Return to feature branch
+```
+
+### Complete Workflow Script
+```bash
+# Get current branch name
+BRANCH=$(git branch --show-current)
+
+# Commit
+git add .
+git commit -m "Your commit message"
+
+# Push to feature branch
+git push origin $BRANCH
+
+# Merge to main
+git checkout main
+git pull origin main
+git merge $BRANCH --no-ff -m "Merge feature branch: Your description"
+git push origin main
+
+# Return to feature branch
+git checkout $BRANCH
+```
+
+## Important Notes
+
+- **ALWAYS** use `--no-ff` for merge commits to preserve branch history
+- **ALWAYS** pull main before merging to avoid conflicts
+- **ALWAYS** return to feature branch after merging to continue work
+- **NEVER** skip any of these steps - all three steps are mandatory
+
+## Current Feature Branch
+- Default: `claude/review-prometheion-app-0BLu9` (check with `git branch --show-current`)
+
+## Verification
+After completing the workflow, verify with:
+```bash
+git status  # Should show "working tree clean"
+git rev-list --count origin/<feature-branch>..<feature-branch>  # Should be 0
+git rev-list --count origin/main..main  # Should be 0
+```
