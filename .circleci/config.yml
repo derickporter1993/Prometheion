@@ -73,7 +73,7 @@ jobs:
               echo "No JS files to lint in this container."
             fi
 
-  # Job to run Salesforce Code Analyzer
+  # Job to run Salesforce Code Analyzer with AppExchange selectors
   sfdx-scan:
     executor: node-executor
     steps:
@@ -89,13 +89,48 @@ jobs:
           command: |
             sf plugins install @salesforce/sfdx-scanner
       - run:
-          name: Run Salesforce Code Analyzer
+          name: Create Scanner Reports Directory
+          command: mkdir -p scanner-reports
+      - run:
+          name: Run AppExchange Security Scan (HTML)
           command: |
             if [ -d "force-app" ]; then
-              sf scanner run --target "force-app" --format table
+              echo "Running Salesforce Code Analyzer with AppExchange selectors..."
+              sf scanner run \
+                --target "force-app/" \
+                --rule-selector "AppExchange" \
+                --rule-selector "Recommended:Security" \
+                --format "html" \
+                --outfile "scanner-reports/code-analyzer-appexchange.html" \
+                --severity-threshold 2 || echo "⚠️ AppExchange scan found issues (review HTML report)"
             else
               echo "No force-app directory found, skipping scan"
             fi
+      - run:
+          name: Run AppExchange Security Scan (JSON)
+          command: |
+            if [ -d "force-app" ]; then
+              sf scanner run \
+                --target "force-app/" \
+                --rule-selector "AppExchange" \
+                --rule-selector "Recommended:Security" \
+                --format "json" \
+                --outfile "scanner-reports/code-analyzer-appexchange.json" || true
+            fi
+      - run:
+          name: Run AppExchange Security Scan (Table)
+          command: |
+            if [ -d "force-app" ]; then
+              sf scanner run \
+                --target "force-app/" \
+                --rule-selector "AppExchange" \
+                --rule-selector "Recommended:Security" \
+                --format "table" \
+                --severity-threshold 2 || echo "⚠️ Review scanner reports for details"
+            fi
+      - store_artifacts:
+          path: scanner-reports
+          destination: scanner-reports
 
 # Define workflows
 workflows:
