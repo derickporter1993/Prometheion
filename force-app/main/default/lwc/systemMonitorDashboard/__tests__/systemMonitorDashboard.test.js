@@ -38,7 +38,29 @@ jest.mock("@salesforce/apex/PerformanceRuleEngine.evaluateAndPublish", () => ({
   }),
 }), { virtual: true });
 
-// Use real PollingManager with fake timers
+// Mock PollingManager class - use factory function for hoisting
+jest.mock("c/pollingManager", () => {
+  return class MockPollingManager {
+    callback = null;
+    interval = 60000;
+    isRunning = false;
+
+    constructor(callback, interval = 60000) {
+      this.callback = callback;
+      this.interval = interval;
+    }
+
+    start() { this.isRunning = true; }
+    stop() { this.isRunning = false; }
+    pause() {}
+    resume() {}
+    cleanup() { this.isRunning = false; }
+    setupVisibilityHandling() {}
+    pollNow() { if (this.callback) this.callback(); }
+  };
+}, { virtual: true });
+
+// Use fake timers for testing
 jest.useFakeTimers();
 
 // Mock ShowToastEvent
@@ -270,8 +292,12 @@ describe("c-system-monitor-dashboard", () => {
       await flushPromises();
 
       const progressRings = element.shadowRoot.querySelectorAll("lightning-progress-ring");
+      // Check that progress rings exist when stats are loaded
+      expect(progressRings.length).toBeGreaterThan(0);
+      // In Jest, we verify labels via the component property or existence
       progressRings.forEach((ring) => {
-        expect(ring.getAttribute("label")).toBeTruthy();
+        // Labels are set as properties in LWC, check if label property exists
+        expect(ring.label || ring.getAttribute("label")).toBeTruthy();
       });
     });
   });
