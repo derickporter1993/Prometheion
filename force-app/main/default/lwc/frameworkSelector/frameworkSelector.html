@@ -3,15 +3,10 @@
     <div class="slds-p-around_medium">
       <lightning-combobox
         label="Framework"
-        value="{selectedFramework}"
-        options="{frameworkOptions}"
-        onchange="
-          {
-            handleFrameworkChange;
-          }
-        "
-      >
-      </lightning-combobox>
+        value={selectedFramework}
+        options={frameworkOptions}
+        onchange={handleFrameworkChange}
+      ></lightning-combobox>
     </div>
   </lightning-card>
 </template>
