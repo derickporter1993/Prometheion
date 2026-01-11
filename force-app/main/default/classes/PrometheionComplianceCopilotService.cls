@@ -49,13 +49,17 @@ public with sharing class PrometheionComplianceCopilotService {
         }
         
         try {
-            // Query evidence items
+            // Query evidence items with security enforcement
             List&lt;Prometheion_Evidence_Item__c&gt; items = [
                 SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c
                 FROM Prometheion_Evidence_Item__c
                 WHERE Id IN :eventIds
+                WITH SECURITY_ENFORCED
                 LIMIT 100
             ];
+            
+            // Strip inaccessible fields before processing
+            items = PrometheionSecurityUtils.stripInaccessibleFields(AccessType.READABLE, items);
             
             if (items.isEmpty()) {
                 return createDefaultRecommendation('No evidence items found');
@@ -100,12 +104,13 @@ public with sharing class PrometheionComplianceCopilotService {
         }
         
         try {
-            // Query package and evidence
+            // Query package and evidence with security enforcement
             Prometheion_Audit_Package__c pkg = [
                 SELECT Id, Package_Name__c, Framework__c, Status__c,
                        Audit_Period_Start__c, Audit_Period_End__c
                 FROM Prometheion_Audit_Package__c
                 WHERE Id = :packageId
+                WITH SECURITY_ENFORCED
                 LIMIT 1
             ];
             
@@ -113,13 +118,15 @@ public with sharing class PrometheionComplianceCopilotService {
                 SELECT COUNT()
                 FROM Prometheion_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH SECURITY_ENFORCED
             ];
             
-            // Get event type distribution
+            // Get event type distribution with security enforcement
             List&lt;AggregateResult&gt; typeDistribution = [
                 SELECT Evidence_Type__c, COUNT(Id) cnt
                 FROM Prometheion_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH SECURITY_ENFORCED
                 GROUP BY Evidence_Type__c
             ];
             
