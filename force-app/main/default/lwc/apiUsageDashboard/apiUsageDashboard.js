@@ -63,6 +63,10 @@ export default class ApiUsageDashboard extends LightningElement {
     }
   }
 
+  get hasRows() {
+    return this.rows && this.rows.length > 0;
+  }
+
   showError(title, message) {
     this.dispatchEvent(
       new ShowToastEvent({

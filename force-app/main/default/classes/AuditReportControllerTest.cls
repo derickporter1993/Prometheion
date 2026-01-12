@@ -61,4 +61,30 @@ private class AuditReportControllerTest {
         }
         Test.stopTest();
     }
+
+    @IsTest
+    static void testExportReportAsPDF_NullReport() {
+        Test.startTest();
+        try {
+            AuditReportController.exportReportAsPDF(null);
+            System.assert(false, 'Expected exception for null report');
+        } catch (Exception e) {
+            System.assertNotEquals(null, e, 'Should throw exception for null report');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testExportReportAsPDF_ValidReport() {
+        Date startDate = System.today().addDays(-30);
+        Date endDate = System.today();
+
+        Test.startTest();
+        AuditReportController.AuditReport report =
+            AuditReportController.generateAuditReport('SOX', startDate, endDate);
+        String result = AuditReportController.exportReportAsPDF(report);
+        Test.stopTest();
+
+        System.assertNotEquals(null, result, 'PDF result should not be null');
+    }
 }

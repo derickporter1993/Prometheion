@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Control_Description__c</fullName>
+    <description>Full description of the control requirements</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Control Description</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

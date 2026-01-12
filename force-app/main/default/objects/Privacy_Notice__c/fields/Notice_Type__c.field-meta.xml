@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Notice_Type__c</fullName>
-    <description>Type of privacy notice (Initial, Annual, Revised)</description>
+    <description>Type of privacy notice per GLBA requirements. Initial: sent at account opening, Annual: yearly disclosure, Revised: material policy changes, Opt-Out Reminder: follow-up before deadline.</description>
+    <inlineHelpText>Notice category: Initial, Annual, Revised, or Reminder</inlineHelpText>
     <externalId>false</externalId>
     <label>Notice Type</label>
     <required>true</required>

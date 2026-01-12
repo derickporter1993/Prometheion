@@ -186,6 +186,26 @@ private class PrometheionTrendControllerTest {
     }
 
     @isTest
+    static void testGetTimeSeriesNullObjectApiName() {
+        Boolean exceptionThrown = false;
+        Test.startTest();
+        try {
+            PrometheionTrendController.getTimeSeries(
+                null,
+                'CreatedDate',
+                'Id',
+                'month',
+                12,
+                ''
+            );
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+        Test.stopTest();
+        System.assert(exceptionThrown, 'Should have thrown exception for null object API name');
+    }
+
+    @isTest
     static void testGetTimeSeriesInvalidGranularity() {
         Boolean exceptionThrown = false;
         Test.startTest();

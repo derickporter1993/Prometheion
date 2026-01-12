@@ -258,6 +258,205 @@ private class PrometheionCCPADataInventoryServiceTest {
         }
     }
     
+    @IsTest
+    static void testGenerateInventoryReport_PartialData() {
+        // Given: Contact with minimal data (tests buildSpecificDataPoints partial branches)
+        Contact minimalContact = new Contact(
+            LastName = 'MinimalContact',
+            Email = 'minimal@test.com'
+            // Missing: FirstName, Phone, MailingStreet, etc.
+        );
+        insert minimalContact;
+
+        Test.startTest();
+        PrometheionCCPADataInventoryService.DataInventoryReport report =
+            PrometheionCCPADataInventoryService.generateInventoryReport(minimalContact.Id);
+        Test.stopTest();
+
+        // Then: Report should still be generated with available data
+        System.assertNotEquals(null, report, 'Report should be generated');
+        System.assertEquals('minimal@test.com', report.dataSubject, 'Should have email');
+        System.assert(report.specificData.containsKey('Email Address'), 'Should have email data point');
+        System.assert(!report.specificData.containsKey('Mailing Address'), 'Should not have mailing address');
+    }
+
+    @IsTest
+    static void testGenerateInventoryReport_WithRelatedRecords() {
+        // Given: Contact with related records (tests getRelatedDataCounts)
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact 2' LIMIT 1];
+
+        // Create related records
+        List<Task> tasks = new List<Task>();
+        for (Integer i = 0; i < 5; i++) {
+            tasks.add(new Task(
+                Subject = 'CCPA Test Task ' + i,
+                WhoId = testContact.Id,
+                Status = 'Not Started'
+            ));
+        }
+        insert tasks;
+
+        List<Event> events = new List<Event>();
+        for (Integer i = 0; i < 3; i++) {
+            events.add(new Event(
+                Subject = 'CCPA Test Event ' + i,
+                WhoId = testContact.Id,
+                StartDateTime = DateTime.now().addDays(i),
+                EndDateTime = DateTime.now().addDays(i).addHours(1)
+            ));
+        }
+        insert events;
+
+        Case testCase = new Case(
+            Subject = 'CCPA Test Case',
+            ContactId = testContact.Id,
+            Status = 'New'
+        );
+        insert testCase;
+
+        Test.startTest();
+        PrometheionCCPADataInventoryService.DataInventoryReport report =
+            PrometheionCCPADataInventoryService.generateInventoryReport(testContact.Id);
+        Test.stopTest();
+
+        // Then: Related data counts should be populated
+        System.assertNotEquals(null, report.relatedDataCounts, 'Should have related data counts');
+        System.assertEquals(5, report.relatedDataCounts.get('Tasks'), 'Should count 5 tasks');
+        System.assertEquals(3, report.relatedDataCounts.get('Events'), 'Should count 3 events');
+        System.assertEquals(1, report.relatedDataCounts.get('Cases'), 'Should count 1 case');
+    }
+
+    @IsTest
+    static void testGenerateInventoryReport_ThirdPartySharing() {
+        // Given: Valid contact (tests getThirdPartySharing private method)
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact 3' LIMIT 1];
+
+        Test.startTest();
+        PrometheionCCPADataInventoryService.DataInventoryReport report =
+            PrometheionCCPADataInventoryService.generateInventoryReport(testContact.Id);
+        Test.stopTest();
+
+        // Then: Third parties should be populated
+        System.assertNotEquals(null, report.thirdParties, 'Should have third parties list');
+        System.assert(!report.thirdParties.isEmpty(), 'Third parties should not be empty');
+        System.assert(report.thirdParties.size() >= 3, 'Should have at least 3 third parties');
+    }
+
+    @IsTest
+    static void testDataInventoryReport_Class() {
+        Test.startTest();
+        PrometheionCCPADataInventoryService.DataInventoryReport report =
+            new PrometheionCCPADataInventoryService.DataInventoryReport();
+        report.dataSubject = 'test@example.com';
+        report.reportDate = System.now();
+        report.responseDeadline = System.now().addDays(45);
+        report.doNotSellStatus = true;
+        report.categoriesCollected = new List<String>{'Category 1'};
+        report.sources = new List<String>{'Source 1'};
+        report.businessPurposes = new List<String>{'Purpose 1'};
+        report.thirdParties = new List<String>{'Third Party 1'};
+        report.specificData = new Map<String, String>{'Key' => 'Value'};
+        report.relatedDataCounts = new Map<String, Integer>{'Cases' => 5};
+        report.requestId = null;
+        Test.stopTest();
+
+        System.assertEquals('test@example.com', report.dataSubject, 'dataSubject should match');
+        System.assertEquals(true, report.doNotSellStatus, 'doNotSellStatus should match');
+        System.assertEquals(1, report.categoriesCollected.size(), 'Should have 1 category');
+        System.assertEquals(5, report.relatedDataCounts.get('Cases'), 'Should have 5 cases');
+    }
+
+    @IsTest
+    static void testCCPAException() {
+        Test.startTest();
+        try {
+            throw new PrometheionCCPADataInventoryService.CCPAException('Test CCPA error');
+        } catch (PrometheionCCPADataInventoryService.CCPAException e) {
+            System.assertEquals('Test CCPA error', e.getMessage(),
+                'Exception message should match');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGetPendingRequests_NoPending() {
+        // Given: No pending requests
+        List<CCPA_Request__c> existingRequests = [SELECT Id FROM CCPA_Request__c WHERE Status__c IN ('Pending', 'In Progress')];
+        for (CCPA_Request__c req : existingRequests) {
+            req.Status__c = 'Completed';
+        }
+        update existingRequests;
+
+        Test.startTest();
+        List<CCPA_Request__c> requests =
+            PrometheionCCPADataInventoryService.getPendingRequests();
+        Test.stopTest();
+
+        // Then: Should return empty list
+        System.assertEquals(0, requests.size(), 'Should return empty list');
+    }
+
+    @IsTest
+    static void testProcessDoNotSellRequest_ContactNotFound() {
+        // Given: Invalid contact ID
+        Id invalidContactId = '003000000000000AAA';
+
+        Test.startTest();
+        try {
+            PrometheionCCPADataInventoryService.processDoNotSellRequest(invalidContactId);
+            System.assert(false, 'Should have thrown exception');
+        } catch (PrometheionCCPADataInventoryService.CCPAException e) {
+            System.assert(e.getMessage().contains('Contact not found'),
+                'Error message should indicate contact not found');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateInventoryReport_FullContactData() {
+        // Given: Contact with all data filled in (tests all buildSpecificDataPoints branches)
+        Contact fullContact = [SELECT Id FROM Contact WHERE LastName = 'Contact 0' LIMIT 1];
+
+        Test.startTest();
+        PrometheionCCPADataInventoryService.DataInventoryReport report =
+            PrometheionCCPADataInventoryService.generateInventoryReport(fullContact.Id);
+        Test.stopTest();
+
+        // Then: All data points should be present
+        System.assert(report.specificData.containsKey('Full Name'), 'Should have full name');
+        System.assert(report.specificData.containsKey('Email Address'), 'Should have email');
+        System.assert(report.specificData.containsKey('Phone Number'), 'Should have phone');
+        System.assert(report.specificData.containsKey('Mailing Address'), 'Should have mailing address');
+    }
+
+    @IsTest
+    static void testIsRequestOverdue_WithRequest_Date() {
+        // Given: Request created directly with specific date for testing
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact 4' LIMIT 1];
+
+        CCPA_Request__c newRequest = new CCPA_Request__c(
+            Contact__c = testContact.Id,
+            Request_Type__c = 'Right to Know',
+            Request_Date__c = System.now().addDays(-46), // 46 days ago - overdue
+            Status__c = 'Pending'
+        );
+        insert newRequest;
+
+        // Re-query to get formula fields
+        CCPA_Request__c queriedRequest = [
+            SELECT Id, Status__c, Request_Date__c, Response_Deadline__c
+            FROM CCPA_Request__c
+            WHERE Id = :newRequest.Id
+        ];
+
+        Test.startTest();
+        Boolean isOverdue = PrometheionCCPADataInventoryService.isRequestOverdue(queriedRequest);
+        Test.stopTest();
+
+        // Then: Should be overdue
+        System.assertEquals(true, isOverdue, 'Request older than 45 days should be overdue');
+    }
+
     // Helper method to create limited user for permission testing
     private static User createLimitedUser() {
         Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];

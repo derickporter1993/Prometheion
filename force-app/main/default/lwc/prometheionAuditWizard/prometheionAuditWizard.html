@@ -15,7 +15,7 @@
       <!-- Step Content -->
       <div class="slds-var-m-top_large step-content">
         <!-- Step 1: Framework Selection -->
-        <template if:true={isStep1}>
+        <template lwc:if={isStep1}>
           <section class="step-panel" aria-labelledby="step1-heading">
             <h2 id="step1-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
               Select Compliance Framework
@@ -61,7 +61,7 @@
         </template>
 
         <!-- Step 2: Date Range -->
-        <template if:true={isStep2}>
+        <template lwc:if={isStep2}>
           <section class="step-panel" aria-labelledby="step2-heading">
             <h2 id="step2-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
               Select Audit Period
@@ -125,7 +125,7 @@
         </template>
 
         <!-- Step 3: Control Selection -->
-        <template if:true={isStep3}>
+        <template lwc:if={isStep3}>
           <section class="step-panel" aria-labelledby="step3-heading">
             <h2 id="step3-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
               Select Controls
@@ -199,7 +199,7 @@
         </template>
 
         <!-- Step 4: Preview -->
-        <template if:true={isStep4}>
+        <template lwc:if={isStep4}>
           <section class="step-panel" aria-labelledby="step4-heading">
             <h2 id="step4-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
               Preview Audit Package
@@ -258,9 +258,9 @@
         </template>
 
         <!-- Step 5: Generate -->
-        <template if:true={isStep5}>
+        <template lwc:if={isStep5}>
           <section class="step-panel slds-text-align_center">
-            <template if:true={isGenerating}>
+            <template lwc:if={isGenerating}>
               <div role="status" aria-live="polite" aria-busy="true">
                 <lightning-spinner
                   alternative-text="Generating audit package"
@@ -288,8 +288,8 @@
               </div>
             </template>
 
-            <template if:false={isGenerating}>
-              <template if:true={generationComplete}>
+            <template lwc:else>
+              <template lwc:if={generationComplete}>
                 <div role="status" aria-live="polite">
                   <lightning-icon
                     icon-name="utility:success"
@@ -325,7 +325,7 @@
                   ></lightning-button>
                 </div>
               </template>
-              <template if:false={generationComplete}>
+              <template lwc:else>
                 <lightning-icon
                   icon-name="utility:file"
                   size="xx-large"

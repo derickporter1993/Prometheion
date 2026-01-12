@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Media_Notified__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Whether media has been notified (required for 500+ affected)</description>
+    <externalId>false</externalId>
+    <label>Media Notified</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

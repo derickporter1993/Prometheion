@@ -1,36 +1,45 @@
 <template>
   <lightning-card title="Compliance Timeline" icon-name="standard:event">
-    <div class="slds-var-p-around_medium">
-      <template if:true={hasEvents}>
-        <ul
-          class="slds-list_vertical slds-has-dividers_bottom"
-          role="list"
-          aria-label="Compliance timeline events"
-        >
-          <template for:each={sortedEvents} for:item="event">
-            <li key={event.id} class="slds-item slds-media" role="listitem">
-              <div class="slds-media__figure">
-                <lightning-icon
-                  icon-name={event.iconName}
-                  size="small"
-                  alternative-text={event.title}
-                ></lightning-icon>
-              </div>
-              <div class="slds-media__body">
-                <div class="slds-text-heading_small">{event.title}</div>
-                <div class="slds-text-body_small">{event.description}</div>
-                <div class="slds-text-body_small slds-text-color_weak" aria-label="Event date">
-                  {event.date}
-                </div>
-              </div>
-            </li>
-          </template>
-        </ul>
-      </template>
-      <template if:false={hasEvents}>
-        <div class="slds-text-align_center slds-var-p-around_medium">
-          <p>No timeline events available</p>
+    <div class="slds-p-around_medium">
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading timeline events" size="medium"></lightning-spinner>
         </div>
+      </template>
+
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_medium">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          {errorMessage}
+        </div>
+      </template>
+
+      <template lwc:if={isEmpty}>
+        <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
+          <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          No timeline events available
+        </div>
+      </template>
+
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
+          <template lwc:if={hasEvents}>
+            <ul class="slds-timeline">
+              <template for:each={sortedEvents} for:item="event">
+                <li key={event.id} class="slds-timeline__item">
+                  <div class="slds-timeline__marker">
+                    <lightning-icon icon-name={event.iconName} size="small" aria-hidden="true"></lightning-icon>
+                  </div>
+                  <div class="slds-timeline__item_content">
+                    <div class="slds-text-heading_small">{event.title}</div>
+                    <div class="slds-text-body_small">{event.description}</div>
+                    <div class="slds-text-body_small slds-text-color_weak">{event.date}</div>
+                  </div>
+                </li>
+              </template>
+            </ul>
+          </template>
+        </template>
       </template>
     </div>
   </lightning-card>

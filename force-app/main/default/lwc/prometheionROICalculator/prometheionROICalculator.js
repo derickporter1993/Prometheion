@@ -10,6 +10,13 @@ export default class PrometheionROICalculator extends LightningElement {
 
   @track roiResults = null;
   @track showResults = false;
+  @track isLoading = false;
+  @track hasError = false;
+  @track errorMessage = "";
+
+  get isEmpty() {
+    return !this.isLoading && !this.hasError && !this.showResults;
+  }
 
   industryOptions = [
     { label: "Healthcare", value: "healthcare" },

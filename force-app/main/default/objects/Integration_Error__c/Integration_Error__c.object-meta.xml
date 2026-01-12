@@ -11,6 +11,8 @@
     <sharingModel>ReadWrite</sharingModel>
     <fields>
         <fullName>Error_Type__c</fullName>
+        <description>Category of integration that failed: Slack, Teams, Einstein AI, API callouts, or other</description>
+        <inlineHelpText>Type of integration that encountered the error</inlineHelpText>
         <label>Error Type</label>
         <type>Picklist</type>
         <required>true</required>
@@ -48,6 +50,8 @@
     </fields>
     <fields>
         <fullName>Error_Message__c</fullName>
+        <description>Detailed error message captured from the failed integration. May include HTTP status codes, API responses, or exception messages.</description>
+        <inlineHelpText>Full error message from the failed operation</inlineHelpText>
         <label>Error Message</label>
         <type>LongTextArea</type>
         <length>32768</length>
@@ -55,6 +59,8 @@
     </fields>
     <fields>
         <fullName>Stack_Trace__c</fullName>
+        <description>Apex stack trace at the point of failure. Used for debugging to identify the exact code path that caused the error.</description>
+        <inlineHelpText>Stack trace for debugging</inlineHelpText>
         <label>Stack Trace</label>
         <type>LongTextArea</type>
         <length>32768</length>
@@ -62,6 +68,8 @@
     </fields>
     <fields>
         <fullName>Correlation_Id__c</fullName>
+        <description>Unique identifier to correlate this error with external system logs. Useful for cross-system debugging.</description>
+        <inlineHelpText>ID for correlating with external system logs</inlineHelpText>
         <label>Correlation ID</label>
         <type>Text</type>
         <length>50</length>
@@ -69,6 +77,8 @@
     </fields>
     <fields>
         <fullName>Context__c</fullName>
+        <description>Additional context about the error including record IDs, user actions, or request/response data that helps diagnose the issue.</description>
+        <inlineHelpText>Additional context information for debugging</inlineHelpText>
         <label>Context</label>
         <type>LongTextArea</type>
         <length>32768</length>
@@ -76,6 +86,8 @@
     </fields>
     <fields>
         <fullName>Retry_Count__c</fullName>
+        <description>Number of retry attempts made for this failed operation. Maximum retries are configured per integration type.</description>
+        <inlineHelpText>Number of retry attempts made</inlineHelpText>
         <label>Retry Count</label>
         <type>Number</type>
         <precision>3</precision>
@@ -84,6 +96,8 @@
     </fields>
     <fields>
         <fullName>Status__c</fullName>
+        <description>Current status of the error: New (just occurred), Retrying (retry in progress), Resolved (fixed), or Failed (all retries exhausted)</description>
+        <inlineHelpText>Current status of error handling</inlineHelpText>
         <label>Status</label>
         <type>Picklist</type>
         <valueSet>
@@ -115,6 +129,8 @@
     </fields>
     <fields>
         <fullName>Timestamp__c</fullName>
+        <description>Date and time when the error occurred. Used for troubleshooting and correlating with external system logs.</description>
+        <inlineHelpText>When the error occurred</inlineHelpText>
         <label>Timestamp</label>
         <type>DateTime</type>
         <required>true</required>

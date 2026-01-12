@@ -223,13 +223,193 @@ private class PrometheionSecurityUtilsTest {
     @IsTest
     static void testBuildSecureQuery_AlreadyHasSecurityEnforced() {
         String baseQuery = 'SELECT Id, Name FROM Account WITH SECURITY_ENFORCED';
-        
+
         Test.startTest();
         String secureQuery = PrometheionSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
-        
+
         // Should only have one WITH SECURITY_ENFORCED
         Integer count = secureQuery.split('WITH SECURITY_ENFORCED', -1).size() - 1;
         System.assertEquals(1, count, 'Should have exactly one WITH SECURITY_ENFORCED');
+    }
+
+    @IsTest
+    static void testHasReadAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasReadAccess('InvalidObject__c');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have read access to invalid object');
+    }
+
+    @IsTest
+    static void testHasCreateAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasCreateAccess('InvalidObject__c');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have create access to invalid object');
+    }
+
+    @IsTest
+    static void testHasUpdateAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasUpdateAccess('InvalidObject__c');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have update access to invalid object');
+    }
+
+    @IsTest
+    static void testHasDeleteAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasDeleteAccess('InvalidObject__c');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have delete access to invalid object');
+    }
+
+    @IsTest
+    static void testHasFieldReadAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasFieldReadAccess('InvalidObject__c', 'Name');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have field access on invalid object');
+    }
+
+    @IsTest
+    static void testHasFieldWriteAccess_InvalidObject() {
+        Test.startTest();
+        Boolean hasAccess = PrometheionSecurityUtils.hasFieldWriteAccess('InvalidObject__c', 'Name');
+        Test.stopTest();
+
+        System.assertEquals(false, hasAccess, 'Should not have field write access on invalid object');
+    }
+
+    @IsTest
+    static void testStripInaccessibleFields_NullInput() {
+        Test.startTest();
+        List<SObject> stripped = PrometheionSecurityUtils.stripInaccessibleFields(
+            AccessType.READABLE,
+            null
+        );
+        Test.stopTest();
+
+        System.assertEquals(0, stripped.size(), 'Should return empty list for null input');
+    }
+
+    @IsTest
+    static void testValidateFLSAccess_InvalidField() {
+        List<String> fields = new List<String>{'Name', 'InvalidField__c'};
+
+        Test.startTest();
+        try {
+            PrometheionSecurityUtils.validateFLSAccess('Account', fields, false);
+            System.assert(false, 'Should throw exception for invalid field');
+        } catch (PrometheionSecurityUtils.SecurityException e) {
+            System.assert(e.getMessage().contains('Insufficient FLS access'),
+                'Exception should mention FLS access');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testValidateFLSAccess_InvalidField_Write() {
+        List<String> fields = new List<String>{'InvalidField__c'};
+
+        Test.startTest();
+        try {
+            PrometheionSecurityUtils.validateFLSAccess('Account', fields, true);
+            System.assert(false, 'Should throw exception for invalid field write');
+        } catch (PrometheionSecurityUtils.SecurityException e) {
+            System.assert(e.getMessage().contains('Insufficient FLS access'),
+                'Exception should mention FLS access');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testValidateCRUDAccess_InvalidObject() {
+        Test.startTest();
+        try {
+            PrometheionSecurityUtils.validateCRUDAccess(
+                'InvalidObject__c',
+                PrometheionSecurityUtils.DmlOperation.DML_INSERT
+            );
+            System.assert(false, 'Should throw exception for invalid object');
+        } catch (PrometheionSecurityUtils.SecurityException e) {
+            System.assert(e.getMessage().contains('Insufficient CRUD access'),
+                'Exception should mention CRUD access');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testStripInaccessibleFields_Updateable() {
+        List<Account> accounts = [SELECT Id, Name FROM Account LIMIT 1];
+
+        Test.startTest();
+        List<SObject> stripped = PrometheionSecurityUtils.stripInaccessibleFields(
+            AccessType.UPDATABLE,
+            accounts
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, stripped.size(), 'Should return updateable records');
+    }
+
+    @IsTest
+    static void testStripInaccessibleFields_Creatable() {
+        Account acc = new Account(Name = 'Test Strip Creatable');
+        List<Account> accounts = new List<Account>{ acc };
+
+        Test.startTest();
+        List<SObject> stripped = PrometheionSecurityUtils.stripInaccessibleFields(
+            AccessType.CREATABLE,
+            accounts
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, stripped.size(), 'Should return creatable records');
+    }
+
+    @IsTest
+    static void testBuildSecureQuery_WithWhereClause() {
+        String baseQuery = 'SELECT Id, Name FROM Account WHERE Name != null';
+
+        Test.startTest();
+        String secureQuery = PrometheionSecurityUtils.buildSecureQuery(baseQuery);
+        Test.stopTest();
+
+        System.assert(secureQuery.contains('WITH SECURITY_ENFORCED'),
+            'Should add WITH SECURITY_ENFORCED');
+        System.assert(secureQuery.contains('WHERE Name != null'),
+            'Should preserve WHERE clause');
+    }
+
+    @IsTest
+    static void testBuildSecureQuery_LowerCase() {
+        String baseQuery = 'SELECT Id FROM Account with security_enforced';
+
+        Test.startTest();
+        String secureQuery = PrometheionSecurityUtils.buildSecureQuery(baseQuery);
+        Test.stopTest();
+
+        // Should handle case-insensitive removal
+        Integer count = secureQuery.toLowerCase().split('with security_enforced', -1).size() - 1;
+        System.assertEquals(1, count, 'Should have exactly one WITH SECURITY_ENFORCED');
+    }
+
+    @IsTest
+    static void testSecurityException() {
+        Test.startTest();
+        try {
+            throw new PrometheionSecurityUtils.SecurityException('Test exception message');
+        } catch (PrometheionSecurityUtils.SecurityException e) {
+            System.assertEquals('Test exception message', e.getMessage(),
+                'Exception message should match');
+        }
+        Test.stopTest();
     }
 }

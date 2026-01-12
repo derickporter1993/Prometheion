@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Status__c</fullName>
-    <description>Current status of the erasure request</description>
+    <description>Current status of the GDPR Article 17 erasure request. Pending: awaiting review, In Progress: data deletion underway, Completed: all data erased, Failed: erasure encountered errors.</description>
+    <inlineHelpText>Request status: Pending, In Progress, Completed, or Failed</inlineHelpText>
     <externalId>false</externalId>
     <label>Status</label>
     <required>true</required>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Request_Date__c</fullName>
-    <description>Date and time the erasure request was submitted</description>
+    <description>Date and time when the erasure request was formally received. This starts the GDPR one-month response deadline clock. Required for compliance tracking.</description>
+    <inlineHelpText>When request was received (starts deadline)</inlineHelpText>
     <externalId>false</externalId>
     <label>Request Date</label>
     <required>true</required>

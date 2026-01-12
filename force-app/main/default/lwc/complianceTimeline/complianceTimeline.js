@@ -1,7 +1,10 @@
-import { LightningElement, api } from "lwc";
+import { LightningElement, api, track } from "lwc";
 
 export default class ComplianceTimeline extends LightningElement {
   @api events = [];
+  @track isLoading = false;
+  @track hasError = false;
+  @track errorMessage = "";
 
   get sortedEvents() {
     if (!this.events || this.events.length === 0) {
@@ -23,6 +26,10 @@ export default class ComplianceTimeline extends LightningElement {
 
   get hasEvents() {
     return this.events && this.events.length > 0;
+  }
+
+  get isEmpty() {
+    return !this.isLoading && !this.hasError && !this.hasEvents;
   }
 
   getEventIcon(eventType) {

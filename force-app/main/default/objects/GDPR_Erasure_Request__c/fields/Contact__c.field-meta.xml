@@ -7,5 +7,6 @@
     <relationshipLabel>GDPR Erasure Requests</relationshipLabel>
     <relationshipName>GDPR_Erasure_Requests</relationshipName>
     <required>false</required>
-    <description>Contact subject of the erasure request</description>
+    <description>Contact record of the data subject requesting erasure. This lookup may be nullified after erasure is completed to comply with the right to be forgotten.</description>
+    <inlineHelpText>Data subject requesting erasure (cleared after completion)</inlineHelpText>
 </CustomField>

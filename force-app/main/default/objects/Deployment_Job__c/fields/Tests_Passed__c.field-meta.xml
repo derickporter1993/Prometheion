@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Tests_Passed__c</fullName>
+    <description>Count of Apex test methods that passed during the deployment. Combined with Tests Failed, provides overall test coverage validation.</description>
+    <inlineHelpText>Number of tests that passed</inlineHelpText>
     <label>Tests Passed</label>
     <type>Number</type>
     <precision>6</precision>

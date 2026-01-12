@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_Policies__c</fullName>
+    <description>Comma-separated list of related policy codes from Compliance_Policy__mdt</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Related Policies</label>
+    <length>1000</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

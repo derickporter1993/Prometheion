@@ -1,10 +1,12 @@
 <template>
   <lightning-card title="API Usage & Forecasting">
     <div class="slds-var-p-around_medium">
-      <template if:true={rows}>
+      <template if:true={hasRows}>
         <lightning-datatable key-field="id" data={rows} columns={columns}></lightning-datatable>
       </template>
-      <template if:false={rows}><p>No snapshots yet.</p></template>
+      <template if:false={hasRows}>
+        <p>No snapshots yet.</p>
+      </template>
     </div>
   </lightning-card>
 </template>

@@ -180,11 +180,11 @@ public with sharing class PrometheionCCPASLAMonitorScheduler implements Schedula
     }
 
     /**
-     * Schedule daily SLA monitoring at 8 AM
+     * Schedule daily SLA monitoring using CRON from Custom Metadata
      * @return Job ID
      */
     public static String scheduleDaily() {
-        String cronExp = '0 0 8 * * ?';
+        String cronExp = SchedulerErrorHandler.getCronExpression('CCPASLAMonitor', '0 0 8 * * ?');
         return System.schedule(
             'CCPA SLA Monitor - Daily',
             cronExp,

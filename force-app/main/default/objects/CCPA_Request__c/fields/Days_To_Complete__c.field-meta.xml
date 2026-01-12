@@ -6,5 +6,6 @@
     <precision>3</precision>
     <scale>0</scale>
     <required>false</required>
-    <description>Number of days taken to complete the CCPA request</description>
+    <description>Number of days taken to complete the CCPA request. Used for performance reporting and SLA tracking. Target is under 45 days per CCPA requirements.</description>
+    <inlineHelpText>Days from request to completion (target: &lt;45)</inlineHelpText>
 </CustomField>

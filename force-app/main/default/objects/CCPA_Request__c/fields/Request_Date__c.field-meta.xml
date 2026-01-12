@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Request_Date__c</fullName>
-    <description>Date and time the request was submitted</description>
+    <description>Date and time the consumer submitted the CCPA request. This date starts the 45-day compliance clock and is used to calculate the Response Deadline.</description>
+    <inlineHelpText>When the consumer submitted the request</inlineHelpText>
     <externalId>false</externalId>
     <label>Request Date</label>
     <required>true</required>

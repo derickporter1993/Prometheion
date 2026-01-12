@@ -1,48 +1,36 @@
 <template>
   <lightning-card title="Executive KPI Dashboard" icon-name="standard:dashboard">
-    <div class="slds-var-p-around_medium">
-      <template if:true={loading}>
+    <div class="slds-p-around_medium">
+      <template lwc:if={loading}>
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:true={error}>
-        <div class="slds-text-color_error" role="alert" aria-live="assertive">
-          Error loading KPIs: {error.body.message}
-        </div>
+      <template lwc:if={error}>
+        <div class="slds-text-color_error">Error loading KPIs: {errorMessage}</div>
       </template>
 
-      <template if:true={dashboardData}>
-        <div
-          class="slds-grid slds-gutters"
-          role="list"
-          aria-label="Executive KPI dashboard metrics"
-        >
-          <div class="slds-col slds-size_1-of-4" role="listitem">
-            <div
-              class="slds-text-align_center"
-              aria-label="Overall Compliance Score: {overallScore}%"
-            >
+      <template lwc:if={dashboardData}>
+        <div class="slds-grid slds-gutters">
+          <div class="slds-col slds-size_1-of-4">
+            <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{overallScore}%</div>
               <div class="slds-text-body_small">Overall Compliance Score</div>
             </div>
           </div>
-          <div class="slds-col slds-size_1-of-4" role="listitem">
-            <div class="slds-text-align_center" aria-label="Total Gaps: {totalGaps}">
+          <div class="slds-col slds-size_1-of-4">
+            <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{totalGaps}</div>
               <div class="slds-text-body_small">Total Gaps</div>
             </div>
           </div>
-          <div class="slds-col slds-size_1-of-4" role="listitem">
-            <div class="slds-text-align_center" aria-label="Critical Gaps: {criticalGaps}">
+          <div class="slds-col slds-size_1-of-4">
+            <div class="slds-text-align_center">
               <div class="slds-text-heading_large slds-text-color_error">{criticalGaps}</div>
               <div class="slds-text-body_small">Critical Gaps</div>
             </div>
           </div>
-          <div class="slds-col slds-size_1-of-4" role="listitem">
-            <div
-              class="slds-text-align_center"
-              aria-label="Compliant Frameworks: {compliantFrameworks}"
-            >
+          <div class="slds-col slds-size_1-of-4">
+            <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{compliantFrameworks}</div>
               <div class="slds-text-body_small">Compliant Frameworks</div>
             </div>

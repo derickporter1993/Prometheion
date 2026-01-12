@@ -106,6 +106,18 @@ private class PrometheionAISettingsControllerTest {
     }
 
     @IsTest
+    static void testSaveSettings_NullSettings() {
+        Test.startTest();
+        try {
+            PrometheionAISettingsController.saveSettings(null);
+            System.assert(false, 'Expected exception for null settings');
+        } catch (Exception e) {
+            System.assertNotEquals(null, e, 'Should throw exception for null settings');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
     static void testGetSettings_InsufficientPermissions() {
         // Given: A user without proper permissions
         Profile minAccessProfile = [SELECT Id FROM Profile WHERE Name = 'Minimum Access - Salesforce' LIMIT 1];

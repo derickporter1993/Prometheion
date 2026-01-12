@@ -208,11 +208,11 @@ public with sharing class PrometheionDormantAccountAlertScheduler implements Sch
     }
 
     /**
-     * Schedule daily dormant account check at 5 AM
+     * Schedule daily dormant account check using CRON from Custom Metadata
      * @return Job ID
      */
     public static String scheduleDaily() {
-        String cronExp = '0 0 5 * * ?';
+        String cronExp = SchedulerErrorHandler.getCronExpression('DormantAccountAlert', '0 0 5 * * ?');
         return System.schedule(
             'Dormant Account Alert - Daily',
             cronExp,

@@ -212,7 +212,7 @@ public without sharing class PrometheionReasoningEngine {
      */
     private static String generateCorrelationId(String nodeHash) {
         String input = nodeHash + '|' + UserInfo.getUserId();
-        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
         return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 

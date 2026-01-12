@@ -2,7 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Requested_By__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>User who initiated the erasure request</description>
+    <description>Salesforce User who created the erasure request record. This is typically the DPO, privacy officer, or customer service representative who received the request.</description>
+    <inlineHelpText>User who recorded this request</inlineHelpText>
     <externalId>false</externalId>
     <label>Requested By</label>
     <referenceTo>User</referenceTo>

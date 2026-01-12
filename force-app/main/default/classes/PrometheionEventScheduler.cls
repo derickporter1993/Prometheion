@@ -6,7 +6,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public class PrometheionEventScheduler implements Schedulable {
+public with sharing class PrometheionEventScheduler implements Schedulable {
     
     private String eventType;
     private Integer daysBack;

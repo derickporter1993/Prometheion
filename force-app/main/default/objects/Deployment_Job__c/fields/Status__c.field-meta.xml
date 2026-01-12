@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Status__c</fullName>
+    <description>Current status of the deployment job. In Progress: deployment running, Success: all components deployed and tests passed, Failed: deployment or tests failed.</description>
+    <inlineHelpText>Deployment status: In Progress, Success, or Failed</inlineHelpText>
     <label>Status</label>
     <type>Picklist</type>
     <required>false</required>

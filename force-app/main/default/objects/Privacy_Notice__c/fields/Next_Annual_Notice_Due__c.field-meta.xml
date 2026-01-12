@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Next_Annual_Notice_Due__c</fullName>
-    <description>Date when next annual privacy notice is due (12 months from last notice)</description>
+    <description>Calculated date when the next annual GLBA privacy notice must be sent. Typically 12 months from the previous notice. Used by schedulers to trigger reminder workflows.</description>
+    <inlineHelpText>Due date for next annual notice</inlineHelpText>
     <externalId>false</externalId>
     <label>Next Annual Notice Due</label>
     <required>false</required>

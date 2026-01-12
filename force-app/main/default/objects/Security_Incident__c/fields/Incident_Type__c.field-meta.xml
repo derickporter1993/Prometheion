@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Incident_Type__c</fullName>
+    <description>Type of security incident</description>
+    <externalId>false</externalId>
+    <label>Incident Type</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>DATA_BREACH</fullName>
+                <default>false</default>
+                <label>Data Breach</label>
+            </value>
+            <value>
+                <fullName>UNAUTHORIZED_ACCESS</fullName>
+                <default>false</default>
+                <label>Unauthorized Access</label>
+            </value>
+            <value>
+                <fullName>MALWARE</fullName>
+                <default>false</default>
+                <label>Malware</label>
+            </value>
+            <value>
+                <fullName>PHISHING</fullName>
+                <default>false</default>
+                <label>Phishing</label>
+            </value>
+            <value>
+                <fullName>POLICY_VIOLATION</fullName>
+                <default>false</default>
+                <label>Policy Violation</label>
+            </value>
+            <value>
+                <fullName>CONFIGURATION_DRIFT</fullName>
+                <default>false</default>
+                <label>Configuration Drift</label>
+            </value>
+            <value>
+                <fullName>OTHER</fullName>
+                <default>true</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

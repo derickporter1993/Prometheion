@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Tests_Failed__c</fullName>
+    <description>Count of Apex test methods that failed during the deployment. Any value greater than 0 indicates test failures that must be resolved before promoting to production.</description>
+    <inlineHelpText>Number of tests that failed (target: 0)</inlineHelpText>
     <label>Tests Failed</label>
     <type>Number</type>
     <precision>6</precision>

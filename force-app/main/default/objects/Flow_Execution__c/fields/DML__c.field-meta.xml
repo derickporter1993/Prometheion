@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DML__c</fullName>
+    <description>Number of DML statements (insert, update, delete, upsert) executed by the Flow. Salesforce limit is 150 DML statements.</description>
+    <inlineHelpText>Number of DML statements (limit: 150)</inlineHelpText>
     <label>DML</label>
     <type>Number</type>
     <precision>6</precision>

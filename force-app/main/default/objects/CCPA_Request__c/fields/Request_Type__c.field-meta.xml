@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Request_Type__c</fullName>
-    <description>Type of CCPA request</description>
+    <description>Type of CCPA consumer request under California Consumer Privacy Act. Right to Know: request for personal data disclosure, Right to Delete: request to erase personal data, Do Not Sell: opt-out of data sales.</description>
+    <inlineHelpText>CCPA request type: Right to Know, Right to Delete, or Do Not Sell</inlineHelpText>
     <externalId>false</externalId>
     <label>Request Type</label>
     <required>true</required>

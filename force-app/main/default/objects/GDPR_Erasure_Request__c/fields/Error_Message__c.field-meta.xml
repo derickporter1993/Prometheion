@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Error_Message__c</fullName>
-    <description>Error message if erasure failed</description>
+    <description>Technical error details captured when the erasure batch job fails. Includes exception message and stack trace for troubleshooting. Populated only when Status is Failed.</description>
+    <inlineHelpText>Technical error details (if failed)</inlineHelpText>
     <externalId>false</externalId>
     <label>Error Message</label>
     <length>32768</length>

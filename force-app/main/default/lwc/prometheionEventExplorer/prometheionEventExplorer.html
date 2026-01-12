@@ -113,12 +113,12 @@
       </div>
 
       <!-- Events Data Table -->
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:false={isLoading}>
-        <template if:true={hasEvents}>
+      <template lwc:else>
+        <template lwc:if={hasEvents}>
           <lightning-datatable
             key-field="id"
             data={filteredEvents}
@@ -133,7 +133,7 @@
           </lightning-datatable>
         </template>
 
-        <template if:false={hasEvents}>
+        <template lwc:else>
           <div class="slds-illustration slds-illustration_small" role="status" aria-live="polite">
             <div class="slds-text-align_center">
               <p class="slds-text-body_regular slds-text-color_weak">
@@ -147,7 +147,7 @@
   </lightning-card>
 
   <!-- Event Detail Modal -->
-  <template if:true={showModal}>
+  <template lwc:if={showModal}>
     <section
       role="dialog"
       tabindex="-1"
@@ -175,7 +175,7 @@
           <h2 id="modal-heading" class="slds-modal__title">Event Details</h2>
         </header>
         <div id="modal-content" class="slds-modal__content slds-var-p-around_medium">
-          <template if:true={selectedEvent}>
+          <template lwc:if={selectedEvent}>
             <dl class="slds-dl_horizontal" role="list" aria-label="Event details">
               <dt class="slds-dl_horizontal__label">Event ID:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.id}</dd>

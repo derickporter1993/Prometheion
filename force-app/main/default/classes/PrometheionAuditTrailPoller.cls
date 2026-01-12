@@ -54,7 +54,7 @@ public without sharing class PrometheionAuditTrailPoller implements Schedulable 
      * @return The job ID
      */
     public static String schedule() {
-        String cronExp = '0 */5 * * * ?'; // Every 5 minutes
+        String cronExp = '0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ?'; // Every 5 minutes
         return System.schedule(JOB_NAME, cronExp, new PrometheionAuditTrailPoller());
     }
     

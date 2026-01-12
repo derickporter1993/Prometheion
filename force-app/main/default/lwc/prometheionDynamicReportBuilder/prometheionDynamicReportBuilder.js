@@ -204,7 +204,7 @@ export default class PrometheionDynamicReportBuilder extends LightningElement {
       })
       .catch((error) => {
         this.showError(
-          "Error executing report: " + (error.body ? error.body.message : error.message)
+          "Error executing report: " + (error?.body?.message || error?.message || 'An unknown error occurred')
         );
         this.isLoading = false;
       });

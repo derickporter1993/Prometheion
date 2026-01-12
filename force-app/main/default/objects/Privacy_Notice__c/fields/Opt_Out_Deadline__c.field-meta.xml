@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Opt_Out_Deadline__c</fullName>
-    <description>Deadline for customer to exercise opt-out rights (30 days from notice)</description>
+    <description>Deadline by which the customer must respond to exercise opt-out rights. GLBA requires a reasonable opportunity to opt out, typically 30 days from notice receipt.</description>
+    <inlineHelpText>Last day customer can opt out (30 days)</inlineHelpText>
     <externalId>false</externalId>
     <label>Opt-Out Deadline</label>
     <required>false</required>

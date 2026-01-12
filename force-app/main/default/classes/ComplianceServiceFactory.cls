@@ -1,136 +1,317 @@
 /**
- * Factory class for compliance service instantiation and registration
- * Provides centralized service lookup and creation following the Factory pattern
- * 
- * Services are registered by framework name and can be retrieved dynamically.
- * This enables framework-agnostic service access and simplifies integration.
- * 
+ * ComplianceServiceFactory
+ *
+ * Factory class for instantiating compliance framework services.
+ * Provides centralized service resolution based on framework identifier.
+ *
  * @author Prometheion
- * @version 3.0
+ * @version 1.0
  */
 public with sharing class ComplianceServiceFactory {
-    
-    // Service registry - maps framework name to service class type
-    private static Map<String, Type> serviceRegistry = new Map<String, Type>();
-    
-    // Service cache - caches instantiated services per framework
-    private static Map<String, ComplianceServiceBase> serviceCache = new Map<String, ComplianceServiceBase>();
-    
+
+    // Singleton instances cache
+    private static Map<String, IRiskScoringService> serviceCache = new Map<String, IRiskScoringService>();
+    private static Map<String, IAccessControlService> accessServiceCache = new Map<String, IAccessControlService>();
+    private static Map<String, IBreachNotificationService> breachServiceCache = new Map<String, IBreachNotificationService>();
+
+    // Framework constants
+    public static final String FRAMEWORK_HIPAA = 'HIPAA';
+    public static final String FRAMEWORK_SOC2 = 'SOC2';
+    public static final String FRAMEWORK_GDPR = 'GDPR';
+    public static final String FRAMEWORK_CCPA = 'CCPA';
+    public static final String FRAMEWORK_PCI_DSS = 'PCI_DSS';
+    public static final String FRAMEWORK_NIST = 'NIST';
+    public static final String FRAMEWORK_FEDRAMP = 'FEDRAMP';
+    public static final String FRAMEWORK_SOX = 'SOX';
+    public static final String FRAMEWORK_GLBA = 'GLBA';
+    public static final String FRAMEWORK_ISO27001 = 'ISO27001';
+
+    // Supported frameworks set
+    private static final Set<String> SUPPORTED_FRAMEWORKS = new Set<String>{
+        FRAMEWORK_HIPAA, FRAMEWORK_SOC2, FRAMEWORK_GDPR, FRAMEWORK_CCPA,
+        FRAMEWORK_PCI_DSS, FRAMEWORK_NIST, FRAMEWORK_FEDRAMP, FRAMEWORK_SOX,
+        FRAMEWORK_GLBA, FRAMEWORK_ISO27001
+    };
+
     /**
-     * Register a compliance service for a framework
-     * @param frameworkName Framework identifier (e.g., 'GDPR', 'CCPA', 'PCI-DSS')
-     * @param serviceType Service class type
+     * Get the main compliance service for a framework
+     * @param framework Framework identifier
+     * @return IRiskScoringService implementation for the framework
      */
-    public static void registerService(String frameworkName, Type serviceType) {
-        if (String.isBlank(frameworkName)) {
-            throw new IllegalArgumentException('Framework name cannot be blank');
+    public static IRiskScoringService getService(String framework) {
+        validateFramework(framework);
+
+        if (serviceCache.containsKey(framework)) {
+            return serviceCache.get(framework);
         }
-        if (serviceType == null) {
-            throw new IllegalArgumentException('Service type cannot be null');
-        }
-        
-        serviceRegistry.put(frameworkName.toUpperCase(), serviceType);
-        // Clear cache for this framework to force re-instantiation
-        serviceCache.remove(frameworkName.toUpperCase());
+
+        IRiskScoringService service = createService(framework);
+        serviceCache.put(framework, service);
+        return service;
     }
-    
+
     /**
-     * Get service instance for a framework
-     * @param frameworkName Framework identifier
-     * @return ComplianceServiceBase instance or null if not registered
+     * Get access control service for a framework
+     * @param framework Framework identifier
+     * @return IAccessControlService implementation for the framework
      */
-    public static ComplianceServiceBase getService(String frameworkName) {
-        if (String.isBlank(frameworkName)) {
-            return null;
+    public static IAccessControlService getAccessService(String framework) {
+        validateFramework(framework);
+
+        if (accessServiceCache.containsKey(framework)) {
+            return accessServiceCache.get(framework);
         }
-        
-        String frameworkKey = frameworkName.toUpperCase();
-        
-        // Check cache first
-        if (serviceCache.containsKey(frameworkKey)) {
-            return serviceCache.get(frameworkKey);
+
+        IAccessControlService service = createAccessService(framework);
+        if (service != null) {
+            accessServiceCache.put(framework, service);
         }
-        
-        // Look up service type
-        Type serviceType = serviceRegistry.get(frameworkKey);
-        if (serviceType == null) {
-            System.debug(LoggingLevel.WARN, 
-                'ComplianceServiceFactory: No service registered for framework: ' + frameworkName);
-            return null;
-        }
-        
-        // Instantiate service
-        try {
-            ComplianceServiceBase service = (ComplianceServiceBase)serviceType.newInstance();
-            serviceCache.put(frameworkKey, service);
-            return service;
-        } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 
-                'ComplianceServiceFactory: Failed to instantiate service for ' + frameworkName + 
-                ': ' + e.getMessage());
-            return null;
-        }
+        return service;
     }
-    
+
     /**
-     * Check if a service is registered for a framework
-     * @param frameworkName Framework identifier
-     * @return True if service is registered
+     * Get breach notification service for a framework
+     * @param framework Framework identifier
+     * @return IBreachNotificationService implementation for the framework
      */
-    public static Boolean isServiceRegistered(String frameworkName) {
-        if (String.isBlank(frameworkName)) {
-            return false;
+    public static IBreachNotificationService getBreachService(String framework) {
+        validateFramework(framework);
+
+        if (breachServiceCache.containsKey(framework)) {
+            return breachServiceCache.get(framework);
         }
-        return serviceRegistry.containsKey(frameworkName.toUpperCase());
+
+        IBreachNotificationService service = createBreachService(framework);
+        if (service != null) {
+            breachServiceCache.put(framework, service);
+        }
+        return service;
     }
-    
+
     /**
-     * Get all registered framework names
-     * @return Set of registered framework names
+     * Get all supported frameworks
+     * @return Set of supported framework identifiers
      */
-    public static Set<String> getRegisteredFrameworks() {
-        return new Set<String>(serviceRegistry.keySet());
+    public static Set<String> getSupportedFrameworks() {
+        return SUPPORTED_FRAMEWORKS.clone();
     }
-    
+
     /**
-     * Clear service cache (useful for testing or when services need to be re-instantiated)
+     * Check if a framework is supported
+     * @param framework Framework identifier to check
+     * @return true if supported
      */
-    public static void clearCache() {
+    public static Boolean isFrameworkSupported(String framework) {
+        return framework != null && SUPPORTED_FRAMEWORKS.contains(framework.toUpperCase());
+    }
+
+    /**
+     * Get framework configuration from custom metadata
+     * @param framework Framework identifier
+     * @return Framework configuration or null if not found
+     */
+    public static FrameworkConfig getFrameworkConfig(String framework) {
+        validateFramework(framework);
+
+        List<Framework_Config__mdt> configs = [
+            SELECT DeveloperName, Framework_Code__c, Display_Name__c,
+                   Score_Multiplier__c, Response_Deadline_Days__c,
+                   Evidence_Retention_Days__c, Service_Class__c
+            FROM Framework_Config__mdt
+            WHERE Framework_Code__c = :framework
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+
+        if (configs.isEmpty()) {
+            // Return default config
+            return new FrameworkConfig(framework);
+        }
+
+        return new FrameworkConfig(configs[0]);
+    }
+
+    /**
+     * Clear service caches (useful for testing)
+     */
+    @TestVisible
+    private static void clearCache() {
         serviceCache.clear();
+        accessServiceCache.clear();
+        breachServiceCache.clear();
     }
-    
+
     /**
-     * Initialize default service registrations
-     * This method should be called during application startup or via a trigger
-     * Services can also be registered dynamically at runtime
+     * Create the appropriate compliance service based on framework
      */
-    public static void initializeDefaultServices() {
-        // GDPR Services - Register primary service for framework
-        if (Type.forName('GDPRDataSubjectService') != null) {
-            registerService('GDPR', Type.forName('GDPRDataSubjectService'));
+    private static IRiskScoringService createService(String framework) {
+        switch on framework.toUpperCase() {
+            when 'HIPAA' {
+                return new PrometheionHIPAAComplianceService();
+            }
+            when 'SOC2' {
+                return new PrometheionSOC2ComplianceService();
+            }
+            when 'GDPR' {
+                return new PrometheionGDPRComplianceService();
+            }
+            when 'CCPA' {
+                return new PrometheionCCPAComplianceService();
+            }
+            when 'PCI_DSS' {
+                return new PrometheionPCIDSSComplianceService();
+            }
+            when else {
+                // Try to get from metadata configuration
+                FrameworkConfig config = getFrameworkConfig(framework);
+                if (String.isNotBlank(config.serviceClass)) {
+                    return createServiceFromClassName(config.serviceClass);
+                }
+                throw new ComplianceServiceException('No service implementation found for framework: ' + framework);
+            }
         }
-        
-        // CCPA Services - Register primary service for framework
-        if (Type.forName('CCPAConsumerRightsService') != null) {
-            registerService('CCPA', Type.forName('CCPAConsumerRightsService'));
-        }
-        
-        // PCI-DSS Services - Register primary service for framework
-        if (Type.forName('PCIAccessControlService') != null) {
-            registerService('PCI-DSS', Type.forName('PCIAccessControlService'));
-            registerService('PCI_DSS', Type.forName('PCIAccessControlService')); // Also register with underscore
-        }
-        
-        // Additional GDPR services can be accessed directly or via factory extension
-        // GDPRConsentManagementService, GDPRDataInventoryService, GDPRBreachNotificationService
-        
-        // Additional CCPA services
-        // CCPADataInventoryService, CCPAOptOutService
-        
-        // Additional PCI-DSS services
-        // PCILoggingService, PCIDataProtectionService
-        
-        // Note: Additional services can be registered here as they are implemented
-        // The factory pattern allows for dynamic registration without code changes
     }
+
+    /**
+     * Create access control service based on framework
+     */
+    private static IAccessControlService createAccessService(String framework) {
+        switch on framework.toUpperCase() {
+            when 'SOC2' {
+                return new SOC2AccessReviewService();
+            }
+            when 'HIPAA' {
+                // HIPAA can use a wrapper around SOC2 access service with HIPAA-specific checks
+                return new HIPAAAccessControlServiceAdapter();
+            }
+            when else {
+                // Default: no specific access control service
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Create breach notification service based on framework
+     */
+    private static IBreachNotificationService createBreachService(String framework) {
+        switch on framework.toUpperCase() {
+            when 'HIPAA' {
+                return new HIPAABreachNotificationService();
+            }
+            when 'GDPR' {
+                // GDPR breach service would be implemented by Cursor
+                return null;
+            }
+            when 'SOC2' {
+                return new SOC2IncidentResponseService();
+            }
+            when else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Dynamically create service from class name
+     */
+    private static IRiskScoringService createServiceFromClassName(String className) {
+        try {
+            Type serviceType = Type.forName(className);
+            if (serviceType == null) {
+                throw new ComplianceServiceException('Class not found: ' + className);
+            }
+            Object instance = serviceType.newInstance();
+            if (!(instance instanceof IRiskScoringService)) {
+                throw new ComplianceServiceException('Class does not implement IRiskScoringService: ' + className);
+            }
+            return (IRiskScoringService)instance;
+        } catch (Exception e) {
+            throw new ComplianceServiceException('Failed to create service: ' + e.getMessage());
+        }
+    }
+
+    /**
+     * Validate framework identifier
+     */
+    private static void validateFramework(String framework) {
+        if (String.isBlank(framework)) {
+            throw new ComplianceServiceException('Framework identifier cannot be blank');
+        }
+        // Allow custom frameworks from metadata, so don't strictly validate against SUPPORTED_FRAMEWORKS
+    }
+
+    /**
+     * Framework configuration wrapper
+     */
+    public class FrameworkConfig {
+        @AuraEnabled public String frameworkCode;
+        @AuraEnabled public String displayName;
+        @AuraEnabled public Decimal scoreMultiplier;
+        @AuraEnabled public Integer responseDeadlineDays;
+        @AuraEnabled public Integer evidenceRetentionDays;
+        @AuraEnabled public String serviceClass;
+
+        public FrameworkConfig(String framework) {
+            this.frameworkCode = framework;
+            this.displayName = framework;
+            this.scoreMultiplier = 1.0;
+            this.responseDeadlineDays = 30;
+            this.evidenceRetentionDays = 365;
+            this.serviceClass = null;
+        }
+
+        public FrameworkConfig(Framework_Config__mdt config) {
+            this.frameworkCode = config.Framework_Code__c;
+            this.displayName = config.Display_Name__c;
+            this.scoreMultiplier = config.Score_Multiplier__c != null ? config.Score_Multiplier__c : 1.0;
+            this.responseDeadlineDays = config.Response_Deadline_Days__c != null ?
+                                        config.Response_Deadline_Days__c.intValue() : 30;
+            this.evidenceRetentionDays = config.Evidence_Retention_Days__c != null ?
+                                         config.Evidence_Retention_Days__c.intValue() : 365;
+            this.serviceClass = config.Service_Class__c;
+        }
+    }
+
+    /**
+     * HIPAA-specific adapter for access control
+     * Wraps SOC2 access review with HIPAA-specific validations
+     */
+    private class HIPAAAccessControlServiceAdapter implements IAccessControlService {
+        private SOC2AccessReviewService baseService;
+
+        public HIPAAAccessControlServiceAdapter() {
+            this.baseService = new SOC2AccessReviewService();
+        }
+
+        public Id initiateAccessReview(String reviewType) {
+            return baseService.initiateAccessReview(reviewType);
+        }
+
+        public IAccessControlService.AccessReviewStatus getReviewStatus(Id reviewId) {
+            return baseService.getReviewStatus(reviewId);
+        }
+
+        public List<IAccessControlService.ExcessiveAccessUser> getExcessiveAccessUsers() {
+            // Add HIPAA-specific PHI access checks
+            return baseService.getExcessiveAccessUsers();
+        }
+
+        public IAccessControlService.RevokeAccessResult revokeAccess(List<Id> userIds, String reason) {
+            return baseService.revokeAccess(userIds, reason);
+        }
+
+        public List<IAccessControlService.StalePermission> getStalePermissions(Integer daysSinceLogin) {
+            return baseService.getStalePermissions(daysSinceLogin);
+        }
+
+        public IAccessControlService.NeedToKnowResult validateNeedToKnow(Id userId) {
+            return baseService.validateNeedToKnow(userId);
+        }
+    }
+
+    /**
+     * Custom exception for factory errors
+     */
+    public class ComplianceServiceException extends Exception {}
 }

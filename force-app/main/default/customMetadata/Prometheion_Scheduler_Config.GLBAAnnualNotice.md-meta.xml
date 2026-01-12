@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>GLBAAnnualNotice</label>
+    <label>GLBA Annual Notice</label>
     <protected>false</protected>
-    <values>
-        <field>CRON_Expression__c</field>
-        <value xsi:type="xsd:string">0 0 6 * * ?</value>
-    </values>
     <values>
         <field>Batch_Size__c</field>
         <value xsi:type="xsd:double">200</value>
     </values>
     <values>
-        <field>Is_Active__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
-        <field>Scheduler_Name__c</field>
-        <value xsi:type="xsd:string">GLBAAnnualNotice</value>
+        <field>CRON_Expression__c</field>
+        <value xsi:type="xsd:string">0 0 6 * * ?</value>
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">GLBA Annual Notice Scheduler - Runs daily at 6 AM to send annual privacy notices</value>
+        <value xsi:type="xsd:string">Automatically sends annual GLBA privacy notices to customers who are due. Runs daily at 6 AM on business days.</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
 </CustomMetadata>

@@ -274,6 +274,19 @@ private class PrometheionDrillDownControllerTest {
     }
 
     @isTest
+    static void testExportToCSVNullContext() {
+        Boolean exceptionThrown = false;
+        Test.startTest();
+        try {
+            PrometheionDrillDownController.exportToCSV(null);
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+        Test.stopTest();
+        System.assert(exceptionThrown, 'Should have thrown exception for null context');
+    }
+
+    @isTest
     static void testExportToCSVInvalidJson() {
         Boolean exceptionThrown = false;
         Test.startTest();

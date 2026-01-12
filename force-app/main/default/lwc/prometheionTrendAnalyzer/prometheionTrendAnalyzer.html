@@ -1,69 +1,93 @@
 <template>
   <lightning-card title="Prometheion Trend Analyzer" icon-name="custom:custom63">
-    <div class="slds-var-p-around_medium">
+    <div class="slds-p-around_medium">
       <!-- Configuration -->
-      <div class="slds-grid slds-gutters slds-var-m-bottom_medium">
+      <div class="slds-grid slds-gutters slds-m-bottom_medium">
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Object"
-            value={selectedObject}
-            options={objectOptions}
-            onchange={handleObjectChange}
+            value{selectedObject}
+            options{objectOptions}
+            onchange="
+              {
+                handleObjectChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Date Field"
-            value={dateField}
-            options={dateFields}
-            onchange={handleDateFieldChange}
+            value{dateField}
+            options{dateFields}
+            onchange="
+              {
+                handleDateFieldChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Metric Field"
-            value={metricField}
-            options={metricFields}
-            onchange={handleMetricFieldChange}
+            value{metricField}
+            options{metricFields}
+            onchange="
+              {
+                handleMetricFieldChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-4">
           <lightning-combobox
             label="Granularity"
-            value={granularity}
-            options={granularityOptions}
-            onchange={handleGranularityChange}
+            value{granularity}
+            options{granularityOptions}
+            onchange="
+              {
+                handleGranularityChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
       </div>
 
-      <div class="slds-var-m-bottom_medium">
+      <div class="slds-m-bottom_medium">
         <lightning-input
           type="number"
           label="Months Back"
-          value={monthsBack}
+          value{monthsBack}
           min="1"
           max="36"
-          onchange={handleMonthsBackChange}
+          onchange="
+            {
+              handleMonthsBackChange;
+            }
+          "
         >
         </lightning-input>
       </div>
 
       <lightning-button
         label="Analyze Trend"
-        onclick={handleAnalyze}
-        disabled={isButtonDisabled}
+        onclick="
+          {
+            handleAnalyze;
+          }
+        "
+        disabled{isButtonDisabled}
         variant="brand"
       >
       </lightning-button>
 
       <!-- Trend Chart Data -->
-      <template if:true={hasResults}>
-        <div class="slds-var-m-top_large">
+      <template lwc:if={hasResults}>
+        <div class="slds-m-top_large">
           <h3 class="slds-text-heading_small">Trend Analysis</h3>
           <div class="slds-text-body_regular">
             <p>Total: {trendTotal}</p>
@@ -71,23 +95,19 @@
             <p>Trend Direction: {trendDirection}</p>
           </div>
           <!-- Chart would be rendered here using a charting library -->
-          <div class="slds-var-m-top_medium">
-            <table
-              class="slds-table slds-table_bordered"
-              role="table"
-              aria-label="Trend analysis data table"
-            >
+          <div class="slds-m-top_medium">
+            <table class="slds-table slds-table_bordered">
               <thead>
                 <tr>
-                  <th scope="col">Period</th>
-                  <th scope="col">Value</th>
-                  <th scope="col">Change</th>
-                  <th scope="col">% Change</th>
+                  <th>Period</th>
+                  <th>Value</th>
+                  <th>Change</th>
+                  <th>% Change</th>
                 </tr>
               </thead>
               <tbody>
-                <template for:each={trendBuckets} for:item="bucket">
-                  <tr key={bucket.bucketDate}>
+                <template for:each{trendBuckets} for:item="bucket">
+                  <tr key{bucket.bucketDate}>
                     <td>{bucket.bucketDate}</td>
                     <td>{bucket.metricValue}</td>
                     <td>{bucket.changeFromPrevious}</td>
@@ -100,12 +120,12 @@
         </div>
       </template>
 
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
-        <lightning-alert variant="error" message={errorMessage}></lightning-alert>
+      <template lwc:if={hasError}>
+        <lightning-alert variant="error" message{errorMessage}></lightning-alert>
       </template>
     </div>
   </lightning-card>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>CPU__c</fullName>
+    <description>CPU time consumed by the Flow execution in milliseconds. Salesforce limit is 10,000ms for synchronous operations.</description>
+    <inlineHelpText>CPU time used in milliseconds (limit: 10,000ms)</inlineHelpText>
     <label>CPU (ms)</label>
     <type>Number</type>
     <precision>6</precision>

@@ -6,5 +6,6 @@
     <length>32768</length>
     <visibleLines>3</visibleLines>
     <required>false</required>
-    <description>Reason why the erasure request was rejected</description>
+    <description>Explanation for why the erasure request could not be fulfilled. Common reasons: legal hold, ongoing dispute, contractual obligations, or statutory retention requirements.</description>
+    <inlineHelpText>Legal or business reason for denial</inlineHelpText>
 </CustomField>

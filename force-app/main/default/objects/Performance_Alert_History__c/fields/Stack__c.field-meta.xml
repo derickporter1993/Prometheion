@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Stack__c</fullName>
+    <description>Apex stack trace captured at the time of the alert. Used for debugging to identify the code path that caused the performance issue.</description>
+    <inlineHelpText>Stack trace for debugging performance issues</inlineHelpText>
     <label>Stack</label>
     <type>LongTextArea</type>
     <visibleLines>3</visibleLines>

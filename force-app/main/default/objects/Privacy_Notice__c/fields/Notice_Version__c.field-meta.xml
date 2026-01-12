@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Notice_Version__c</fullName>
-    <description>Version number of the privacy notice document</description>
+    <description>Version identifier of the privacy notice document sent. Used to track which policy revision the customer received for audit and compliance purposes.</description>
+    <inlineHelpText>Document version number (e.g., 2.1)</inlineHelpText>
     <externalId>false</externalId>
     <label>Notice Version</label>
     <length>20</length>

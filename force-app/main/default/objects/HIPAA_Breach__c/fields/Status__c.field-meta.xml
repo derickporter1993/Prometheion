@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <description>Current status of the breach incident</description>
+    <externalId>false</externalId>
+    <label>Status</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Open</fullName>
+                <default>true</default>
+                <label>Open</label>
+            </value>
+            <value>
+                <fullName>Pending Assessment</fullName>
+                <default>false</default>
+                <label>Pending Assessment</label>
+            </value>
+            <value>
+                <fullName>Under Investigation</fullName>
+                <default>false</default>
+                <label>Under Investigation</label>
+            </value>
+            <value>
+                <fullName>Notification In Progress</fullName>
+                <default>false</default>
+                <label>Notification In Progress</label>
+            </value>
+            <value>
+                <fullName>Closed</fullName>
+                <default>false</default>
+                <label>Closed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
