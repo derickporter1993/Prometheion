@@ -510,4 +510,62 @@ public class PrometheionTestDataFactory {
         event.put('TIMESTAMP', String.valueOf(Datetime.now().addHours(-hoursAgo)));
         return event;
     }
+    
+    // ═══════════════════════════════════════════════════════════════
+    // PERFORMANCE RULE ENGINE TEST DATA
+    // ═══════════════════════════════════════════════════════════════
+    
+    /**
+     * @description Create CCX_Settings__c custom setting with custom thresholds
+     * @param cpuWarn CPU warning threshold (ms)
+     * @param cpuCrit CPU critical threshold (ms)
+     * @param heapWarn Heap warning threshold (KB)
+     * @param heapCrit Heap critical threshold (KB)
+     * @param soqlWarn SOQL warning threshold
+     * @param soqlCrit SOQL critical threshold
+     * @param dmlWarn DML warning threshold
+     * @param dmlCrit DML critical threshold
+     * @return Inserted CCX_Settings__c record
+     */
+    public static CCX_Settings__c createCCXSettings(
+        Integer cpuWarn, Integer cpuCrit,
+        Integer heapWarn, Integer heapCrit,
+        Integer soqlWarn, Integer soqlCrit,
+        Integer dmlWarn, Integer dmlCrit
+    ) {
+        CCX_Settings__c settings = new CCX_Settings__c(
+            SetupOwnerId = UserInfo.getOrganizationId(),
+            CPU_Warn__c = cpuWarn,
+            CPU_Crit__c = cpuCrit,
+            Heap_Warn__c = heapWarn,
+            Heap_Crit__c = heapCrit,
+            SOQL_Warn__c = soqlWarn,
+            SOQL_Crit__c = soqlCrit,
+            DML_Warn__c = dmlWarn,
+            DML_Crit__c = dmlCrit
+        );
+        insert settings;
+        return settings;
+    }
+    
+    /**
+     * @description Create Performance_Alert_History__c record for testing
+     * @param metric The metric name (CPU, HEAP, SOQL, DML)
+     * @param value The metric value
+     * @param threshold The threshold value
+     * @return Inserted Performance_Alert_History__c record
+     */
+    public static Performance_Alert_History__c createPerformanceAlert(
+        String metric, Decimal value, Decimal threshold
+    ) {
+        Performance_Alert_History__c alert = new Performance_Alert_History__c(
+            Metric__c = metric,
+            Value__c = value,
+            Threshold__c = threshold,
+            Context_Record__c = UserInfo.getUserId(),
+            Stack__c = metric + ' threshold exceeded: ' + value + ' >= ' + threshold
+        );
+        insert alert;
+        return alert;
+    }
 }
