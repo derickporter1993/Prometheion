@@ -10,6 +10,23 @@ export default class AuditReportGenerator extends LightningElement {
   loading = false;
   error;
 
+  get isLoading() {
+    return this.loading;
+  }
+
+  get hasError() {
+    return !!this.error;
+  }
+
+  get errorMessage() {
+    if (!this.error) return "";
+    return this.error?.body?.message || this.error?.message || this.error;
+  }
+
+  get notLoading() {
+    return !this.loading;
+  }
+
   frameworks = [
     { label: "SOX", value: "SOX" },
     { label: "SOC 2", value: "SOC2" },

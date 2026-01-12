@@ -237,6 +237,10 @@ export default class PrometheionDynamicReportBuilder extends LightningElement {
     return this.isLoading || !this.canRunReport;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
   get showFilters() {
     return this.fieldsLoaded && this.filterableFields.length > 0;
   }

@@ -138,6 +138,10 @@ export default class PrometheionComparativeAnalytics extends LightningElement {
     return this.isLoading || !this.canGenerate;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
   get hasResults() {
     return this.matrixRows && this.matrixRows.length > 0;
   }

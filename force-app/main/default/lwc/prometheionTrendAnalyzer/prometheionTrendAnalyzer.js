@@ -125,6 +125,10 @@ export default class PrometheionTrendAnalyzer extends LightningElement {
     return this.isLoading || !this.canAnalyze;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
   get hasResults() {
     return this.trendData && this.trendData.buckets && this.trendData.buckets.length > 0;
   }

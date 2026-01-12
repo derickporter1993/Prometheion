@@ -114,6 +114,18 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     return this.records && this.records.length > 0;
   }
 
+  get noRecords() {
+    return !this.hasRecords;
+  }
+
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   get isExportDisabled() {
     return this.isLoading || !this.hasRecords;
   }

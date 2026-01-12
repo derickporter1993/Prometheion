@@ -1,93 +1,95 @@
 <template>
-  <lightning-card title="Audit Report Generator">
+  <lightning-card title="Audit Report Generator" icon-name="standard:report">
     <div class="slds-p-around_medium">
-      <div class="slds-grid slds-gutters">
-        <div class="slds-col slds-size_1-of-3">
-          <lightning-combobox
-            label="Framework"
-            value{selectedFramework}
-            options{frameworks}
-            onchange="
-              {
-                handleFrameworkChange;
-              }
-            "
-          >
-          </lightning-combobox>
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Generating audit report" size="medium"></lightning-spinner>
         </div>
-        <div class="slds-col slds-size_1-of-3">
-          <lightning-input
-            type="date"
-            label="Start Date"
-            value{startDate}
-            onchange="
-              {
-                handleStartDateChange;
-              }
-            "
-          >
-          </lightning-input>
-        </div>
-        <div class="slds-col slds-size_1-of-3">
-          <lightning-input
-            type="date"
-            label="End Date"
-            value{endDate}
-            onchange="
-              {
-                handleEndDateChange;
-              }
-            "
-          >
-          </lightning-input>
-        </div>
-      </div>
-
-      <div class="slds-m-top_medium">
-        <lightning-button
-          label="Generate Report"
-          variant="brand"
-          onclick="
-            {
-              handleGenerateReport;
-            }
-          "
-          disabled{loading}
-        >
-        </lightning-button>
-        <template lwc:if={reportData}>
-          <lightning-button
-            label="Export PDF"
-            variant="neutral"
-            onclick="
-              {
-                handleExportPDF;
-              }
-            "
-            disabled{loading}
-            class="slds-m-left_small"
-          >
-          </lightning-button>
-        </template>
-      </div>
-
-      <template lwc:if={loading}>
-        <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template lwc:if={error}>
-        <div class="slds-text-color_error slds-m-top_medium">{error}</div>
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_medium">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          {errorMessage}
+        </div>
       </template>
 
-      <template lwc:if={reportData}>
+      <template lwc:if={notLoading}>
+        <div class="slds-grid slds-gutters">
+          <div class="slds-col slds-size_1-of-3">
+            <lightning-combobox
+              label="Framework"
+              value={selectedFramework}
+              options={frameworks}
+              onchange={handleFrameworkChange}
+              required
+            ></lightning-combobox>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <lightning-input
+              type="date"
+              label="Start Date"
+              value={startDate}
+              onchange={handleStartDateChange}
+              required
+            ></lightning-input>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <lightning-input
+              type="date"
+              label="End Date"
+              value={endDate}
+              onchange={handleEndDateChange}
+              required
+            ></lightning-input>
+          </div>
+        </div>
+
         <div class="slds-m-top_medium">
-          <div class="slds-text-heading_medium">Report Summary</div>
-          <div>Overall Score: {reportData.evaluation.overallScore}%</div>
-          <div>Status: {reportData.evaluation.status}</div>
-          <div>Total Gaps: {reportData.totalGaps}</div>
-          <div>Open Gaps: {reportData.openGaps}</div>
-          <div>Total Evidence: {reportData.totalEvidence}</div>
+          <lightning-button
+            label="Generate Report"
+            variant="brand"
+            onclick={handleGenerateReport}
+            disabled={isLoading}
+          ></lightning-button>
+          <template lwc:if={reportData}>
+            <lightning-button
+              label="Export PDF"
+              variant="neutral"
+              onclick={handleExportPDF}
+              disabled={isLoading}
+              class="slds-m-left_small"
+            ></lightning-button>
+          </template>
         </div>
+
+        <template lwc:if={reportData}>
+          <div class="slds-m-top_medium slds-box slds-theme_default">
+            <h3 class="slds-text-heading_medium slds-m-bottom_small">Report Summary</h3>
+            <div class="slds-grid slds-gutters slds-wrap">
+              <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                <span class="slds-text-title">Overall Score:</span>
+                <span class="slds-text-heading_small slds-m-left_x-small">{reportData.evaluation.overallScore}%</span>
+              </div>
+              <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                <span class="slds-text-title">Status:</span>
+                <span class="slds-badge slds-m-left_x-small">{reportData.evaluation.status}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                <span class="slds-text-title">Total Gaps:</span>
+                <span class="slds-m-left_x-small">{reportData.totalGaps}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                <span class="slds-text-title">Open Gaps:</span>
+                <span class="slds-m-left_x-small">{reportData.openGaps}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                <span class="slds-text-title">Total Evidence:</span>
+                <span class="slds-m-left_x-small">{reportData.totalEvidence}</span>
+              </div>
+            </div>
+          </div>
+        </template>
       </template>
     </div>
   </lightning-card>
