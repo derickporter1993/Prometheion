@@ -25,9 +25,9 @@
         </div>
       </template>
 
-      <template if:false={isLoading}>
-        <template if:false={hasError}>
-          <template if:false={isEmpty}>
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
+          <template lwc:if={!isEmpty}>
             <lightning-datatable key-field="name" data={rows} columns={columns}></lightning-datatable>
           </template>
         </template>

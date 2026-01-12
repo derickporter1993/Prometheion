@@ -21,8 +21,8 @@
         </div>
       </template>
 
-      <template if:false={isLoading}>
-        <template if:false={hasError}>
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
           <template lwc:if={hasRisks}>
             <div class="slds-grid slds-gutters">
               <template for:each={risks} for:item="risk">

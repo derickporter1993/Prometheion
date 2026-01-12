@@ -14,8 +14,8 @@
         </div>
       </template>
 
-      <template if:false={isLoading}>
-        <template if:false={hasError}>
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
           <div class="slds-grid slds-grid_align-center">
             <lightning-formatted-number
               value={normalizedScore}

@@ -128,7 +128,7 @@
               <p>You'll save ${formattedNetBenefit} in the first year alone.</p>
             </div>
           </template>
-          <template if:false{hasPositiveROI}>
+          <template lwc:if={!hasPositiveROI}>
             <div class="summary-negative">
               <strong>Adjust your inputs to see potential savings</strong>
               <p>Most organizations see 80-85% reduction in audit prep time.</p>

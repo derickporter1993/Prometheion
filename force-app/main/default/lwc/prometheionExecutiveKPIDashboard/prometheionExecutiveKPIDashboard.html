@@ -13,7 +13,7 @@
                 <template lwc:if={metric.hasError}>
                   <div class="slds-text-color_error">{metric.errorMessage}</div>
                 </template>
-                <template if:false{metric.hasError}>
+                <template lwc:if={!metric.hasError}>
                   <div class="slds-text-heading_large slds-m-vertical_small">
                     {metric.formattedValue}
                   </div>

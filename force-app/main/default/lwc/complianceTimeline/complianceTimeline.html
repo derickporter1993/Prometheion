@@ -21,8 +21,8 @@
         </div>
       </template>
 
-      <template if:false={isLoading}>
-        <template if:false={hasError}>
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
           <template lwc:if={hasEvents}>
             <ul class="slds-timeline">
               <template for:each{sortedEvents} for:item="event">

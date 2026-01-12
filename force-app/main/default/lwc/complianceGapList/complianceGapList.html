@@ -20,8 +20,8 @@
       </div>
     </template>
 
-    <template if:false={isLoading}>
-      <template if:false={hasError}>
+    <template lwc:if={!isLoading}>
+      <template lwc:if={!hasError}>
         <template lwc:if={hasGaps}>
           <template for:each{gaps} for:item="gap">
             <div key{gap.Id} class="slds-p-around_small slds-border_bottom">

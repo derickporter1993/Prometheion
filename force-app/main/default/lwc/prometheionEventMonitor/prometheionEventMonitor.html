@@ -25,7 +25,7 @@
           </tbody>
         </table>
       </template>
-      <template if:false{hasEvents}>
+      <template lwc:if={!hasEvents}>
         <p class="slds-text-align_center slds-p-around_medium">
           No events received yet. Waiting for events...
         </p>
