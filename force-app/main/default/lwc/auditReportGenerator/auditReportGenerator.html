@@ -1,13 +1,17 @@
 <template>
   <lightning-card title="Audit Report Generator">
-    <div class="slds-var-p-around_medium">
+    <div class="slds-p-around_medium">
       <div class="slds-grid slds-gutters">
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Framework"
-            value={selectedFramework}
-            options={frameworks}
-            onchange={handleFrameworkChange}
+            value{selectedFramework}
+            options{frameworks}
+            onchange="
+              {
+                handleFrameworkChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
@@ -15,8 +19,12 @@
           <lightning-input
             type="date"
             label="Start Date"
-            value={startDate}
-            onchange={handleStartDateChange}
+            value{startDate}
+            onchange="
+              {
+                handleStartDateChange;
+              }
+            "
           >
           </lightning-input>
         </div>
@@ -24,45 +32,55 @@
           <lightning-input
             type="date"
             label="End Date"
-            value={endDate}
-            onchange={handleEndDateChange}
+            value{endDate}
+            onchange="
+              {
+                handleEndDateChange;
+              }
+            "
           >
           </lightning-input>
         </div>
       </div>
 
-      <div class="slds-var-m-top_medium">
+      <div class="slds-m-top_medium">
         <lightning-button
           label="Generate Report"
           variant="brand"
-          onclick={handleGenerateReport}
-          disabled={loading}
+          onclick="
+            {
+              handleGenerateReport;
+            }
+          "
+          disabled{loading}
         >
         </lightning-button>
-        <template if:true={reportData}>
+        <template lwc:if={reportData}>
           <lightning-button
             label="Export PDF"
             variant="neutral"
-            onclick={handleExportPDF}
-            disabled={loading}
-            class="slds-var-m-left_small"
+            onclick="
+              {
+                handleExportPDF;
+              }
+            "
+            disabled{loading}
+            class="slds-m-left_small"
           >
           </lightning-button>
         </template>
       </div>
 
-      <template if:true={loading}>
+      <template lwc:if={loading}>
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:true={error}>
-        <div class="slds-text-color_error slds-var-m-top_medium" role="alert" aria-live="assertive">
-          {error}
-        </div>
+      <template lwc:if={error}>
+        <div class="slds-text-color_error slds-m-top_medium">{error}</div>
       </template>
 
-      <template if:true={reportData}>
-        <div class="slds-var-m-top_medium">
+      <template lwc:if={reportData}>
+        <div class="slds-m-top_medium">
           <div class="slds-text-heading_medium">Report Summary</div>
           <div>Overall Score: {reportData.evaluation.overallScore}%</div>
           <div>Status: {reportData.evaluation.status}</div>

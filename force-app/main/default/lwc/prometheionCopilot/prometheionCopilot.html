@@ -1,16 +1,11 @@
 <template>
-  <div class="prometheion-copilot" role="region" aria-label="Prometheion Compliance Copilot">
+  <div class="prometheion-copilot">
     <!-- Header -->
-    <header class="copilot-header">
+    <div class="copilot-header">
       <div class="header-content">
         <div class="logo-container">
-          <div class="logo-icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path
                 d="M12 2L2 7L12 12L22 7L12 2Z"
                 stroke="currentColor"
@@ -40,20 +35,8 @@
           </div>
         </div>
         <div class="header-actions">
-          <button
-            class="icon-button"
-            onclick={clearChat}
-            title="Clear conversation"
-            aria-label="Clear conversation history"
-            type="button"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
+          <button class="icon-button" onclick={clearChat} title="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path
                 d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
               />
@@ -61,20 +44,15 @@
           </button>
         </div>
       </div>
-    </header>
+    </div>
 
     <!-- Chat Container -->
-    <main class="chat-container" role="log" aria-live="polite" aria-label="Conversation history">
+    <div class="chat-container">
       <!-- Welcome State -->
       <template lwc:if={showWelcome}>
         <div class="welcome-section">
-          <div class="welcome-icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
+          <div class="welcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
               <path
                 d="M12 16V12M12 8H12.01"
@@ -90,38 +68,25 @@
           </p>
 
           <!-- Quick Actions Grid -->
-          <div class="quick-actions-grid" role="group" aria-label="Quick command suggestions">
+          <div class="quick-actions-grid">
             <template for:each={quickCommands} for:item="cmd">
               <button
                 key={cmd.command}
                 class="quick-action-card"
                 data-command={cmd.command}
                 onclick={handleQuickCommand}
-                onkeydown={handleQuickCommandKeydown}
-                aria-label={cmd.ariaLabel}
                 type="button"
+                aria-label={cmd.ariaLabel}
               >
-                <div class="action-icon" data-icon={cmd.iconType} aria-hidden="true">
+                <div class="action-icon" data-icon={cmd.iconType}>
                   <template lwc:if={cmd.isTrendDown}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M23 18L13.5 8.5L8.5 13.5L1 6" />
                       <path d="M17 18H23V12" />
                     </svg>
                   </template>
                   <template lwc:if={cmd.isFlow}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <rect x="3" y="3" width="6" height="6" rx="1" />
                       <rect x="15" y="3" width="6" height="6" rx="1" />
                       <rect x="9" y="15" width="6" height="6" rx="1" />
@@ -129,13 +94,7 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isFile}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
                       />
@@ -143,13 +102,7 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isUser}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
                       />
@@ -157,25 +110,13 @@
                     </svg>
                   </template>
                   <template lwc:if={cmd.isShield}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
                       <path d="M9 12L11 14L15 10" />
                     </svg>
                   </template>
                   <template lwc:if={cmd.isWarning}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path
                         d="M10.29 3.86L1.82 18C1.64 18.3 1.55 18.64 1.55 19C1.55 19.36 1.64 19.7 1.82 20C2 20.3 2.26 20.55 2.57 20.73C2.88 20.91 3.24 21 3.6 21H20.4C20.76 21 21.12 20.91 21.43 20.73C21.74 20.55 22 20.3 22.18 20C22.36 19.7 22.45 19.36 22.45 19C22.45 18.64 22.36 18.3 22.18 18L13.71 3.86C13.53 3.56 13.27 3.32 12.96 3.15C12.65 2.98 12.3 2.89 11.95 2.89C11.6 2.89 11.25 2.98 10.94 3.15C10.63 3.32 10.37 3.56 10.19 3.86H10.29Z"
                       />
@@ -192,21 +133,18 @@
 
       <!-- Messages -->
       <template lwc:if={hasMessages}>
-        <div class="messages-container" role="list" aria-label="Chat messages">
+        <div class="messages-container">
           <template for:each={messageList} for:item="message">
-            <article
-              key={message.id}
-              class={message.containerClass}
-              role="listitem"
-              aria-label={message.ariaLabel}
-            >
+            <div key={message.id} class={message.containerClass}>
               <!-- User Message -->
               <template lwc:if={message.isUser}>
                 <div class="user-message">
                   <div class="message-content">
-                    <lightning-formatted-text value={message.content}></lightning-formatted-text>
+                    <lightning-formatted-rich-text
+                      value={message.content}
+                    ></lightning-formatted-rich-text>
                   </div>
-                  <div class="user-avatar" aria-hidden="true">
+                  <div class="user-avatar">
                     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path
                         d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
@@ -219,35 +157,28 @@
               <!-- Assistant Message -->
               <template lwc:if={message.isAssistant}>
                 <div class="assistant-message">
-                  <div class="assistant-avatar" aria-hidden="true">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
+                  <div class="assistant-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M12 2L2 7L12 12L22 7L12 2Z" />
                       <path d="M2 17L12 22L22 17" />
                       <path d="M2 12L12 17L22 12" />
                     </svg>
                   </div>
                   <div class="message-content">
-                    <lightning-formatted-text
+                    <lightning-formatted-rich-text
                       value={message.content}
                       class="message-text"
-                    ></lightning-formatted-text>
+                    ></lightning-formatted-rich-text>
 
                     <!-- Evidence Cards -->
                     <template lwc:if={message.hasEvidence}>
-                      <section class="evidence-section" aria-label="Evidence details">
-                        <h3 class="evidence-title">
+                      <div class="evidence-section">
+                        <h4 class="evidence-title">
                           <svg
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
                             stroke-width="2"
-                            aria-hidden="true"
                           >
                             <path
                               d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
@@ -255,40 +186,29 @@
                             <path d="M14 2V8H20" />
                           </svg>
                           Evidence
-                        </h3>
-                        <div class="evidence-cards" role="list" aria-label="Evidence items">
+                        </h4>
+                        <div class="evidence-cards">
                           <template for:each={message.evidenceList} for:item="ev">
-                            <div
-                              key={ev.nodeId}
-                              class="evidence-card"
-                              role="listitem"
-                              aria-label={ev.ariaLabel}
-                            >
+                            <div key={ev.nodeId} class="evidence-card">
                               <div class="evidence-header">
-                                <span class="entity-badge" aria-label={ev.entityTypeAriaLabel}
-                                  >{ev.entityType}</span
-                                >
+                                <span class="entity-badge">{ev.entityType}</span>
                                 <template lwc:if={ev.riskScore}>
-                                  <span class={ev.riskClass} aria-label={ev.riskAriaLabel}
-                                    >Risk: {ev.riskScore}/10</span
-                                  >
+                                  <span class={ev.riskClass}>Risk: {ev.riskScore}/10</span>
                                 </template>
                               </div>
                               <p class="evidence-description">{ev.description}</p>
                               <template lwc:if={ev.framework}>
-                                <span class="framework-tag" aria-label={ev.frameworkAriaLabel}
-                                  >{ev.framework}</span
-                                >
+                                <span class="framework-tag">{ev.framework}</span>
                               </template>
                             </div>
                           </template>
                         </div>
-                      </section>
+                      </div>
                     </template>
 
                     <!-- Action Buttons -->
                     <template lwc:if={message.hasActions}>
-                      <div class="actions-section" role="group" aria-label="Available actions">
+                      <div class="actions-section">
                         <template for:each={message.copilotResponse.actions} for:item="action">
                           <button
                             key={action.actionType}
@@ -296,8 +216,6 @@
                             data-action-type={action.actionType}
                             data-node-id={action.nodeId}
                             onclick={handleActionClick}
-                            aria-label={action.ariaLabel}
-                            type="button"
                           >
                             <template lwc:if={action.canAutoFix}>
                               <svg
@@ -305,7 +223,6 @@
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="2"
-                                aria-hidden="true"
                               >
                                 <path
                                   d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999"
@@ -321,48 +238,34 @@
                   </div>
                 </div>
               </template>
-            </article>
+            </div>
           </template>
         </div>
       </template>
 
       <!-- Loading State -->
       <template lwc:if={isLoading}>
-        <div
-          class="loading-message"
-          role="status"
-          aria-live="polite"
-          aria-label="Processing your request"
-        >
-          <div class="assistant-avatar" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
+        <div class="loading-message">
+          <div class="assistant-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M12 2L2 7L12 12L22 7L12 2Z" />
               <path d="M2 17L12 22L22 17" />
               <path d="M2 12L12 17L22 12" />
             </svg>
           </div>
-          <div class="typing-indicator" aria-hidden="true">
+          <div class="typing-indicator">
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <span class="sr-only">Prometheion is thinking...</span>
         </div>
       </template>
-    </main>
+    </div>
 
     <!-- Input Area -->
-    <footer class="input-container">
+    <div class="input-container">
       <div class="input-wrapper">
-        <label for="copilot-input" class="sr-only">Ask a compliance question</label>
         <input
-          id="copilot-input"
           type="text"
           class="chat-input"
           placeholder="Ask about compliance, violations, or generate evidence..."
@@ -370,27 +273,14 @@
           onchange={handleQueryChange}
           onkeypress={handleKeyPress}
           disabled={isLoading}
-          aria-describedby="input-hint"
         />
-        <button
-          class="send-button"
-          onclick={handleSubmit}
-          disabled={isLoading}
-          aria-label="Send message"
-          type="button"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          >
+        <button class="send-button" onclick={handleSubmit} disabled={isLoading}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" />
           </svg>
         </button>
       </div>
-      <p id="input-hint" class="input-hint">Press Enter to send • Powered by Prometheion AI</p>
-    </footer>
+      <p class="input-hint">Press Enter to send • Powered by Prometheion AI</p>
+    </div>
   </div>
 </template>

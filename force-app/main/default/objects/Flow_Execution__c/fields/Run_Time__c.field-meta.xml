@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Run_Time__c</fullName>
+    <description>Timestamp when the Flow execution started. Used to track execution history and identify patterns.</description>
+    <inlineHelpText>When the Flow execution started</inlineHelpText>
     <label>Run Time</label>
     <type>DateTime</type>
     <required>false</required>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Delivery_Method__c</fullName>
-    <description>Method used to deliver the privacy notice to the customer</description>
+    <description>Channel used to deliver the privacy notice. GLBA permits electronic delivery if customer has agreed. Options: Email, Mail, In-App Notification, Portal.</description>
+    <inlineHelpText>How the notice was delivered</inlineHelpText>
     <externalId>false</externalId>
     <label>Delivery Method</label>
     <required>true</required>

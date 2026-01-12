@@ -6,7 +6,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public class PrometheionBatchEventLoader implements Database.Batchable<SObject>, Database.AllowsCallouts {
+public with sharing class PrometheionBatchEventLoader implements Database.Batchable<SObject>, Database.AllowsCallouts {
     
     private String eventType;
     private Date startDate;

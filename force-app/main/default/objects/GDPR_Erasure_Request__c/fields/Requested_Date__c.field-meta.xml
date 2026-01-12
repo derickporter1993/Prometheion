@@ -4,5 +4,6 @@
     <label>Requested Date</label>
     <type>DateTime</type>
     <required>false</required>
-    <description>Date and time when the erasure was requested</description>
+    <description>Date and time when the data subject submitted their erasure request. GDPR requires response within one month, extendable by two months for complex requests.</description>
+    <inlineHelpText>When erasure request was submitted</inlineHelpText>
 </CustomField>

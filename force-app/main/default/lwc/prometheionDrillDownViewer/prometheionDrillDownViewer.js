@@ -52,7 +52,7 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
       .catch((error) => {
         this.hasError = true;
         this.errorMessage =
-          "Error loading records: " + (error.body ? error.body.message : error.message);
+          "Error loading records: " + (error?.body?.message || error?.message || 'An unknown error occurred');
         this.isLoading = false;
         this.showError(this.errorMessage);
       });
@@ -106,7 +106,7 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
       })
       .catch((error) => {
         this.isLoading = false;
-        this.showError("Error exporting: " + (error.body ? error.body.message : error.message));
+        this.showError("Error exporting: " + (error?.body?.message || error?.message || 'An unknown error occurred'));
       });
   }
 
@@ -122,7 +122,12 @@ export default class PrometheionDrillDownViewer extends NavigationMixin(Lightnin
     if (this._context) {
       return { ...this._context };
     }
-    return JSON.parse(this.contextJson);
+    try {
+      return JSON.parse(this.contextJson);
+    } catch (_e) {
+      this.showError('Invalid context data. Please refresh the page.');
+      return {};
+    }
   }
 
   showError(message) {

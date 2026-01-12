@@ -304,13 +304,13 @@ public with sharing class PerformanceRuleEngine {
      */
     private static String generateCorrelationId(String metric, Decimal value) {
         String input = metric + '|' + String.valueOf(value) + '|' + UserInfo.getUserId();
-        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
         return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
-    
+
     private static String generateCorrelationId(String prefix, String suffix) {
         String input = prefix + '|' + suffix + '|' + UserInfo.getUserId();
-        Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(input));
+        Blob hash = Crypto.generateDigest('SHA256', Blob.valueOf(input));
         return EncodingUtil.base64Encode(hash).substring(0, 16);
     }
 

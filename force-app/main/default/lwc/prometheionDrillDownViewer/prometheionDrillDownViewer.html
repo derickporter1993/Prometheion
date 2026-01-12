@@ -1,31 +1,35 @@
 <template>
   <lightning-card title="Prometheion Drill-Down Viewer" icon-name="custom:custom63">
-    <div class="slds-var-p-around_medium">
+    <div class="slds-p-around_medium">
       <lightning-datatable
         key-field="Id"
-        data={records}
-        columns={columns}
+        data{records}
+        columns{columns}
         hide-checkbox-column
         show-row-number-column
-        onrowaction={handleRowAction}
-        onsort={handleSort}
-        onloadmore={handleLoadMore}
+        onrowaction{handleRowAction}
+        onsort{handleSort}
+        onloadmore{handleLoadMore}
       >
       </lightning-datatable>
 
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
-        <lightning-alert variant="error" message={errorMessage}></lightning-alert>
+      <template lwc:if={hasError}>
+        <lightning-alert variant="error" message{errorMessage}></lightning-alert>
       </template>
 
-      <div class="slds-var-m-top_medium slds-text-align_center">
+      <div class="slds-m-top_medium slds-text-align_center">
         <lightning-button
           label="Export to CSV"
-          onclick={handleExport}
-          disabled={isExportDisabled}
+          onclick="
+            {
+              handleExport;
+            }
+          "
+          disabled{isExportDisabled}
         >
         </lightning-button>
       </div>

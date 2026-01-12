@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Flow_Name__c</fullName>
+    <description>API name of the Flow that was executed. Used to identify which automation ran and track its performance over time.</description>
+    <inlineHelpText>API name of the executed Flow</inlineHelpText>
     <label>Flow Name</label>
     <type>Text</type>
     <length>255</length>

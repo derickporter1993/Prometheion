@@ -4,6 +4,9 @@ import PollingManager from "c/pollingManager";
 
 export default class FlowExecutionMonitor extends LightningElement {
   @track rows = [];
+  @track isLoading = true;
+  @track hasError = false;
+  @track errorMessage = "";
   columns = [
     { label: "Flow", fieldName: "flowName" },
     { label: "Runs", fieldName: "runs", type: "number" },
@@ -11,6 +14,10 @@ export default class FlowExecutionMonitor extends LightningElement {
     { label: "Last Run", fieldName: "lastRun", type: "date" },
   ];
   pollingManager = null;
+
+  get isEmpty() {
+    return !this.isLoading && !this.hasError && (!this.rows || this.rows.length === 0);
+  }
 
   connectedCallback() {
     this.pollingManager = new PollingManager(() => this.load(), 60000);
@@ -27,10 +34,15 @@ export default class FlowExecutionMonitor extends LightningElement {
 
   async load() {
     try {
+      this.isLoading = true;
+      this.hasError = false;
+      this.errorMessage = "";
       this.rows = await getTopFlows({ limitSize: 20 });
-      // eslint-disable-next-line no-unused-vars
-    } catch (_e) {
-      // Set empty array to prevent UI errors
+      this.isLoading = false;
+    } catch (error) {
+      this.isLoading = false;
+      this.hasError = true;
+      this.errorMessage = error?.body?.message || error?.message || "Failed to load flow execution data";
       this.rows = [];
     }
   }

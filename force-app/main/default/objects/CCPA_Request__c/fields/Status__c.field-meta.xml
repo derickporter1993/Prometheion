@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Status__c</fullName>
-    <description>Current status of the CCPA request</description>
+    <description>Current status of the CCPA request. Pending: awaiting processing, In Progress: being worked on, Completed: fulfilled within deadline, Overdue: past 45-day deadline without completion.</description>
+    <inlineHelpText>Request status: Pending, In Progress, Completed, or Overdue</inlineHelpText>
     <externalId>false</externalId>
     <label>Status</label>
     <required>true</required>

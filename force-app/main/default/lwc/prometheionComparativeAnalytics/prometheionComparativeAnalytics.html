@@ -1,78 +1,94 @@
 <template>
   <lightning-card title="Prometheion Comparative Analytics" icon-name="custom:custom63">
-    <div class="slds-var-p-around_medium">
+    <div class="slds-p-around_medium">
       <!-- Configuration Section -->
-      <div class="slds-grid slds-gutters slds-var-m-bottom_medium">
+      <div class="slds-grid slds-gutters slds-m-bottom_medium">
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Object"
-            value={selectedObject}
-            options={objectOptions}
-            onchange={handleObjectChange}
+            value{selectedObject}
+            options{objectOptions}
+            onchange="
+              {
+                handleObjectChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Row Field"
-            value={rowField}
-            options={dimensionFields}
-            onchange={handleRowFieldChange}
+            value{rowField}
+            options{dimensionFields}
+            onchange="
+              {
+                handleRowFieldChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-3">
           <lightning-combobox
             label="Column Field"
-            value={columnField}
-            options={dimensionFields}
-            onchange={handleColumnFieldChange}
+            value{columnField}
+            options{dimensionFields}
+            onchange="
+              {
+                handleColumnFieldChange;
+              }
+            "
           >
           </lightning-combobox>
         </div>
       </div>
 
-      <div class="slds-var-m-bottom_medium">
+      <div class="slds-m-bottom_medium">
         <lightning-input
           label="Aggregate Expression (e.g., SUM(Amount))"
-          value={aggregateExpression}
-          onchange={handleAggregateChange}
+          value{aggregateExpression}
+          onchange="
+            {
+              handleAggregateChange;
+            }
+          "
         >
         </lightning-input>
       </div>
 
       <lightning-button
         label="Generate Matrix"
-        onclick={handleGenerate}
-        disabled={isButtonDisabled}
+        onclick="
+          {
+            handleGenerate;
+          }
+        "
+        disabled{isButtonDisabled}
         variant="brand"
       >
       </lightning-button>
 
       <!-- Results Matrix -->
-      <template if:true={hasResults}>
-        <div class="slds-var-m-top_large">
+      <template lwc:if={hasResults}>
+        <div class="slds-m-top_large">
           <h3 class="slds-text-heading_small">Matrix Results</h3>
-          <table
-            class="slds-table slds-table_bordered slds-table_cell-buffer"
-            role="table"
-            aria-label="Comparative analytics matrix"
-          >
+          <table class="slds-table slds-table_bordered slds-table_cell-buffer">
             <thead>
               <tr>
-                <th scope="row">Row</th>
-                <template for:each={matrixColumns} for:item="col">
-                  <th key={col} scope="col">{col}</th>
+                <th></th>
+                <template for:each{matrixColumns} for:item="col">
+                  <th key{col}>{col}</th>
                 </template>
-                <th scope="col">Total</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <template for:each={computedMatrixData} for:item="rowData">
-                <tr key={rowData.row}>
+              <template for:each{computedMatrixData} for:item="rowData">
+                <tr key{rowData.row}>
                   <td><strong>{rowData.row}</strong></td>
-                  <template for:each={rowData.cells} for:item="cell">
-                    <td key={cell.col}>{cell.value}</td>
+                  <template for:each{rowData.cells} for:item="cell">
+                    <td key{cell.col}>{cell.value}</td>
                   </template>
                   <td><strong>{rowData.total}</strong></td>
                 </tr>
@@ -82,12 +98,12 @@
         </div>
       </template>
 
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
       </template>
 
-      <template if:true={hasError}>
-        <lightning-alert variant="error" message={errorMessage}></lightning-alert>
+      <template lwc:if={hasError}>
+        <lightning-alert variant="error" message{errorMessage}></lightning-alert>
       </template>
     </div>
   </lightning-card>

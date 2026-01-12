@@ -10,20 +10,25 @@
  * @version 1.0
  */
 trigger PrometheionConsentWithdrawalTrigger on Consent__c (after update) {
+    if (!TriggerRecursionGuard.isFirstRun('PrometheionConsentWithdrawalTrigger')) return;
 
-    List<Consent__c> withdrawnConsents = new List<Consent__c>();
+    try {
+        List<Consent__c> withdrawnConsents = new List<Consent__c>();
 
-    for (Consent__c consent : Trigger.new) {
-        Consent__c oldConsent = Trigger.oldMap.get(consent.Id);
+        for (Consent__c consent : Trigger.new) {
+            Consent__c oldConsent = Trigger.oldMap.get(consent.Id);
 
-        // Check if consent was just withdrawn
-        if (consent.Consent_Withdrawn__c == true &&
-            oldConsent.Consent_Withdrawn__c == false) {
-            withdrawnConsents.add(consent);
+            // Check if consent was just withdrawn
+            if (consent.Consent_Withdrawn__c == true &&
+                oldConsent.Consent_Withdrawn__c == false) {
+                withdrawnConsents.add(consent);
+            }
         }
-    }
 
-    if (!withdrawnConsents.isEmpty()) {
-        PrometheionConsentWithdrawalHandler.processWithdrawals(withdrawnConsents);
+        if (!withdrawnConsents.isEmpty()) {
+            PrometheionConsentWithdrawalHandler.processWithdrawals(withdrawnConsents);
+        }
+    } finally {
+        TriggerRecursionGuard.reset('PrometheionConsentWithdrawalTrigger');
     }
 }

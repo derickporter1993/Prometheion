@@ -1,34 +1,44 @@
 <template>
   <lightning-card title="Compliance Gaps">
-    <template if:true={hasGaps}>
-      <div role="list" aria-label="Compliance gaps list">
-        <template for:each={gaps} for:item="gap">
-          <div
-            key={gap.Id}
-            class="slds-var-p-around_small slds-border_bottom"
-            role="listitem"
-            aria-label="Compliance gap: {gap.Policy_Reference__c}"
-          >
-            <div class="slds-grid slds-gutters">
-              <div class="slds-col slds-size_2-of-3">
-                <div class="slds-text-heading_small">{gap.Policy_Reference__c}</div>
-                <div class="slds-text-body_small" aria-label="Severity: {gap.Severity__c}">
-                  {gap.Severity__c}
-                </div>
-              </div>
-              <div class="slds-col slds-size_1-of-3">
-                <div class="slds-text-body_small">Status: {gap.Status__c}</div>
-                <div class="slds-text-body_small">Risk: {gap.Risk_Score__c}</div>
-              </div>
-            </div>
-          </div>
-        </template>
+    <template lwc:if={isLoading}>
+      <div class="slds-is-relative slds-p-around_medium">
+        <lightning-spinner alternative-text="Loading compliance gaps" size="medium"></lightning-spinner>
       </div>
     </template>
-    <template if:false={hasGaps}>
-      <div class="slds-var-p-around_medium" role="status" aria-live="polite">
-        <p>No compliance gaps found.</p>
+
+    <template lwc:if={hasError}>
+      <div class="slds-text-color_error slds-p-around_medium">
+        <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+        {errorMessage}
       </div>
+    </template>
+
+    <template lwc:if={isEmpty}>
+      <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
+        <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+        No compliance gaps found
+      </div>
+    </template>
+
+    <template lwc:if={!isLoading}>
+      <template lwc:if={!hasError}>
+        <template lwc:if={hasGaps}>
+          <template for:each={gaps} for:item="gap">
+            <div key={gap.Id} class="slds-p-around_small slds-border_bottom">
+              <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_2-of-3">
+                  <div class="slds-text-heading_small">{gap.Policy_Reference__c}</div>
+                  <div class="slds-text-body_small">{gap.Severity__c}</div>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                  <div class="slds-text-body_small">Status: {gap.Status__c}</div>
+                  <div class="slds-text-body_small">Risk: {gap.Risk_Score__c}</div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </template>
+      </template>
     </template>
   </lightning-card>
 </template>

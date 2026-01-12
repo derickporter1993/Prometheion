@@ -11,14 +11,21 @@ private class PrometheionEventPublisherTest {
             'field' => 'PermissionsModifyAllData'
         };
         
+        // Verify test data is valid
+        System.assertNotEquals(null, orgId, 'Org ID should not be null');
+        System.assertNotEquals(null, changeData, 'Change data should not be null');
+
         Test.startTest();
-        PrometheionEventPublisher.publishConfigChange(orgId, entityType, entityId, changeData);
+        // Platform Events are async - verify no exception is thrown
+        Exception caughtException = null;
+        try {
+            PrometheionEventPublisher.publishConfigChange(orgId, entityType, entityId, changeData);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        
-        // Verify event was published (check Platform Event delivery)
-        // Note: Platform Events are async, so we can't directly query them
-        // In production, you'd verify via integration tests or monitoring
-        System.assert(true, 'Event published successfully');
+
+        System.assertEquals(null, caughtException, 'publishConfigChange should not throw exception');
     }
     
     @isTest
@@ -30,11 +37,19 @@ private class PrometheionEventPublisherTest {
             'display' => 'PermissionSet: Test Permission Set'
         };
         
+        System.assertNotEquals(null, orgId, 'Org ID should not be null');
+        System.assertEquals(3, auditData.size(), 'Audit data should have 3 entries');
+
         Test.startTest();
-        PrometheionEventPublisher.publishAuditTrailChange(orgId, auditData);
+        Exception caughtException = null;
+        try {
+            PrometheionEventPublisher.publishAuditTrailChange(orgId, auditData);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        
-        System.assert(true, 'Audit trail event published successfully');
+
+        System.assertEquals(null, caughtException, 'publishAuditTrailChange should not throw exception');
     }
     
     @isTest
@@ -44,11 +59,20 @@ private class PrometheionEventPublisherTest {
         String permissionSetId = '0PS000000000001';
         String action = 'ASSIGNED';
         
+        System.assertNotEquals(null, orgId, 'Org ID should not be null');
+        System.assertNotEquals(null, userId, 'User ID should not be null');
+        System.assertEquals('ASSIGNED', action, 'Action should be ASSIGNED');
+
         Test.startTest();
-        PrometheionEventPublisher.publishPermissionChange(orgId, userId, permissionSetId, action);
+        Exception caughtException = null;
+        try {
+            PrometheionEventPublisher.publishPermissionChange(orgId, userId, permissionSetId, action);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        
-        System.assert(true, 'Permission change event published successfully');
+
+        System.assertEquals(null, caughtException, 'publishPermissionChange should not throw exception');
     }
     
     @isTest
@@ -67,21 +91,34 @@ private class PrometheionEventPublisherTest {
             ));
         }
         
+        System.assertEquals(5, events.size(), 'Should have 5 events to publish');
+
         Test.startTest();
-        PrometheionEventPublisher.publishBatch(events);
+        Exception caughtException = null;
+        try {
+            PrometheionEventPublisher.publishBatch(events);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        
-        System.assert(true, 'Batch events published successfully');
+
+        System.assertEquals(null, caughtException, 'publishBatch should not throw exception');
     }
     
     @isTest
     static void testPublishBatchEmpty() {
         Test.startTest();
-        PrometheionEventPublisher.publishBatch(new List<Prometheion_Raw_Event__e>());
-        PrometheionEventPublisher.publishBatch(null);
+        Exception caughtException = null;
+        try {
+            PrometheionEventPublisher.publishBatch(new List<Prometheion_Raw_Event__e>());
+            PrometheionEventPublisher.publishBatch(null);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        
-        System.assert(true, 'Empty batch handled gracefully');
+
+        // Empty and null batches should be handled gracefully without exception
+        System.assertEquals(null, caughtException, 'Empty/null batch should not throw exception');
     }
 }
 

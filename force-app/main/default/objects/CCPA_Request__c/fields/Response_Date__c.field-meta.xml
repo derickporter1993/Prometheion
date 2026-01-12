@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Response_Date__c</fullName>
-    <description>Date and time the response was provided</description>
+    <description>Date and time the response was provided to the consumer. Tracked for compliance audits and SLA monitoring. Must be within 45 days of Request Date.</description>
+    <inlineHelpText>When the consumer received a response</inlineHelpText>
     <externalId>false</externalId>
     <label>Response Date</label>
     <required>false</required>

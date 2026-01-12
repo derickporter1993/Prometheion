@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Evidence_Retention_Days__c</fullName>
+    <defaultValue>365</defaultValue>
+    <description>Number of days to retain compliance evidence</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Evidence Retention Days</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,39 +1,37 @@
 <template>
   <lightning-card title="Compliance Dashboard" icon-name="standard:audit">
-    <div class="slds-var-p-around_medium">
-      <template if:true={loading}>
+    <div class="slds-p-around_medium">
+      <template lwc:if={loading}>
         <lightning-spinner alternative-text="Loading"></lightning-spinner>
       </template>
 
-      <template if:true={error}>
-        <div class="slds-text-color_error" role="alert" aria-live="assertive">
-          Error loading dashboard: {error.body.message}
-        </div>
+      <template lwc:if={error}>
+        <div class="slds-text-color_error">Error loading dashboard: {errorMessage}</div>
       </template>
 
-      <template if:true={hasData}>
+      <template lwc:if={hasData}>
         <div class="slds-grid slds-gutters">
           <div class="slds-col slds-size_1-of-1">
-            <c-framework-selector frameworks={frameworks}></c-framework-selector>
+            <c-framework-selector frameworks{frameworks}></c-framework-selector>
           </div>
         </div>
 
-        <div class="slds-grid slds-gutters slds-var-m-top_medium">
-          <template for:each={frameworks} for:item="framework">
-            <div key={framework.framework} class="slds-col slds-size_1-of-3">
-              <c-compliance-score-card framework={framework}></c-compliance-score-card>
+        <div class="slds-grid slds-gutters slds-m-top_medium">
+          <template for:each{frameworks} for:item="framework">
+            <div key{framework.framework} class="slds-col slds-size_1-of-3">
+              <c-compliance-score-card framework{framework}></c-compliance-score-card>
             </div>
           </template>
         </div>
 
-        <div class="slds-grid slds-gutters slds-var-m-top_medium">
+        <div class="slds-grid slds-gutters slds-m-top_medium">
           <div class="slds-col slds-size_1-of-2">
-            <c-compliance-gap-list gaps={recentGaps}></c-compliance-gap-list>
+            <c-compliance-gap-list gaps{recentGaps}></c-compliance-gap-list>
           </div>
           <div class="slds-col slds-size_1-of-2">
             <lightning-card title="Recent Evidence">
-              <template for:each={recentEvidence} for:item="evidence">
-                <div key={evidence.Id} class="slds-var-p-around_small">
+              <template for:each{recentEvidence} for:item="evidence">
+                <div key{evidence.Id} class="slds-p-around_small">
                   <div class="slds-text-heading_small">{evidence.Evidence_Type__c}</div>
                   <div class="slds-text-body_small">{evidence.Evidence_Date__c}</div>
                 </div>

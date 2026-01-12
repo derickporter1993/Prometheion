@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Metric__c</fullName>
+    <description>Type of governor limit metric that was exceeded. Values include: CPU (CPU time), HEAP (heap size), SOQL (SOQL queries), DML (DML statements), CALLOUT (external callouts).</description>
+    <inlineHelpText>Governor limit type: CPU, HEAP, SOQL, DML, or CALLOUT</inlineHelpText>
     <label>Metric</label>
     <type>Text</type>
     <length>100</length>

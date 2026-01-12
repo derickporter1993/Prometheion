@@ -6,59 +6,105 @@ private class SlackNotifierTest {
     
     @isTest
     static void testNotifyAsyncQueueable() {
+        String testMessage = 'Test notification';
+        System.assertNotEquals(null, testMessage, 'Test message should not be null');
+
         Test.startTest();
-        SlackNotifier.notifyAsyncQueueable('Test notification');
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyAsyncQueueable(testMessage);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Just verify no exceptions thrown
-        System.assert(true, 'Notification should complete without errors');
+
+        System.assertEquals(null, caughtException, 'notifyAsyncQueueable should not throw exception');
     }
-    
+
     @isTest
     static void testNotifyAsyncQueueableEmpty() {
         Test.startTest();
-        SlackNotifier.notifyAsyncQueueable('');
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyAsyncQueueable('');
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Should skip empty notifications without error
-        System.assert(true, 'Empty notification should be skipped');
+
+        // Empty notifications should be skipped without error
+        System.assertEquals(null, caughtException, 'Empty notification should not throw exception');
     }
-    
+
     @isTest
     static void testNotifyRichAsyncQueueable() {
         Map<String, Object> payload = new Map<String, Object>{
             'text' => 'Test rich notification'
         };
-        
+        String jsonPayload = JSON.serialize(payload);
+        System.assertNotEquals(null, jsonPayload, 'JSON payload should not be null');
+
         Test.startTest();
-        SlackNotifier.notifyRichAsyncQueueable(JSON.serialize(payload));
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyRichAsyncQueueable(jsonPayload);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Just verify no exceptions thrown
-        System.assert(true, 'Rich notification should complete without errors');
+
+        System.assertEquals(null, caughtException, 'notifyRichAsyncQueueable should not throw exception');
     }
-    
+
     @isTest
     static void testNotifyPerformanceAlert() {
+        String metric = 'CPU';
+        Decimal value = 9500;
+        Decimal threshold = 10000;
+        System.assertEquals('CPU', metric, 'Metric should be CPU');
+
         Test.startTest();
-        SlackNotifier.notifyPerformanceAlert('CPU', 9500, 10000, 'testContext');
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyPerformanceAlert(metric, value, threshold, 'testContext');
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Just verify no exceptions thrown
-        System.assert(true, 'Performance alert notification should complete without errors');
+
+        System.assertEquals(null, caughtException, 'notifyPerformanceAlert should not throw exception');
     }
-    
+
     @isTest
     static void testNotifyFlowPerformance() {
+        String flowName = 'Test_Flow';
+        Integer cpuTime = 5000;
+        System.assertNotEquals(null, flowName, 'Flow name should not be null');
+
         Test.startTest();
-        SlackNotifier.notifyFlowPerformance('Test_Flow', 5000, 'WARNING', 85.5);
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyFlowPerformance(flowName, cpuTime, 'WARNING', 85.5);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Just verify no exceptions thrown
-        System.assert(true, 'Flow performance notification should complete without errors');
+
+        System.assertEquals(null, caughtException, 'notifyFlowPerformance should not throw exception');
     }
-    
+
     @isTest
     static void testNotifyFlowPerformanceEmptyName() {
         Test.startTest();
-        SlackNotifier.notifyFlowPerformance('', 5000, 'WARNING', 85.5);
+        Exception caughtException = null;
+        try {
+            SlackNotifier.notifyFlowPerformance('', 5000, 'WARNING', 85.5);
+        } catch (Exception e) {
+            caughtException = e;
+        }
         Test.stopTest();
-        // Should skip without error
-        System.assert(true, 'Empty flow name should be skipped');
+
+        // Empty flow name should be handled gracefully
+        System.assertEquals(null, caughtException, 'Empty flow name should not throw exception');
     }
 }

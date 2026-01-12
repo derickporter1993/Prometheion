@@ -9,6 +9,7 @@
 ## Executive Summary
 
 The Prometheion codebase has a solid testing foundation with:
+
 - **100% trigger test coverage** (2/2 triggers)
 - **100% class test coverage** (16/16 production classes have test classes)
 - **17 dedicated test classes** with 100+ test methods
@@ -36,6 +37,7 @@ However, analysis reveals several areas where test depth and coverage can be sig
 | Null stats fields | Medium | Handle partial GovernorStats objects |
 
 **Recommended Tests to Add:**
+
 ```apex
 @IsTest static void testEvaluate_WarningOnly()
 @IsTest static void testEvaluate_NoAlerts()
@@ -65,6 +67,7 @@ However, analysis reveals several areas where test depth and coverage can be sig
 | Recent graph entries | Medium | calculateEvidenceScore with data |
 
 **Recommended Tests to Add:**
+
 ```apex
 @IsTest static void testCalculateReadinessScore_NoPermissionSets()
 @IsTest static void testCalculateReadinessScore_AllDocumented()
@@ -92,6 +95,7 @@ However, analysis reveals several areas where test depth and coverage can be sig
 | Multiple frameworks | Medium | SOC2, HIPAA, GDPR, etc. |
 
 **Recommended Tests to Add:**
+
 ```apex
 @IsTest static void testIndexChange_FlowEntity()
 @IsTest static void testDetermineDriftCategory_PolicyViolation()
@@ -118,6 +122,7 @@ However, analysis reveals several areas where test depth and coverage can be sig
 | Null percentileRank | Medium | Test optional parameter handling |
 
 **Recommended Tests to Add:**
+
 ```apex
 @IsTest static void testNotifyFlowPerformance_Critical()
 @IsTest static void testNotifyFlowPerformance_Slow()
@@ -158,11 +163,13 @@ However, analysis reveals several areas where test depth and coverage can be sig
 Several tests use `System.assert(true, 'message')` which provides no real validation:
 
 **Examples Found:**
+
 - `SlackNotifierTest.testNotifyAsyncSuccess` (line 32)
 - `SlackNotifierTest.testNotifyPerformanceEvent` (line 51)
 - `SlackNotifierTest.testNotifyAsyncWithException` (line 102)
 
 **Recommendation:** Replace with meaningful assertions that verify:
+
 - Request body content
 - Correct endpoint was called
 - Error logging occurred (using Test.isRunningTest() flag)
@@ -174,6 +181,7 @@ Several tests use `System.assert(true, 'message')` which provides no real valida
 **File:** `force-app/main/default/classes/PrometheionTestDataFactory.cls`
 
 **Missing Utilities:**
+
 ```apex
 // For PerformanceRuleEngine testing
 createCCXSettings(Integer cpuWarn, Integer cpuCrit, ...)
@@ -193,18 +201,19 @@ createPerformanceAlertEvent(String metric, Decimal value, Decimal threshold)
 
 **8 Lightning Web Components lack any JavaScript tests:**
 
-| Component | Controller Tested | Jest Test | Priority |
-|-----------|-------------------|-----------|----------|
-| `apiUsageDashboard` | Yes | **No** | High |
-| `flowExecutionMonitor` | Yes | **No** | High |
-| `prometheionReadinessScore` | Yes | **No** | High |
-| `prometheionAiSettings` | Yes | **No** | High |
-| `performanceAlertPanel` | Yes | **No** | Medium |
-| `systemMonitorDashboard` | Yes | **No** | Medium |
-| `deploymentMonitorDashboard` | Yes | **No** | Medium |
-| `pollingManager` | N/A (utility) | **No** | Medium |
+| Component                    | Controller Tested | Jest Test | Priority |
+| ---------------------------- | ----------------- | --------- | -------- |
+| `apiUsageDashboard`          | Yes               | **No**    | High     |
+| `flowExecutionMonitor`       | Yes               | **No**    | High     |
+| `prometheionReadinessScore`  | Yes               | **No**    | High     |
+| `prometheionAiSettings`      | Yes               | **No**    | High     |
+| `performanceAlertPanel`      | Yes               | **No**    | Medium   |
+| `systemMonitorDashboard`     | Yes               | **No**    | Medium   |
+| `deploymentMonitorDashboard` | Yes               | **No**    | Medium   |
+| `pollingManager`             | N/A (utility)     | **No**    | Medium   |
 
 **Recommended Actions:**
+
 1. Create `__tests__` directories for each component
 2. Start with components that have complex logic:
    - `pollingManager` - Interval/timer logic
@@ -218,6 +227,7 @@ createPerformanceAlertEvent(String metric, Decimal value, Decimal threshold)
 No tests verify complete workflows:
 
 **Recommended Integration Test Scenarios:**
+
 ```apex
 // Trigger → Service → Event → Notification flow
 @IsTest static void testFullAlertWorkflow_TriggerToSlack()
@@ -247,42 +257,46 @@ No tests verify complete workflows:
 
 ### 4.1 Test Method Count by Class
 
-| Test Class | Methods | Assessment |
-|------------|---------|------------|
-| FlowExecutionStatsTest | 11 | Excellent |
-| PrometheionLegalDocumentGeneratorTest | 8 | Good |
-| PrometheionAISettingsControllerTest | 6 | Good |
-| SlackNotifierTest | 5 | Needs expansion |
-| LimitMetricsTest | 4 | Adequate |
-| PrometheionGraphIndexerTest | 3 | Needs expansion |
-| AlertHistoryServiceTest | 3 | Adequate |
-| PrometheionComplianceScorerTest | 2 | **Needs significant expansion** |
-| PerformanceRuleEngineTest | 1 | **Critical gap** |
-| DeploymentMetricsTest | 1 | Simple class, acceptable |
-| ApiUsageSnapshotTest | 1 | Simple class, acceptable |
+| Test Class                            | Methods | Assessment                      |
+| ------------------------------------- | ------- | ------------------------------- |
+| FlowExecutionStatsTest                | 11      | Excellent                       |
+| PrometheionLegalDocumentGeneratorTest | 8       | Good                            |
+| PrometheionAISettingsControllerTest   | 6       | Good                            |
+| SlackNotifierTest                     | 5       | Needs expansion                 |
+| LimitMetricsTest                      | 4       | Adequate                        |
+| PrometheionGraphIndexerTest           | 3       | Needs expansion                 |
+| AlertHistoryServiceTest               | 3       | Adequate                        |
+| PrometheionComplianceScorerTest       | 2       | **Needs significant expansion** |
+| PerformanceRuleEngineTest             | 1       | **Critical gap**                |
+| DeploymentMetricsTest                 | 1       | Simple class, acceptable        |
+| ApiUsageSnapshotTest                  | 1       | Simple class, acceptable        |
 
 ---
 
 ## Recommended Action Plan
 
 ### Phase 1: Quick Wins (1-2 days)
+
 1. Add 7 tests to `PerformanceRuleEngineTest` - critical business logic
 2. Add 4 tests to `PrometheionComplianceScorerTest` - compliance scoring
 3. Add `testNotifyFlowPerformance_*` tests to `SlackNotifierTest`
 
 ### Phase 2: Coverage Expansion (3-5 days)
+
 1. Expand `PrometheionGraphIndexerTest` with FLOW entity tests
 2. Add core logic tests to `PrometheionReasoningEngineTest`
 3. Create `EinsteinPredictionMock` utility class
 4. Enhance `PrometheionTestDataFactory` with missing builders
 
 ### Phase 3: LWC Testing (1-2 weeks)
+
 1. Set up Jest testing infrastructure
 2. Add tests for `pollingManager` (complex timer logic)
 3. Add tests for `prometheionAiSettings` (form handling)
 4. Progressively cover remaining components
 
 ### Phase 4: Integration & Security (Ongoing)
+
 1. Create integration test scenarios
 2. Add CRUD/FLS validation tests
 3. Implement security-focused test patterns
@@ -291,27 +305,27 @@ No tests verify complete workflows:
 
 ## Metrics to Track
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Apex Code Coverage | Unknown* | 90%+ |
-| Classes with < 3 tests | 5 | 0 |
-| LWC Components with Jest | 0/8 | 8/8 |
-| Integration test scenarios | 0 | 5+ |
-| Methods with weak assertions | 3+ | 0 |
+| Metric                       | Current   | Target |
+| ---------------------------- | --------- | ------ |
+| Apex Code Coverage           | Unknown\* | 90%+   |
+| Classes with < 3 tests       | 5         | 0      |
+| LWC Components with Jest     | 0/8       | 8/8    |
+| Integration test scenarios   | 0         | 5+     |
+| Methods with weak assertions | 3+        | 0      |
 
-*Run `sfdx force:apex:test:run` to determine actual coverage percentage
+\*Run `sfdx force:apex:test:run` to determine actual coverage percentage
 
 ---
 
 ## Files to Create/Modify
 
-| File | Action | Priority |
-|------|--------|----------|
-| `PerformanceRuleEngineTest.cls` | Add 7 tests | High |
-| `PrometheionComplianceScorerTest.cls` | Add 4 tests | High |
-| `SlackNotifierTest.cls` | Add 4 tests | High |
-| `PrometheionGraphIndexerTest.cls` | Add 5 tests | Medium |
-| `EinsteinPredictionMock.cls` | Create new | Medium |
-| `PrometheionTestDataFactory.cls` | Add utilities | Medium |
-| `lwc/*/__tests__/*.test.js` | Create 8 files | Medium |
-| `PrometheionReasoningEngineTest.cls` | Add 3 tests | Medium |
+| File                                  | Action         | Priority |
+| ------------------------------------- | -------------- | -------- |
+| `PerformanceRuleEngineTest.cls`       | Add 7 tests    | High     |
+| `PrometheionComplianceScorerTest.cls` | Add 4 tests    | High     |
+| `SlackNotifierTest.cls`               | Add 4 tests    | High     |
+| `PrometheionGraphIndexerTest.cls`     | Add 5 tests    | Medium   |
+| `EinsteinPredictionMock.cls`          | Create new     | Medium   |
+| `PrometheionTestDataFactory.cls`      | Add utilities  | Medium   |
+| `lwc/*/__tests__/*.test.js`           | Create 8 files | Medium   |
+| `PrometheionReasoningEngineTest.cls`  | Add 3 tests    | Medium   |

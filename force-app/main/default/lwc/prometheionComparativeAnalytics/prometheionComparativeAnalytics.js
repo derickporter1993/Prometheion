@@ -30,7 +30,7 @@ export default class PrometheionComparativeAnalytics extends LightningElement {
         value: field.apiName,
       }));
     } else if (error) {
-      this.showError("Error loading fields: " + (error.body ? error.body.message : error.message));
+      this.showError("Error loading fields: " + (error?.body?.message || error?.message || 'An unknown error occurred'));
     }
   }
 
@@ -84,7 +84,7 @@ export default class PrometheionComparativeAnalytics extends LightningElement {
       .catch((error) => {
         this.hasError = true;
         this.errorMessage =
-          "Error generating matrix: " + (error.body ? error.body.message : error.message);
+          "Error generating matrix: " + (error?.body?.message || error?.message || 'An unknown error occurred');
         this.isLoading = false;
         this.showError(this.errorMessage);
       });

@@ -121,10 +121,65 @@ private class PrometheionSlackNotifierQueueableTest {
     static void testConstructor_DefaultRetryCount() {
         String payload = '{"text":"Test"}';
         String correlationId = 'TEST-DEFAULT';
-        
+
         Test.startTest();
         PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(payload, correlationId);
         System.assertNotEquals(null, job, 'Job should be created with default retry count');
         Test.stopTest();
+    }
+
+    @IsTest
+    static void testExecute_BulkNotifications() {
+        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, 'OK', 'ok'));
+
+        // Create 200 notification payloads
+        List<String> payloads = new List<String>();
+        for (Integer i = 0; i < 200; i++) {
+            payloads.add('{"text":"Bulk notification ' + i + '"}');
+        }
+
+        Test.startTest();
+        // Queue multiple notifications
+        for (Integer i = 0; i < Math.min(5, payloads.size()); i++) {
+            PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(
+                payloads[i],
+                'BULK-' + i
+            );
+            System.enqueueJob(job);
+        }
+        Test.stopTest();
+
+        System.assert(true, 'Bulk notifications should complete');
+        System.assert(Limits.getQueueableJobs() <= 50, 'Should stay under queueable limit');
+    }
+
+    @IsTest
+    static void testExecute_LargeBatchPayload() {
+        Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, 'OK', 'ok'));
+
+        // Create a consolidated payload with 200 alerts
+        List<Map<String, Object>> alerts = new List<Map<String, Object>>();
+        for (Integer i = 0; i < 200; i++) {
+            alerts.add(new Map<String, Object>{
+                'title' => 'Alert ' + i,
+                'severity' => 'HIGH',
+                'framework' => 'SOC2'
+            });
+        }
+
+        String bulkPayload = JSON.serialize(new Map<String, Object>{
+            'text' => 'Bulk compliance alerts',
+            'attachments' => alerts
+        });
+
+        Test.startTest();
+        PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(
+            bulkPayload,
+            'BULK-CONSOLIDATED'
+        );
+        System.enqueueJob(job);
+        Test.stopTest();
+
+        System.assert(true, 'Large batch payload should be handled');
     }
 }

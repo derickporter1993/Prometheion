@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Contact_Email__c</fullName>
-    <description>Email of the data subject (preserved for audit after deletion)</description>
+    <description>Email address of the data subject requesting erasure. Preserved in encrypted form for audit compliance after the Contact record is deleted. Required for verification.</description>
+    <inlineHelpText>Data subject email (preserved for audit)</inlineHelpText>
     <externalId>false</externalId>
     <label>Contact Email</label>
     <required>true</required>

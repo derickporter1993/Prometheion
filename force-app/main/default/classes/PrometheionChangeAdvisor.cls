@@ -4,7 +4,7 @@
  * Analyzes PROPOSED changes before they're made, showing compliance impact in real-time.
  * This is proactive compliance - preventing violations before they happen.
  */
-public class PrometheionChangeAdvisor {
+public with sharing class PrometheionChangeAdvisor {
     
     /**
      * Analyzes a proposed change and returns compliance impact

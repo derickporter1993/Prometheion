@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Sent_Date__c</fullName>
-    <description>Date and time when the privacy notice was sent to the customer</description>
+    <description>Date and time when the privacy notice was sent to the customer. Used to track compliance with GLBA annual notice requirements and calculate opt-out deadlines.</description>
+    <inlineHelpText>When the notice was sent to the customer</inlineHelpText>
     <externalId>false</externalId>
     <label>Sent Date</label>
     <required>true</required>

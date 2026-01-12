@@ -6,6 +6,9 @@ export default class PerformanceAlertPanel extends LightningElement {
   channelName = "/event/Performance_Alert__e";
   subscription = {};
   @track rows = [];
+  @track isLoading = true;
+  @track hasError = false;
+  @track errorMessage = "";
   pendingEvents = []; // Buffer for batching incoming events
   debounceTimer = null; // Timer for debouncing event processing
   maxRows = 50; // Cap array size to prevent memory issues
@@ -18,19 +21,28 @@ export default class PerformanceAlertPanel extends LightningElement {
     { label: "Created", fieldName: "createdDate", type: "date" },
   ];
 
+  get isEmpty() {
+    return !this.isLoading && !this.hasError && (!this.rows || this.rows.length === 0);
+  }
+
   async connectedCallback() {
     try {
+      this.isLoading = true;
+      this.hasError = false;
+      this.errorMessage = "";
       this.rows = (await getRecentAlerts({ limitSize: 25 })).map((r, idx) => ({
         key: `${r.createdDate}-${idx}`,
         ...r,
       }));
+      this.isLoading = false;
       this.handleSubscribe();
       onError(() => {
         // EMP API error handled silently - alerts will continue via polling
       });
-      // eslint-disable-next-line no-unused-vars
-    } catch (_error) {
-      // Set empty array to prevent UI errors
+    } catch (error) {
+      this.isLoading = false;
+      this.hasError = true;
+      this.errorMessage = error?.body?.message || error?.message || "Failed to load performance alerts";
       this.rows = [];
     }
   }

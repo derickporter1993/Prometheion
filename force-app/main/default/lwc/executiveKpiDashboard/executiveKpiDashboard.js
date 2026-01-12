@@ -49,4 +49,9 @@ export default class ExecutiveKpiDashboard extends LightningElement {
     if (!this.dashboardData || !this.dashboardData.frameworks) return 0;
     return this.dashboardData.frameworks.filter((fw) => fw.status === "COMPLIANT").length;
   }
+
+  get errorMessage() {
+    if (!this.error) return '';
+    return this.error?.body?.message || this.error?.message || 'An unknown error occurred';
+  }
 }

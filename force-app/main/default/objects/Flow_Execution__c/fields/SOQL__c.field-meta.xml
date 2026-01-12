@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SOQL__c</fullName>
+    <description>Number of SOQL queries executed by the Flow. Salesforce limit is 100 queries for synchronous operations.</description>
+    <inlineHelpText>Number of SOQL queries (limit: 100)</inlineHelpText>
     <label>SOQL</label>
     <type>Number</type>
     <precision>6</precision>

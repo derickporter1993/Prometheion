@@ -2,7 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Contact__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>Customer contact who received the privacy notice</description>
+    <description>Individual customer contact who received the privacy notice. Used when sending notices to specific individuals rather than to an Account-level address.</description>
+    <inlineHelpText>Individual recipient of the notice</inlineHelpText>
     <externalId>false</externalId>
     <label>Contact</label>
     <referenceTo>Contact</referenceTo>

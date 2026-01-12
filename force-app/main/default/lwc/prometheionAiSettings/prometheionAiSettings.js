@@ -9,12 +9,18 @@ export default class PrometheionAiSettings extends LightningElement {
   autoRemediate = false;
   confidenceThreshold = 0.85;
   blacklistedUsers = "";
+  isLoading = true;
+  hasError = false;
+  errorMessage = "";
 
   connectedCallback() {
     this.loadSettings();
   }
 
   loadSettings() {
+    this.isLoading = true;
+    this.hasError = false;
+    this.errorMessage = "";
     getAISettings()
       .then((result) => {
         this.enableAI = result.Enable_AI_Reasoning__c;
@@ -22,10 +28,13 @@ export default class PrometheionAiSettings extends LightningElement {
         this.autoRemediate = result.Auto_Remediation_Enabled__c;
         this.confidenceThreshold = result.Confidence_Threshold__c;
         this.blacklistedUsers = result.Blacklisted_Users__c || "";
+        this.isLoading = false;
       })
       .catch((error) => {
-        const errorMsg = error?.body?.message || error?.message || "Failed to load AI settings";
-        this.showToast("Load Error", errorMsg, "error");
+        this.isLoading = false;
+        this.hasError = true;
+        this.errorMessage = error?.body?.message || error?.message || "Failed to load AI settings";
+        this.showToast("Load Error", this.errorMessage, "error");
       });
   }
 

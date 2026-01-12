@@ -1,21 +1,30 @@
 <template>
   <lightning-card title={framework.framework} class={scoreClass}>
-    <div class="slds-var-p-around_medium">
+    <div class="slds-p-around_medium">
+      <template lwc:if={isLoadingDetails}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading framework details" size="medium"></lightning-spinner>
+        </div>
+      </template>
+
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_small">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          <span class="slds-text-body_small">{errorMessage}</span>
+        </div>
+      </template>
+
       <div class="slds-grid slds-gutters">
         <div class="slds-col slds-size_1-of-2">
           <div class="slds-text-heading_large">{framework.score}%</div>
           <div class="slds-text-body_small">Compliance Score</div>
         </div>
         <div class="slds-col slds-size_1-of-2">
-          <lightning-icon
-            icon-name={statusIcon}
-            size="large"
-            alternative-text={framework.status}
-          ></lightning-icon>
+          <lightning-icon icon-name={statusIcon} size="large" aria-hidden="true"></lightning-icon>
           <div class="slds-text-body_small">{framework.status}</div>
         </div>
       </div>
-      <div class="slds-var-m-top_small">
+      <div class="slds-m-top_small">
         <div class="slds-text-body_small">
           {framework.compliantPolicies} / {framework.totalPolicies} Policies Compliant
         </div>
@@ -24,35 +33,35 @@
 
       <!-- Phase 1 Framework Details -->
       <template lwc:if={hasFrameworkDetails}>
-        <div class="slds-var-m-top_medium slds-border_top">
-          <div class="slds-text-body_small slds-var-m-top_small">
+        <div class="slds-m-top_medium slds-border_top">
+          <div class="slds-text-body_small slds-m-top_small">
             <strong>Framework Mappings:</strong> {mappingCount}
           </div>
           <div class="slds-text-body_small"><strong>Evidence Items:</strong> {evidenceCount}</div>
           <div class="slds-text-body_small"><strong>Requirements:</strong> {requirementCount}</div>
 
           <template lwc:if={hasLatestPackage}>
-            <div class="slds-var-m-top_small slds-border_top">
+            <div class="slds-m-top_small slds-border_top">
               <div class="slds-text-body_small slds-text-title">
                 <strong>Latest Audit Package:</strong>
               </div>
-              <div class="slds-text-body_small">{formattedLatestPackage.name}</div>
+              <div class="slds-text-body_small">{latestAuditPackage.name}</div>
               <div class="slds-text-body_small">
                 Status:
-                <span class="status-{formattedLatestPackage.status.toLowerCase()}"
-                  >{formattedLatestPackage.status}</span
+                <span class="status-{latestAuditPackage.status.toLowerCase()}"
+                  >{latestAuditPackage.status}</span
                 >
               </div>
               <div class="slds-text-body_small">
-                Period: {formattedLatestPackage.formattedPeriodStart} -
-                {formattedLatestPackage.formattedPeriodEnd}
+                Period: {formatDate(latestAuditPackage.periodStart)} -
+                {formatDate(latestAuditPackage.periodEnd)}
               </div>
               <lightning-button
                 label="View Package"
                 variant="base"
                 size="x-small"
-                class="slds-var-m-top_x-small"
-                data-package-id={formattedLatestPackage.id}
+                class="slds-m-top_x-small"
+                data-package-id={latestAuditPackage.id}
                 onclick={handleViewAuditPackage}
               ></lightning-button>
             </div>

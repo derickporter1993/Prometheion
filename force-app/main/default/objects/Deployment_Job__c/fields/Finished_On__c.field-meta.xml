@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Finished_On__c</fullName>
+    <description>Date and time when the deployment job completed. Used with Started On to calculate total deployment duration for release planning.</description>
+    <inlineHelpText>When deployment finished</inlineHelpText>
     <label>Finished On</label>
     <type>DateTime</type>
     <required>false</required>

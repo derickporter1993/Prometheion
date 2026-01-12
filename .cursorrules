@@ -1,102 +1,542 @@
-# Cursor Rules for Prometheion
+# Prometheion Cursor Rules
 
-## Git Workflow - MANDATORY After Task Completion
+## Important
+Read and follow all rules in CLAUDE.md before making changes.
 
-**CRITICAL**: After any work is created or a set of tasks are complete, you MUST follow this exact sequence:
+---
 
-### Quick Command (RECOMMENDED)
+## LWC Template Syntax (CRITICAL)
 
-Use the sync-all script for automatic workflow:
+- NEVER quote template bindings: use `data={value}` not `data="{value}"`
+- NEVER quote event handlers: use `onclick={handler}` not `onclick="{handler}"`
+- Use `lwc:if` for modern LWC (preferred over `if:true`)
+- Bindings in attributes: `key={item.id}` not `key="{item.id}"`
 
-```bash
-./scripts/sync-all.sh "Your commit message" "Optional merge message"
+### Correct Examples
+```html
+<lightning-datatable data={rows} columns={columns}></lightning-datatable>
+<lightning-button onclick={handleClick} label={buttonLabel}></lightning-button>
+<template lwc:if={hasData}>...</template>
 ```
 
-Or with just commit message (merge message auto-generated):
-
-```bash
-./scripts/sync-all.sh "Your commit message"
+### Wrong Examples (DO NOT USE)
+```html
+<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
+<lightning-button onclick="{handleClick}" label="{buttonLabel}"></lightning-button>
 ```
 
-### Manual Workflow (Alternative)
+---
 
-If you prefer manual steps:
+## Apex Security (AppExchange Required)
 
-#### 1. Commit Changes Locally
+- All classes: `with sharing` keyword
+- All SOQL: `WITH SECURITY_ENFORCED`
+- Before DML: `PrometheionSecurityUtils.validateCRUDAccess('Object__c', DmlOperation.DML_INSERT)`
 
-```bash
-git add .
-git commit -m "Descriptive commit message"
+```apex
+// Correct
+public with sharing class MyClass {
+    List<Account> accounts = [SELECT Id FROM Account WITH SECURITY_ENFORCED];
+
+    PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
+    update accounts;
+}
 ```
 
-#### 2. Push to Remote Feature Branch
+---
 
-```bash
-BRANCH=$(git branch --show-current)
-git push origin $BRANCH
+## Apex Bulkification (CRITICAL)
+
+### Never SOQL/DML in Loops
+```apex
+// WRONG - Governor limit violation
+for (Account acc : accounts) {
+    Contact c = [SELECT Id FROM Contact WHERE AccountId = :acc.Id];  // NO!
+    update acc;  // NO!
+}
+
+// RIGHT - Bulkified
+Map<Id, Contact> contactMap = new Map<Id, Contact>([
+    SELECT Id, AccountId FROM Contact WHERE AccountId IN :accountIds
+]);
+update accounts;  // Single DML outside loop
 ```
 
-#### 3. Merge to Main and Push
-
-```bash
-BRANCH=$(git branch --show-current)
-git checkout main
-git pull origin main  # Ensure main is up to date
-git merge $BRANCH --no-ff -m "Merge feature branch: <description>"
-git push origin main
-git checkout $BRANCH  # Return to feature branch
+### Trigger Handler Pattern
+- One trigger per object
+- Logic in handler classes, not in trigger
+```apex
+// Trigger (minimal code)
+trigger AccountTrigger on Account (before insert, after update) {
+    AccountTriggerHandler.handle(Trigger.new, Trigger.oldMap, Trigger.operationType);
+}
 ```
 
-### Complete Manual Workflow Script
+---
 
-```bash
-# Get current branch name
-BRANCH=$(git branch --show-current)
+## SOQL Best Practices
 
-# Commit
-git add .
-git commit -m "Your commit message"
+- Always use `LIMIT` when querying potentially large datasets
+- Use `WHERE` clauses with indexed fields (Id, Name, CreatedDate, custom indexed)
+- Avoid `SELECT *` pattern - only query needed fields
+- Use relationship queries instead of multiple queries
 
-# Push to feature branch
-git push origin $BRANCH
+```apex
+// WRONG
+List<Account> accounts = [SELECT Id FROM Account];
+for (Account a : accounts) {
+    List<Contact> contacts = [SELECT Id FROM Contact WHERE AccountId = :a.Id];
+}
 
-# Merge to main
-git checkout main
-git pull origin main
-git merge $BRANCH --no-ff -m "Merge feature branch: Your description"
-git push origin main
-
-# Return to feature branch
-git checkout $BRANCH
+// RIGHT
+List<Account> accounts = [
+    SELECT Id, Name, (SELECT Id, Name FROM Contacts)
+    FROM Account
+    WHERE CreatedDate = LAST_N_DAYS:30
+    WITH SECURITY_ENFORCED
+    LIMIT 200
+];
 ```
 
-## Important Notes
+---
 
-- **ALWAYS** use `--no-ff` for merge commits to preserve branch history
-- **ALWAYS** pull main before merging to avoid conflicts
-- **ALWAYS** return to feature branch after merging to continue work
-- **NEVER** skip any of these steps - all three steps are mandatory
+## Error Handling
 
-## Current Feature Branch
-
-- Default: `claude/review-prometheion-app-0BLu9` (check with `git branch --show-current`)
-
-## Verification
-
-The `sync-all.sh` script automatically verifies synchronization. For manual verification:
-
-```bash
-git status  # Should show "working tree clean"
-git rev-list --count origin/<feature-branch>..<feature-branch>  # Should be 0
-git rev-list --count origin/main..main  # Should be 0
+### Use try-catch with specific exceptions
+```apex
+try {
+    insert records;
+} catch (DmlException e) {
+    Logger.error('DML failed: ' + e.getMessage());
+    throw new AuraHandledException(e.getMessage());
+} catch (Exception e) {
+    Logger.error('Unexpected error: ' + e.getMessage());
+    throw new AuraHandledException('An unexpected error occurred');
+}
 ```
 
-## Git Alias (Optional)
+### Never expose system details to UI
+```apex
+// WRONG
+throw new AuraHandledException(e.getStackTraceString());
 
-You can also create a git alias for even faster access:
-
-```bash
-git config --global alias.sync-all '!f() { ./scripts/sync-all.sh "$@"; }; f'
+// RIGHT
+throw new AuraHandledException('Unable to save record. Please contact support.');
 ```
 
-Then use: `git sync-all "Your commit message"`
+---
+
+## Test Class Requirements (75%+ for AppExchange)
+
+```apex
+@isTest
+private class MyClassTest {
+
+    @TestSetup
+    static void setup() {
+        // Create test data once, reuse across tests
+    }
+
+    @isTest
+    static void testMethod_positiveCase() {
+        Test.startTest();
+        // Test happy path
+        Test.stopTest();
+        System.assertEquals(expected, actual, 'Assertion message required');
+    }
+
+    @isTest
+    static void testMethod_bulkOperations() {
+        // Test with 200+ records to verify bulkification
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 200; i++) {
+            accounts.add(new Account(Name = 'Test ' + i));
+        }
+        Test.startTest();
+        insert accounts;
+        Test.stopTest();
+    }
+
+    @isTest
+    static void testMethod_negativeCase() {
+        // Test error handling
+        try {
+            // Call method with bad data
+            System.assert(false, 'Expected exception was not thrown');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('expected text'));
+        }
+    }
+
+    @isTest
+    static void testMethod_permissionDenied() {
+        // Test as user without permissions
+        User limitedUser = TestDataFactory.createLimitedUser();
+        System.runAs(limitedUser) {
+            // Verify proper access denied handling
+        }
+    }
+}
+```
+
+---
+
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Apex Class | PascalCase | `AccountService` |
+| Test Class | PascalCase + Test | `AccountServiceTest` |
+| Method | camelCase | `getAccountById()` |
+| Variable | camelCase | `accountList` |
+| Constant | UPPER_SNAKE | `MAX_RETRY_COUNT` |
+| Custom Object | Pascal_Snake__c | `Compliance_Score__c` |
+| Custom Field | Pascal_Snake__c | `Risk_Level__c` |
+| LWC Component | camelCase folder | `complianceDashboard` |
+| Platform Event | Pascal_Snake__e | `Performance_Alert__e` |
+
+---
+
+## Async Apex Patterns
+
+### Queueable (preferred for chaining)
+```apex
+public class MyQueueable implements Queueable {
+    public void execute(QueueableContext context) {
+        // Process work
+        // Chain if needed: System.enqueueJob(new NextQueueable());
+    }
+}
+```
+
+### Batch (for large data volumes)
+```apex
+public class MyBatch implements Database.Batchable<SObject>, Database.Stateful {
+    public Database.QueryLocator start(Database.BatchableContext bc) {
+        return Database.getQueryLocator([SELECT Id FROM Account WITH SECURITY_ENFORCED]);
+    }
+    public void execute(Database.BatchableContext bc, List<Account> scope) {
+        // Process batch
+    }
+    public void finish(Database.BatchableContext bc) {
+        // Cleanup
+    }
+}
+```
+
+---
+
+## Jest Testing Rules
+
+### Mock Salesforce Modules
+Always add `{ virtual: true }` to Salesforce module mocks:
+```javascript
+jest.mock("@salesforce/apex/Controller.method", () => ({
+  default: jest.fn()
+}), { virtual: true });
+```
+
+### Mock LWC Classes (PollingManager pattern)
+Use factory functions to avoid hoisting issues:
+```javascript
+jest.mock("c/pollingManager", () => {
+  return class MockPollingManager {
+    callback = null;
+    interval = 60000;
+    constructor(callback, interval = 60000) {
+      this.callback = callback;
+      this.interval = interval;
+    }
+    start() {}
+    stop() {}
+    cleanup() {}
+  };
+}, { virtual: true });
+```
+
+### Never Access Private Properties
+- WRONG: `expect(element.rows).toEqual([])`
+- RIGHT: `expect(element.shadowRoot.querySelector("lightning-datatable")).not.toBeNull()`
+
+### Key-field Attribute Access
+```javascript
+// Handle both property and attribute access
+expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
+```
+
+---
+
+## LWC JavaScript Patterns
+
+### Import only what you need
+```javascript
+import { LightningElement, api, wire } from 'lwc';
+import getAccounts from '@salesforce/apex/AccountController.getAccounts';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
+```
+
+### Handle wire errors properly
+```javascript
+@wire(getAccounts, { recordId: '$recordId' })
+wiredAccounts({ error, data }) {
+    if (data) {
+        this.accounts = data;
+        this.error = undefined;
+    } else if (error) {
+        this.error = error;
+        this.accounts = undefined;
+        this.showErrorToast(error);
+    }
+}
+```
+
+### Lifecycle hooks order
+1. `constructor()` - Don't access DOM here
+2. `connectedCallback()` - Component inserted into DOM
+3. `renderedCallback()` - After every render (use sparingly)
+4. `disconnectedCallback()` - Cleanup (unsubscribe, clear timers)
+
+---
+
+## Platform Events
+
+### Publishing (Apex)
+```apex
+Performance_Alert__e event = new Performance_Alert__e(
+    Metric__c = 'CPU',
+    Value__c = 8500,
+    Threshold__c = 10000
+);
+Database.SaveResult result = EventBus.publish(event);
+```
+
+### Subscribing (LWC)
+```javascript
+import { subscribe, unsubscribe, onError } from 'lightning/empApi';
+
+connectedCallback() {
+    this.subscription = subscribe('/event/Performance_Alert__e', -1, (message) => {
+        this.handleEvent(message);
+    });
+}
+
+disconnectedCallback() {
+    unsubscribe(this.subscription);
+}
+```
+
+---
+
+## Git Workflow (MANDATORY)
+
+### Before Starting Work
+```bash
+# Always sync with remote first
+git fetch origin
+git pull origin <current-branch>
+```
+
+### After Making Changes (ALWAYS DO THIS)
+```bash
+# 1. Check what changed
+git status
+
+# 2. Run quality checks
+npm run lint
+npm run test:unit
+npm run fmt
+
+# 3. Stage and commit
+git add -A
+git commit -m "type: Description of changes"
+
+# 4. Push to remote
+git push -u origin <current-branch>
+
+# 5. Verify sync
+git status
+```
+
+### Commit Message Format
+```
+type: Brief description
+
+Types: feat, fix, test, docs, refactor, style
+```
+
+### IMPORTANT
+- ALWAYS commit and push after completing work
+- ALWAYS pull before starting new work
+- NEVER leave uncommitted changes
+- Check that local and remote are in sync before ending session
+
+---
+
+## Code Quality Checks (MANDATORY)
+
+### Before Coding
+
+1. **Check for LWC Template Syntax Violations** (if modifying LWC templates):
+   ```bash
+   # Find any quoted bindings that will cause LWC1034 errors
+   grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null | grep -v node_modules
+   ```
+   - If found, fix BEFORE making other changes
+   - Pattern: `data="{rows}"` must become `data={rows}`
+
+2. **Check for SOQL Without Security**:
+   ```bash
+   # Find SOQL queries missing WITH SECURITY_ENFORCED
+   grep -rn "SELECT.*FROM" force-app/main/default/classes/*.cls | grep -v "WITH SECURITY_ENFORCED" | grep -v "Test.cls"
+   ```
+
+3. **Check for Hardcoded Record IDs**:
+   ```bash
+   # Find potential hardcoded Salesforce IDs (15 or 18 char)
+   grep -rn "['\"][a-zA-Z0-9]\{15,18\}['\"]" force-app/main/default/classes/*.cls
+   ```
+
+4. **Check for System.debug in Production Code**:
+   ```bash
+   # Find debug statements (should be removed before commit)
+   grep -rn "System.debug" force-app/main/default/classes/*.cls | grep -v Test.cls
+   ```
+
+5. **Check for API Version Consistency**:
+   ```bash
+   # All metadata should use API version 63.0
+   grep -rn "apiVersion" force-app/main/default/**/*.xml | grep -v "63.0"
+   ```
+
+6. **Check Apex Security Patterns**:
+   - Verify `with sharing` keyword on all classes
+   - Check for `WITH SECURITY_ENFORCED` on all SOQL queries
+   - Verify CRUD/FLS checks before DML operations
+   - Check for proper error handling (try-catch with specific exceptions)
+
+7. **Check Bulkification**:
+   - Verify no SOQL queries inside loops
+   - Verify no DML operations inside loops
+   - Check for proper batch/queueable patterns for large datasets
+
+### After Coding
+
+Run these checks EVERY TIME before committing:
+
+```bash
+# 1. Lint check (must pass with 0 warnings for LWC)
+npm run lint
+
+# 2. Format check
+npm run fmt:check
+
+# 3. Unit tests (all must pass)
+npm run test:unit
+
+# 4. Check for LWC template corruption
+grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null | head -5
+
+# 5. Verify no uncommitted changes remain
+git status
+```
+
+### Quick Pre-Commit Validation Script
+
+```bash
+#!/bin/bash
+# Run this before every commit
+
+echo "=== Pre-Commit Validation ==="
+
+# Check for LWC template violations
+if grep -rq '="{' force-app/main/default/lwc/**/*.html 2>/dev/null; then
+    echo "❌ FAIL: LWC template has quoted bindings (will cause LWC1034)"
+    grep -rn '="{' force-app/main/default/lwc/**/*.html 2>/dev/null
+    exit 1
+fi
+echo "✅ LWC templates OK"
+
+# Run lint
+if ! npm run lint --silent; then
+    echo "❌ FAIL: Lint errors"
+    exit 1
+fi
+echo "✅ Lint OK"
+
+# Run tests
+if ! npm run test:unit --silent; then
+    echo "❌ FAIL: Unit tests failed"
+    exit 1
+fi
+echo "✅ Tests OK"
+
+echo "=== All checks passed ==="
+```
+
+### Common Violations Checklist
+
+| Issue | Detection | Fix |
+|-------|-----------|-----|
+| LWC quoted bindings | `grep '="{' *.html` | Remove quotes: `data={rows}` |
+| Missing SECURITY_ENFORCED | grep SOQL without clause | Add `WITH SECURITY_ENFORCED` |
+| SOQL in loop | Manual review | Bulkify queries outside loop |
+| DML in loop | Manual review | Collect records, single DML |
+| Unused catch variable | ESLint warning | Use `catch { }` or `catch (_e)` |
+| Missing test coverage | sf apex run test | Add test methods |
+| Wrong API version | grep apiVersion | Update to 63.0 |
+
+### Deployment Verification
+
+1. **Verify Deployment Readiness:**
+   - Run dry-run deployment: `sf project deploy start --dry-run --target-org <org>`
+   - Check for compilation errors
+   - Verify all dependencies are available
+
+2. **Commit and Sync:**
+   - Stage changes: `git add -A`
+   - Commit with descriptive message: `git commit -m "type: Description"`
+   - Push to remote: `git push origin <branch>`
+
+---
+
+## Workflow
+
+1. Always read existing files before modifying
+2. Follow patterns already in the codebase
+3. Look at similar test files for mock patterns
+4. Run tests after making changes
+5. Fix failures before committing
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | Fix |
+|---------|-----|
+| `data="{rows}"` | `data={rows}` |
+| `onclick="{handler}"` | `onclick={handler}` |
+| `element.rows` in tests | Use shadow DOM queries |
+| Missing `{ virtual: true }` | Add to all SF module mocks |
+| Class mock hoisting error | Use factory function pattern |
+| `if:true={value}` | Use `lwc:if={value}` |
+| SOQL in loop | Query once, use Map |
+| DML in loop | Collect records, single DML |
+| Missing `with sharing` | Add to all classes |
+| Missing `WITH SECURITY_ENFORCED` | Add to all SOQL |
+| Exposing stack trace | Return user-friendly message |
+
+---
+
+## AppExchange Security Checklist
+
+- [ ] No hardcoded IDs, URLs, or credentials
+- [ ] All SOQL uses `WITH SECURITY_ENFORCED`
+- [ ] All DML has CRUD/FLS checks via PrometheionSecurityUtils
+- [ ] All classes use `with sharing`
+- [ ] No `without sharing` unless explicitly justified
+- [ ] No dynamic SOQL with user input (SQL injection risk)
+- [ ] No `eval()` or dynamic Apex execution
+- [ ] All external callouts use Named Credentials
+- [ ] Sensitive data encrypted at rest
+- [ ] 75%+ code coverage with meaningful assertions

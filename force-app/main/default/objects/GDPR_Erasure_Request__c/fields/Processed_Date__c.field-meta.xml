@@ -4,5 +4,6 @@
     <label>Processed Date</label>
     <type>DateTime</type>
     <required>false</required>
-    <description>Date and time when the erasure request was processed</description>
+    <description>Date and time when the batch job began processing the erasure request. Distinct from Completion Date, which marks when all records have been deleted.</description>
+    <inlineHelpText>When erasure processing started</inlineHelpText>
 </CustomField>

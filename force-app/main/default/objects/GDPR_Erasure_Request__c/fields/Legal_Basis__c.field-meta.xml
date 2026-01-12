@@ -4,7 +4,8 @@
     <label>Legal Basis</label>
     <type>Picklist</type>
     <required>false</required>
-    <description>Legal basis for the erasure request under GDPR Article 17</description>
+    <description>Legal basis for the erasure request under GDPR Article 17. Options: Data no longer necessary, Consent withdrawn, Object to processing, Unlawful processing, Legal obligation to erase.</description>
+    <inlineHelpText>GDPR Article 17 ground for erasure</inlineHelpText>
     <valueSet>
         <restricted>true</restricted>
         <valueSetDefinition>

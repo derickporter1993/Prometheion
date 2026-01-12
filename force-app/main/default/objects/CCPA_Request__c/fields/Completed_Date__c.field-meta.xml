@@ -4,5 +4,6 @@
     <label>Completed Date</label>
     <type>DateTime</type>
     <required>false</required>
-    <description>Date and time when the CCPA request was completed</description>
+    <description>Date and time when the CCPA request was completed. Used to calculate response time and verify compliance with 45-day deadline requirements.</description>
+    <inlineHelpText>When the request was fulfilled</inlineHelpText>
 </CustomField>

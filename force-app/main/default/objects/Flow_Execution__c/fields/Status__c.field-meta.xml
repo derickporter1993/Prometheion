@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Status__c</fullName>
+    <description>Result of the Flow execution: Success (completed normally) or Fault (error occurred during execution).</description>
+    <inlineHelpText>Whether the Flow completed successfully or failed</inlineHelpText>
     <label>Status</label>
     <type>Picklist</type>
     <required>false</required>

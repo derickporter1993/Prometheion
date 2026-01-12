@@ -16,7 +16,7 @@ private class PrometheionDashboardControllerTest {
             FirstName = 'Test',
             LastName = 'User',
             Email = 'testuser@prometheion.test',
-            Username = 'testuser@prometheion.test',
+            Username = 'testuser' + System.now().getTime() + '@prometheion.test',
             Alias = 'tuser',
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',

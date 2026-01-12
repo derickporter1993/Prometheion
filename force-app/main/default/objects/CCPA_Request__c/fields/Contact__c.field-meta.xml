@@ -2,7 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Contact__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>Consumer who made the CCPA request</description>
+    <description>Consumer who made the CCPA request. Links to the Contact record for the California resident exercising their privacy rights under CCPA.</description>
+    <inlineHelpText>Contact who submitted this privacy request</inlineHelpText>
     <externalId>false</externalId>
     <label>Contact</label>
     <referenceTo>Contact</referenceTo>

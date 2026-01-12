@@ -16,7 +16,7 @@ private class ComplianceScoreCardControllerTest {
             FirstName = 'Test',
             LastName = 'User',
             Email = 'testuser2@prometheion.test',
-            Username = 'testuser2@prometheion.test',
+            Username = 'testuser2' + System.now().getTime() + '@prometheion.test',
             Alias = 'tuser2',
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',

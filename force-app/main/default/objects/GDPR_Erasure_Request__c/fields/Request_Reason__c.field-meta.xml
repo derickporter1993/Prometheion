@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Request_Reason__c</fullName>
-    <description>Reason provided for the erasure request</description>
+    <description>Free-text explanation provided by the data subject for their erasure request. Used for audit trail and to determine appropriate legal basis.</description>
+    <inlineHelpText>Data subject's explanation for the request</inlineHelpText>
     <externalId>false</externalId>
     <label>Request Reason</label>
     <length>32768</length>

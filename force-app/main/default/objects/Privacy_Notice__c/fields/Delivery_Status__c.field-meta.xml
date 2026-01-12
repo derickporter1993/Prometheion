@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Delivery_Status__c</fullName>
-    <description>Current delivery status of the privacy notice</description>
+    <description>Current delivery status of the privacy notice. Pending: queued for send, Sent: dispatched, Delivered: confirmed receipt, Bounced: returned undeliverable, Failed: delivery error.</description>
+    <inlineHelpText>Delivery status: Pending, Sent, Delivered, Bounced, Failed</inlineHelpText>
     <externalId>false</externalId>
     <label>Delivery Status</label>
     <required>true</required>

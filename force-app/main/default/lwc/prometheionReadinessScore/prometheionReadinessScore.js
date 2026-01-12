@@ -12,6 +12,9 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
   @track evidenceScore = 0;
   @track scoreStatus = "Calculating...";
   @track currentStep = "access";
+  @track isLoading = true;
+  @track hasError = false;
+  @track errorMessage = "";
 
   @wire(calculateReadinessScore)
   wiredScore({ error, data }) {
@@ -20,9 +23,17 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
       this.calculateSubScores();
       this.updateScoreStatus();
       this.updateProgressStep();
+      this.isLoading = false;
+      this.hasError = false;
+      this.errorMessage = "";
     } else if (error) {
-      this.showToast("Error", error.body?.message || "Failed to load readiness score", "error");
+      this.isLoading = false;
+      this.hasError = true;
+      this.errorMessage = error?.body?.message || error?.message || "Failed to load readiness score";
       this.scoreStatus = "Error";
+      this.showToast("Error", this.errorMessage, "error");
+    } else {
+      this.isLoading = true;
     }
   }
 

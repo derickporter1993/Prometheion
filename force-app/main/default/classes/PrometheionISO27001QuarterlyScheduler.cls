@@ -111,11 +111,11 @@ public with sharing class PrometheionISO27001QuarterlyScheduler implements Sched
     }
 
     /**
-     * Schedule quarterly reviews (1st of Jan, Apr, Jul, Oct at 7 AM)
+     * Schedule quarterly reviews using CRON from Custom Metadata
      * @return Job ID
      */
     public static String scheduleQuarterly() {
-        String cronExp = '0 0 7 1 1,4,7,10 ?';
+        String cronExp = SchedulerErrorHandler.getCronExpression('ISO27001QuarterlyReview', '0 0 7 1 1,4,7,10 ?');
         return System.schedule(
             'ISO 27001 Quarterly Access Reviews',
             cronExp,
@@ -124,11 +124,11 @@ public with sharing class PrometheionISO27001QuarterlyScheduler implements Sched
     }
 
     /**
-     * Schedule monthly privileged reviews (1st of each month at 7 AM)
+     * Schedule monthly privileged reviews using CRON from Custom Metadata
      * @return Job ID
      */
     public static String scheduleMonthlyPrivileged() {
-        String cronExp = '0 0 7 1 * ?';
+        String cronExp = SchedulerErrorHandler.getCronExpression('ISO27001MonthlyPrivileged', '0 0 7 1 * ?');
         return System.schedule(
             'ISO 27001 Privileged Access Reviews - Monthly',
             cronExp,

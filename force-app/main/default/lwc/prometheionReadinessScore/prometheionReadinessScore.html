@@ -1,23 +1,35 @@
 <template>
   <lightning-card title="Compliance Readiness Score" icon-name="custom:custom61">
-    <div class="slds-var-p-around_medium">
-      <div class="slds-grid slds-grid_align-center">
-        <lightning-formatted-number
-          value={normalizedScore}
-          format-style="percent"
-          class="slds-text-heading_large slds-text-color_success"
-        >
-        </lightning-formatted-number>
-      </div>
-      <p class="slds-text-align_center slds-var-m-top_small slds-text-heading_small">
-        {scoreStatus}
-      </p>
+    <div class="slds-p-around_medium">
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading readiness score" size="medium"></lightning-spinner>
+        </div>
+      </template>
+
+      <template lwc:if={hasError}>
+        <div class="slds-text-color_error slds-p-around_medium">
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
+          {errorMessage}
+        </div>
+      </template>
+
+      <template lwc:if={!isLoading}>
+        <template lwc:if={!hasError}>
+          <div class="slds-grid slds-grid_align-center">
+            <lightning-formatted-number
+              value={normalizedScore}
+              format-style="percent"
+              class="slds-text-heading_large slds-text-color_success"
+            ></lightning-formatted-number>
+          </div>
+          <p class="slds-text-align_center slds-m-top_small slds-text-heading_small">{scoreStatus}</p>
 
       <lightning-progress-indicator
         current-step={currentStep}
         type="path"
         variant="base"
-        class="slds-var-m-top_medium"
+        class="slds-m-top_medium"
       >
         <lightning-progress-step label="Access" value="access"></lightning-progress-step>
         <lightning-progress-step label="Config" value="config"></lightning-progress-step>
@@ -25,13 +37,13 @@
         <lightning-progress-step label="Evidence" value="evidence"></lightning-progress-step>
       </lightning-progress-indicator>
 
-      <div class="slds-grid slds-gutters slds-var-m-top_large">
+      <div class="slds-grid slds-gutters slds-m-top_large">
         <div class="slds-col">
           <dl class="slds-list_horizontal slds-dl_inline">
             <dt class="slds-item_label slds-text-color_weak">Access Governance:</dt>
             <dd class={accessClass}>{accessScore}%</dd>
           </dl>
-          <dl class="slds-list_horizontal slds-dl_inline slds-var-m-top_small">
+          <dl class="slds-list_horizontal slds-dl_inline slds-m-top_small">
             <dt class="slds-item_label slds-text-color_weak">Config Health:</dt>
             <dd class={configClass}>{configScore}%</dd>
           </dl>
@@ -41,66 +53,29 @@
             <dt class="slds-item_label slds-text-color_weak">Automation Safety:</dt>
             <dd class={automationClass}>{automationScore}%</dd>
           </dl>
-          <dl class="slds-list_horizontal slds-dl_inline slds-var-m-top_small">
+          <dl class="slds-list_horizontal slds-dl_inline slds-m-top_small">
             <dt class="slds-item_label slds-text-color_weak">Evidence:</dt>
             <dd class={evidenceClass}>{evidenceScore}%</dd>
           </dl>
         </div>
       </div>
 
-      <div class="slds-var-m-top_large slds-text-align_center">
-        <lightning-button-group>
-          <lightning-button
-            label="Generate SOC2 Pack"
-            variant="brand"
-            onclick={handleGenerateSoc2}
-            class="slds-var-m-right_small"
-          >
-          </lightning-button>
-          <lightning-button
-            label="Generate HIPAA Pack"
-            variant="neutral"
-            onclick={handleGenerateHipaa}
-            class="slds-var-m-right_small"
-          >
-          </lightning-button>
-          <lightning-button
-            label="Generate GDPR Pack"
-            variant="neutral"
-            onclick={handleGenerateGDPR}
-            class="slds-var-m-right_small"
-          >
-          </lightning-button>
-          <lightning-button
-            label="Generate CCPA Pack"
-            variant="neutral"
-            onclick={handleGenerateCCPA}
-            class="slds-var-m-right_small"
-          >
-          </lightning-button>
-          <lightning-button
-            label="Generate PCI-DSS Pack"
-            variant="neutral"
-            onclick={handleGeneratePCI}
-          >
-          </lightning-button>
-        </lightning-button-group>
-      </div>
-
-      <template if:true={selectedFramework}>
-        <div class="slds-var-m-top_large slds-border_top">
-          <h3 class="slds-text-heading_small slds-var-m-top_medium">Framework-Specific Metrics</h3>
-          <template if:true={frameworkMetrics}>
-            <div class="slds-grid slds-gutters slds-var-m-top_small">
-              <template for:each={frameworkRecommendations} for:item="recommendation">
-                <div key={recommendation} class="slds-col slds-text-body_small">
-                  <lightning-icon icon-name="utility:info" size="x-small" class="slds-var-m-right_x-small"></lightning-icon>
-                  {recommendation}
-                </div>
-              </template>
-            </div>
-          </template>
-        </div>
+          <div class="slds-m-top_large slds-text-align_center">
+            <lightning-button-group>
+              <lightning-button
+                label="Generate SOC2 Pack"
+                variant="brand"
+                onclick={handleGenerateSoc2}
+                class="slds-m-right_small"
+              ></lightning-button>
+              <lightning-button
+                label="Generate HIPAA Pack"
+                variant="neutral"
+                onclick={handleGenerateHipaa}
+              ></lightning-button>
+            </lightning-button-group>
+          </div>
+        </template>
       </template>
     </div>
   </lightning-card>

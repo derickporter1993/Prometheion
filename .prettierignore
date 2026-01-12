@@ -2,8 +2,8 @@
 **/*.xml
 **/*-meta.xml
 
-# LWC HTML templates - Prettier breaks LWC syntax (event handlers, bindings)
-force-app/**/lwc/**/*.html
+# LWC HTML templates (use non-standard attribute syntax)
+force-app/**/*.html
 
 # Dependencies
 node_modules/
