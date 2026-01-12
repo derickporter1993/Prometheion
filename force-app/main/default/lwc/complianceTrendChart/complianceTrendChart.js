@@ -29,4 +29,12 @@ export default class ComplianceTrendChart extends LightningElement {
   get isEmpty() {
     return !this.isLoading && !this.hasError && !this.hasData;
   }
+
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
 }

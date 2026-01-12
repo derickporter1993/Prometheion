@@ -16,6 +16,14 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
   @track hasError = false;
   @track errorMessage = "";
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   @wire(calculateReadinessScore)
   wiredScore({ error, data }) {
     if (data) {

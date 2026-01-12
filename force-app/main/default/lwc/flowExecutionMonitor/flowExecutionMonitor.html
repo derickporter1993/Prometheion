@@ -21,9 +21,9 @@
         </div>
       </template>
 
-      <template lwc:if={!isLoading}>
-        <template lwc:if={!hasError}>
-          <template lwc:if={!isEmpty}>
+      <template lwc:if={notLoading}>
+        <template lwc:if={notError}>
+          <template lwc:if={hasData}>
             <lightning-datatable
               key-field="flowName"
               data={rows}

@@ -13,6 +13,14 @@ export default class PrometheionAiSettings extends LightningElement {
   hasError = false;
   errorMessage = "";
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   connectedCallback() {
     this.loadSettings();
   }

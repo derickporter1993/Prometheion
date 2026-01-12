@@ -19,6 +19,18 @@ export default class FlowExecutionMonitor extends LightningElement {
     return !this.isLoading && !this.hasError && (!this.rows || this.rows.length === 0);
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
+  get hasData() {
+    return this.rows && this.rows.length > 0;
+  }
+
   connectedCallback() {
     this.pollingManager = new PollingManager(() => this.load(), 60000);
     this.pollingManager.setupVisibilityHandling();

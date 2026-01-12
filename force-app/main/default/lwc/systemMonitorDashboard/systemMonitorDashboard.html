@@ -22,7 +22,7 @@
         </div>
         <p class="slds-m-top_medium">SOQL: {stats.soql} / 100 • DML: {stats.dml} / 150</p>
       </template>
-      <template lwc:if={!stats}><p>Loading...</p></template>
+      <template lwc:if={isLoading}><p>Loading...</p></template>
       <div class="slds-m-top_medium">
         <lightning-button label="Refresh" onclick={refresh}></lightning-button>
       </div>

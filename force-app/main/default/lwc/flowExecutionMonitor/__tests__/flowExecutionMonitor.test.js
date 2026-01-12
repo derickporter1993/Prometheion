@@ -165,8 +165,9 @@ describe("c-flow-execution-monitor", () => {
       await flushPromises();
       await flushPromises();
 
-      const datatable = element.shadowRoot.querySelector("lightning-datatable");
-      expect(datatable).not.toBeNull();
+      // When empty, should show empty state message instead of datatable
+      const emptyMessage = element.shadowRoot.querySelector(".slds-text-color_weak.slds-p-around_medium");
+      expect(emptyMessage).not.toBeNull();
     });
   });
 
@@ -177,9 +178,9 @@ describe("c-flow-execution-monitor", () => {
       await flushPromises();
       await flushPromises();
 
-      // Component should still render without throwing
-      const datatable = element.shadowRoot.querySelector("lightning-datatable");
-      expect(datatable).not.toBeNull();
+      // Component should show error state, not datatable
+      const errorMessage = element.shadowRoot.querySelector(".slds-text-color_error");
+      expect(errorMessage).not.toBeNull();
     });
 
     it("handles errors without throwing", async () => {
@@ -188,9 +189,9 @@ describe("c-flow-execution-monitor", () => {
       await flushPromises();
       await flushPromises();
 
-      // Component should still render
-      const datatable = element.shadowRoot.querySelector("lightning-datatable");
-      expect(datatable).not.toBeNull();
+      // Component should show error state
+      const errorMessage = element.shadowRoot.querySelector(".slds-text-color_error");
+      expect(errorMessage).not.toBeNull();
     });
   });
 

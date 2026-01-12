@@ -16,6 +16,10 @@ export default class SystemMonitorDashboard extends LightningElement {
     return Math.min(100, Math.round((this.stats?.heapKb || 0) / 50));
   }
 
+  get isLoading() {
+    return !this.stats;
+  }
+
   connectedCallback() {
     this.pollingManager = new PollingManager(() => this.load(), 60000);
     this.pollingManager.setupVisibilityHandling();

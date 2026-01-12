@@ -32,6 +32,14 @@ export default class ComplianceTimeline extends LightningElement {
     return !this.isLoading && !this.hasError && !this.hasEvents;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   getEventIcon(eventType) {
     if (eventType === "GAP_DETECTED") return "utility:error";
     if (eventType === "GAP_REMEDIATED") return "utility:success";

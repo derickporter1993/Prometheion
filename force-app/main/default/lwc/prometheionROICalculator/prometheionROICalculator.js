@@ -129,6 +129,10 @@ export default class PrometheionROICalculator extends LightningElement {
     return this.roiResults && this.roiResults.roi > 0;
   }
 
+  get hasNegativeROI() {
+    return !this.hasPositiveROI;
+  }
+
   get roiClass() {
     return this.hasPositiveROI ? "roi-positive" : "roi-negative";
   }

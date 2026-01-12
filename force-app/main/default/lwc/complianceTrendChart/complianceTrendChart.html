@@ -21,8 +21,8 @@
         </div>
       </template>
 
-      <template lwc:if={!isLoading}>
-        <template lwc:if={!hasError}>
+      <template lwc:if={notLoading}>
+        <template lwc:if={notError}>
           <template lwc:if={hasData}>
             <div class="chart-container">
               <!-- Chart would be rendered here using Chart.js or similar -->

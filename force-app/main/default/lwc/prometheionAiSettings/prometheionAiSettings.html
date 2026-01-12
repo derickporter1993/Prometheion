@@ -14,8 +14,8 @@
         </div>
       </template>
 
-      <template lwc:if={!isLoading}>
-        <template lwc:if={!hasError}>
+      <template lwc:if={notLoading}>
+        <template lwc:if={notError}>
           <lightning-input
             type="checkbox"
             label="Enable AI Reasoning"

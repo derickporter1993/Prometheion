@@ -16,7 +16,7 @@
                     {metric.errorMessage}
                   </div>
                 </template>
-                <template lwc:if={!metric.hasError}>
+                <template lwc:if={metric.noError}>
                   <div class="slds-text-heading_large slds-var-m-vertical_small">
                     {metric.formattedValue}
                   </div>

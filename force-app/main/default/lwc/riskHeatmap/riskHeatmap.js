@@ -43,4 +43,8 @@ export default class RiskHeatmap extends LightningElement {
   get hasRisks() {
     return this.risks && this.risks.length > 0;
   }
+
+  get noRisks() {
+    return !this.hasRisks;
+  }
 }

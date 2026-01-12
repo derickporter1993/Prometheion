@@ -17,6 +17,7 @@ export default class PrometheionExecutiveKPIDashboard extends LightningElement {
         formattedValue: this.formatValue(metric),
         formattedTarget: this.formatTarget(metric),
         statusBadgeVariant: this.getStatusBadgeVariant(metric),
+        noError: !metric.hasError,
       }));
       this.isLoading = false;
       this.hasError = false;

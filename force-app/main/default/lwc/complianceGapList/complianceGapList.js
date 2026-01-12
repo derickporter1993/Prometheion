@@ -14,6 +14,14 @@ export default class ComplianceGapList extends LightningElement {
     return !this.isLoading && !this.hasError && !this.hasGaps;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   get severityClass() {
     return (gap) => {
       if (gap.Severity__c === "CRITICAL") return "slds-text-color_error";

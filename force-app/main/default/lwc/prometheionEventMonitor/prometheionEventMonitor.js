@@ -65,4 +65,8 @@ export default class PrometheionEventMonitor extends LightningElement {
   get hasEvents() {
     return this.events.length > 0;
   }
+
+  get noEvents() {
+    return !this.hasEvents;
+  }
 }

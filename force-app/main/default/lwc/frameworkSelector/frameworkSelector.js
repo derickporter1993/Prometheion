@@ -15,6 +15,14 @@ export default class FrameworkSelector extends LightningElement {
     return !this.isLoading && !this.hasError && !this.hasFrameworks;
   }
 
+  get notLoading() {
+    return !this.isLoading;
+  }
+
+  get notError() {
+    return !this.hasError;
+  }
+
   handleFrameworkChange(event) {
     this.selectedFramework = event.detail.value;
     const selectedEvent = new CustomEvent("frameworkselected", {
