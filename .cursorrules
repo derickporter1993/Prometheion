@@ -6,8 +6,12 @@
 
 ### Quick Command (RECOMMENDED)
 
-Use the sync-all script for automatic workflow:
+**Cursor Slash Command:**
+```
+/sync-all "Your commit message"
+```
 
+**Or use the script directly:**
 ```bash
 ./scripts/sync-all.sh "Your commit message" "Optional merge message"
 ```
