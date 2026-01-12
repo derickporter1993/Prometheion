@@ -11,7 +11,7 @@
  * Target Coverage: 90%+
  */
 @IsTest
-private class ISO27001AccessReviewServiceTest {
+private class PrometheionISO27001AccessReviewServiceTest {
     
     @TestSetup
     static void setupTestData() {
