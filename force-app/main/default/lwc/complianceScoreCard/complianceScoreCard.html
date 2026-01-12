@@ -45,23 +45,21 @@
               <div class="slds-text-body_small slds-text-title">
                 <strong>Latest Audit Package:</strong>
               </div>
-              <div class="slds-text-body_small">{latestAuditPackage.name}</div>
+              <div class="slds-text-body_small">{formattedLatestPackage.name}</div>
               <div class="slds-text-body_small">
                 Status:
-                <span class="status-{latestAuditPackage.status.toLowerCase()}"
-                  >{latestAuditPackage.status}</span
-                >
+                <span>{formattedLatestPackage.status}</span>
               </div>
               <div class="slds-text-body_small">
-                Period: {formatDate(latestAuditPackage.periodStart)} -
-                {formatDate(latestAuditPackage.periodEnd)}
+                Period: {formattedLatestPackage.formattedPeriodStart} -
+                {formattedLatestPackage.formattedPeriodEnd}
               </div>
               <lightning-button
                 label="View Package"
                 variant="base"
                 size="x-small"
                 class="slds-m-top_x-small"
-                data-package-id={latestAuditPackage.id}
+                data-package-id={formattedLatestPackage.id}
                 onclick={handleViewAuditPackage}
               ></lightning-button>
             </div>
