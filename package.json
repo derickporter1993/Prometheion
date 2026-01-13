@@ -14,7 +14,7 @@
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --config jest.config.js --coverage",
     "test:a11y": "node scripts/accessibility-audit.js",
-    "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
+    "security-scan": "sf plugins inspect @salesforce/sfdx-scanner > /dev/null 2>&1 && sf scanner run --target force-app/ --rule-selector AppExchange --rule-selector Recommended:Security --format table --severity-threshold 2 || echo '⚠️  SFDX Scanner not installed. Run: sf plugins install @salesforce/sfdx-scanner'",
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
     "validate": "npm run precommit",
     "build": "echo '✅ Prometheion build validation complete'",

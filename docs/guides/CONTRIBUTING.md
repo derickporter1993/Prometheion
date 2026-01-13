@@ -561,6 +561,32 @@ Closes #123
    - Squash and merge (default)
    - Delete feature branch after merge
 
+### Branch Protection Requirements
+
+**The `main` branch MUST have the following protections enabled:**
+
+| Setting | Required Value | Purpose |
+|---------|----------------|---------|
+| Require pull request reviews | Yes (1 approval minimum) | Ensure code review |
+| Require status checks to pass | Yes | Prevent broken builds |
+| Required status checks | `code-quality`, `unit-tests`, `security-scan`, `cli-build` | Gate on all CI jobs |
+| Require branches to be up to date | Yes | Prevent merge conflicts |
+| Restrict who can push | Enabled | Prevent direct pushes |
+| Restrict force pushes | Enabled | Protect commit history |
+| Restrict deletions | Enabled | Prevent accidental deletion |
+
+**To configure branch protection (Admin only):**
+1. Go to Repository Settings → Branches → Branch protection rules
+2. Click "Add rule" for `main` branch
+3. Enable all settings listed above
+4. Save changes
+
+**Why this matters:**
+- Prevents accidental direct pushes to main
+- Ensures all code is reviewed before merging
+- Guarantees CI passes before code enters main
+- Protects commit history from force pushes
+
 ---
 
 ## Documentation
