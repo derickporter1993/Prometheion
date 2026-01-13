@@ -148,7 +148,7 @@ jobs:
 
       - name: Install Platform Dependencies
         working-directory: platform
-        run: npm install --legacy-peer-deps
+        run: npm install
 
       - name: Build CLI
         working-directory: platform
