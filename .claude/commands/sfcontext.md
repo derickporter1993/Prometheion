@@ -1,24 +1,62 @@
-# Salesforce Project Context Loader
+# Load Salesforce Project Context
 
-Read the file `docs/SESSION_CONTEXT.md` and perform the following:
+This command loads the current state of the Prometheion project and prepares you for development work.
 
-## 1. Status Overview
-Provide a concise summary of:
-- Current project phase and overall status
-- What's complete vs in-progress
-- Current branch information
+## Steps
 
-## 2. Pending Work by Owner
-List pending tasks grouped by:
-- **Claude Code tasks** (what I should work on)
-- **Cursor tasks** (parallel work)
-- **Human tasks** (requires manual action)
+### 1. Read Session Context
+Read `docs/SESSION_CONTEXT.md` to understand:
+- Current project phase and status
+- Recently completed work
+- Work in progress
+- Known issues or blockers
+- Pending tasks by owner (Claude Code, Cursor, Human)
 
-## 3. Populate Todo List
-Use the TodoWrite tool to add the pending Claude Code tasks to the todo list so progress can be tracked in this session.
+### 2. Provide Status Summary
+Present a concise overview:
+```
+📊 Project Status: [phase and grade]
+✅ Recently Completed: [list 2-3 items]
+🔄 In Progress: [list current work]
+⏳ Pending: [list next tasks]
+```
 
-## 4. Recommended Next Action
-Based on the pending tasks, recommend what to work on first and ask if the user wants to proceed.
+### 3. Populate Todo List
+Use TodoWrite to add pending Claude Code tasks from SESSION_CONTEXT.md to the active todo list for this session.
 
-## 5. Update Context (End of Session)
-Remind me to update `docs/SESSION_CONTEXT.md` before ending the session if any tasks were completed.
+### 4. Check Org Status (Optional)
+If appropriate, run:
+```bash
+sf org list --all
+sf org display --target-org prometheion-dev
+```
+
+### 5. Recommend Next Action
+Based on the loaded context and pending tasks, recommend the highest-priority item to work on and ask if the user wants to proceed.
+
+## Important Reminders
+- Before ending the session, update `docs/SESSION_CONTEXT.md` with completed work
+- Always run tests before deploying: `sf apex run test --test-level RunLocalTests`
+- Use security-enforced queries and PrometheionSecurityUtils
+- Check `claude.me` for full project guidelines
+
+## Example Output
+```
+📊 Prometheion Project Status: v3.0 Production Ready (B+ 86/100)
+
+✅ Recently Completed:
+- Integrated PrometheionSecurityUtils across all 207 Apex classes
+- Achieved 100% deployment success (up from 55%)
+- Added critical test coverage for security utilities
+
+🔄 In Progress:
+- Permission Intelligence Engine implementation
+- AppExchange packaging preparation
+
+⏳ Next Tasks:
+1. Implement advanced permission analysis algorithms
+2. Create compliance rule library for HIPAA/SOC2
+3. Build API integration framework
+
+Recommended: Start with Permission Intelligence Engine - the core algorithm for v3.1. Ready to proceed?
+```

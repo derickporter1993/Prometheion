@@ -167,7 +167,9 @@ describe("c-prometheion-setup-wizard", () => {
         await Promise.resolve();
 
         // Select a framework to enable next
-        const frameworkButton = element.shadowRoot.querySelector('.framework-card[data-value="SOC2"]');
+        const frameworkButton = element.shadowRoot.querySelector(
+          '.framework-card[data-value="SOC2"]'
+        );
         if (frameworkButton) {
           frameworkButton.click();
           await Promise.resolve();

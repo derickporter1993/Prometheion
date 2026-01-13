@@ -292,7 +292,11 @@ export default class PrometheionSetupWizard extends NavigationMixin(LightningEle
   }
 
   handleRunInitialScan() {
-    this.showToast("Info", "Initial compliance scan started. You will be notified when complete.", "info");
+    this.showToast(
+      "Info",
+      "Initial compliance scan started. You will be notified when complete.",
+      "info"
+    );
     // In a real implementation, you would trigger an async scan job
   }
 

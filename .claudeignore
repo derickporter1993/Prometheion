@@ -1,0 +1,103 @@
+# Claude Ignore File
+# Patterns in this file will be excluded from Claude's context to improve performance
+# and reduce noise. Use glob patterns (* for wildcards).
+
+# Dependencies
+node_modules/
+package-lock.json
+.npm/
+
+# Salesforce metadata cache
+.sfdx/
+.sf/
+.localdevserver/
+
+# Build outputs
+coverage/
+target/
+dist/
+build/
+.nyc_output/
+
+# Logs
+*.log
+deploy-output.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and editor files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Git
+.git/
+.gitignore
+
+# Test results
+test-results/
+.sfdx/tools/testresults/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Archives
+*.zip
+*.tar.gz
+*.tgz
+
+# Binary files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.pdf
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Generated metadata
+.eslintcache
+tsconfig.tsbuildinfo
+
+# Large data files
+*.csv
+*.xlsx
+*.db
+*.sqlite
+
+# Sensitive or environment-specific
+.env
+.env.local
+*.pem
+*.key
+credentials.json
+
+# Documentation that Claude shouldn't read by default
+# (use explicit Read commands if needed)
+node_modules/**/README.md
+node_modules/**/CHANGELOG.md
+node_modules/**/LICENSE
+
+# Minified or compiled code
+*.min.js
+*.min.css
+*.map
+
+# Salesforce static resources (unless explicitly needed)
+force-app/main/default/staticresources/*.resource
+
+# Exclude specific large or irrelevant directories
+archive/
+backups/
