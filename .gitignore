@@ -3,6 +3,7 @@ node_modules/
 package-lock.json
 
 # Build artifacts and patches
+dist/
 *.zip
 *.tar.gz
 *.rar
