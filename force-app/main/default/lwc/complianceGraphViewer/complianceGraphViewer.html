@@ -1,0 +1,253 @@
+<template>
+    <lightning-card title="Compliance Graph" icon-name="standard:relationship">
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-combobox
+                    label=""
+                    value={selectedFramework}
+                    options={frameworkOptions}
+                    onchange={handleFrameworkChange}
+                    class="slds-m-right_small">
+                </lightning-combobox>
+                <lightning-button
+                    label="Refresh"
+                    icon-name="utility:refresh"
+                    onclick={handleRefresh}>
+                </lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <!-- Stats Summary -->
+            <template lwc:if={stats}>
+                <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                    <template for:each={statsForDisplay} for:item="stat">
+                        <div key={stat.label} class="slds-col slds-size_1-of-3">
+                            <div class="slds-box slds-text-align_center">
+                                <lightning-icon icon-name={stat.icon} size="small" class="slds-m-bottom_x-small"></lightning-icon>
+                                <div class="slds-text-heading_large">{stat.value}</div>
+                                <div class="slds-text-body_small slds-text-color_weak">{stat.label}</div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Severity Distribution -->
+                <div class="slds-m-bottom_medium">
+                    <div class="slds-text-title_caps slds-m-bottom_x-small">Severity Distribution</div>
+                    <div class="slds-grid slds-wrap">
+                        <template for:each={severityStats} for:item="sev">
+                            <div key={sev.label} class="slds-m-right_small slds-m-bottom_x-small">
+                                <lightning-badge label="{sev.label}: {sev.value}" variant={sev.variant}></lightning-badge>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Graph Container -->
+            <div class="slds-box slds-box_border">
+                <template lwc:if={isLoading}>
+                    <div class="slds-align_absolute-center" style="height: 500px;">
+                        <lightning-spinner alternative-text="Loading graph" size="large"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template lwc:elseif={hasGraph}>
+                    <div class="graph-container"></div>
+
+                    <!-- Legend -->
+                    <div class="slds-m-top_small slds-grid slds-wrap slds-grid_align-center">
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #1E88E5;">Framework</span>
+                        </div>
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #607D8B;">Policy</span>
+                        </div>
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #D32F2F;">Critical Gap</span>
+                        </div>
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #F57C00;">High Gap</span>
+                        </div>
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #FBC02D;">Medium Gap</span>
+                        </div>
+                        <div class="slds-m-right_medium">
+                            <span class="slds-badge" style="background-color: #9C27B0;">Entity</span>
+                        </div>
+                    </div>
+                </template>
+
+                <template lwc:else>
+                    <div class="slds-illustration slds-illustration_small slds-align_absolute-center" style="height: 500px;">
+                        <div class="slds-text-longform">
+                            <h3 class="slds-text-heading_medium">No Graph Data</h3>
+                            <p class="slds-text-body_regular">
+                                No compliance gaps found to visualize.
+                            </p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="slds-m-top_small slds-text-body_small slds-text-color_weak">
+                Click on any node to view details. Select an entity node and click "Analyze Impact" to see affected compliance gaps.
+            </div>
+        </div>
+    </lightning-card>
+
+    <!-- Node Details Panel -->
+    <template lwc:if={showDetailsPanel}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeDetailsPanel}>
+                        <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-modal__title">{nodeTypeLabel}: {selectedNode.label}</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template lwc:if={nodeDetails}>
+                        <dl class="slds-dl_horizontal">
+                            <dt class="slds-dl_horizontal__label">Name:</dt>
+                            <dd class="slds-dl_horizontal__detail">{nodeDetails.name}</dd>
+
+                            <dt class="slds-dl_horizontal__label">Type:</dt>
+                            <dd class="slds-dl_horizontal__detail">{nodeDetails.nodeType}</dd>
+
+                            <template lwc:if={nodeDetails.metadata.framework}>
+                                <dt class="slds-dl_horizontal__label">Framework:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.framework}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.severity}>
+                                <dt class="slds-dl_horizontal__label">Severity:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.severity}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.status}>
+                                <dt class="slds-dl_horizontal__label">Status:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.status}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.riskScore}>
+                                <dt class="slds-dl_horizontal__label">Risk Score:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.riskScore}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.description}>
+                                <dt class="slds-dl_horizontal__label">Description:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.description}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.entityType}>
+                                <dt class="slds-dl_horizontal__label">Entity Type:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.entityType}</dd>
+                            </template>
+
+                            <template lwc:if={nodeDetails.metadata.entityId}>
+                                <dt class="slds-dl_horizontal__label">Entity ID:</dt>
+                                <dd class="slds-dl_horizontal__detail">{nodeDetails.metadata.entityId}</dd>
+                            </template>
+                        </dl>
+                    </template>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <template lwc:if={showImpactButton}>
+                        <lightning-button
+                            label="Analyze Impact"
+                            variant="brand"
+                            icon-name="utility:target"
+                            onclick={handleAnalyzeImpact}
+                            class="slds-m-right_x-small">
+                        </lightning-button>
+                    </template>
+                    <lightning-button label="Close" onclick={closeDetailsPanel}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Impact Analysis Panel -->
+    <template lwc:if={showImpactPanel}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header slds-theme_warning">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeImpactPanel}>
+                        <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-modal__title">Impact Analysis</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template lwc:if={impactAnalysis}>
+                        <!-- Summary Stats -->
+                        <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="slds-box slds-text-align_center slds-theme_error">
+                                    <div class="slds-text-heading_large">{impactAnalysis.criticalCount}</div>
+                                    <div class="slds-text-body_small">Critical</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="slds-box slds-text-align_center slds-theme_warning">
+                                    <div class="slds-text-heading_large">{impactAnalysis.highCount}</div>
+                                    <div class="slds-text-body_small">High</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="slds-box slds-text-align_center">
+                                    <div class="slds-text-heading_large">{impactAnalysis.mediumCount}</div>
+                                    <div class="slds-text-body_small">Medium</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="slds-box slds-text-align_center slds-theme_success">
+                                    <div class="slds-text-heading_large">{impactAnalysis.lowCount}</div>
+                                    <div class="slds-text-body_small">Low</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-box slds-m-bottom_medium">
+                            <p><strong>Total Risk Score:</strong> {impactAnalysis.riskScore}</p>
+                            <p><strong>Total Gaps Affected:</strong> {impactAnalysis.totalGaps}</p>
+                        </div>
+
+                        <!-- Affected Gaps List -->
+                        <template lwc:if={impactAnalysis.affectedGaps.length}>
+                            <div class="slds-text-heading_small slds-m-bottom_small">Affected Compliance Gaps</div>
+                            <template for:each={impactAnalysis.affectedGaps} for:item="gap">
+                                <div key={gap.gapId} class="slds-box slds-box_x-small slds-m-bottom_x-small">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <div class="slds-col slds-grow">
+                                            <strong>{gap.gapName}</strong>
+                                            <span class="slds-text-body_small slds-text-color_weak slds-m-left_x-small">
+                                                {gap.framework}
+                                            </span>
+                                        </div>
+                                        <div class="slds-col slds-shrink">
+                                            <lightning-badge label={gap.severity}></lightning-badge>
+                                            <lightning-badge label={gap.status} class="slds-m-left_x-small"></lightning-badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={closeImpactPanel}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
