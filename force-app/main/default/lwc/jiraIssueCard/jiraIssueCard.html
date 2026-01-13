@@ -1,0 +1,210 @@
+<template>
+  <lightning-card title="Jira Issue" icon-name="custom:custom53">
+    <!-- Loading Spinner -->
+    <template lwc:if={isLoading}>
+      <div class="slds-is-relative slds-p-around_medium">
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+      </div>
+    </template>
+
+    <!-- No Issue Linked -->
+    <template lwc:if={noIssueLinked}>
+      <div class="slds-p-around_medium slds-text-align_center">
+        <lightning-icon
+          icon-name="utility:link"
+          alternative-text="No link"
+          size="large"
+          class="slds-m-bottom_small"
+        ></lightning-icon>
+        <p class="slds-text-body_regular slds-text-color_weak">No Jira issue linked to this gap.</p>
+        <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+          Click "Create Jira Issue" to create one.
+        </p>
+      </div>
+    </template>
+
+    <!-- Issue Details -->
+    <template lwc:if={hasIssue}>
+      <div class="slds-p-around_medium">
+        <!-- Issue Key and Status -->
+        <div class="slds-grid slds-wrap slds-gutters_small">
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Issue Key</div>
+            <a href={issue.url} target="_blank" class="slds-text-link">
+              <strong>{jiraKey}</strong>
+              <lightning-icon
+                icon-name="utility:new_window"
+                alternative-text="Open"
+                size="xx-small"
+                class="slds-m-left_xx-small"
+              ></lightning-icon>
+            </a>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-text-align_right">
+            <span class={statusClass}>{issue.status}</span>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <template lwc:if={issue.summary}>
+          <div class="slds-m-top_small">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Summary</div>
+            <p class="slds-text-body_regular">{issue.summary}</p>
+          </div>
+        </template>
+
+        <!-- Details Grid -->
+        <div class="slds-grid slds-wrap slds-gutters_small slds-m-top_small">
+          <!-- Priority -->
+          <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Priority</div>
+            <lightning-icon icon-name={priorityIcon} size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+            <span>{issue.priority}</span>
+          </div>
+
+          <!-- Assignee -->
+          <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Assignee</div>
+            <template lwc:if={issue.assignee}>
+              <lightning-icon
+                icon-name="standard:user"
+                size="x-small"
+                class="slds-m-right_xx-small"
+              ></lightning-icon>
+              <span>{issue.assignee}</span>
+            </template>
+            <template lwc:else>
+              <span class="slds-text-color_weak">Unassigned</span>
+            </template>
+          </div>
+
+          <!-- Created -->
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Created</div>
+            <span>{formattedCreatedDate}</span>
+          </div>
+
+          <!-- Updated -->
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-text-title_caps slds-m-bottom_xx-small">Updated</div>
+            <span>{formattedUpdatedDate}</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="slds-m-top_medium">
+          <lightning-button-group>
+            <lightning-button label="Refresh" icon-name="utility:refresh" onclick={handleRefresh}></lightning-button>
+            <lightning-button label="Sync" icon-name="utility:sync" onclick={handleSync}></lightning-button>
+            <lightning-button
+              label="Add Comment"
+              icon-name="utility:comments"
+              onclick={handleOpenCommentModal}
+            ></lightning-button>
+            <lightning-button
+              label="Transition"
+              icon-name="utility:forward"
+              onclick={handleOpenTransitionModal}
+            ></lightning-button>
+          </lightning-button-group>
+        </div>
+      </div>
+    </template>
+
+    <!-- Error State -->
+    <template lwc:if={error}>
+      <div class="slds-p-around_medium">
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+          <span class="slds-assistive-text">Error</span>
+          <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small"></lightning-icon>
+          <span>{error}</span>
+        </div>
+      </div>
+    </template>
+
+    <!-- Card Actions -->
+    <div slot="actions">
+      <lightning-button
+        label="Open in Jira"
+        icon-name="utility:new_window"
+        onclick={handleOpenInJira}
+        disabled={noIssueLinked}
+      ></lightning-button>
+    </div>
+  </lightning-card>
+
+  <!-- Comment Modal -->
+  <template lwc:if={showCommentModal}>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            title="Close"
+            onclick={handleCloseCommentModal}
+          >
+            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+          </button>
+          <h2 class="slds-modal__title slds-hyphenate">Add Comment to {jiraKey}</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <lightning-textarea
+            label="Comment"
+            value={commentText}
+            onchange={handleCommentChange}
+            placeholder="Enter your comment..."
+            max-length="10000"
+          ></lightning-textarea>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={handleCloseCommentModal}></lightning-button>
+          <lightning-button
+            label="Add Comment"
+            variant="brand"
+            onclick={handleSubmitComment}
+            disabled={isLoading}
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!-- Transition Modal -->
+  <template lwc:if={showTransitionModal}>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            title="Close"
+            onclick={handleCloseTransitionModal}
+          >
+            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+          </button>
+          <h2 class="slds-modal__title slds-hyphenate">Transition {jiraKey}</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <p class="slds-m-bottom_small">Current Status: <strong>{issue.status}</strong></p>
+          <lightning-combobox
+            label="Transition To"
+            placeholder="Select a transition"
+            options={transitionOptions}
+            value={selectedTransition}
+            onchange={handleTransitionChange}
+          ></lightning-combobox>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={handleCloseTransitionModal}></lightning-button>
+          <lightning-button
+            label="Transition"
+            variant="brand"
+            onclick={handleSubmitTransition}
+            disabled={isLoading}
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

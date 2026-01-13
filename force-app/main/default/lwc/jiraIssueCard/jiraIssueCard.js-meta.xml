@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Jira Issue Card</masterLabel>
+    <description>Displays linked Jira issue details with sync and action capabilities</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Compliance_Gap__c</object>
+            </objects>
+            <property name="jiraKey" type="String" label="Jira Issue Key" description="The Jira issue key (e.g., COMPLIANCE-123)" />
+            <property name="jiraUrl" type="String" label="Jira Issue URL" description="Direct URL to the Jira issue" />
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage">
+            <property name="jiraKey" type="String" label="Jira Issue Key" description="The Jira issue key" />
+            <property name="jiraUrl" type="String" label="Jira Issue URL" description="Direct URL to the Jira issue" />
+        </targetConfig>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="jiraKey" type="String" label="Jira Issue Key" role="inputOnly" />
+            <property name="jiraUrl" type="String" label="Jira Issue URL" role="inputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

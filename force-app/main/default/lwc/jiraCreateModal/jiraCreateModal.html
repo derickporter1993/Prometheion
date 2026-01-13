@@ -1,0 +1,103 @@
+<template>
+  <template lwc:if={isOpen}>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true">
+      <div class="slds-modal__container">
+        <!-- Header -->
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            title="Close"
+            onclick={handleClose}
+          >
+            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+          </button>
+          <h2 class="slds-modal__title slds-hyphenate">
+            <lightning-icon
+              icon-name="custom:custom53"
+              size="small"
+              class="slds-m-right_x-small"
+            ></lightning-icon>
+            Create Jira Issue
+          </h2>
+        </header>
+
+        <!-- Content -->
+        <div class="slds-modal__content slds-p-around_medium">
+          <!-- Loading -->
+          <template lwc:if={isLoading}>
+            <div class="slds-is-relative" style="min-height: 100px">
+              <lightning-spinner alternative-text="Creating issue..." size="medium"></lightning-spinner>
+            </div>
+          </template>
+
+          <template lwc:else>
+            <!-- Not Configured Warning -->
+            <template lwc:if={!isConfigured}>
+              <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Warning</span>
+                <lightning-icon
+                  icon-name="utility:warning"
+                  alternative-text="Warning"
+                  size="small"
+                  class="slds-m-right_x-small"
+                ></lightning-icon>
+                <span>
+                  Jira integration is not configured. Please configure Jira settings in Setup before creating issues.
+                </span>
+              </div>
+            </template>
+
+            <!-- Error Display -->
+            <template lwc:if={error}>
+              <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Error</span>
+                <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small"></lightning-icon>
+                <span>{error}</span>
+              </div>
+            </template>
+
+            <!-- Form -->
+            <div class="slds-form">
+              <p class="slds-text-body_regular slds-m-bottom_medium">
+                This will create a new Jira issue linked to this compliance gap. The issue will include:
+              </p>
+
+              <ul class="slds-list_dotted slds-m-bottom_medium">
+                <li>Gap description and details</li>
+                <li>Framework and severity information</li>
+                <li>Remediation plan (if available)</li>
+                <li>Link back to this Salesforce record</li>
+              </ul>
+
+              <lightning-combobox
+                name="priority"
+                label="Priority (Optional)"
+                placeholder="Use default priority from settings"
+                options={priorityOptions}
+                value={selectedPriority}
+                onchange={handlePriorityChange}
+              ></lightning-combobox>
+
+              <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+                Leave blank to use the default priority from Jira settings, or select to override.
+              </p>
+            </div>
+          </template>
+        </div>
+
+        <!-- Footer -->
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={handleClose}></lightning-button>
+          <lightning-button
+            label="Create Issue"
+            variant="brand"
+            onclick={handleCreate}
+            disabled={isCreateDisabled}
+            icon-name="utility:add"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>
