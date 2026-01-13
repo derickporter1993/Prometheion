@@ -408,90 +408,57 @@ public with sharing class PrometheionMatrixController {
      * Transform aggregate results to matrix format
      */
     private static MatrixResult transformToMatrix(List<AggregateResult> results, MatrixConfiguration cfg) {
-        // Build matrix structure
-        Map<String, Map<String, Decimal>> matrix = new Map<String, Map<String, Decimal>>();
-        Set<String> allColumns = new Set<String>();
-
-        Decimal total = 0;
-        Decimal minValue = null;
-        Decimal maxValue = null;
-
+        List<MatrixDataPoint> dataPoints = new List<MatrixDataPoint>();
         for (AggregateResult ar : results) {
-            String rowKey = String.valueOf(ar.get('rowDim'));
-            String colKey = String.valueOf(ar.get('colDim'));
-            Decimal value = ar.get('metricValue') != null ?
-                (Decimal)ar.get('metricValue') : 0;
-
-            if (rowKey == null) rowKey = '(blank)';
-            if (colKey == null) colKey = '(blank)';
-
-            if (!matrix.containsKey(rowKey)) {
-                matrix.put(rowKey, new Map<String, Decimal>());
-            }
-            matrix.get(rowKey).put(colKey, value);
-            allColumns.add(colKey);
-
-            total += value;
-            if (minValue == null || value < minValue) minValue = value;
-            if (maxValue == null || value > maxValue) maxValue = value;
+            dataPoints.add(new MatrixDataPoint(
+                String.valueOf(ar.get('rowDim')),
+                String.valueOf(ar.get('colDim')),
+                ar.get('metricValue') != null ? (Decimal)ar.get('metricValue') : 0
+            ));
         }
-
-        // Calculate benchmarks (column averages)
-        Map<String, Decimal> benchmarks = calculateBenchmarks(matrix, allColumns);
-
-        // Calculate row totals
-        Map<String, Decimal> rowTotals = calculateRowTotals(matrix);
-
-        // Build result
-        MatrixResult result = new MatrixResult();
-        result.matrix = matrix;
-        result.columns = new List<String>(allColumns);
-        result.columns.sort();
-        result.rows = new List<String>(matrix.keySet());
-        result.rows.sort();
-        result.benchmarks = benchmarks;
-        result.rowTotals = rowTotals;
-        result.grandTotal = total;
-        result.minValue = minValue;
-        result.maxValue = maxValue;
-        result.recordCount = results.size();
-
-        return result;
+        return buildMatrixResult(dataPoints);
     }
 
     /**
      * Transform summary records to matrix format
      */
     private static MatrixResult transformSummaryToMatrix(List<SObject> summaries, MatrixConfiguration cfg) {
+        List<MatrixDataPoint> dataPoints = new List<MatrixDataPoint>();
+        for (SObject s : summaries) {
+            Decimal value = (Decimal)s.get('Metric_Value__c');
+            dataPoints.add(new MatrixDataPoint(
+                String.valueOf(s.get('Row_Dimension__c')),
+                String.valueOf(s.get('Column_Dimension__c')),
+                value != null ? value : 0
+            ));
+        }
+        return buildMatrixResult(dataPoints);
+    }
+
+    /**
+     * Build matrix result from data points (shared logic)
+     */
+    private static MatrixResult buildMatrixResult(List<MatrixDataPoint> dataPoints) {
         Map<String, Map<String, Decimal>> matrix = new Map<String, Map<String, Decimal>>();
         Set<String> allColumns = new Set<String>();
-
         Decimal total = 0;
         Decimal minValue = null;
         Decimal maxValue = null;
 
-        for (SObject s : summaries) {
-            String rowKey = String.valueOf(s.get('Row_Dimension__c'));
-            String colKey = String.valueOf(s.get('Column_Dimension__c'));
-            Decimal value = (Decimal)s.get('Metric_Value__c');
-
-            if (rowKey == null) rowKey = '(blank)';
-            if (colKey == null) colKey = '(blank)';
-            if (value == null) value = 0;
+        for (MatrixDataPoint dp : dataPoints) {
+            String rowKey = dp.rowKey != null ? dp.rowKey : '(blank)';
+            String colKey = dp.colKey != null ? dp.colKey : '(blank)';
 
             if (!matrix.containsKey(rowKey)) {
                 matrix.put(rowKey, new Map<String, Decimal>());
             }
-            matrix.get(rowKey).put(colKey, value);
+            matrix.get(rowKey).put(colKey, dp.value);
             allColumns.add(colKey);
 
-            total += value;
-            if (minValue == null || value < minValue) minValue = value;
-            if (maxValue == null || value > maxValue) maxValue = value;
+            total += dp.value;
+            if (minValue == null || dp.value < minValue) minValue = dp.value;
+            if (maxValue == null || dp.value > maxValue) maxValue = dp.value;
         }
-
-        Map<String, Decimal> benchmarks = calculateBenchmarks(matrix, allColumns);
-        Map<String, Decimal> rowTotals = calculateRowTotals(matrix);
 
         MatrixResult result = new MatrixResult();
         result.matrix = matrix;
@@ -499,12 +466,12 @@ public with sharing class PrometheionMatrixController {
         result.columns.sort();
         result.rows = new List<String>(matrix.keySet());
         result.rows.sort();
-        result.benchmarks = benchmarks;
-        result.rowTotals = rowTotals;
+        result.benchmarks = calculateBenchmarks(matrix, allColumns);
+        result.rowTotals = calculateRowTotals(matrix);
         result.grandTotal = total;
         result.minValue = minValue;
         result.maxValue = maxValue;
-        result.recordCount = summaries.size();
+        result.recordCount = dataPoints.size();
 
         return result;
     }
@@ -599,5 +566,20 @@ public with sharing class PrometheionMatrixController {
         @AuraEnabled public String apiName;
         @AuraEnabled public String label;
         @AuraEnabled public String fieldType;
+    }
+
+    /**
+     * Internal data point for matrix transformation (reduces duplication)
+     */
+    private class MatrixDataPoint {
+        public String rowKey;
+        public String colKey;
+        public Decimal value;
+
+        public MatrixDataPoint(String rowKey, String colKey, Decimal value) {
+            this.rowKey = rowKey;
+            this.colKey = colKey;
+            this.value = value;
+        }
     }
 }
