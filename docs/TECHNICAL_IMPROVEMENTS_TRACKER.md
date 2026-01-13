@@ -1,6 +1,6 @@
 # Technical Improvements Tracker
 
-**Last Updated**: 2026-01-09  
+**Last Updated**: 2026-01-12
 **Purpose**: Track technical debt and improvements needed for AppExchange submission and product maturity
 
 This document tracks all technical improvements needed across the Prometheion codebase, organized by priority and status.
@@ -16,15 +16,15 @@ This document tracks all technical improvements needed across the Prometheion co
 
 ---
 
-## P1 - Blocking for AppExchange (12 items)
+## P1 - Blocking for AppExchange (7 items)
 
 ### Input Validation
 
-| Item | Class/Method                | Status     | Notes                                                               |
-| ---- | --------------------------- | ---------- | ------------------------------------------------------------------- |
-| 1.1  | `PrometheionGraphIndexer`   | ⏳ Pending | Add validation for `entityType`, `entityId`, `framework` parameters |
-| 1.2  | `PerformanceAlertPublisher` | ⏳ Pending | Add validation for `metric`, `value`, `threshold` parameters        |
-| 1.3  | `FlowExecutionLogger`       | ⏳ Pending | Add validation for `flowName`, `status` parameters                  |
+| Item | Class/Method                | Status      | Notes                                                               |
+| ---- | --------------------------- | ----------- | ------------------------------------------------------------------- |
+| 1.1  | `PrometheionGraphIndexer`   | ✅ Complete | Validation added lines 5-18 (entityType, entityId, framework)       |
+| 1.2  | `PerformanceAlertPublisher` | ✅ Complete | Validation added lines 22-31 (metric, value, threshold)             |
+| 1.3  | `FlowExecutionLogger`       | ✅ Complete | CRUD/FLS validation lines 13-19; params marked @required            |
 
 **Implementation Pattern**:
 
@@ -41,12 +41,12 @@ if (!SUPPORTED_FRAMEWORKS.contains(framework)) {
 
 ### USER_MODE Enforcement
 
-| Item | Class                           | Query Location | Status     | Notes                         |
-| ---- | ------------------------------- | -------------- | ---------- | ----------------------------- |
-| 2.1  | `PrometheionComplianceScorer`   | Line ~45       | ⏳ Pending | Add `WITH USER_MODE` to query |
-| 2.2  | `PrometheionGraphIndexer`       | Line ~120      | ⏳ Pending | Add `WITH USER_MODE` to query |
-| 2.3  | `EvidenceCollectionService`     | Line ~78       | ⏳ Pending | Add `WITH USER_MODE` to query |
-| 2.4  | `ComplianceDashboardController` | Line ~95       | ⏳ Pending | Add `WITH USER_MODE` to query |
+| Item | Class                           | Query Location | Status      | Notes                                                        |
+| ---- | ------------------------------- | -------------- | ----------- | ------------------------------------------------------------ |
+| 2.1  | `PrometheionComplianceScorer`   | Multiple       | ✅ Complete | WITH USER_MODE at lines 170, 181, 189, 257, 270, 311, 475    |
+| 2.2  | `PrometheionGraphIndexer`       | Lines 79, 100  | ✅ Complete | WITH USER_MODE on PermissionSet and FlowDefinitionView       |
+| 2.3  | `EvidenceCollectionService`     | Line 123       | ✅ Complete | WITH SECURITY_ENFORCED on PermissionSet query                |
+| 2.4  | `ComplianceDashboardController` | Lines 49,58,88,97 | ✅ Complete | WITH SECURITY_ENFORCED on Gap and Evidence queries        |
 
 **Implementation Pattern**:
 
@@ -96,10 +96,10 @@ static void testBulkProcessing() {
 
 ### Framework Validation
 
-| Item | Description                                     | Status     | Notes                       |
-| ---- | ----------------------------------------------- | ---------- | --------------------------- |
-| 4.1  | Create `SUPPORTED_FRAMEWORKS` constant          | ⏳ Pending | Centralize framework list   |
-| 4.2  | Add framework validation to all service classes | ⏳ Pending | Use constant for validation |
+| Item | Description                                     | Status      | Notes                                         |
+| ---- | ----------------------------------------------- | ----------- | --------------------------------------------- |
+| 4.1  | Create `SUPPORTED_FRAMEWORKS` constant          | ✅ Complete | PrometheionConstants.isValidFramework() exists |
+| 4.2  | Add framework validation to all service classes | ⏳ Pending  | Use constant for validation                   |
 
 **Implementation Pattern**:
 
@@ -120,6 +120,18 @@ public class PrometheionComplianceScorer {
     }
 }
 ```
+
+---
+
+### Trigger Recursion Guards
+
+| Item | Trigger                            | Status     | Notes                                              |
+| ---- | ---------------------------------- | ---------- | -------------------------------------------------- |
+| 5.1  | `PerformanceAlertEventTrigger`     | ⏳ Pending | Add TriggerRecursionGuard; performs DML insert     |
+| 5.2  | `PrometheionPCIAccessAlertTrigger` | ⏳ Pending | Add TriggerRecursionGuard; calls handler methods   |
+| 5.3  | `PrometheionEventCaptureTrigger`   | ⏳ Pending | Add TriggerRecursionGuard; delegates to processor  |
+
+**Note**: `PrometheionAlertTrigger` and `PrometheionConsentWithdrawalTrigger` already have guards
 
 ---
 
@@ -356,17 +368,17 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 | Priority  | Total Items | Completed | In Progress | Pending | % Complete |
 | --------- | ----------- | --------- | ----------- | ------- | ---------- |
-| P1        | 12          | 0         | 0           | 12      | 0%         |
+| P1        | 12          | 8         | 0           | 4       | 66.7%      |
 | P2        | 16          | 2         | 0           | 14      | 12.5%      |
 | P3        | 15          | 0         | 0           | 15      | 0%         |
 | P4        | 14          | 6         | 0           | 8       | 42.9%      |
-| **Total** | **57**      | **8**     | **0**       | **49**  | **14.0%**  |
+| **Total** | **57**      | **16**    | **0**       | **41**  | **28.1%**  |
 
 ### AppExchange Readiness
 
-**Blocking Items (P1)**: 12 items remaining  
-**Estimated Effort**: 4-6 weeks  
-**Target Completion**: Q2 2025 (before v1.5 release)
+**Blocking Items (P1)**: 4 items remaining (3 trigger guards + 1 framework validation)
+**Estimated Effort**: 1-2 weeks
+**Target Completion**: Q1 2025
 
 ---
 
@@ -374,18 +386,16 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 ### Immediate Actions (This Week)
 
-1. **Input Validation** (Items 1.1-1.3)
-   - Add validation to `PrometheionGraphIndexer`
-   - Add validation to `PerformanceAlertPublisher`
-   - Add validation to `FlowExecutionLogger`
+1. **Trigger Recursion Guards** (Items 5.1-5.3) - 3 triggers need guards
+   - Add `TriggerRecursionGuard` to `PerformanceAlertEventTrigger`
+   - Add `TriggerRecursionGuard` to `PrometheionPCIAccessAlertTrigger`
+   - Add `TriggerRecursionGuard` to `PrometheionEventCaptureTrigger`
 
-2. **USER_MODE Enforcement** (Items 2.1-2.4)
-   - Add `WITH USER_MODE` to 4 identified queries
-   - Test with different user permission levels
+2. **Framework Validation** (Item 4.2)
+   - Add validation to remaining service classes using `PrometheionConstants.isValidFramework()`
 
-3. **Framework Validation** (Item 4.1-4.2)
-   - Create `SUPPORTED_FRAMEWORKS` constant
-   - Add validation to all service classes
+~~3. **Input Validation** (Items 1.1-1.3)~~ ✅ COMPLETE
+~~4. **USER_MODE Enforcement** (Items 2.1-2.4)~~ ✅ COMPLETE
 
 ### Short-term Actions (This Month)
 
@@ -427,4 +437,4 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 _This tracker is a living document and should be updated as work progresses._
 
-**Last Updated**: 2026-01-09
+**Last Updated**: 2026-01-12
