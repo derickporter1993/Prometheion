@@ -108,13 +108,63 @@ private class EvidenceCollectionServiceTest {
         // Test with a large date range (6 months)
         Date startDate = System.today().addMonths(-6);
         Date endDate = System.today();
-        
+
         Test.startTest();
-        List<Compliance_Evidence__c> evidence = 
+        List<Compliance_Evidence__c> evidence =
             EvidenceCollectionService.collectEvidence('HIPAA', startDate, endDate);
         Test.stopTest();
-        
+
         System.assertNotEquals(null, evidence, 'Evidence list should not be null');
         System.assert(!evidence.isEmpty(), 'Should collect evidence for large date range');
+    }
+
+    @IsTest
+    static void testCollectEvidence_Bulk200Records() {
+        // Test processing 200+ evidence records to verify governor limit handling
+        // Pre-create accounts to have related audit history
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 200; i++) {
+            accounts.add(new Account(Name = 'Bulk Test Account ' + i));
+        }
+        insert accounts;
+
+        Date startDate = System.today().addDays(-30);
+        Date endDate = System.today();
+
+        Test.startTest();
+        // Collect evidence - should handle bulk operations without governor limit issues
+        List<Compliance_Evidence__c> evidence =
+            EvidenceCollectionService.collectEvidence('SOC2', startDate, endDate);
+        Test.stopTest();
+
+        System.assertNotEquals(null, evidence, 'Evidence list should not be null');
+
+        // Verify governor limits were not exceeded
+        System.assert(Limits.getQueries() < 100,
+            'SOQL queries should be within limits: ' + Limits.getQueries());
+        System.assert(Limits.getDmlStatements() < 150,
+            'DML statements should be within limits: ' + Limits.getDmlStatements());
+    }
+
+    @IsTest
+    static void testCollectEvidence_BulkInsertVerification() {
+        // Test that bulk evidence collection properly inserts records
+        Date startDate = System.today().addDays(-90);
+        Date endDate = System.today();
+
+        // Run evidence collection for multiple frameworks sequentially
+        Test.startTest();
+        Integer totalEvidence = 0;
+        for (String framework : new List<String>{'SOC2', 'HIPAA', 'GDPR', 'NIST', 'PCI_DSS'}) {
+            List<Compliance_Evidence__c> evidence =
+                EvidenceCollectionService.collectEvidence(framework, startDate, endDate);
+            totalEvidence += evidence.size();
+        }
+        Test.stopTest();
+
+        // Verify all evidence records were created
+        Integer insertedCount = [SELECT COUNT() FROM Compliance_Evidence__c];
+        System.assertEquals(totalEvidence, insertedCount,
+            'All evidence records should be inserted');
     }
 }

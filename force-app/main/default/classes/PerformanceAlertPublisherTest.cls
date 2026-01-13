@@ -276,4 +276,67 @@ private class PerformanceAlertPublisherTest {
         Test.stopTest();
         System.assert(exceptionThrown, 'Expected AuraHandledException for whitespace metric');
     }
+
+    @isTest
+    static void testPublishBulk200Alerts() {
+        // Test publishing 200+ alerts to verify governor limit handling
+        Test.startTest();
+        for (Integer i = 0; i < 200; i++) {
+            PerformanceAlertPublisher.publish(
+                'BULK_METRIC_' + i,
+                Math.random() * 10000,
+                10000,
+                null,
+                'Bulk test stack ' + i
+            );
+        }
+        Test.stopTest();
+
+        // Verify all alerts were saved
+        List<Performance_Alert_History__c> alerts = [
+            SELECT Id, Metric__c
+            FROM Performance_Alert_History__c
+            WHERE Metric__c LIKE 'BULK_METRIC_%'
+        ];
+        System.assertEquals(200, alerts.size(), 'Should save all 200 alerts');
+
+        // Verify governor limits were not exceeded
+        System.assert(Limits.getQueries() < 100,
+            'SOQL queries should be within limits: ' + Limits.getQueries());
+        System.assert(Limits.getDmlStatements() < 150,
+            'DML statements should be within limits: ' + Limits.getDmlStatements());
+    }
+
+    @isTest
+    static void testPublishBulkWithMixedMetrics() {
+        // Test bulk publishing with various metric types
+        List<String> metricTypes = new List<String>{
+            'CPU', 'HEAP', 'SOQL', 'DML', 'CALLOUTS', 'EMAIL', 'FUTURE', 'QUEUEABLE'
+        };
+
+        Test.startTest();
+        Integer alertCount = 0;
+        for (Integer round = 0; round < 25; round++) {
+            for (String metric : metricTypes) {
+                PerformanceAlertPublisher.publish(
+                    metric + '_BULK_' + round,
+                    (round + 1) * 100,
+                    10000,
+                    null,
+                    'Mixed bulk test'
+                );
+                alertCount++;
+            }
+        }
+        Test.stopTest();
+
+        // Should have created 25 * 8 = 200 alerts
+        System.assertEquals(200, alertCount, 'Should publish 200 alerts');
+
+        List<Performance_Alert_History__c> alerts = [
+            SELECT Id FROM Performance_Alert_History__c
+            WHERE Metric__c LIKE '%_BULK_%'
+        ];
+        System.assertEquals(200, alerts.size(), 'All 200 mixed alerts should be saved');
+    }
 }

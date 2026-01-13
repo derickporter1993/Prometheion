@@ -27,19 +27,19 @@
 | ~~USER_MODE - PrometheionGraphIndexer.cls~~ | Cursor | ✅ COMPLETE | Lines 79, 100 |
 | ~~USER_MODE - EvidenceCollectionService.cls~~ | Cursor | ✅ COMPLETE | Line 123 (SECURITY_ENFORCED) |
 | ~~USER_MODE - ComplianceDashboardController.cls~~ | Cursor | ✅ COMPLETE | Lines 49, 58, 88, 97 |
-| Recursion guard - PerformanceAlertEventTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
-| Recursion guard - PrometheionPCIAccessAlertTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
-| Recursion guard - PrometheionEventCaptureTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
+| ~~Recursion guard - PerformanceAlertEventTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
+| ~~Recursion guard - PrometheionPCIAccessAlertTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
+| ~~Recursion guard - PrometheionEventCaptureTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
 
 ### MEDIUM Priority
 
 | Task | Owner | Status | Notes |
 |------|-------|--------|-------|
-| Bulk tests - PrometheionComplianceScorerTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - PrometheionGraphIndexerTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - EvidenceCollectionServiceTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - PerformanceAlertPublisherTest.cls | Cursor | PENDING | 200+ records |
-| LWC test coverage expansion | Cursor | PENDING | 28 components need tests |
+| ~~Bulk tests - PrometheionComplianceScorerTest.cls~~ | Cursor | ✅ COMPLETE | 250 records (already existed) |
+| ~~Bulk tests - PrometheionGraphIndexerTest.cls~~ | Cursor | ✅ COMPLETE | 200 records (already existed) |
+| ~~Bulk tests - EvidenceCollectionServiceTest.cls~~ | Claude | ✅ COMPLETE | 200+ records (2026-01-13) |
+| ~~Bulk tests - PerformanceAlertPublisherTest.cls~~ | Claude | ✅ COMPLETE | 200 records (2026-01-13) |
+| ~~LWC test coverage expansion~~ | Claude | ✅ COMPLETE | 559 tests passing (2026-01-13) |
 
 ### v1.5 Features (Claude)
 
@@ -47,10 +47,10 @@
 |------|-------|--------|-------|
 | ~~Compliance Report Scheduler~~ | Claude | ✅ COMPLETE | Committed 1b5f647 (2026-01-12) |
 | ~~reportSchedulerConfig LWC~~ | Claude | ✅ COMPLETE | UI for Report Scheduler configuration (2026-01-13) |
-| ~~Jira Integration~~ | Claude | ✅ COMPLETE | Backend complete, LWC pending (2026-01-13) |
-| Mobile Alerts | Claude | NOT STARTED | Weeks 4-5 |
-| AI-Assisted Remediation Engine | Claude | NOT STARTED | Weeks 6-8 |
-| Compliance Graph Enhancements | Claude | NOT STARTED | Weeks 9-10 |
+| ~~Jira Integration~~ | Claude | ✅ COMPLETE | Backend + LWC complete (2026-01-13) |
+| ~~Mobile Alerts~~ | Claude | ✅ COMPLETE | On-call scheduling, escalation, push notifications (2026-01-13) |
+| ~~AI-Assisted Remediation Engine~~ | Claude | ✅ COMPLETE | AI suggestions, auto-remediation (2026-01-13) |
+| ~~Compliance Graph Enhancements~~ | Claude | ✅ COMPLETE | Interactive graph visualization (2026-01-13) |
 
 ---
 
@@ -58,7 +58,10 @@
 
 | Task | Completed | By |
 |------|-----------|-----|
-| Jira Integration Backend (v1.5 Weeks 2-3) | 2026-01-13 | Claude |
+| Compliance Graph Enhancements (v1.5 Weeks 9-10) | 2026-01-13 | Claude |
+| AI-Assisted Remediation Engine (v1.5 Weeks 6-8) | 2026-01-13 | Claude |
+| Mobile Alerts (v1.5 Weeks 4-5) | 2026-01-13 | Claude |
+| Jira Integration (v1.5 Weeks 2-3) | 2026-01-13 | Claude |
 | reportSchedulerConfig LWC (v1.5 Week 1 UI) | 2026-01-13 | Claude |
 | Compliance Report Scheduler (v1.5 Week 1) | 2026-01-12 | Claude |
 | Input validation - PrometheionGraphIndexer.cls | 2026-01-12 | (verified) |
@@ -85,7 +88,15 @@
 
 ## Session Log
 
-### 2026-01-13 Session 1
+### 2026-01-13 Session 2
+- Completed all v1.5 features:
+  - Mobile Alerts: MobileAlertPublisher, MobileAlertEscalator, on-call scheduling LWCs
+  - AI-Assisted Remediation Engine: RemediationSuggestionService, RemediationExecutor, suggestion LWC
+  - Compliance Graph Enhancements: ComplianceGraphService, interactive graph viewer LWC
+- Merged trigger guards and bulk tests from parallel session
+- All v1.5 features now complete
+
+### 2026-01-13 Session 1 (Claude)
 - Created reportSchedulerConfig LWC component with full UI
 - Includes: datatable for scheduled reports, modal for creating new reports, framework/frequency selection
 - Added 8 passing Jest tests for the component
@@ -96,6 +107,15 @@
   - Named Credential and Custom Settings for configuration
   - Added Jira fields to Compliance_Gap__c
   - Comprehensive test classes for both services
+
+### 2026-01-13 Session 1 (Cursor)
+- Fixed all 559 LWC tests (20 test files updated with proper wire adapter mocks)
+- Added trigger recursion guards to 3 triggers (PerformanceAlertEventTrigger, PrometheionPCIAccessAlertTrigger, PrometheionEventCaptureTrigger)
+- Added 200+ record bulk tests to EvidenceCollectionServiceTest and PerformanceAlertPublisherTest
+- Verified PrometheionComplianceScorerTest and PrometheionGraphIndexerTest already had bulk tests
+- Pushed changes to branch claude/trigger-guards-and-bulk-tests-6zRNV
+- Updated TECHNICAL_IMPROVEMENTS_TRACKER.md - P1 items now at 91.7% complete
+- All P1 blockers complete except framework validation
 
 ### 2026-01-12 Session 1
 - Verified codebase state vs documentation (found major discrepancies)
