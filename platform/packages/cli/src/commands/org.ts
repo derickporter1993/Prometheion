@@ -44,12 +44,7 @@ async function listOrgs(options: { json?: boolean }): Promise<void> {
     } else {
       console.log();
       console.log(
-        chalk.gray(
-          "  " +
-            "ALIAS".padEnd(20) +
-            "USERNAME".padEnd(35) +
-            "STATUS".padEnd(15)
-        )
+        chalk.gray("  " + "ALIAS".padEnd(20) + "USERNAME".padEnd(35) + "STATUS".padEnd(15))
       );
       console.log(chalk.gray("  " + "─".repeat(68)));
 
@@ -93,9 +88,7 @@ async function loginOrg(options: {
   console.log();
 
   const aliasFlag = options.alias ? `--alias ${options.alias}` : "";
-  const instanceFlag = options.instanceUrl
-    ? `--instance-url ${options.instanceUrl}`
-    : "";
+  const instanceFlag = options.instanceUrl ? `--instance-url ${options.instanceUrl}` : "";
   const devhubFlag = options.devhub ? "--set-default-dev-hub" : "--set-default";
 
   const command = `sf org login web ${aliasFlag} ${instanceFlag} ${devhubFlag}`;
@@ -189,7 +182,9 @@ async function createScratchOrg(options: {
     console.log();
     console.log(chalk.bold("Next steps:"));
     console.log(`  1. Deploy code:     ${chalk.gray("prometheion deploy -o " + alias)}`);
-    console.log(`  2. Assign permset:  ${chalk.gray(`sf org assign permset -n Prometheion_Admin -o ${alias}`)}`);
+    console.log(
+      `  2. Assign permset:  ${chalk.gray(`sf org assign permset -n Prometheion_Admin -o ${alias}`)}`
+    );
     console.log(`  3. Open org:        ${chalk.gray("prometheion org open -o " + alias)}`);
     console.log();
   } catch (error) {
@@ -206,10 +201,7 @@ async function createScratchOrg(options: {
   }
 }
 
-async function deleteOrg(options: {
-  targetOrg: string;
-  noPrompt?: boolean;
-}): Promise<void> {
+async function deleteOrg(options: { targetOrg: string; noPrompt?: boolean }): Promise<void> {
   if (!options.targetOrg) {
     console.error(chalk.red("Error: --target-org is required"));
     process.exit(1);

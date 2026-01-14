@@ -56,7 +56,8 @@ export default class DeploymentMonitorDashboard extends LightningElement {
     } catch (error) {
       this.isLoading = false;
       this.hasError = true;
-      this.errorMessage = error?.body?.message || error?.message || "Failed to load deployment data";
+      this.errorMessage =
+        error?.body?.message || error?.message || "Failed to load deployment data";
       this.rows = [];
     }
   }

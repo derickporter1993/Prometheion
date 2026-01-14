@@ -2,12 +2,15 @@ const { jestConfig } = require("@salesforce/sfdx-lwc-jest/config");
 
 module.exports = {
   ...jestConfig,
-  modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: ["<rootDir>/platform/"],
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
+    "<rootDir>/platform/",
     "<rootDir>/Sentinel-main/",
     "<rootDir>/force-app/main/default/lwc/__tests__/setupTests.js",
     "<rootDir>/force-app/main/default/lwc/__tests__/axeTestHelper.js",
+    "<rootDir>/force-app/main/default/lwc/__tests__/a11yTestUtils.js",
+    "<rootDir>/force-app/main/default/lwc/__tests__/wireAdapterTestUtils.js",
     // Temporarily skip tests with wire adapter compatibility issues (sfdx-lwc-jest 7.x)
     // TODO: Fix wire adapter mocking to use createApexTestWireAdapter pattern
     "<rootDir>/force-app/main/default/lwc/prometheionDashboard/__tests__/",

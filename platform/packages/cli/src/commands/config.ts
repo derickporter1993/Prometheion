@@ -67,7 +67,9 @@ async function showConfig(options: { json?: boolean }): Promise<void> {
       `  Default Frameworks: ${config.defaultFrameworks?.join(", ") || chalk.gray("(not set)")}`
     );
     console.log(`  Output Format:      ${config.outputFormat || chalk.gray("text")}`);
-    console.log(`  Colors:             ${config.colors !== false ? chalk.green("enabled") : chalk.red("disabled")}`);
+    console.log(
+      `  Colors:             ${config.colors !== false ? chalk.green("enabled") : chalk.red("disabled")}`
+    );
 
     if (config.notifications) {
       console.log();
@@ -180,7 +182,5 @@ export const configCommand = new Command("config")
       .action(unsetConfig)
   )
   .addCommand(
-    new Command("reset")
-      .description("Reset configuration to defaults")
-      .action(resetConfig)
+    new Command("reset").description("Reset configuration to defaults").action(resetConfig)
   );

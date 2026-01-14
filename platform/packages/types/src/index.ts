@@ -24,20 +24,20 @@ export interface Workspace {
   updatedAt: Date;
 }
 
-export type Role = 'owner' | 'admin' | 'operator' | 'viewer';
+export type Role = "owner" | "admin" | "operator" | "viewer";
 
 export type Permission =
-  | 'orgs:connect'
-  | 'orgs:disconnect'
-  | 'orgs:health'
-  | 'sync:plan'
-  | 'sync:execute'
-  | 'sync:execute:production'
-  | 'policies:view'
-  | 'policies:edit'
-  | 'audit:view'
-  | 'approvals:request'
-  | 'approvals:decide';
+  | "orgs:connect"
+  | "orgs:disconnect"
+  | "orgs:health"
+  | "sync:plan"
+  | "sync:execute"
+  | "sync:execute:production"
+  | "policies:view"
+  | "policies:edit"
+  | "audit:view"
+  | "approvals:request"
+  | "approvals:decide";
 
 export interface WorkspaceMember {
   id: string;
@@ -53,11 +53,11 @@ export interface WorkspaceMember {
 // ORG CONNECTION
 // =============================================================================
 
-export type OrgType = 'production' | 'sandbox' | 'developer' | 'scratch';
+export type OrgType = "production" | "sandbox" | "developer" | "scratch";
 
-export type AuthMethod = 'jwt_bearer' | 'web_oauth';
+export type AuthMethod = "jwt_bearer" | "web_oauth";
 
-export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+export type HealthStatus = "healthy" | "degraded" | "unhealthy" | "unknown";
 
 export interface OrgConnection {
   id: string;
@@ -98,16 +98,16 @@ export interface OrgHealthScore {
 // =============================================================================
 
 export interface CompatibilityIssue {
-  severity: 'error' | 'warning' | 'info';
+  severity: "error" | "warning" | "info";
   category:
-    | 'record_type'
-    | 'picklist_value'
-    | 'validation_rule'
-    | 'currency'
-    | 'owner'
-    | 'person_account'
-    | 'shield_encryption'
-    | 'formula_field';
+    | "record_type"
+    | "picklist_value"
+    | "validation_rule"
+    | "currency"
+    | "owner"
+    | "person_account"
+    | "shield_encryption"
+    | "formula_field";
   sobject: string;
   field?: string;
   message: string;
@@ -118,7 +118,7 @@ export interface CompatibilityAnalysis {
   id: string;
   sourceOrgId: string;
   targetOrgId: string;
-  status: 'passed' | 'warnings' | 'failed';
+  status: "passed" | "warnings" | "failed";
   issues: CompatibilityIssue[];
   analyzedAt: Date;
 }
@@ -128,7 +128,7 @@ export interface CompatibilityAnalysis {
 // =============================================================================
 
 export interface AutomationItem {
-  type: 'trigger' | 'flow' | 'process_builder' | 'workflow_rule';
+  type: "trigger" | "flow" | "process_builder" | "workflow_rule";
   name: string;
   sobject: string;
   events: string[]; // 'before_insert', 'after_update', etc.
@@ -141,7 +141,7 @@ export interface AutomationScan {
   flows: AutomationItem[];
   processBuilders: AutomationItem[];
   workflowRules: AutomationItem[];
-  risk: 'none' | 'low' | 'medium' | 'high';
+  risk: "none" | "low" | "medium" | "high";
   recommendation: string;
 }
 
@@ -150,7 +150,7 @@ export interface AutomationScanResult {
   targetOrgId: string;
   sobjects: string[];
   scans: AutomationScan[];
-  overallRisk: 'none' | 'low' | 'medium' | 'high';
+  overallRisk: "none" | "low" | "medium" | "high";
   scannedAt: Date;
 }
 
@@ -158,60 +158,54 @@ export interface AutomationScanResult {
 // MASKING POLICIES
 // =============================================================================
 
-export type MaskingStrategyType =
-  | 'redact'
-  | 'hash'
-  | 'fake'
-  | 'fpe'
-  | 'tokenize'
-  | 'preserve';
+export type MaskingStrategyType = "redact" | "hash" | "fake" | "fpe" | "tokenize" | "preserve";
 
 export interface RedactStrategy {
-  type: 'redact';
+  type: "redact";
   replacement?: string;
 }
 
 export interface HashStrategy {
-  type: 'hash';
-  algorithm: 'sha256' | 'murmur3';
+  type: "hash";
+  algorithm: "sha256" | "murmur3";
   salt?: string;
   deterministic: boolean;
 }
 
 export interface FakeStrategy {
-  type: 'fake';
+  type: "fake";
   generator:
-    | 'name'
-    | 'first_name'
-    | 'last_name'
-    | 'email'
-    | 'phone'
-    | 'address'
-    | 'city'
-    | 'state'
-    | 'zip'
-    | 'country'
-    | 'company'
-    | 'ssn'
-    | 'date'
-    | 'number'
-    | 'text';
+    | "name"
+    | "first_name"
+    | "last_name"
+    | "email"
+    | "phone"
+    | "address"
+    | "city"
+    | "state"
+    | "zip"
+    | "country"
+    | "company"
+    | "ssn"
+    | "date"
+    | "number"
+    | "text";
   locale?: string;
 }
 
 export interface FpeStrategy {
-  type: 'fpe';
+  type: "fpe";
   keyId: string;
   preserveFormat: boolean;
 }
 
 export interface TokenizeStrategy {
-  type: 'tokenize';
+  type: "tokenize";
   vaultRef: string;
 }
 
 export interface PreserveStrategy {
-  type: 'preserve';
+  type: "preserve";
 }
 
 export type MaskingStrategy =
@@ -222,26 +216,26 @@ export type MaskingStrategy =
   | TokenizeStrategy
   | PreserveStrategy;
 
-export type FieldMatcherType = 'exact' | 'pattern' | 'data_type' | 'classification';
+export type FieldMatcherType = "exact" | "pattern" | "data_type" | "classification";
 
 export interface ExactFieldMatcher {
-  type: 'exact';
+  type: "exact";
   sobject: string;
   field: string;
 }
 
 export interface PatternFieldMatcher {
-  type: 'pattern';
+  type: "pattern";
   fieldNameRegex: string;
 }
 
 export interface DataTypeFieldMatcher {
-  type: 'data_type';
-  sfType: 'email' | 'phone' | 'url' | 'textarea' | 'string' | 'address';
+  type: "data_type";
+  sfType: "email" | "phone" | "url" | "textarea" | "string" | "address";
 }
 
 export interface ClassificationFieldMatcher {
-  type: 'classification';
+  type: "classification";
   tag: string; // e.g., 'pii', 'pci', 'hipaa'
 }
 
@@ -261,7 +255,7 @@ export interface MaskingRule {
 
 export interface RuleCondition {
   field: string;
-  operator: 'equals' | 'not_equals' | 'contains' | 'matches';
+  operator: "equals" | "not_equals" | "contains" | "matches";
   value: string;
 }
 
@@ -322,34 +316,30 @@ export interface MaskingEffectivenessScore {
 // SYNC PLANS
 // =============================================================================
 
-export type SyncMode = 'prod_subset_masked' | 'sandbox_delta' | 'synthetic_seed';
+export type SyncMode = "prod_subset_masked" | "sandbox_delta" | "synthetic_seed";
 
-export type ConflictStrategy =
-  | 'source_wins'
-  | 'target_wins'
-  | 'fail_on_conflict'
-  | 'merge_fields';
+export type ConflictStrategy = "source_wins" | "target_wins" | "fail_on_conflict" | "merge_fields";
 
 export type OwnerMappingStrategy =
-  | 'match_by_email'
-  | 'map_to_default'
-  | 'preserve_original'
-  | 'fail_if_missing';
+  | "match_by_email"
+  | "map_to_default"
+  | "preserve_original"
+  | "fail_if_missing";
 
 export interface ObjectConfig {
   sobject: string;
   filters?: string; // SOQL WHERE clause
   sampling?: {
-    type: 'all' | 'random' | 'recent';
+    type: "all" | "random" | "recent";
     limit?: number;
     orderBy?: string;
   };
   identityStrategy: {
-    type: 'external_id' | 'mapping_table';
+    type: "external_id" | "mapping_table";
     externalIdField?: string;
   };
   fieldSelection: {
-    type: 'all' | 'selected';
+    type: "all" | "selected";
     fields?: string[];
     excludeFields?: string[];
   };
@@ -361,7 +351,7 @@ export interface SyncOptions {
   conflictThreshold?: number; // Abort if conflicts exceed N
   ownerMapping: OwnerMappingStrategy;
   defaultOwnerId?: string;
-  runMode: 'live' | 'dry_run' | 'shadow';
+  runMode: "live" | "dry_run" | "shadow";
   timeWindow?: {
     startHour: number;
     endHour: number;
@@ -402,7 +392,7 @@ export interface SyncEstimate {
   estimatedDurationMinutes: {
     min: number;
     max: number;
-    confidence: 'low' | 'medium' | 'high';
+    confidence: "low" | "medium" | "high";
   };
   recordCounts: {
     sobject: string;
@@ -449,7 +439,7 @@ export interface NativeRefreshComparison {
     recordsCopied: number;
     piiExposed: number;
     targetConfigDestroyed: boolean;
-    source: 'user_input' | 'industry_average';
+    source: "user_input" | "industry_average";
   };
   ourSync: {
     estimatedDuration: string;
@@ -469,16 +459,10 @@ export interface NativeRefreshComparison {
 // JOBS
 // =============================================================================
 
-export type JobStatus =
-  | 'pending'
-  | 'queued'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+export type JobStatus = "pending" | "queued" | "running" | "completed" | "failed" | "cancelled";
 
 export interface JobProgress {
-  phase: 'extracting' | 'transforming' | 'loading' | 'finalizing';
+  phase: "extracting" | "transforming" | "loading" | "finalizing";
   currentObject?: string;
   currentPass?: number;
   totalPasses?: number;
@@ -549,13 +533,9 @@ export interface Job {
 // APPROVALS
 // =============================================================================
 
-export type ApprovalTrigger =
-  | 'prod_source'
-  | 'record_threshold'
-  | 'pii_policy_change'
-  | 'manual';
+export type ApprovalTrigger = "prod_source" | "record_threshold" | "pii_policy_change" | "manual";
 
-export type ApprovalRule = 'single_approver' | 'two_person';
+export type ApprovalRule = "single_approver" | "two_person";
 
 export interface ApprovalPolicy {
   id: string;
@@ -570,7 +550,7 @@ export interface ApprovalPolicy {
   updatedAt: Date;
 }
 
-export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'expired';
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "expired";
 
 export interface ApprovalRequest {
   id: string;
@@ -590,7 +570,7 @@ export interface ApprovalDecision {
   id: string;
   requestId: string;
   decidedBy: string;
-  decision: 'approved' | 'rejected';
+  decision: "approved" | "rejected";
   comment?: string;
   decidedAt: Date;
 }
@@ -600,26 +580,26 @@ export interface ApprovalDecision {
 // =============================================================================
 
 export type AuditAction =
-  | 'org.connected'
-  | 'org.disconnected'
-  | 'org.health_checked'
-  | 'policy.created'
-  | 'policy.updated'
-  | 'policy.deleted'
-  | 'plan.created'
-  | 'plan.updated'
-  | 'job.started'
-  | 'job.completed'
-  | 'job.failed'
-  | 'job.cancelled'
-  | 'approval.requested'
-  | 'approval.decided'
-  | 'secret.accessed'
-  | 'secret.rotated'
-  | 'member.invited'
-  | 'member.removed'
-  | 'compatibility.analyzed'
-  | 'automation.scanned';
+  | "org.connected"
+  | "org.disconnected"
+  | "org.health_checked"
+  | "policy.created"
+  | "policy.updated"
+  | "policy.deleted"
+  | "plan.created"
+  | "plan.updated"
+  | "job.started"
+  | "job.completed"
+  | "job.failed"
+  | "job.cancelled"
+  | "approval.requested"
+  | "approval.decided"
+  | "secret.accessed"
+  | "secret.rotated"
+  | "member.invited"
+  | "member.removed"
+  | "compatibility.analyzed"
+  | "automation.scanned";
 
 export interface AuditEntry {
   id: string;
@@ -651,7 +631,7 @@ export interface ComplianceTimeline {
     date: Date;
     policyId: string;
     policyName: string;
-    changeType: 'created' | 'updated' | 'deleted';
+    changeType: "created" | "updated" | "deleted";
     changedBy: string;
   }>;
   syncJobs: Array<{
@@ -679,7 +659,7 @@ export interface ApiUsageRecord {
 
 export interface ApiUsageSummary {
   orgId: string;
-  period: 'day' | 'week' | 'month';
+  period: "day" | "week" | "month";
   totalCalls: number;
   totalBulkBatches: number;
   byJob: Array<{
@@ -699,7 +679,7 @@ export interface ApiUsageSummary {
 // TEMPLATES
 // =============================================================================
 
-export type TemplateCategory = 'sales_cloud' | 'service_cloud' | 'platform' | 'custom';
+export type TemplateCategory = "sales_cloud" | "service_cloud" | "platform" | "custom";
 
 export interface SyncTemplate {
   id: string;
@@ -749,9 +729,9 @@ export interface PortfolioSummary {
   }>;
   alerts: Array<{
     orgId: string;
-    type: 'api_quota' | 'auth_expiry' | 'health_degraded';
+    type: "api_quota" | "auth_expiry" | "health_degraded";
     message: string;
-    severity: 'warning' | 'critical';
+    severity: "warning" | "critical";
   }>;
 }
 
@@ -759,15 +739,15 @@ export interface PortfolioSummary {
 // SSE EVENTS
 // =============================================================================
 
-export type JobProgressEventType = 'progress' | 'log' | 'error' | 'complete';
+export type JobProgressEventType = "progress" | "log" | "error" | "complete";
 
 export interface JobProgressEvent {
   type: JobProgressEventType;
   timestamp: Date;
   data:
     | JobProgress
-    | { level: 'info' | 'warn' | 'error'; message: string }
-    | { status: 'completed' | 'failed'; summary: JobSummary }
+    | { level: "info" | "warn" | "error"; message: string }
+    | { status: "completed" | "failed"; summary: JobSummary }
     | { code: string; message: string };
 }
 
@@ -776,18 +756,18 @@ export interface JobProgressEvent {
 // =============================================================================
 
 export interface DriftItem {
-  category: 'profile' | 'permission_set' | 'custom_setting' | 'org_setting' | 'metadata_count';
+  category: "profile" | "permission_set" | "custom_setting" | "org_setting" | "metadata_count";
   name: string;
   sourceValue: string | number | boolean;
   targetValue: string | number | boolean;
-  severity: 'info' | 'warning' | 'critical';
+  severity: "info" | "warning" | "critical";
 }
 
 export interface DriftCheckResult {
   id: string;
   sourceOrgId: string;
   targetOrgId: string;
-  status: 'no_drift' | 'minor_drift' | 'significant_drift';
+  status: "no_drift" | "minor_drift" | "significant_drift";
   driftItems: DriftItem[];
   checkedAt: Date;
 }

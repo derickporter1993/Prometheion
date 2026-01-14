@@ -166,9 +166,7 @@ describe("c-prometheion-score-listener", () => {
         capturedCallback(mockPayload);
         await flushPromises();
 
-        const toastEvent = dispatchEventSpy.mock.calls.find(
-          (call) => call[0].type === "showtoast"
-        );
+        const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
         expect(toastEvent).toBeDefined();
         expect(toastEvent[0].detail.variant).toBe("warning");
       }
@@ -203,9 +201,7 @@ describe("c-prometheion-score-listener", () => {
         capturedCallback(mockPayload);
         await flushPromises();
 
-        const toastEvent = dispatchEventSpy.mock.calls.find(
-          (call) => call[0].type === "showtoast"
-        );
+        const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
         expect(toastEvent).toBeDefined();
         expect(toastEvent[0].detail.variant).toBe("warning");
       }
@@ -241,9 +237,7 @@ describe("c-prometheion-score-listener", () => {
         await flushPromises();
 
         // Only scoreupdate event should be dispatched, no toast
-        const toastEvent = dispatchEventSpy.mock.calls.find(
-          (call) => call[0].type === "showtoast"
-        );
+        const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
         expect(toastEvent).toBeUndefined();
       }
 
@@ -268,9 +262,7 @@ describe("c-prometheion-score-listener", () => {
       await flushPromises();
 
       // Error toast should be dispatched with error variant
-      const toastEvent = dispatchEventSpy.mock.calls.find(
-        (call) => call[0].type === "showtoast"
-      );
+      const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
       expect(toastEvent).toBeDefined();
       expect(toastEvent[0].detail.variant).toBe("error");
       expect(toastEvent[0].detail.title).toBe("Subscription Error");

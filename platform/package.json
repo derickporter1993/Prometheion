@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "services/*",
     "packages/*"
   ],
   "scripts": {
@@ -13,9 +11,6 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "db:generate": "turbo run db:generate --filter=core",
-    "db:migrate": "turbo run db:migrate --filter=core",
-    "db:push": "turbo run db:push --filter=core",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },

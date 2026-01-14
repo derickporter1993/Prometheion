@@ -9,11 +9,13 @@ This file contains the exact prompts to give to Claude Code for each task in the
 ### 1. Add WITH SECURITY_ENFORCED to PrometheionQuickActionsService
 
 **Prompt for Claude Code:**
+
 ```
 Open PrometheionQuickActionsService.cls. Identify the 3 methods requiring WITH SECURITY_ENFORCED. For each SOQL query in those methods, show the exact query rewritten with WITH SECURITY_ENFORCED. Note any dynamic SOQL and propose the safest compliant approach.
 ```
 
 **Expected Output:**
+
 - List of 3 methods with SOQL queries
 - Each query rewritten with `WITH SECURITY_ENFORCED`
 - Notes on any dynamic SOQL with safe implementation patterns
@@ -24,11 +26,13 @@ Open PrometheionQuickActionsService.cls. Identify the 3 methods requiring WITH S
 ### 2. Add CRUD Checks to PrometheionQuickActionsService DML
 
 **Prompt for Claude Code:**
+
 ```
 In PrometheionQuickActionsService.cls, locate the 3 DML operations needing CRUD checks. For each, specify create/update/delete permission check(s), where to place them, and what exception/handling pattern matches this codebase. Provide the exact code blocks.
 ```
 
 **Expected Output:**
+
 - Location of each DML operation
 - Exact permission checks: `Schema.sObjectType.X.isCreateable()`, `isUpdateable()`, `isDeletable()`
 - Placement guidance (before DML)
@@ -40,11 +44,13 @@ In PrometheionQuickActionsService.cls, locate the 3 DML operations needing CRUD 
 ### 3. Add HTTP Timeout + CRUD Check to ApiUsageSnapshot
 
 **Prompt for Claude Code:**
+
 ```
 Open ApiUsageSnapshot. Identify where HttpRequest is built and add an explicit timeout (suggest a value consistent with repo norms). Identify reads/writes and add the appropriate CRUD checks. Provide exact edits and list impacted tests.
 ```
 
 **Expected Output:**
+
 - Location of HttpRequest instantiation
 - Exact `req.setTimeout(<ms>)` code with suggested timeout value
 - SOQL queries needing `isAccessible()` checks
@@ -57,11 +63,13 @@ Open ApiUsageSnapshot. Identify where HttpRequest is built and add an explicit t
 ### 4. Create TriggerRecursionGuard.cls
 
 **Prompt for Claude Code:**
+
 ```
 Design TriggerRecursionGuard.cls consistent with this repo's trigger framework. Provide a minimal API (e.g., enter(key) returns boolean) and include a test-reset hook only if consistent with existing patterns. Show the full class and metadata.
 ```
 
 **Expected Output:**
+
 - Complete `TriggerRecursionGuard.cls` implementation
 - API design: `public static Boolean enter(String key)`
 - Static map to track executed contexts
@@ -75,11 +83,13 @@ Design TriggerRecursionGuard.cls consistent with this repo's trigger framework. 
 ### 5. Create 2 Missing Trigger Handlers
 
 **Prompt for Claude Code:**
+
 ```
 Scan triggers to find the two that lack handler classes (missing references or inline logic without handlers). Infer the repo's trigger-handler pattern and generate the two missing handler classes accordingly (method stubs for the events used). Provide file names and exact scaffolding.
 ```
 
 **Expected Output:**
+
 - Identification of the 2 triggers without handlers
 - Repo's trigger-handler pattern analysis
 - Complete handler class implementations with:
@@ -94,11 +104,13 @@ Scan triggers to find the two that lack handler classes (missing references or i
 ### 6. Add Recursion Guards to 5 Triggers
 
 **Prompt for Claude Code:**
+
 ```
 Identify the 5 triggers needing recursion guards. For each, specify whether the guard should be in the trigger entrypoint or in the handler entrypoint (based on repo pattern). Provide the exact guard key per trigger + event and show the precise code insertion.
 ```
 
 **Expected Output:**
+
 - List of 5 triggers requiring guards
 - For each trigger:
   - Whether to place guard in trigger or handler
@@ -114,11 +126,13 @@ Identify the 5 triggers needing recursion guards. For each, specify whether the 
 ### 7. Add aria-hidden="true" to Icons in complianceCopilot.html
 
 **Prompt for Claude Code:**
+
 ```
 In complianceCopilot.html, locate the 3 icon elements that must be aria-hidden. Confirm they're decorative (not the only meaning) and provide the exact markup edits for each.
 ```
 
 **Expected Output:**
+
 - Location of each of the 3 icons in the HTML
 - Confirmation that icons are decorative (not semantic/interactive)
 - Exact before/after markup for each icon
@@ -129,11 +143,13 @@ In complianceCopilot.html, locate the 3 icon elements that must be aria-hidden. 
 ### 8. Add Loading States to Components
 
 **Prompt for Claude Code (use per component):**
+
 ```
 For component [ComponentName], identify the async operations and propose a consistent loading pattern (isLoading state, spinner, disabling controls). Provide minimal code diffs per component and ensure isLoading is cleared in finally blocks.
 ```
 
 **Expected Output (per component):**
+
 - List of async operations in the component
 - `@track isLoading = false;` property declaration
 - Spinner HTML: `<lightning-spinner if:true={isLoading}></lightning-spinner>`
@@ -144,6 +160,7 @@ For component [ComponentName], identify the async operations and propose a consi
 - Complete try-catch-finally pattern
 
 **Components to Process (repeat prompt for each):**
+
 - Component A
 - Component B
 - Component C
@@ -154,11 +171,13 @@ For component [ComponentName], identify the async operations and propose a consi
 ### 9. Create Jest Tests for Components
 
 **Prompt for Claude Code (use per component):**
+
 ```
 For component [ComponentName], produce 3-5 Jest cases each covering: renders default state, toggles loading spinner during async, renders success state, renders error state, disables actions while loading. Include Apex mocks/wire adapters as needed. Provide full test files.
 ```
 
 **Expected Output (per component):**
+
 - Complete test file: `componentName/__tests__/componentName.test.js`
 - Test structure:
   - `describe('componentName', () => { ... })`
@@ -173,6 +192,7 @@ For component [ComponentName], produce 3-5 Jest cases each covering: renders def
 - Import statements
 
 **Components to Test (repeat prompt for each):**
+
 - Component X
 - Component Y
 
@@ -183,11 +203,13 @@ For component [ComponentName], produce 3-5 Jest cases each covering: renders def
 ### Phase 2: Add notifyOnFailure() to PrometheionGLBAAnnualNoticeBatch
 
 **Prompt for Claude Code:**
+
 ```
 Open PrometheionGLBAAnnualNoticeBatch. Determine existing error tracking/notification patterns in similar batch classes. Implement notifyOnFailure() in finish() so it triggers only when failures occurred. Provide exact code edits and list tests to update/add.
 ```
 
 **Expected Output:**
+
 - Analysis of existing batch error patterns in codebase
 - Complete `notifyOnFailure()` method implementation
 - Integration into `finish()` method
@@ -202,6 +224,7 @@ Open PrometheionGLBAAnnualNoticeBatch. Determine existing error tracking/notific
 ### Phase 3: Add Descriptions to 59 Custom Fields
 
 **Prompt for Claude Code:**
+
 ```
 Given a list of 59 field API names and intended meaning, generate consistent field Description text (1-2 sentences) and indicate which metadata files need edits. Provide a deterministic mapping output (API name → description).
 
@@ -209,6 +232,7 @@ Given a list of 59 field API names and intended meaning, generate consistent fie
 ```
 
 **Expected Output:**
+
 - Table or mapping: Field API Name → Description text
 - Format:
   ```
@@ -223,11 +247,13 @@ Given a list of 59 field API names and intended meaning, generate consistent fie
 ### Phase 3: Capture 12 AppExchange Screenshots
 
 **Prompt for Claude Code:**
+
 ```
 Create a screenshot shot-list for AppExchange: enumerate the 12 required views (setup, key UI screens, permissions, sample outputs) and provide a consistent naming convention and capture steps.
 ```
 
 **Expected Output:**
+
 - Enumerated list of 12 screenshots needed:
   1. Setup screen (describe specific view)
   2. Key UI screen 1 (describe)
@@ -292,24 +318,28 @@ Create a screenshot shot-list for AppExchange: enumerate the 12 required views (
 ## Quick Reference: Prompt Patterns
 
 ### Discovery Prompts (What exists?)
+
 ```
 "Scan [directory/file pattern] to identify [what you're looking for]"
 "Analyze existing [pattern/framework] in the codebase"
 ```
 
 ### Design Prompts (How should it work?)
+
 ```
 "Design [component] consistent with repo patterns"
 "Propose [solution] matching existing [similar feature]"
 ```
 
 ### Implementation Prompts (Show me the code)
+
 ```
 "Provide exact code blocks for [change]"
 "Show precise insertion points and diffs"
 ```
 
 ### Testing Prompts
+
 ```
 "List impacted tests and required updates"
 "Generate Jest test cases covering [scenarios]"
@@ -320,12 +350,14 @@ Create a screenshot shot-list for AppExchange: enumerate the 12 required views (
 ## Customization Needed
 
 When you have actual names, update these prompts by replacing:
+
 - `[ComponentName]` - Actual LWC component names
 - `Component A/B/C/D` - Actual component names for loading states
 - `Component X/Y` - Actual component names for Jest tests
 - The list of 59 fields - Actual field API names and intended meanings
 
 You can also add specific repo context like:
+
 - "Our trigger framework uses the TriggerHandler base class pattern"
-- "We use CustomException__c for error logging"
+- "We use CustomException\_\_c for error logging"
 - "Tests should use Test.startTest() / Test.stopTest() pattern"

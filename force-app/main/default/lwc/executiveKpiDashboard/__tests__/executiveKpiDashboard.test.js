@@ -174,11 +174,7 @@ describe("c-executive-kpi-dashboard", () => {
     it("calculates total gaps correctly", async () => {
       const mockData = {
         frameworks: [],
-        recentGaps: [
-          { Id: "gap1" },
-          { Id: "gap2" },
-          { Id: "gap3" },
-        ],
+        recentGaps: [{ Id: "gap1" }, { Id: "gap2" }, { Id: "gap3" }],
       };
 
       const element = await createComponent();

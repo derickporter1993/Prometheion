@@ -129,15 +129,21 @@ async function runLwcTests(coverage?: boolean): Promise<TestResult> {
           skipped: data.numPendingTests || 0,
           duration: Date.now() - startTime,
           failures:
-            data.testResults
-              ?.flatMap((tr: { assertionResults: Array<{ status: string; title: string; failureMessages: string[] }> }) =>
+            data.testResults?.flatMap(
+              (tr: {
+                assertionResults: Array<{
+                  status: string;
+                  title: string;
+                  failureMessages: string[];
+                }>;
+              }) =>
                 tr.assertionResults
                   .filter((ar) => ar.status === "failed")
                   .map((ar) => ({
                     name: ar.title,
                     message: ar.failureMessages?.[0] || "Test failed",
                   }))
-              ) || [],
+            ) || [],
         };
       }
     } catch {
@@ -173,11 +179,7 @@ function displayTestResult(result: TestResult): void {
 
   if (result.coverage !== undefined) {
     const coverageColor =
-      result.coverage >= 75
-        ? chalk.green
-        : result.coverage >= 50
-          ? chalk.yellow
-          : chalk.red;
+      result.coverage >= 75 ? chalk.green : result.coverage >= 50 ? chalk.yellow : chalk.red;
     console.log(`  Coverage: ${coverageColor(result.coverage + "%")}`);
   }
 
@@ -189,9 +191,7 @@ function displayTestResult(result: TestResult): void {
       console.log(chalk.gray(`      ${failure.message.substring(0, 100)}`));
     });
     if (result.failures.length > 5) {
-      console.log(
-        chalk.gray(`    ... and ${result.failures.length - 5} more failures`)
-      );
+      console.log(chalk.gray(`    ... and ${result.failures.length - 5} more failures`));
     }
   }
 }

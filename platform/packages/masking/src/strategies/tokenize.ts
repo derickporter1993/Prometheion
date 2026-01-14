@@ -1,4 +1,4 @@
-import type { TokenizeStrategy } from '@platform/types';
+import type { TokenizeStrategy } from "@platform/types";
 
 /**
  * Tokenization strategy
@@ -32,10 +32,10 @@ export function initVault(vaultRef: string): void {
  */
 export function tokenize(
   value: string | null | undefined,
-  options: Omit<TokenizeStrategy, 'type'>
+  options: Omit<TokenizeStrategy, "type">
 ): string {
   if (value === null || value === undefined) {
-    return '';
+    return "";
   }
 
   const vault = tokenVault.get(options.vaultRef);
@@ -63,10 +63,7 @@ export function tokenize(
  * Detokenize a token back to original value
  * Only available to authorized users
  */
-export function detokenize(
-  token: string,
-  options: Omit<TokenizeStrategy, 'type'>
-): string | null {
+export function detokenize(token: string, options: Omit<TokenizeStrategy, "type">): string | null {
   const reverse = reverseVault.get(options.vaultRef);
 
   if (!reverse) {
@@ -87,8 +84,8 @@ export function isToken(value: string): boolean {
  * Generate a unique token
  */
 function generateToken(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let token = 'TOK_';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let token = "TOK_";
   for (let i = 0; i < 24; i++) {
     token += chars.charAt(Math.floor(Math.random() * chars.length));
   }

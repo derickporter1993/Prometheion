@@ -60,9 +60,27 @@ describe("c-compliance-timeline", () => {
   describe("Event Sorting", () => {
     it("sorts events by date (most recent first)", async () => {
       const events = [
-        { id: "1", type: "GAP_DETECTED", date: "2025-01-01", title: "Event 1", description: "Desc 1" },
-        { id: "2", type: "EVIDENCE_COLLECTED", date: "2025-03-01", title: "Event 2", description: "Desc 2" },
-        { id: "3", type: "GAP_REMEDIATED", date: "2025-02-01", title: "Event 3", description: "Desc 3" },
+        {
+          id: "1",
+          type: "GAP_DETECTED",
+          date: "2025-01-01",
+          title: "Event 1",
+          description: "Desc 1",
+        },
+        {
+          id: "2",
+          type: "EVIDENCE_COLLECTED",
+          date: "2025-03-01",
+          title: "Event 2",
+          description: "Desc 2",
+        },
+        {
+          id: "3",
+          type: "GAP_REMEDIATED",
+          date: "2025-02-01",
+          title: "Event 3",
+          description: "Desc 3",
+        },
       ];
 
       const element = await createComponent({ events });
@@ -108,7 +126,15 @@ describe("c-compliance-timeline", () => {
   describe("Icon Assignment", () => {
     it("assigns correct icon for GAP_DETECTED", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "GAP_DETECTED", date: "2025-01-01", title: "Gap", description: "Gap detected" }],
+        events: [
+          {
+            id: "1",
+            type: "GAP_DETECTED",
+            date: "2025-01-01",
+            title: "Gap",
+            description: "Gap detected",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();
@@ -123,7 +149,15 @@ describe("c-compliance-timeline", () => {
 
     it("assigns correct icon for GAP_REMEDIATED", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "GAP_REMEDIATED", date: "2025-01-01", title: "Remediated", description: "Gap fixed" }],
+        events: [
+          {
+            id: "1",
+            type: "GAP_REMEDIATED",
+            date: "2025-01-01",
+            title: "Remediated",
+            description: "Gap fixed",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();
@@ -135,7 +169,15 @@ describe("c-compliance-timeline", () => {
 
     it("assigns correct icon for EVIDENCE_COLLECTED", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "EVIDENCE_COLLECTED", date: "2025-01-01", title: "Evidence", description: "Evidence collected" }],
+        events: [
+          {
+            id: "1",
+            type: "EVIDENCE_COLLECTED",
+            date: "2025-01-01",
+            title: "Evidence",
+            description: "Evidence collected",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();
@@ -147,7 +189,15 @@ describe("c-compliance-timeline", () => {
 
     it("assigns correct icon for ASSESSMENT_COMPLETE", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "ASSESSMENT_COMPLETE", date: "2025-01-01", title: "Complete", description: "Assessment done" }],
+        events: [
+          {
+            id: "1",
+            type: "ASSESSMENT_COMPLETE",
+            date: "2025-01-01",
+            title: "Complete",
+            description: "Assessment done",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();
@@ -159,7 +209,15 @@ describe("c-compliance-timeline", () => {
 
     it("assigns default icon for unknown event types", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "UNKNOWN_TYPE", date: "2025-01-01", title: "Unknown", description: "Unknown type" }],
+        events: [
+          {
+            id: "1",
+            type: "UNKNOWN_TYPE",
+            date: "2025-01-01",
+            title: "Unknown",
+            description: "Unknown type",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();
@@ -173,7 +231,15 @@ describe("c-compliance-timeline", () => {
   describe("State Management", () => {
     it("shows timeline when events exist", async () => {
       const element = await createComponent({
-        events: [{ id: "1", type: "GAP_DETECTED", date: "2025-01-01", title: "Event", description: "Desc" }],
+        events: [
+          {
+            id: "1",
+            type: "GAP_DETECTED",
+            date: "2025-01-01",
+            title: "Event",
+            description: "Desc",
+          },
+        ],
       });
       await Promise.resolve();
       await Promise.resolve();

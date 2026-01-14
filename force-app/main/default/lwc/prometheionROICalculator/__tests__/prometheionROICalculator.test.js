@@ -93,29 +93,19 @@ describe("c-prometheion-roi-calculator", () => {
 
       // Set up inputs via DOM events
       const industryCombo = getIndustryCombobox(element);
-      industryCombo.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "healthcare" } })
-      );
+      industryCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "healthcare" } }));
 
       const orgSizeInput = getOrgSizeInput(element);
-      orgSizeInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "500" } })
-      );
+      orgSizeInput.dispatchEvent(new CustomEvent("change", { detail: { value: "500" } }));
 
       const spendInput = getAuditSpendInput(element);
-      spendInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "150000" } })
-      );
+      spendInput.dispatchEvent(new CustomEvent("change", { detail: { value: "150000" } }));
 
       const hoursInput = getHoursInput(element);
-      hoursInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "600" } })
-      );
+      hoursInput.dispatchEvent(new CustomEvent("change", { detail: { value: "600" } }));
 
       const rateInput = getRateInput(element);
-      rateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "200" } })
-      );
+      rateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "200" } }));
       await Promise.resolve();
       await Promise.resolve();
 
@@ -133,9 +123,7 @@ describe("c-prometheion-roi-calculator", () => {
       await Promise.resolve();
 
       const industryCombo = getIndustryCombobox(element);
-      industryCombo.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "finance" } })
-      );
+      industryCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "finance" } }));
       await Promise.resolve();
       await Promise.resolve();
 
@@ -158,9 +146,7 @@ describe("c-prometheion-roi-calculator", () => {
       await Promise.resolve();
 
       const input = getOrgSizeInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "1000" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "1000" } }));
       await Promise.resolve();
 
       expect(input.value).toBe(1000);
@@ -171,9 +157,7 @@ describe("c-prometheion-roi-calculator", () => {
       await Promise.resolve();
 
       const input = getAuditSpendInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "200000" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "200000" } }));
       await Promise.resolve();
 
       expect(input.value).toBe(200000);
@@ -184,9 +168,7 @@ describe("c-prometheion-roi-calculator", () => {
       await Promise.resolve();
 
       const input = getHoursInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "800" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "800" } }));
       await Promise.resolve();
 
       expect(input.value).toBe(800);
@@ -197,9 +179,7 @@ describe("c-prometheion-roi-calculator", () => {
       await Promise.resolve();
 
       const input = getRateInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "250" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "250" } }));
       await Promise.resolve();
 
       expect(input.value).toBe(250);
@@ -227,14 +207,10 @@ describe("c-prometheion-roi-calculator", () => {
 
       // Set up inputs
       const industryCombo = getIndustryCombobox(element);
-      industryCombo.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "healthcare" } })
-      );
+      industryCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "healthcare" } }));
 
       const orgSizeInput = getOrgSizeInput(element);
-      orgSizeInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "500" } })
-      );
+      orgSizeInput.dispatchEvent(new CustomEvent("change", { detail: { value: "500" } }));
       await Promise.resolve();
       await Promise.resolve();
 
@@ -251,30 +227,24 @@ describe("c-prometheion-roi-calculator", () => {
 
       // Set up inputs to trigger calculation
       const industryCombo = getIndustryCombobox(element);
-      industryCombo.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "healthcare" } })
-      );
+      industryCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "healthcare" } }));
 
       const hoursInput = getHoursInput(element);
-      hoursInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "600" } })
-      );
+      hoursInput.dispatchEvent(new CustomEvent("change", { detail: { value: "600" } }));
 
       const rateInput = getRateInput(element);
-      rateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "200" } })
-      );
+      rateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "200" } }));
       await Promise.resolve();
       await Promise.resolve();
 
       const resultsSection = getResultsSection(element);
       if (resultsSection) {
         // Check for time savings card
-        const savingsCard = element.shadowRoot.querySelector('.result-card.savings');
+        const savingsCard = element.shadowRoot.querySelector(".result-card.savings");
         expect(savingsCard).not.toBeNull();
 
         // Check that it contains "hours" text
-        const resultValue = savingsCard?.querySelector('.result-value');
+        const resultValue = savingsCard?.querySelector(".result-value");
         expect(resultValue?.textContent).toContain("hours");
       }
     });
@@ -285,25 +255,21 @@ describe("c-prometheion-roi-calculator", () => {
 
       // Set up inputs
       const industryCombo = getIndustryCombobox(element);
-      industryCombo.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "healthcare" } })
-      );
+      industryCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "healthcare" } }));
 
       const spendInput = getAuditSpendInput(element);
-      spendInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "150000" } })
-      );
+      spendInput.dispatchEvent(new CustomEvent("change", { detail: { value: "150000" } }));
       await Promise.resolve();
       await Promise.resolve();
 
       const resultsSection = getResultsSection(element);
       if (resultsSection) {
         // Check for ROI card
-        const roiCard = element.shadowRoot.querySelector('.result-card.roi');
+        const roiCard = element.shadowRoot.querySelector(".result-card.roi");
         expect(roiCard).not.toBeNull();
 
         // Check that it contains "%" text
-        const resultValue = roiCard?.querySelector('.result-value');
+        const resultValue = roiCard?.querySelector(".result-value");
         expect(resultValue?.textContent).toContain("%");
       }
     });

@@ -30,9 +30,7 @@ async function runDeploy(options: DeployOptions): Promise<void> {
   try {
     const orgFlag = options.targetOrg ? `--target-org ${options.targetOrg}` : "";
     const validateFlag = options.validate ? "--dry-run" : "";
-    const testLevelFlag = options.testLevel
-      ? `--test-level ${options.testLevel}`
-      : "";
+    const testLevelFlag = options.testLevel ? `--test-level ${options.testLevel}` : "";
     const waitFlag = options.watch ? "--wait 30" : "--wait 10";
 
     const command = `sf project deploy start ${orgFlag} ${validateFlag} ${testLevelFlag} ${waitFlag} --json`;
@@ -58,9 +56,8 @@ async function runDeploy(options: DeployOptions): Promise<void> {
         testsPassed: data.result?.numberTestsCompleted,
         testsFailed: data.result?.numberTestErrors,
         coverage: data.result?.coverage,
-        errors: data.result?.details?.componentFailures?.map(
-          (f: { problem: string }) => f.problem
-        ) || [],
+        errors:
+          data.result?.details?.componentFailures?.map((f: { problem: string }) => f.problem) || [],
         warnings: data.warnings || [],
       };
     } catch (execError) {
@@ -97,20 +94,14 @@ async function runDeploy(options: DeployOptions): Promise<void> {
 
     console.log();
     console.log(
-      chalk.bold.cyan(
-        options.validate ? "Deployment Validation Results" : "Deployment Results"
-      )
+      chalk.bold.cyan(options.validate ? "Deployment Validation Results" : "Deployment Results")
     );
     console.log(chalk.gray("─".repeat(50)));
     console.log();
 
     if (result.success) {
       console.log(
-        chalk.green.bold(
-          options.validate
-            ? "Validation Successful"
-            : "Deployment Successful"
-        )
+        chalk.green.bold(options.validate ? "Validation Successful" : "Deployment Successful")
       );
     } else {
       console.log(chalk.red.bold("Deployment Failed"));
@@ -118,13 +109,9 @@ async function runDeploy(options: DeployOptions): Promise<void> {
 
     console.log();
     console.log(chalk.bold("Summary:"));
-    console.log(
-      `  Components Deployed: ${chalk.green(result.componentsDeployed.toString())}`
-    );
+    console.log(`  Components Deployed: ${chalk.green(result.componentsDeployed.toString())}`);
     if (result.componentsFailed > 0) {
-      console.log(
-        `  Components Failed:   ${chalk.red(result.componentsFailed.toString())}`
-      );
+      console.log(`  Components Failed:   ${chalk.red(result.componentsFailed.toString())}`);
     }
 
     if (result.testsPassed !== undefined) {
@@ -136,11 +123,7 @@ async function runDeploy(options: DeployOptions): Promise<void> {
       }
       if (result.coverage !== undefined) {
         const coverageColor =
-          result.coverage >= 75
-            ? chalk.green
-            : result.coverage >= 50
-              ? chalk.yellow
-              : chalk.red;
+          result.coverage >= 75 ? chalk.green : result.coverage >= 50 ? chalk.yellow : chalk.red;
         console.log(`  Coverage:     ${coverageColor(result.coverage + "%")}`);
       }
     }

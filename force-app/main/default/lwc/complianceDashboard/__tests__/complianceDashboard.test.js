@@ -110,12 +110,8 @@ describe("c-compliance-dashboard", () => {
           { framework: "SOC2", score: 85, status: "COMPLIANT" },
           { framework: "HIPAA", score: 72, status: "ACTION_REQUIRED" },
         ],
-        recentGaps: [
-          { Id: "gap1", Severity__c: "HIGH", Title__c: "Test Gap 1" },
-        ],
-        recentEvidence: [
-          { Id: "ev1", Evidence_Type__c: "Login", Status__c: "COLLECTED" },
-        ],
+        recentGaps: [{ Id: "gap1", Severity__c: "HIGH", Title__c: "Test Gap 1" }],
+        recentEvidence: [{ Id: "ev1", Evidence_Type__c: "Login", Status__c: "COLLECTED" }],
       };
 
       const element = await createComponent();

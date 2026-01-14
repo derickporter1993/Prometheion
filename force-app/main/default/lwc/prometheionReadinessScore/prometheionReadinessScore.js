@@ -37,7 +37,8 @@ export default class PrometheionReadinessScore extends NavigationMixin(Lightning
     } else if (error) {
       this.isLoading = false;
       this.hasError = true;
-      this.errorMessage = error?.body?.message || error?.message || "Failed to load readiness score";
+      this.errorMessage =
+        error?.body?.message || error?.message || "Failed to load readiness score";
       this.scoreStatus = "Error";
       this.showToast("Error", this.errorMessage, "error");
     } else {

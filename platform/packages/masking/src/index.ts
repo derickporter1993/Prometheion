@@ -6,14 +6,14 @@
  */
 
 // Core engine
-export { MaskingEngine, calculateEffectivenessScore } from './engine';
-export type { FieldInfo, RecordData } from './engine';
+export { MaskingEngine, calculateEffectivenessScore } from "./engine";
+export type { FieldInfo, RecordData } from "./engine";
 
 // Individual strategies
-export { redact, partialRedact } from './strategies/redact';
-export { hash, hashWithFormatHint } from './strategies/hash';
-export { fake, fakeDeterministic } from './strategies/fake';
-export { fpeEncrypt, fpeDecrypt, registerKey, generateKey } from './strategies/fpe';
+export { redact, partialRedact } from "./strategies/redact";
+export { hash, hashWithFormatHint } from "./strategies/hash";
+export { fake, fakeDeterministic } from "./strategies/fake";
+export { fpeEncrypt, fpeDecrypt, registerKey, generateKey } from "./strategies/fpe";
 export {
   tokenize,
   detokenize,
@@ -21,7 +21,7 @@ export {
   isToken,
   getVaultStats,
   clearVault,
-} from './strategies/tokenize';
+} from "./strategies/tokenize";
 
 // Re-export types
 export type {
@@ -31,58 +31,61 @@ export type {
   FieldMatcher,
   MaskingPreview,
   MaskingEffectivenessScore,
-} from '@platform/types';
+} from "@platform/types";
 
 /**
  * Built-in policy templates
  */
 export const POLICY_TEMPLATES = {
   PII_STANDARD: {
-    name: 'PII Standard',
-    description: 'Standard PII masking for common fields',
+    name: "PII Standard",
+    description: "Standard PII masking for common fields",
     rules: [
       {
-        id: 'email',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*[Ee]mail.*' },
+        id: "email",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*[Ee]mail.*" },
         strategy: {
-          type: 'fake' as const,
-          generator: 'email' as const,
+          type: "fake" as const,
+          generator: "email" as const,
         },
         priority: 1,
       },
       {
-        id: 'phone',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*[Pp]hone.*' },
+        id: "phone",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*[Pp]hone.*" },
         strategy: {
-          type: 'fake' as const,
-          generator: 'phone' as const,
+          type: "fake" as const,
+          generator: "phone" as const,
         },
         priority: 2,
       },
       {
-        id: 'name',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(First|Last|Full).*[Nn]ame.*' },
+        id: "name",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(First|Last|Full).*[Nn]ame.*" },
         strategy: {
-          type: 'fake' as const,
-          generator: 'name' as const,
+          type: "fake" as const,
+          generator: "name" as const,
         },
         priority: 3,
       },
       {
-        id: 'ssn',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(SSN|Social|TaxId).*' },
+        id: "ssn",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(SSN|Social|TaxId).*" },
         strategy: {
-          type: 'redact' as const,
-          replacement: 'XXX-XX-XXXX',
+          type: "redact" as const,
+          replacement: "XXX-XX-XXXX",
         },
         priority: 0,
       },
       {
-        id: 'address',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(Street|Address|Mailing|Billing).*' },
+        id: "address",
+        matcher: {
+          type: "pattern" as const,
+          fieldNameRegex: ".*(Street|Address|Mailing|Billing).*",
+        },
         strategy: {
-          type: 'fake' as const,
-          generator: 'address' as const,
+          type: "fake" as const,
+          generator: "address" as const,
         },
         priority: 4,
       },
@@ -90,33 +93,33 @@ export const POLICY_TEMPLATES = {
   },
 
   PCI_DSS: {
-    name: 'PCI-DSS Compliant',
-    description: 'Payment card data masking for PCI compliance',
+    name: "PCI-DSS Compliant",
+    description: "Payment card data masking for PCI compliance",
     rules: [
       {
-        id: 'card_number',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(Card|Credit|Debit).*[Nn]umber.*' },
+        id: "card_number",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(Card|Credit|Debit).*[Nn]umber.*" },
         strategy: {
-          type: 'redact' as const,
-          replacement: '**** **** **** ****',
+          type: "redact" as const,
+          replacement: "**** **** **** ****",
         },
         priority: 0,
       },
       {
-        id: 'cvv',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(CVV|CVC|Security.*Code).*' },
+        id: "cvv",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(CVV|CVC|Security.*Code).*" },
         strategy: {
-          type: 'redact' as const,
-          replacement: '***',
+          type: "redact" as const,
+          replacement: "***",
         },
         priority: 0,
       },
       {
-        id: 'expiry',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(Expir|Exp.*Date).*' },
+        id: "expiry",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(Expir|Exp.*Date).*" },
         strategy: {
-          type: 'redact' as const,
-          replacement: 'XX/XX',
+          type: "redact" as const,
+          replacement: "XX/XX",
         },
         priority: 1,
       },
@@ -124,34 +127,37 @@ export const POLICY_TEMPLATES = {
   },
 
   HIPAA: {
-    name: 'HIPAA Compliant',
-    description: 'Protected Health Information masking',
+    name: "HIPAA Compliant",
+    description: "Protected Health Information masking",
     rules: [
       {
-        id: 'mrn',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(MRN|Medical.*Record|Patient.*Id).*' },
+        id: "mrn",
+        matcher: {
+          type: "pattern" as const,
+          fieldNameRegex: ".*(MRN|Medical.*Record|Patient.*Id).*",
+        },
         strategy: {
-          type: 'hash' as const,
-          algorithm: 'sha256' as const,
+          type: "hash" as const,
+          algorithm: "sha256" as const,
           deterministic: true,
         },
         priority: 0,
       },
       {
-        id: 'dob',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(DOB|Birth.*Date|Date.*Birth).*' },
+        id: "dob",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(DOB|Birth.*Date|Date.*Birth).*" },
         strategy: {
-          type: 'fake' as const,
-          generator: 'date' as const,
+          type: "fake" as const,
+          generator: "date" as const,
         },
         priority: 1,
       },
       {
-        id: 'diagnosis',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*(Diagnosis|Condition|Disease).*' },
+        id: "diagnosis",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*(Diagnosis|Condition|Disease).*" },
         strategy: {
-          type: 'redact' as const,
-          replacement: '[REDACTED]',
+          type: "redact" as const,
+          replacement: "[REDACTED]",
         },
         priority: 2,
       },
@@ -159,25 +165,25 @@ export const POLICY_TEMPLATES = {
   },
 
   DETERMINISTIC: {
-    name: 'Deterministic Masking',
-    description: 'Same input always produces same output (for referential consistency)',
+    name: "Deterministic Masking",
+    description: "Same input always produces same output (for referential consistency)",
     rules: [
       {
-        id: 'email_deterministic',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*[Ee]mail.*' },
+        id: "email_deterministic",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*[Ee]mail.*" },
         strategy: {
-          type: 'hash' as const,
-          algorithm: 'sha256' as const,
+          type: "hash" as const,
+          algorithm: "sha256" as const,
           deterministic: true,
         },
         priority: 1,
       },
       {
-        id: 'name_deterministic',
-        matcher: { type: 'pattern' as const, fieldNameRegex: '.*[Nn]ame.*' },
+        id: "name_deterministic",
+        matcher: { type: "pattern" as const, fieldNameRegex: ".*[Nn]ame.*" },
         strategy: {
-          type: 'hash' as const,
-          algorithm: 'murmur3' as const,
+          type: "hash" as const,
+          algorithm: "murmur3" as const,
           deterministic: true,
         },
         priority: 2,

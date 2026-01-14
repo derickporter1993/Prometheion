@@ -54,7 +54,8 @@ export default class PerformanceAlertPanel extends LightningElement {
     } catch (error) {
       this.isLoading = false;
       this.hasError = true;
-      this.errorMessage = error?.body?.message || error?.message || "Failed to load performance alerts";
+      this.errorMessage =
+        error?.body?.message || error?.message || "Failed to load performance alerts";
       this.rows = [];
     }
   }

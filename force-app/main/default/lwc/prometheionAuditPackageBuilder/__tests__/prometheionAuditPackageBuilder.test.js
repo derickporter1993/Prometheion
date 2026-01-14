@@ -112,9 +112,7 @@ describe("c-prometheion-audit-package-builder", () => {
       await Promise.resolve();
 
       const combobox = getFrameworkCombobox(element);
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "HIPAA" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "HIPAA" } }));
       await Promise.resolve();
 
       // Verify the combobox value is updated in DOM
@@ -138,9 +136,7 @@ describe("c-prometheion-audit-package-builder", () => {
       await Promise.resolve();
 
       const input = getStartDateInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
       await Promise.resolve();
 
       expect(input.value).toBe("2025-01-01");
@@ -151,9 +147,7 @@ describe("c-prometheion-audit-package-builder", () => {
       await Promise.resolve();
 
       const input = getEndDateInput(element);
-      input.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      input.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
       await Promise.resolve();
 
       expect(input.value).toBe("2025-03-31");
@@ -173,14 +167,10 @@ describe("c-prometheion-audit-package-builder", () => {
       packageNameInput.dispatchEvent(new Event("change"));
 
       const startDateInput = getStartDateInput(element);
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
 
       const endDateInput = getEndDateInput(element);
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
       await Promise.resolve();
 
       // Click the generate button
@@ -235,14 +225,10 @@ describe("c-prometheion-audit-package-builder", () => {
       packageNameInput.dispatchEvent(new Event("change"));
 
       const startDateInput = getStartDateInput(element);
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
 
       const endDateInput = getEndDateInput(element);
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
       await Promise.resolve();
 
       // Click the generate button

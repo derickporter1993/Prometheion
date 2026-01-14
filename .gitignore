@@ -37,6 +37,7 @@ Thumbs.db
 coverage/
 sf/
 scanner-reports/
+.turbo/
 
 # Temporary documentation and analysis files
 FAILED_PRS_SUMMARY.md

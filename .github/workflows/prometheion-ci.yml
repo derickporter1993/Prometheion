@@ -136,9 +136,34 @@ jobs:
           test -d force-app/main/default/objects && echo "✅ Objects directory found"
           test -f sfdx-project.json && echo "✅ sfdx-project.json found"
 
+  cli-build:
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Platform Dependencies
+        working-directory: platform
+        run: npm install
+
+      - name: Build CLI
+        working-directory: platform
+        run: npm run build
+
+      - name: Verify CLI Build Output
+        run: |
+          echo "🔍 Verifying CLI build artifacts..."
+          test -f platform/packages/cli/dist/index.js && echo "✅ CLI entry point built"
+          test -f platform/packages/cli/dist/index.d.ts && echo "✅ CLI type declarations generated"
+          echo "✅ CLI build successful"
+
   build-success:
     runs-on: ubuntu-latest
-    needs: [code-quality, unit-tests, validate-metadata, security-scan]
+    needs: [code-quality, unit-tests, validate-metadata, security-scan, cli-build]
     steps:
       - name: Build Summary
         run: |

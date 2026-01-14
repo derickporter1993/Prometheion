@@ -173,9 +173,7 @@ describe("c-report-scheduler-config", () => {
     it("hides empty state when reports exist", async () => {
       const element = await createComponent(MOCK_SCHEDULED_REPORTS);
 
-      const emptyStateHeading = element.shadowRoot.querySelector(
-        ".slds-text-heading_medium"
-      );
+      const emptyStateHeading = element.shadowRoot.querySelector(".slds-text-heading_medium");
       expect(emptyStateHeading).toBeNull();
     });
 
@@ -185,9 +183,7 @@ describe("c-report-scheduler-config", () => {
       const datatable = element.shadowRoot.querySelector("lightning-datatable");
       expect(datatable).toBeNull();
 
-      const emptyStateHeading = element.shadowRoot.querySelector(
-        ".slds-text-heading_medium"
-      );
+      const emptyStateHeading = element.shadowRoot.querySelector(".slds-text-heading_medium");
       expect(emptyStateHeading).not.toBeNull();
     });
   });

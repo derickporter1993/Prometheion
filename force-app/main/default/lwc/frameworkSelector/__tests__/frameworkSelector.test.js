@@ -69,7 +69,9 @@ describe("c-framework-selector", () => {
       await flushPromises();
 
       // The empty state div should not be present when frameworks exist
-      const emptyDiv = element.shadowRoot.querySelector(".slds-text-color_weak.slds-text-align_center");
+      const emptyDiv = element.shadowRoot.querySelector(
+        ".slds-text-color_weak.slds-text-align_center"
+      );
       expect(emptyDiv).toBeNull();
     });
   });
