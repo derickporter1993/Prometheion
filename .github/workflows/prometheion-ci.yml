@@ -146,6 +146,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install Platform Dependencies
         working-directory: platform
         run: npm install
