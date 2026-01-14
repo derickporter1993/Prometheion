@@ -13,8 +13,9 @@ Thank you for your interest in contributing to Prometheion! This document provid
 5. [Testing Requirements](#testing-requirements)
 6. [Commit Guidelines](#commit-guidelines)
 7. [Pull Request Process](#pull-request-process)
-8. [Documentation](#documentation)
-9. [Security](#security)
+8. [Branch Protection](#branch-protection)
+9. [Documentation](#documentation)
+10. [Security](#security)
 
 ---
 
@@ -549,9 +550,10 @@ Closes #123
 
 1. **Automated Checks:** CI/CD runs automatically
    - Code quality (Prettier, ESLint)
-   - Unit tests (Jest)
+   - Unit tests (Jest LWC tests)
+   - CLI build and tests (TypeScript compilation, Vitest)
    - Security scan (Code Analyzer)
-   - Build validation
+   - Metadata validation
 
 2. **Code Review:** At least one approval required
    - Maintainers review for quality, security, performance
@@ -560,6 +562,49 @@ Closes #123
 3. **Merge:** Once approved and CI passes
    - Squash and merge (default)
    - Delete feature branch after merge
+
+---
+
+## Branch Protection
+
+The `main` branch has the following protection rules enabled:
+
+### Required Status Checks
+
+All of the following CI jobs must pass before merging:
+
+| Job | Description |
+|-----|-------------|
+| `code-quality` | Prettier formatting, ESLint, npm audit |
+| `unit-tests` | LWC Jest tests |
+| `cli-build` | TypeScript compilation, CLI tests |
+| `security-scan` | Salesforce Code Analyzer (AppExchange rules) |
+| `validate-metadata` | Salesforce metadata structure validation |
+| `build-success` | Final pipeline verification |
+
+### Additional Rules
+
+- **Require pull request reviews:** At least 1 approving review required
+- **Dismiss stale reviews:** New commits invalidate previous approvals
+- **Require status checks to pass:** All CI jobs must succeed
+- **Require branches to be up to date:** Branch must be current with main
+- **No direct pushes:** All changes must go through PRs
+- **No force pushes:** History cannot be rewritten
+
+### Protected Branches
+
+| Branch | Protection Level |
+|--------|------------------|
+| `main` | Full protection (all rules above) |
+| `release/*` | Full protection |
+| `develop` | Status checks required |
+
+### Bypassing Protection (Emergency Only)
+
+Repository admins can bypass protection for critical hotfixes. This should be:
+- Used only for production emergencies
+- Documented in the commit message
+- Followed by a retrospective PR for review
 
 ---
 
