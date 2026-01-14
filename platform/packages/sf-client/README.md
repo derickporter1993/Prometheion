@@ -15,64 +15,64 @@ npm install
 ### REST API Client
 
 ```typescript
-import { RestClient, authenticateWithJwt } from '@platform/sf-client';
+import { RestClient, authenticateWithJwt } from "@platform/sf-client";
 
 // Authenticate
 const auth = await authenticateWithJwt({
-  clientId: 'your-connected-app-id',
-  username: 'user@example.com',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----...'
+  clientId: "your-connected-app-id",
+  username: "user@example.com",
+  privateKey: "-----BEGIN RSA PRIVATE KEY-----...",
 });
 
 // Create client
 const client = new RestClient({
   instanceUrl: auth.instanceUrl,
-  accessToken: auth.accessToken
+  accessToken: auth.accessToken,
 });
 
 // Query records
-const results = await client.query<Account>('SELECT Id, Name FROM Account LIMIT 10');
+const results = await client.query<Account>("SELECT Id, Name FROM Account LIMIT 10");
 
 // CRUD operations
-await client.createRecord('Account', { Name: 'New Account' });
-await client.updateRecord('Account', 'recordId', { Name: 'Updated' });
-await client.deleteRecord('Account', 'recordId');
+await client.createRecord("Account", { Name: "New Account" });
+await client.updateRecord("Account", "recordId", { Name: "Updated" });
+await client.deleteRecord("Account", "recordId");
 ```
 
 ### Tooling API Client
 
 ```typescript
-import { ToolingClient } from '@platform/sf-client';
+import { ToolingClient } from "@platform/sf-client";
 
 const tooling = new ToolingClient({
   instanceUrl: auth.instanceUrl,
-  accessToken: auth.accessToken
+  accessToken: auth.accessToken,
 });
 
 // Get flows for objects
-const flows = await tooling.getFlows(['Account', 'Contact']);
+const flows = await tooling.getFlows(["Account", "Contact"]);
 
 // Get triggers
-const triggers = await tooling.getTriggers(['Account']);
+const triggers = await tooling.getTriggers(["Account"]);
 
 // Get validation rules
-const rules = await tooling.getValidationRules(['Account']);
+const rules = await tooling.getValidationRules(["Account"]);
 ```
 
 ### Bulk API Client
 
 ```typescript
-import { BulkClient } from '@platform/sf-client';
+import { BulkClient } from "@platform/sf-client";
 
 const bulk = new BulkClient({
   instanceUrl: auth.instanceUrl,
-  accessToken: auth.accessToken
+  accessToken: auth.accessToken,
 });
 
 // Create bulk job
 const job = await bulk.createIngestJob({
-  operation: 'insert',
-  object: 'Account'
+  operation: "insert",
+  object: "Account",
 });
 
 // Upload CSV data
@@ -88,26 +88,26 @@ const result = await bulk.waitForJobCompletion(job.id);
 ### JWT Bearer Flow (Recommended)
 
 ```typescript
-import { authenticateWithJwt } from '@platform/sf-client';
+import { authenticateWithJwt } from "@platform/sf-client";
 
 const auth = await authenticateWithJwt({
-  clientId: 'connected-app-consumer-key',
-  username: 'user@example.com',
+  clientId: "connected-app-consumer-key",
+  username: "user@example.com",
   privateKey: privateKeyPem,
-  loginUrl: 'https://login.salesforce.com' // or test.salesforce.com
+  loginUrl: "https://login.salesforce.com", // or test.salesforce.com
 });
 ```
 
 ### OAuth Web Flow
 
 ```typescript
-import { buildAuthorizationUrl, exchangeCodeForTokens } from '@platform/sf-client';
+import { buildAuthorizationUrl, exchangeCodeForTokens } from "@platform/sf-client";
 
 // Build auth URL
 const authUrl = buildAuthorizationUrl({
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  redirectUri: 'https://your-app.com/callback'
+  clientId: "your-client-id",
+  clientSecret: "your-client-secret",
+  redirectUri: "https://your-app.com/callback",
 });
 
 // Exchange code for tokens

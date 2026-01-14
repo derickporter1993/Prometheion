@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker';
-import type { FakeStrategy } from '@platform/types';
+import { faker } from "@faker-js/faker";
+import type { FakeStrategy } from "@platform/types";
 
-type FakeGenerator = FakeStrategy['generator'];
+type FakeGenerator = FakeStrategy["generator"];
 
 /**
  * Fake strategy: Generates realistic fake data using Faker
@@ -9,11 +9,13 @@ type FakeGenerator = FakeStrategy['generator'];
  */
 export function fake(
   value: string | null | undefined,
-  options: Omit<FakeStrategy, 'type'> & { deterministic?: boolean }
+  options: Omit<FakeStrategy, "type"> & { deterministic?: boolean }
 ): string {
-  // Set locale if specified
+  // Set locale if specified (using fakerLocales mapping)
   if (options.locale) {
-    // Note: Locale changes are not supported in Faker v8+. Use allFakers[locale] to get locale-specific instance.
+    // Note: In faker v8+, locale is set at import time or via createFaker()
+    // For runtime locale changes, we skip this as it's not supported
+    // The default locale (en) will be used
   }
 
   // If deterministic, seed faker with hash of original value
@@ -26,36 +28,36 @@ export function fake(
 
 function generateFakeValue(generator: FakeGenerator): string {
   switch (generator) {
-    case 'name':
+    case "name":
       return faker.person.fullName();
-    case 'first_name':
+    case "first_name":
       return faker.person.firstName();
-    case 'last_name':
+    case "last_name":
       return faker.person.lastName();
-    case 'email':
+    case "email":
       return faker.internet.email();
-    case 'phone':
+    case "phone":
       return faker.phone.number();
-    case 'address':
+    case "address":
       return faker.location.streetAddress();
-    case 'city':
+    case "city":
       return faker.location.city();
-    case 'state':
+    case "state":
       return faker.location.state();
-    case 'zip':
+    case "zip":
       return faker.location.zipCode();
-    case 'country':
+    case "country":
       return faker.location.country();
-    case 'company':
+    case "company":
       return faker.company.name();
-    case 'ssn':
+    case "ssn":
       // Generate SSN-like pattern: XXX-XX-XXXX
       return `${faker.string.numeric(3)}-${faker.string.numeric(2)}-${faker.string.numeric(4)}`;
-    case 'date':
-      return faker.date.past().toISOString().split('T')[0] ?? '';
-    case 'number':
+    case "date":
+      return faker.date.past().toISOString().split("T")[0] ?? "";
+    case "number":
       return faker.number.int({ min: 1, max: 999999 }).toString();
-    case 'text':
+    case "text":
       return faker.lorem.sentence();
     default:
       return faker.lorem.word();
@@ -68,7 +70,7 @@ function generateFakeValue(generator: FakeGenerator): string {
  */
 export function fakeDeterministic(
   value: string | null | undefined,
-  options: Omit<FakeStrategy, 'type'>
+  options: Omit<FakeStrategy, "type">
 ): string {
   return fake(value, { ...options, deterministic: true });
 }

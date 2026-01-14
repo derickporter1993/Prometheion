@@ -34,14 +34,14 @@ prometheion org login
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `status` | Check Prometheion project and org status |
-| `scan` | Run compliance scans against Salesforce org |
-| `deploy` | Deploy Prometheion to Salesforce org |
-| `test` | Run Apex and LWC tests |
-| `org` | Manage Salesforce org connections |
-| `config` | Manage CLI configuration |
+| Command  | Description                                 |
+| -------- | ------------------------------------------- |
+| `status` | Check Prometheion project and org status    |
+| `scan`   | Run compliance scans against Salesforce org |
+| `deploy` | Deploy Prometheion to Salesforce org        |
+| `test`   | Run Apex and LWC tests                      |
+| `org`    | Manage Salesforce org connections           |
+| `config` | Manage CLI configuration                    |
 
 ## Development
 

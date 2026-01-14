@@ -18,16 +18,16 @@ import type {
   ComplianceScore,
   MaskingStrategy,
   SalesforceOrg,
-  User
-} from '@platform/types';
+  User,
+} from "@platform/types";
 
 // Use types in your code
 const score: ComplianceScore = {
-  framework: 'HIPAA',
+  framework: "HIPAA",
   score: 85,
   totalChecks: 100,
   passedChecks: 85,
-  failedChecks: 15
+  failedChecks: 15,
 };
 ```
 

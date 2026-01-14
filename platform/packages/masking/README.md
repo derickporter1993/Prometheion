@@ -13,27 +13,27 @@ npm install
 ## Usage
 
 ```typescript
-import { MaskingEngine, MaskingStrategy } from '@platform/masking';
+import { MaskingEngine, MaskingStrategy } from "@platform/masking";
 
 // Create masking engine
 const engine = new MaskingEngine();
 
 // Mask sensitive data
-const masked = engine.mask('John Doe', MaskingStrategy.REDACT);
+const masked = engine.mask("John Doe", MaskingStrategy.REDACT);
 // Result: '********'
 
-const fakeData = engine.mask('john@example.com', MaskingStrategy.FAKE);
+const fakeData = engine.mask("john@example.com", MaskingStrategy.FAKE);
 // Result: 'fake_user_123@example.com'
 ```
 
 ## Strategies
 
-| Strategy | Description |
-|----------|-------------|
-| `REDACT` | Replace with asterisks |
-| `FAKE` | Generate realistic fake data |
-| `HASH` | One-way hash (murmurhash) |
-| `FPE` | Format-preserving encryption |
+| Strategy   | Description                    |
+| ---------- | ------------------------------ |
+| `REDACT`   | Replace with asterisks         |
+| `FAKE`     | Generate realistic fake data   |
+| `HASH`     | One-way hash (murmurhash)      |
+| `FPE`      | Format-preserving encryption   |
 | `TOKENIZE` | Replace with reversible tokens |
 
 ## API

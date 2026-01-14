@@ -6,13 +6,13 @@ import type {
   RuleCondition,
   MaskingPreview,
   MaskingEffectivenessScore,
-} from '@platform/types';
+} from "@platform/types";
 
-import { redact, partialRedact } from './strategies/redact';
-import { hash, hashWithFormatHint } from './strategies/hash';
-import { fake, fakeDeterministic } from './strategies/fake';
-import { fpeEncrypt } from './strategies/fpe';
-import { tokenize } from './strategies/tokenize';
+import { redact, partialRedact } from "./strategies/redact";
+import { hash, hashWithFormatHint } from "./strategies/hash";
+import { fake, fakeDeterministic } from "./strategies/fake";
+import { fpeEncrypt } from "./strategies/fpe";
+import { tokenize } from "./strategies/tokenize";
 
 export interface FieldInfo {
   sobject: string;
@@ -109,11 +109,7 @@ export class MaskingEngine {
     let maskedFieldsCount = 0;
 
     for (const record of records) {
-      const { maskedRecord, maskedFields } = this.maskRecord(
-        sobject,
-        record,
-        fieldInfos
-      );
+      const { maskedRecord, maskedFields } = this.maskRecord(sobject, record, fieldInfos);
       maskedRecords.push(maskedRecord);
 
       for (const field of maskedFields) {
@@ -135,11 +131,11 @@ export class MaskingEngine {
     showOriginal: boolean = false
   ): MaskingPreview {
     const samples = sampleRecords.slice(0, 5).map((record) => {
-      const recordId = String(record['Id'] ?? 'unknown');
-      const fields: MaskingPreview['sampleRecords'][0]['fields'] = [];
+      const recordId = String(record["Id"] ?? "unknown");
+      const fields: MaskingPreview["sampleRecords"][0]["fields"] = [];
 
       for (const [field, value] of Object.entries(record)) {
-        if (field === 'Id') continue;
+        if (field === "Id") continue;
 
         const fieldInfo = fieldInfos.get(field) ?? { sobject, field };
         const { masked, strategyUsed } = this.maskField(value, fieldInfo, record);
@@ -149,7 +145,7 @@ export class MaskingEngine {
             name: field,
             original: showOriginal ? String(value) : undefined,
             masked: String(masked),
-            strategy: strategyUsed as MaskingPreview['sampleRecords'][0]['fields'][0]['strategy'],
+            strategy: strategyUsed as MaskingPreview["sampleRecords"][0]["fields"][0]["strategy"],
           });
         }
       }
@@ -163,10 +159,7 @@ export class MaskingEngine {
   /**
    * Find the matching rule for a field
    */
-  private findMatchingRule(
-    fieldInfo: FieldInfo,
-    record?: RecordData
-  ): MaskingRule | null {
+  private findMatchingRule(fieldInfo: FieldInfo, record?: RecordData): MaskingRule | null {
     const cacheKey = `${fieldInfo.sobject}.${fieldInfo.field}`;
 
     // Check cache (only for non-conditional rules)
@@ -201,18 +194,16 @@ export class MaskingEngine {
    */
   private matchesField(matcher: FieldMatcher, fieldInfo: FieldInfo): boolean {
     switch (matcher.type) {
-      case 'exact':
-        return (
-          matcher.sobject === fieldInfo.sobject && matcher.field === fieldInfo.field
-        );
+      case "exact":
+        return matcher.sobject === fieldInfo.sobject && matcher.field === fieldInfo.field;
 
-      case 'pattern':
-        return new RegExp(matcher.fieldNameRegex, 'i').test(fieldInfo.field);
+      case "pattern":
+        return new RegExp(matcher.fieldNameRegex, "i").test(fieldInfo.field);
 
-      case 'data_type':
+      case "data_type":
         return fieldInfo.dataType === matcher.sfType;
 
-      case 'classification':
+      case "classification":
         return fieldInfo.classification?.includes(matcher.tag) ?? false;
 
       default:
@@ -223,21 +214,18 @@ export class MaskingEngine {
   /**
    * Evaluate rule conditions against record data
    */
-  private evaluateConditions(
-    conditions: RuleCondition[],
-    record: RecordData
-  ): boolean {
+  private evaluateConditions(conditions: RuleCondition[], record: RecordData): boolean {
     return conditions.every((condition) => {
-      const value = String(record[condition.field] ?? '');
+      const value = String(record[condition.field] ?? "");
 
       switch (condition.operator) {
-        case 'equals':
+        case "equals":
           return value === condition.value;
-        case 'not_equals':
+        case "not_equals":
           return value !== condition.value;
-        case 'contains':
+        case "contains":
           return value.includes(condition.value);
-        case 'matches':
+        case "matches":
           return new RegExp(condition.value).test(value);
         default:
           return false;
@@ -254,33 +242,33 @@ export class MaskingEngine {
     fieldInfo: FieldInfo
   ): string {
     switch (strategy.type) {
-      case 'redact':
+      case "redact":
         return redact(value, strategy);
 
-      case 'hash':
+      case "hash":
         // Use format hint for email/phone fields
-        if (fieldInfo.dataType === 'email') {
-          return hashWithFormatHint(value, { ...strategy, formatHint: 'email' });
+        if (fieldInfo.dataType === "email") {
+          return hashWithFormatHint(value, { ...strategy, formatHint: "email" });
         }
-        if (fieldInfo.dataType === 'phone') {
-          return hashWithFormatHint(value, { ...strategy, formatHint: 'phone' });
+        if (fieldInfo.dataType === "phone") {
+          return hashWithFormatHint(value, { ...strategy, formatHint: "phone" });
         }
         return hash(value, strategy);
 
-      case 'fake':
+      case "fake":
         return fake(value, strategy);
 
-      case 'fpe':
+      case "fpe":
         return fpeEncrypt(value, strategy);
 
-      case 'tokenize':
+      case "tokenize":
         return tokenize(value, strategy);
 
-      case 'preserve':
-        return value ?? '';
+      case "preserve":
+        return value ?? "";
 
       default:
-        return value ?? '';
+        return value ?? "";
     }
   }
 
@@ -307,26 +295,25 @@ export function calculateEffectivenessScore(
   piiFields: FieldInfo[]
 ): MaskingEffectivenessScore {
   const engine = new MaskingEngine(policy);
-  const gaps: MaskingEffectivenessScore['gaps'] = [];
+  const gaps: MaskingEffectivenessScore["gaps"] = [];
   let maskedCount = 0;
 
   for (const field of piiFields) {
-    const rule = engine['findMatchingRule'](field);
+    const rule = engine["findMatchingRule"](field);
 
-    if (rule && rule.strategy.type !== 'preserve') {
+    if (rule && rule.strategy.type !== "preserve") {
       maskedCount++;
     } else {
       gaps.push({
         sobject: field.sobject,
         field: field.field,
-        reason: rule ? 'Preserve strategy used' : 'No matching rule',
+        reason: rule ? "Preserve strategy used" : "No matching rule",
         suggestedStrategy: suggestStrategy(field),
       });
     }
   }
 
-  const score =
-    piiFields.length > 0 ? Math.round((maskedCount / piiFields.length) * 100) : 100;
+  const score = piiFields.length > 0 ? Math.round((maskedCount / piiFields.length) * 100) : 100;
 
   return {
     policyId: policy.id,
@@ -341,16 +328,18 @@ export function calculateEffectivenessScore(
 /**
  * Suggest a masking strategy based on field info
  */
-function suggestStrategy(field: FieldInfo): MaskingEffectivenessScore['gaps'][0]['suggestedStrategy'] {
+function suggestStrategy(
+  field: FieldInfo
+): MaskingEffectivenessScore["gaps"][0]["suggestedStrategy"] {
   const fieldLower = field.field.toLowerCase();
 
-  if (fieldLower.includes('email')) return 'fake';
-  if (fieldLower.includes('phone')) return 'fake';
-  if (fieldLower.includes('ssn') || fieldLower.includes('social')) return 'redact';
-  if (fieldLower.includes('name')) return 'fake';
-  if (fieldLower.includes('address')) return 'fake';
-  if (field.dataType === 'email') return 'fake';
-  if (field.dataType === 'phone') return 'fake';
+  if (fieldLower.includes("email")) return "fake";
+  if (fieldLower.includes("phone")) return "fake";
+  if (fieldLower.includes("ssn") || fieldLower.includes("social")) return "redact";
+  if (fieldLower.includes("name")) return "fake";
+  if (fieldLower.includes("address")) return "fake";
+  if (field.dataType === "email") return "fake";
+  if (field.dataType === "phone") return "fake";
 
-  return 'hash';
+  return "hash";
 }

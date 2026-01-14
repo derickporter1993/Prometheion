@@ -1,5 +1,5 @@
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
-import type { FpeStrategy } from '@platform/types';
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "crypto";
+import type { FpeStrategy } from "@platform/types";
 
 /**
  * Format-Preserving Encryption (FPE) strategy
@@ -32,10 +32,10 @@ export function generateKey(keyId: string, passphrase: string): void {
  */
 export function fpeEncrypt(
   value: string | null | undefined,
-  options: Omit<FpeStrategy, 'type'>
+  options: Omit<FpeStrategy, "type">
 ): string {
   if (value === null || value === undefined || value.length === 0) {
-    return '';
+    return "";
   }
 
   const key = keyStore.get(options.keyId);
@@ -54,10 +54,7 @@ export function fpeEncrypt(
 /**
  * Format-preserving decrypt (for authorized users)
  */
-export function fpeDecrypt(
-  encryptedValue: string,
-  options: Omit<FpeStrategy, 'type'>
-): string {
+export function fpeDecrypt(encryptedValue: string, options: Omit<FpeStrategy, "type">): string {
   const key = keyStore.get(options.keyId);
   if (!key) {
     throw new Error(`FPE key not found: ${options.keyId}`);
@@ -75,20 +72,20 @@ export function fpeDecrypt(
  */
 function simpleEncrypt(value: string, key: Buffer): string {
   const iv = randomBytes(16);
-  const cipher = createCipheriv('aes-256-gcm', key, iv);
-  const encrypted = Buffer.concat([cipher.update(value, 'utf8'), cipher.final()]);
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+  const encrypted = Buffer.concat([cipher.update(value, "utf8"), cipher.final()]);
   const authTag = cipher.getAuthTag();
-  return Buffer.concat([iv, authTag, encrypted]).toString('base64');
+  return Buffer.concat([iv, authTag, encrypted]).toString("base64");
 }
 
 function simpleDecrypt(encrypted: string, key: Buffer): string {
-  const buffer = Buffer.from(encrypted, 'base64');
+  const buffer = Buffer.from(encrypted, "base64");
   const iv = buffer.subarray(0, 16);
   const authTag = buffer.subarray(16, 32);
   const encryptedText = buffer.subarray(32);
-  const decipher = createDecipheriv('aes-256-gcm', key, iv);
+  const decipher = createDecipheriv("aes-256-gcm", key, iv);
   decipher.setAuthTag(authTag);
-  return decipher.update(encryptedText) + decipher.final('utf8');
+  return decipher.update(encryptedText) + decipher.final("utf8");
 }
 
 /**
@@ -106,18 +103,18 @@ function formatPreservingEncrypt(value: string, key: Buffer): string {
     if (!char) continue;
 
     if (/[a-z]/.test(char)) {
-      result.push(encryptChar(char, key, i, 'a', 26));
+      result.push(encryptChar(char, key, i, "a", 26));
     } else if (/[A-Z]/.test(char)) {
-      result.push(encryptChar(char, key, i, 'A', 26));
+      result.push(encryptChar(char, key, i, "A", 26));
     } else if (/[0-9]/.test(char)) {
-      result.push(encryptChar(char, key, i, '0', 10));
+      result.push(encryptChar(char, key, i, "0", 10));
     } else {
       // Preserve non-alphanumeric characters
       result.push(char);
     }
   }
 
-  return result.join('');
+  return result.join("");
 }
 
 function formatPreservingDecrypt(encrypted: string, key: Buffer): string {
@@ -128,17 +125,17 @@ function formatPreservingDecrypt(encrypted: string, key: Buffer): string {
     if (!char) continue;
 
     if (/[a-z]/.test(char)) {
-      result.push(decryptChar(char, key, i, 'a', 26));
+      result.push(decryptChar(char, key, i, "a", 26));
     } else if (/[A-Z]/.test(char)) {
-      result.push(decryptChar(char, key, i, 'A', 26));
+      result.push(decryptChar(char, key, i, "A", 26));
     } else if (/[0-9]/.test(char)) {
-      result.push(decryptChar(char, key, i, '0', 10));
+      result.push(decryptChar(char, key, i, "0", 10));
     } else {
       result.push(char);
     }
   }
 
-  return result.join('');
+  return result.join("");
 }
 
 function encryptChar(

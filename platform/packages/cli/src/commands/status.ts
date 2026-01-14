@@ -46,18 +46,16 @@ async function getOrgStatus(targetOrg?: string): Promise<OrgStatus> {
 
 async function getProjectStatus(): Promise<ProjectStatus> {
   try {
-    const apexClasses = execSync(
-      'find force-app -name "*.cls" 2>/dev/null | wc -l',
-      { encoding: "utf-8" }
-    ).trim();
+    const apexClasses = execSync('find force-app -name "*.cls" 2>/dev/null | wc -l', {
+      encoding: "utf-8",
+    }).trim();
     const lwcComponents = execSync(
       'find force-app -type d -name "lwc" -exec find {} -mindepth 1 -maxdepth 1 -type d \\; 2>/dev/null | wc -l',
       { encoding: "utf-8" }
     ).trim();
-    const customObjects = execSync(
-      'find force-app -name "*.object-meta.xml" 2>/dev/null | wc -l',
-      { encoding: "utf-8" }
-    ).trim();
+    const customObjects = execSync('find force-app -name "*.object-meta.xml" 2>/dev/null | wc -l', {
+      encoding: "utf-8",
+    }).trim();
 
     return {
       version: "3.0.0",
@@ -114,9 +112,7 @@ async function runStatus(options: StatusOptions): Promise<void> {
       console.log(`  API Version:     ${orgStatus.apiVersion || "N/A"}`);
     } else {
       console.log(`  Status:          ${chalk.red("Not Connected")}`);
-      console.log(
-        chalk.gray("  Run 'prometheion org login' to connect to a Salesforce org")
-      );
+      console.log(chalk.gray("  Run 'prometheion org login' to connect to a Salesforce org"));
     }
     console.log();
 

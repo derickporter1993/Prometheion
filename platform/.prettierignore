@@ -1,0 +1,10 @@
+# Build output
+dist/
+*.d.ts
+
+# Cache
+.turbo/
+node_modules/
+
+# Generated files
+coverage/

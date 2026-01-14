@@ -1,17 +1,17 @@
-import type { RedactStrategy } from '@platform/types';
+import type { RedactStrategy } from "@platform/types";
 
 /**
  * Redact strategy: Replaces value with a fixed replacement string
  */
 export function redact(
   value: string | null | undefined,
-  options: Omit<RedactStrategy, 'type'>
+  options: Omit<RedactStrategy, "type">
 ): string {
-  if (value === null || value === undefined) {
-    return '';
+  if (value === null || value === undefined || value === "") {
+    return "";
   }
 
-  const replacement = options.replacement ?? '[REDACTED]';
+  const replacement = options.replacement ?? "[REDACTED]";
   return replacement;
 }
 
@@ -23,12 +23,12 @@ export function partialRedact(
   options: { keepFirst?: number; keepLast?: number; maskChar?: string }
 ): string {
   if (value === null || value === undefined || value.length === 0) {
-    return '';
+    return "";
   }
 
   const keepFirst = options.keepFirst ?? 0;
   const keepLast = options.keepLast ?? 0;
-  const maskChar = options.maskChar ?? '*';
+  const maskChar = options.maskChar ?? "*";
 
   if (keepFirst + keepLast >= value.length) {
     return value;
@@ -38,5 +38,5 @@ export function partialRedact(
   const suffix = value.slice(-keepLast || undefined);
   const masked = maskChar.repeat(value.length - keepFirst - keepLast);
 
-  return `${prefix}${masked}${keepLast > 0 ? suffix : ''}`;
+  return `${prefix}${masked}${keepLast > 0 ? suffix : ""}`;
 }

@@ -36,10 +36,7 @@ interface ScanResult {
   criticalFindings: string[];
 }
 
-async function runComplianceScan(
-  framework: Framework,
-  targetOrg?: string
-): Promise<ScanResult> {
+async function runComplianceScan(framework: Framework, targetOrg?: string): Promise<ScanResult> {
   // Execute the compliance scan via Apex
   const orgFlag = targetOrg ? `--target-org ${targetOrg}` : "";
 
@@ -50,10 +47,10 @@ async function runComplianceScan(
       System.debug(JSON.serialize(result));
     `;
 
-    execSync(
-      `sf apex run ${orgFlag} --file /dev/stdin <<< "${apexCode}"`,
-      { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }
-    );
+    execSync(`sf apex run ${orgFlag} --file /dev/stdin <<< "${apexCode}"`, {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
   } catch {
     // Scan execution - results may vary based on org state
   }
@@ -73,20 +70,13 @@ async function runComplianceScan(
     passed,
     failed,
     warnings,
-    criticalFindings:
-      failed > 0
-        ? [`Review ${framework.toUpperCase()} compliance controls`]
-        : [],
+    criticalFindings: failed > 0 ? [`Review ${framework.toUpperCase()} compliance controls`] : [],
   };
 }
 
 function displayScanResult(result: ScanResult): void {
   const scoreColor =
-    result.score >= 85
-      ? chalk.green
-      : result.score >= 70
-        ? chalk.yellow
-        : chalk.red;
+    result.score >= 85 ? chalk.green : result.score >= 70 ? chalk.yellow : chalk.red;
 
   console.log();
   console.log(chalk.bold(`${result.framework} Compliance Scan`));
@@ -143,15 +133,8 @@ async function runScan(options: ScanOptions): Promise<void> {
     // Summary
     console.log();
     console.log(chalk.gray("─".repeat(50)));
-    const avgScore = Math.round(
-      results.reduce((sum, r) => sum + r.score, 0) / results.length
-    );
-    const avgColor =
-      avgScore >= 85
-        ? chalk.green
-        : avgScore >= 70
-          ? chalk.yellow
-          : chalk.red;
+    const avgScore = Math.round(results.reduce((sum, r) => sum + r.score, 0) / results.length);
+    const avgColor = avgScore >= 85 ? chalk.green : avgScore >= 70 ? chalk.yellow : chalk.red;
 
     console.log(chalk.bold(`Overall Score: ${avgColor(avgScore + "%")}`));
     console.log();

@@ -4,15 +4,15 @@ export interface BulkClientConfig {
   apiVersion?: string;
 }
 
-export type BulkOperation = 'insert' | 'update' | 'upsert' | 'delete' | 'query';
+export type BulkOperation = "insert" | "update" | "upsert" | "delete" | "query";
 
 export type JobState =
-  | 'Open'
-  | 'UploadComplete'
-  | 'InProgress'
-  | 'Aborted'
-  | 'JobComplete'
-  | 'Failed';
+  | "Open"
+  | "UploadComplete"
+  | "InProgress"
+  | "Aborted"
+  | "JobComplete"
+  | "Failed";
 
 export interface BulkJobInfo {
   id: string;
@@ -36,7 +36,7 @@ export interface BulkJobInfo {
 }
 
 export interface BulkQueryJobInfo extends BulkJobInfo {
-  operation: 'query';
+  operation: "query";
 }
 
 export interface IngestJobResult {
@@ -58,7 +58,7 @@ export class BulkClient {
   constructor(config: BulkClientConfig) {
     this.instanceUrl = config.instanceUrl;
     this.accessToken = config.accessToken;
-    this.apiVersion = config.apiVersion ?? 'v63.0';
+    this.apiVersion = config.apiVersion ?? "v63.0";
     this.baseUrl = `${this.instanceUrl}/services/data/${this.apiVersion}/jobs`;
   }
 
@@ -70,26 +70,26 @@ export class BulkClient {
    * Create a new ingest job
    */
   async createIngestJob(params: {
-    operation: 'insert' | 'update' | 'upsert' | 'delete';
+    operation: "insert" | "update" | "upsert" | "delete";
     object: string;
     externalIdFieldName?: string;
-    lineEnding?: 'LF' | 'CRLF';
+    lineEnding?: "LF" | "CRLF";
   }): Promise<BulkJobInfo> {
     const url = `${this.baseUrl}/ingest`;
 
     const body: Record<string, unknown> = {
       operation: params.operation,
       object: params.object,
-      contentType: 'CSV',
-      lineEnding: params.lineEnding ?? 'LF',
+      contentType: "CSV",
+      lineEnding: params.lineEnding ?? "LF",
     };
 
-    if (params.operation === 'upsert' && params.externalIdFieldName) {
+    if (params.operation === "upsert" && params.externalIdFieldName) {
       body.externalIdFieldName = params.externalIdFieldName;
     }
 
     return this.request<BulkJobInfo>(url, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(body),
     });
   }
@@ -101,10 +101,10 @@ export class BulkClient {
     const url = `${this.baseUrl}/ingest/${jobId}/batches`;
 
     await fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'text/csv',
+        "Content-Type": "text/csv",
       },
       body: csvData,
     });
@@ -117,8 +117,8 @@ export class BulkClient {
     const url = `${this.baseUrl}/ingest/${jobId}`;
 
     return this.request<BulkJobInfo>(url, {
-      method: 'PATCH',
-      body: JSON.stringify({ state: 'UploadComplete' }),
+      method: "PATCH",
+      body: JSON.stringify({ state: "UploadComplete" }),
     });
   }
 
@@ -129,8 +129,8 @@ export class BulkClient {
     const url = `${this.baseUrl}/ingest/${jobId}`;
 
     return this.request<BulkJobInfo>(url, {
-      method: 'PATCH',
-      body: JSON.stringify({ state: 'Aborted' }),
+      method: "PATCH",
+      body: JSON.stringify({ state: "Aborted" }),
     });
   }
 
@@ -171,7 +171,7 @@ export class BulkClient {
    */
   async deleteJob(jobId: string): Promise<void> {
     const url = `${this.baseUrl}/ingest/${jobId}`;
-    await this.request(url, { method: 'DELETE' });
+    await this.request(url, { method: "DELETE" });
   }
 
   /**
@@ -196,7 +196,7 @@ export class BulkClient {
         options.onProgress(info);
       }
 
-      if (info.state === 'JobComplete' || info.state === 'Failed' || info.state === 'Aborted') {
+      if (info.state === "JobComplete" || info.state === "Failed" || info.state === "Aborted") {
         return info;
       }
 
@@ -219,13 +219,13 @@ export class BulkClient {
     const url = `${this.baseUrl}/query`;
 
     return this.request<BulkQueryJobInfo>(url, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        operation: 'query',
+        operation: "query",
         query: soql,
-        contentType: 'CSV',
-        columnDelimiter: 'COMMA',
-        lineEnding: 'LF',
+        contentType: "CSV",
+        columnDelimiter: "COMMA",
+        lineEnding: "LF",
       }),
     });
   }
@@ -253,8 +253,8 @@ export class BulkClient {
     let url = `${this.baseUrl}/query/${jobId}/results`;
     const params = new URLSearchParams();
 
-    if (locator) params.set('locator', locator);
-    if (maxRecords) params.set('maxRecords', maxRecords.toString());
+    if (locator) params.set("locator", locator);
+    if (maxRecords) params.set("maxRecords", maxRecords.toString());
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -263,7 +263,7 @@ export class BulkClient {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        Accept: 'text/csv',
+        Accept: "text/csv",
       },
     });
 
@@ -272,15 +272,12 @@ export class BulkClient {
     }
 
     const data = await response.text();
-    const resultLocator = response.headers.get('Sforce-Locator');
-    const numberOfRecords = parseInt(
-      response.headers.get('Sforce-NumberOfRecords') ?? '0',
-      10
-    );
+    const resultLocator = response.headers.get("Sforce-Locator");
+    const numberOfRecords = parseInt(response.headers.get("Sforce-NumberOfRecords") ?? "0", 10);
 
     return {
       data,
-      locator: resultLocator && resultLocator !== 'null' ? resultLocator : undefined,
+      locator: resultLocator && resultLocator !== "null" ? resultLocator : undefined,
       numberOfRecords,
     };
   }
@@ -293,11 +290,7 @@ export class BulkClient {
     let locator: string | undefined;
 
     do {
-      const { data, locator: nextLocator } = await this.getQueryResults(
-        jobId,
-        locator,
-        50000
-      );
+      const { data, locator: nextLocator } = await this.getQueryResults(jobId, locator, 50000);
       results.push(data);
       locator = nextLocator;
     } while (locator);
@@ -312,8 +305,8 @@ export class BulkClient {
     const url = `${this.baseUrl}/query/${jobId}`;
 
     return this.request<BulkQueryJobInfo>(url, {
-      method: 'PATCH',
-      body: JSON.stringify({ state: 'Aborted' }),
+      method: "PATCH",
+      body: JSON.stringify({ state: "Aborted" }),
     });
   }
 
@@ -339,7 +332,7 @@ export class BulkClient {
         options.onProgress(info);
       }
 
-      if (info.state === 'JobComplete' || info.state === 'Failed' || info.state === 'Aborted') {
+      if (info.state === "JobComplete" || info.state === "Failed" || info.state === "Aborted") {
         return info;
       }
 
@@ -360,8 +353,8 @@ export class BulkClient {
       ...options,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
         ...options.headers,
       },
     });
@@ -384,14 +377,12 @@ export class BulkClient {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        Accept: 'text/csv',
+        Accept: "text/csv",
       },
     });
 
     if (!response.ok) {
-      throw new BulkApiError(
-        `Bulk API error: ${response.status} ${response.statusText}`
-      );
+      throw new BulkApiError(`Bulk API error: ${response.status} ${response.statusText}`);
     }
 
     return response.text();
@@ -408,6 +399,6 @@ export class BulkClient {
 export class BulkApiError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'BulkApiError';
+    this.name = "BulkApiError";
   }
 }

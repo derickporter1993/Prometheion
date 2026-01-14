@@ -20,7 +20,7 @@ export interface ApexTrigger {
   Name: string;
   TableEnumOrId: string;
   Body: string;
-  Status: 'Active' | 'Inactive' | 'Deleted';
+  Status: "Active" | "Inactive" | "Deleted";
   UsageBeforeInsert: boolean;
   UsageAfterInsert: boolean;
   UsageBeforeUpdate: boolean;
@@ -71,14 +71,16 @@ export class ToolingClient {
   constructor(config: ToolingClientConfig) {
     this.instanceUrl = config.instanceUrl;
     this.accessToken = config.accessToken;
-    this.apiVersion = config.apiVersion ?? 'v63.0';
+    this.apiVersion = config.apiVersion ?? "v63.0";
     this.baseUrl = `${this.instanceUrl}/services/data/${this.apiVersion}/tooling`;
   }
 
   /**
    * Execute a Tooling API SOQL query
    */
-  async query<T = Record<string, unknown>>(soql: string): Promise<{
+  async query<T = Record<string, unknown>>(
+    soql: string
+  ): Promise<{
     totalSize: number;
     done: boolean;
     records: T[];
@@ -286,8 +288,8 @@ export class ToolingClient {
       ...options,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
         ...options.headers,
       },
     });
@@ -316,6 +318,6 @@ export class ToolingApiError extends Error {
     public body: string
   ) {
     super(message);
-    this.name = 'ToolingApiError';
+    this.name = "ToolingApiError";
   }
 }
