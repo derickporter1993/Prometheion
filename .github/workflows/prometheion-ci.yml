@@ -149,6 +149,9 @@ jobs:
       - name: Install npm 10.2.0
         run: npm install -g npm@10.2.0
 
+      - name: Verify npm version
+        run: npm --version
+
       - name: Install Platform Dependencies
         working-directory: platform
         run: npm install
