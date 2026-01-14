@@ -149,6 +149,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Prepare Package Manager
+        working-directory: platform
+        run: corepack prepare npm@10.2.0 --activate
+
       - name: Install Platform Dependencies
         working-directory: platform
         run: npm install
