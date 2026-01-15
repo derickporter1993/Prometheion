@@ -29,14 +29,14 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
     /**
      * Evaluate audit controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check audit log coverage
         AuditCoverageResult coverage = evaluateAuditCoverage();
         if (!coverage.compliant) {
             for (String gap : coverage.gaps) {
-                violations.add(new Violation(
+                violations.add(new ComplianceServiceBase.InternalViolation(
                     'Audit Log Gap',
                     gap,
                     'HIGH',
@@ -50,7 +50,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         // Check for suspicious access patterns
         List<SuspiciousAccess> suspicious = detectSuspiciousAccess();
         for (SuspiciousAccess access : suspicious) {
-            violations.add(new Violation(
+            violations.add(new ComplianceServiceBase.InternalViolation(
                 'Suspicious PHI Access',
                 'User ' + access.userName + ' accessed ' + access.accessCount + ' PHI records',
                 access.riskLevel,
@@ -62,7 +62,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
 
         // Check audit log retention
         if (!checkRetentionCompliance()) {
-            violations.add(new Violation(
+            violations.add(new ComplianceServiceBase.InternalViolation(
                 'Audit Retention Gap',
                 'Audit logs may not be retained for required 6-year period',
                 'MEDIUM',

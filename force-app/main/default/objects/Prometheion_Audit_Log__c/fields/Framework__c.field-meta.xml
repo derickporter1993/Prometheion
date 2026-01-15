@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Framework__c</fullName>
+    <description>Compliance framework associated with this audit log entry</description>
+    <externalId>false</externalId>
+    <label>Framework</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <length>50</length>
+</CustomField>

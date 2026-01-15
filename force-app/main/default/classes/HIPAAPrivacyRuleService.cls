@@ -37,17 +37,25 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
     /**
      * Evaluate HIPAA Privacy Rule controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // §164.514(d) - Minimum Necessary
-        violations.addAll(evaluateMinimumNecessaryAccess());
-
-        // §164.528 - Accounting of Disclosures
-        violations.addAll(evaluateDisclosureTracking());
-
-        // §164.530(c) - Safeguards
-        violations.addAll(evaluatePHISafeguards());
+        // Convert from standalone Violation to InternalViolation
+        for (Violation v : evaluateMinimumNecessaryAccess()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateDisclosureTracking()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluatePHISafeguards()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
 
         return violations;
     }

@@ -30,33 +30,35 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Evaluate breach notification controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check for overdue notifications
         List<HIPAA_Breach__c> overdueBreaches = getOverdueNotifications();
         for (HIPAA_Breach__c breach : overdueBreaches) {
-            violations.add(new Violation(
+            ComplianceServiceBase.InternalViolation violation = new ComplianceServiceBase.InternalViolation(
                 'Overdue Breach Notification',
                 'Breach ' + breach.Name + ' has exceeded 60-day notification deadline',
                 'CRITICAL',
                 'HIPAA-164.404',
                 'Immediately notify affected individuals and HHS',
                 10.0
-            ));
+            );
+            violations.add(violation);
         }
 
         // Check for breaches pending assessment
         Integer pendingCount = getPendingAssessmentCount();
         if (pendingCount > 0) {
-            violations.add(new Violation(
+            ComplianceServiceBase.InternalViolation violation = new ComplianceServiceBase.InternalViolation(
                 'Pending Breach Assessments',
                 pendingCount + ' breach(es) pending risk assessment',
                 'HIGH',
                 'HIPAA-164.402',
                 'Complete 4-factor risk assessment for pending breaches',
                 7.5
-            ));
+            );
+            violations.add(violation);
         }
 
         return violations;
@@ -67,11 +69,11 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Assess breach risk using 4-factor analysis per §164.402
      */
-    public IBreachNotificationService.BreachAssessment assessBreach(
-        IBreachNotificationService.BreachAssessmentRequest request
+    public BreachNotificationTypes.BreachAssessment assessBreach(
+        BreachNotificationTypes.BreachAssessmentRequest request
     ) {
-        IBreachNotificationService.BreachAssessment assessment =
-            new IBreachNotificationService.BreachAssessment();
+        BreachNotificationTypes.BreachAssessment assessment =
+            new BreachNotificationTypes.BreachAssessment();
         assessment.framework = 'HIPAA';
 
         // Calculate risk score based on request data
@@ -166,9 +168,9 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Get notification status for a breach
      */
-    public IBreachNotificationService.NotificationStatus getNotificationStatus(Id breachId) {
-        IBreachNotificationService.NotificationStatus status =
-            new IBreachNotificationService.NotificationStatus();
+    public BreachNotificationTypes.NotificationStatus getNotificationStatus(Id breachId) {
+        BreachNotificationTypes.NotificationStatus status =
+            new BreachNotificationTypes.NotificationStatus();
 
         HIPAA_Breach__c breach = [
             SELECT Id, Name, Discovery_Date__c, Notification_Deadline__c,
@@ -183,26 +185,37 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         ];
 
         status.breachId = breach.Id;
-        status.breachName = breach.Name;
-        status.discoveryDate = breach.Discovery_Date__c;
-        status.notificationDeadline = breach.Notification_Deadline__c;
+        
+        // Set deadline and calculate if deadline was met
+        if (breach.Notification_Deadline__c != null) {
+            status.deadline = DateTime.newInstance(breach.Notification_Deadline__c, Time.newInstance(0, 0, 0, 0));
+            status.deadlineMet = Date.today() <= breach.Notification_Deadline__c;
+        }
 
         // Individual notification status
         status.individualsNotified = breach.Individuals_Notified__c == true;
-        status.individualNotificationDate = breach.Individual_Notification_Date__c;
+        if (breach.Individual_Notification_Date__c != null) {
+            status.individualsNotificationDate = DateTime.newInstance(breach.Individual_Notification_Date__c, Time.newInstance(0, 0, 0, 0));
+        }
+        status.individualsNotifiedCount = breach.Records_Affected__c != null ? Integer.valueOf(breach.Records_Affected__c) : 0;
 
-        // HHS notification status
-        status.hhsNotified = breach.HHS_Notified__c == true;
-        status.hhsNotificationDate = breach.HHS_Notification_Date__c;
+        // HHS notification status (regulator = HHS for HIPAA)
+        status.regulatorNotified = breach.HHS_Notified__c == true;
+        if (breach.HHS_Notification_Date__c != null) {
+            status.regulatorNotificationDate = DateTime.newInstance(breach.HHS_Notification_Date__c, Time.newInstance(0, 0, 0, 0));
+        }
 
-        // Media notification (required if 500+ individuals in a state)
-        status.mediaNotificationRequired = breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD;
+        // Media notification
         status.mediaNotified = breach.Media_Notified__c == true;
-        status.mediaNotificationDate = breach.Media_Notification_Date__c;
+        if (breach.Media_Notification_Date__c != null) {
+            status.mediaNotificationDate = DateTime.newInstance(breach.Media_Notification_Date__c, Time.newInstance(0, 0, 0, 0));
+        }
 
-        // Calculate days remaining
-        if (breach.Notification_Deadline__c != null) {
-            status.daysUntilDeadline = Date.today().daysBetween(breach.Notification_Deadline__c);
+        // Overall status
+        if (breach.Status__c != null) {
+            status.overallStatus = breach.Status__c;
+        } else {
+            status.overallStatus = 'OPEN';
         }
 
         // Determine overall status
@@ -215,9 +228,9 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Get breach summary for dashboard
      */
-    public IBreachNotificationService.BreachSummary getBreachSummary() {
-        IBreachNotificationService.BreachSummary summary =
-            new IBreachNotificationService.BreachSummary();
+    public BreachNotificationTypes.BreachSummary getBreachSummary() {
+        BreachNotificationTypes.BreachSummary summary =
+            new BreachNotificationTypes.BreachSummary();
 
         Date yearStart = Date.today().addYears(-1);
 
@@ -325,8 +338,8 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Get all open breaches requiring action
      */
-    public List<IBreachNotificationService.BreachSummary> getOpenBreaches() {
-        List<IBreachNotificationService.BreachSummary> summaries = new List<IBreachNotificationService.BreachSummary>();
+    public List<BreachNotificationTypes.BreachSummary> getOpenBreaches() {
+        List<BreachNotificationTypes.BreachSummary> summaries = new List<BreachNotificationTypes.BreachSummary>();
         
         List<HIPAA_Breach__c> breaches = [
             SELECT Id, Name, Breach_Type__c, Risk_Level__c, Records_Affected__c,
@@ -338,7 +351,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         ];
         
         for (HIPAA_Breach__c breach : breaches) {
-            IBreachNotificationService.BreachSummary summary = new IBreachNotificationService.BreachSummary();
+            BreachNotificationTypes.BreachSummary summary = new BreachNotificationTypes.BreachSummary();
             summary.breachId = breach.Id;
             summary.incidentType = breach.Breach_Type__c;
             summary.severity = breach.Risk_Level__c;
@@ -361,9 +374,9 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     /**
      * Get breach metrics for reporting
      */
-    public IBreachNotificationService.BreachMetrics getBreachMetrics(Integer days) {
-        IBreachNotificationService.BreachMetrics metrics =
-            new IBreachNotificationService.BreachMetrics();
+    public BreachNotificationTypes.BreachMetrics getBreachMetrics(Integer days) {
+        BreachNotificationTypes.BreachMetrics metrics =
+            new BreachNotificationTypes.BreachMetrics();
 
         Date startDate = Date.today().addDays(-days);
 
@@ -607,7 +620,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         ];
     }
 
-    private Decimal calculateNatureExtentScore(IBreachNotificationService.BreachAssessmentRequest request) {
+    private Decimal calculateNatureExtentScore(BreachNotificationTypes.BreachAssessmentRequest request) {
         Decimal score = 1;
 
         // High-risk PHI types increase score
@@ -628,7 +641,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         return Math.min(score, 10);
     }
 
-    private Decimal calculateUnauthorizedPersonScore(IBreachNotificationService.BreachAssessmentRequest request) {
+    private Decimal calculateUnauthorizedPersonScore(BreachNotificationTypes.BreachAssessmentRequest request) {
         Decimal score = 5; // Default medium risk
 
         if (request.recipientAuthorized) {
@@ -642,7 +655,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         return score;
     }
 
-    private Decimal calculateAcquisitionScore(IBreachNotificationService.BreachAssessmentRequest request) {
+    private Decimal calculateAcquisitionScore(BreachNotificationTypes.BreachAssessmentRequest request) {
         if (request.dataAcquired && request.dataViewed) {
             return 10; // Highest risk
         } else if (request.dataAcquired || request.dataViewed) {
@@ -652,7 +665,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         }
     }
 
-    private Decimal calculateMitigationScore(IBreachNotificationService.BreachAssessmentRequest request) {
+    private Decimal calculateMitigationScore(BreachNotificationTypes.BreachAssessmentRequest request) {
         Decimal score = 10; // Start at highest risk
 
         // Each mitigation reduces score

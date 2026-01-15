@@ -26,11 +26,24 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
     /**
      * Evaluate HIPAA Security Rule controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
-        violations.addAll(checkAccessControls().violations);
-        violations.addAll(checkAuditControls().violations);
-        violations.addAll(checkIntegrityControls().violations);
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
+        // Convert standalone Violation to InternalViolation
+        for (Violation v : checkAccessControls().violations) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : checkAuditControls().violations) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : checkIntegrityControls().violations) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
         return violations;
     }
 

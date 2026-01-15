@@ -39,14 +39,20 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
     /**
      * Evaluate SOC2 retention controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // CC6.6 - Data Retention
-        violations.addAll(evaluateFieldHistoryTracking());
-
-        // CC6.7 - Data Disposal
-        violations.addAll(evaluateDataDisposal());
+        // Convert from standalone Violation to InternalViolation
+        for (Violation v : evaluateFieldHistoryTracking()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateDataDisposal()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
 
         return violations;
     }

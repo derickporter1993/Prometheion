@@ -38,14 +38,20 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
     /**
      * Evaluate SOC2 access controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // CC6.2 - Access Removal
-        violations.addAll(evaluateStaleAccess());
-
-        // CC6.3 - Access Provisioning
-        violations.addAll(evaluateExcessiveAccess());
+        // Convert from standalone Violation to InternalViolation
+        for (Violation v : evaluateStaleAccess()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateExcessiveAccess()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
 
         return violations;
     }

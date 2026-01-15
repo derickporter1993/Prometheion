@@ -32,17 +32,25 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
     /**
      * Evaluate SOC2 incident response controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // CC7.2 - Incident Detection
-        violations.addAll(evaluateIncidentDetection());
-
-        // CC7.3 - Incident Response
-        violations.addAll(evaluateIncidentResponse());
-
-        // CC7.4 - Incident Recovery
-        violations.addAll(evaluateIncidentRecovery());
+        // Convert from standalone Violation to InternalViolation
+        for (Violation v : evaluateIncidentDetection()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateIncidentResponse()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateIncidentRecovery()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
 
         return violations;
     }

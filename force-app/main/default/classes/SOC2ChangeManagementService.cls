@@ -37,17 +37,25 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
     /**
      * Evaluate SOC2 change management controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // CC6.1 - Logical Access Security
-        violations.addAll(evaluateLogicalAccessChanges());
-
-        // CC6.6 - System Changes
-        violations.addAll(evaluateSystemChanges());
-
-        // CC6.8 - Change Testing
-        violations.addAll(evaluateChangeTestingControls());
+        // Convert from standalone Violation to InternalViolation
+        for (Violation v : evaluateLogicalAccessChanges()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateSystemChanges()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
+        for (Violation v : evaluateChangeTestingControls()) {
+            violations.add(new ComplianceServiceBase.InternalViolation(
+                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
+            ));
+        }
 
         return violations;
     }
