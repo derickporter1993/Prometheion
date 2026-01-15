@@ -439,13 +439,13 @@ public with sharing class PrometheionComplianceScorer {
         // Query efficiently using aggregate (cached data doesn't have exact count, so query once)
         Integer modifyAllUsers = 0;
         try {
+            // Aggregate query with COUNT returns single row - no LIMIT needed
             List<AggregateResult> modifyAllResults = [
                 SELECT COUNT(Id) assignmentCount
                 FROM PermissionSetAssignment
                 WHERE PermissionSet.PermissionsModifyAllData = true
                 AND Assignee.IsActive = true
                 WITH USER_MODE
-                LIMIT 1
             ];
             if (!modifyAllResults.isEmpty()) {
                 modifyAllUsers = (Integer)modifyAllResults[0].get('assignmentCount');
@@ -467,13 +467,13 @@ public with sharing class PrometheionComplianceScorer {
         // Check for inactive users - use aggregate query for efficiency
         Integer inactiveUsersWithAccess = 0;
         try {
+            // Aggregate query with COUNT returns single row - no LIMIT needed
             List<AggregateResult> inactiveResults = [
                 SELECT COUNT(Id) userCount
                 FROM User
                 WHERE IsActive = true
                 AND LastLoginDate < LAST_N_DAYS:90
                 WITH USER_MODE
-                LIMIT 1
             ];
             if (!inactiveResults.isEmpty()) {
                 inactiveUsersWithAccess = (Integer)inactiveResults[0].get('userCount');
