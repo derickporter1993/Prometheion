@@ -211,16 +211,12 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
             status.mediaNotificationDate = DateTime.newInstance(breach.Media_Notification_Date__c, Time.newInstance(0, 0, 0, 0));
         }
 
-        // Overall status
+        // Overall status - use conditional logic to handle null
         if (breach.Status__c != null) {
             status.overallStatus = breach.Status__c;
         } else {
             status.overallStatus = 'OPEN';
         }
-
-        // Determine overall status
-        status.overallStatus = breach.Status__c;
-        status.isOverdue = status.daysUntilDeadline != null && status.daysUntilDeadline < 0;
 
         return status;
     }

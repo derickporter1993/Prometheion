@@ -59,6 +59,8 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
     public static void generateAndSendDigest() {
         DigestData digest = compileDigestData();
         sendDigestEmail(digest);
+        // Note: @future methods can only accept primitives, so we serialize DigestData
+        // This is necessary for async callout execution
         sendDigestToSlack(JSON.serialize(digest));
     }
     
