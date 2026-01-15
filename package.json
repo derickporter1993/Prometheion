@@ -31,7 +31,7 @@
     "cli": "node platform/packages/cli/dist/index.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.5",
+    "@babel/core": "^7.28.6",
     "@babel/eslint-parser": "^7.28.5",
     "@eslint/js": "^9.0.0",
     "@lwc/eslint-plugin-lwc": "^3.3.0",
