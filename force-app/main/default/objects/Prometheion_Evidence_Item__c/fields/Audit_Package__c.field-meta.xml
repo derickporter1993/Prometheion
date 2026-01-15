@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Audit_Package__c</fullName>
+    <label>Audit Package</label>
+    <type>Lookup</type>
+    <referenceTo>Prometheion_Audit_Package__c</referenceTo>
+    <relationshipLabel>Evidence Items</relationshipLabel>
+    <relationshipName>Evidence_Items</relationshipName>
+    <required>true</required>
+    <deleteConstraint>Restrict</deleteConstraint>
+</CustomField>

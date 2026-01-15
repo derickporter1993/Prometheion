@@ -16,12 +16,12 @@ public with sharing class PrometheionEventParser {
      * @param rawData The raw event data from EventLogFile
      * @return Parsed and normalized event data
      */
-    public static Map&lt;String, Object&gt; parseEvent(String eventType, Map&lt;String, Object&gt; rawData) {
+    public static Map<String, Object> parseEvent(String eventType, Map<String, Object> rawData) {
         if (rawData == null) {
-            rawData = new Map&lt;String, Object&gt;();
+            rawData = new Map<String, Object>();
         }
         
-        Map&lt;String, Object&gt; parsed;
+        Map<String, Object> parsed;
         
         switch on eventType {
             when 'Login' {
@@ -47,7 +47,7 @@ public with sharing class PrometheionEventParser {
             }
             when else {
                 // Return raw data with event type for unsupported types
-                parsed = new Map&lt;String, Object&gt;(rawData);
+                parsed = new Map<String, Object>(rawData);
                 parsed.put('eventType', eventType);
             }
         }
@@ -68,8 +68,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed Login event
      */
-    public static Map&lt;String, Object&gt; parseLoginEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseLoginEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'Login');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -105,8 +105,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed LoginAs event
      */
-    public static Map&lt;String, Object&gt; parseLoginAsEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseLoginAsEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'LoginAs');
         parsed.put('delegatedUserId', getString(raw, 'DELEGATED_USER_ID'));
@@ -129,8 +129,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed ReportExport event
      */
-    public static Map&lt;String, Object&gt; parseReportExportEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseReportExportEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'ReportExport');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -144,8 +144,8 @@ public with sharing class PrometheionEventParser {
         
         // Flag large exports
         Integer rows = getInteger(raw, 'ROWS_PROCESSED');
-        parsed.put('isLargeExport', rows &gt; 1000);
-        parsed.put('isCriticalExport', rows &gt; 10000);
+        parsed.put('isLargeExport', rows > 1000);
+        parsed.put('isCriticalExport', rows > 10000);
         
         return parsed;
     }
@@ -155,8 +155,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed API event
      */
-    public static Map&lt;String, Object&gt; parseApiEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseApiEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'API');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -173,8 +173,8 @@ public with sharing class PrometheionEventParser {
         
         // Flag bulk operations
         Integer rows = getInteger(raw, 'ROWS_PROCESSED');
-        parsed.put('isBulkOperation', rows &gt; 200);
-        parsed.put('isHighVolume', rows &gt; 10000);
+        parsed.put('isBulkOperation', rows > 200);
+        parsed.put('isHighVolume', rows > 10000);
         
         return parsed;
     }
@@ -184,8 +184,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed ContentDistribution event
      */
-    public static Map&lt;String, Object&gt; parseContentDistributionEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseContentDistributionEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'ContentDistribution');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -209,8 +209,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed ApexExecution event
      */
-    public static Map&lt;String, Object&gt; parseApexExecutionEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parseApexExecutionEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'ApexExecution');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -228,7 +228,7 @@ public with sharing class PrometheionEventParser {
         // Flag resource-intensive executions
         Integer cpuTime = getInteger(raw, 'CPU_TIME');
         Integer execTime = getInteger(raw, 'EXEC_TIME');
-        parsed.put('isResourceIntensive', cpuTime &gt; 5000 || execTime &gt; 10000);
+        parsed.put('isResourceIntensive', cpuTime > 5000 || execTime > 10000);
         
         return parsed;
     }
@@ -238,8 +238,8 @@ public with sharing class PrometheionEventParser {
      * @param raw Raw event data
      * @return Parsed PermissionSet event
      */
-    public static Map&lt;String, Object&gt; parsePermissionSetEvent(Map&lt;String, Object&gt; raw) {
-        Map&lt;String, Object&gt; parsed = new Map&lt;String, Object&gt;();
+    public static Map<String, Object> parsePermissionSetEvent(Map<String, Object> raw) {
+        Map<String, Object> parsed = new Map<String, Object>();
         
         parsed.put('eventType', 'PermissionSetEventLog');
         parsed.put('userId', getString(raw, 'USER_ID'));
@@ -267,7 +267,7 @@ public with sharing class PrometheionEventParser {
      * @param key The key to retrieve
      * @return String value or empty string
      */
-    private static String getString(Map&lt;String, Object&gt; data, String key) {
+    private static String getString(Map<String, Object> data, String key) {
         if (data == null || !data.containsKey(key)) {
             return '';
         }
@@ -281,7 +281,7 @@ public with sharing class PrometheionEventParser {
      * @param key The key to retrieve
      * @return Integer value or 0
      */
-    private static Integer getInteger(Map&lt;String, Object&gt; data, String key) {
+    private static Integer getInteger(Map<String, Object> data, String key) {
         String strVal = getString(data, key);
         if (String.isBlank(strVal)) {
             return 0;
@@ -323,7 +323,7 @@ public with sharing class PrometheionEventParser {
      * @return Formatted geo location string
      */
     private static String buildGeoLocation(String city, String subdivision, String country) {
-        List&lt;String&gt; parts = new List&lt;String&gt;();
+        List<String> parts = new List<String>();
         
         if (String.isNotBlank(city)) {
             parts.add(city);
@@ -343,7 +343,7 @@ public with sharing class PrometheionEventParser {
      * @param loginData Parsed login event data
      * @return True if login appears suspicious
      */
-    private static Boolean isLoginSuspicious(Map&lt;String, Object&gt; loginData) {
+    private static Boolean isLoginSuspicious(Map<String, Object> loginData) {
         // Check for failed logins
         String status = (String)loginData.get('loginStatus');
         if (status != 'Success') {
@@ -371,14 +371,14 @@ public with sharing class PrometheionEventParser {
      * @param rawEvents List of raw event data
      * @return List of parsed events
      */
-    public static List&lt;Map&lt;String, Object&gt;&gt; batchParseEvents(String eventType, List&lt;Map&lt;String, Object&gt;&gt; rawEvents) {
-        List&lt;Map&lt;String, Object&gt;&gt; parsedEvents = new List&lt;Map&lt;String, Object&gt;&gt;();
+    public static List<Map<String, Object>> batchParseEvents(String eventType, List<Map<String, Object>> rawEvents) {
+        List<Map<String, Object>> parsedEvents = new List<Map<String, Object>>();
         
         if (rawEvents == null || rawEvents.isEmpty()) {
             return parsedEvents;
         }
         
-        for (Map&lt;String, Object&gt; rawEvent : rawEvents) {
+        for (Map<String, Object> rawEvent : rawEvents) {
             parsedEvents.add(parseEvent(eventType, rawEvent));
         }
         

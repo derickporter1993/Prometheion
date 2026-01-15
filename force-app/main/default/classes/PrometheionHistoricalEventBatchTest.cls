@@ -48,7 +48,7 @@ private class PrometheionHistoricalEventBatchTest {
     
     @isTest
     static void testBatch_DifferentEventTypes() {
-        List&lt;String&gt; eventTypes = new List&lt;String&gt;{
+        List<String> eventTypes = new List<String>{
             'Login', 'LoginAs', 'API', 'ReportExport'
         };
         
@@ -64,14 +64,14 @@ private class PrometheionHistoricalEventBatchTest {
         Test.stopTest();
         
         // Verify all batches completed
-        List&lt;AsyncApexJob&gt; jobs = [
+        List<AsyncApexJob> jobs = [
             SELECT Status, NumberOfErrors
             FROM AsyncApexJob
             WHERE ApexClass.Name = 'PrometheionHistoricalEventBatch'
             AND Status = 'Completed'
         ];
         
-        System.assert(jobs.size() &gt; 0, 'Batches should complete');
+        System.assert(jobs.size() > 0, 'Batches should complete');
     }
     
     @isTest
@@ -103,7 +103,7 @@ private class PrometheionHistoricalEventBatchTest {
         );
         
         Test.startTest();
-        Map&lt;String, Object&gt; stats = batch.getStatistics();
+        Map<String, Object> stats = batch.getStatistics();
         Test.stopTest();
         
         System.assertEquals('Login', stats.get('eventType'), 'Should return event type');
@@ -137,11 +137,11 @@ private class PrometheionHistoricalEventBatchTest {
         
         Test.startTest();
         // Execute with empty list
-        batch.execute(null, new List&lt;EventLogFile&gt;());
+        batch.execute(null, new List<EventLogFile>());
         Test.stopTest();
         
         // Should not throw exception
-        Map&lt;String, Object&gt; stats = batch.getStatistics();
+        Map<String, Object> stats = batch.getStatistics();
         System.assertEquals(0, stats.get('filesProcessed'), 'Should handle empty scope');
     }
     
@@ -206,7 +206,7 @@ private class PrometheionHistoricalEventBatchTest {
         Test.stopTest();
         
         // Both batches should complete
-        List&lt;AsyncApexJob&gt; jobs = [
+        List<AsyncApexJob> jobs = [
             SELECT Status
             FROM AsyncApexJob
             WHERE Id IN (:batchId1, :batchId2)
@@ -220,7 +220,7 @@ private class PrometheionHistoricalEventBatchTest {
     @isTest
     static void testBatch_WithRealEventTypes() {
         // Test with all supported event types
-        List&lt;String&gt; eventTypes = new List&lt;String&gt;{
+        List<String> eventTypes = new List<String>{
             'Login', 'LoginAs', 'API', 'ReportExport',
             'ContentDistribution', 'ApexExecution', 'PermissionSetEventLog'
         };
@@ -228,7 +228,7 @@ private class PrometheionHistoricalEventBatchTest {
         Test.startTest();
         Integer count = 0;
         for (String eventType : eventTypes) {
-            if (count &lt; 5) { // Limit to avoid too many batches
+            if (count < 5) { // Limit to avoid too many batches
                 PrometheionHistoricalEventBatch batch = new PrometheionHistoricalEventBatch(
                     eventType,
                     Date.today().addDays(-7),

@@ -15,21 +15,21 @@ public with sharing class PrometheionRealtimeMonitor {
     public static final Integer CRITICAL_RISK_THRESHOLD = 95;
     
     // Base risk scores by event type
-    private static final Map&lt;String, Integer&gt; BASE_RISK_SCORES = new Map&lt;String, Integer&gt;{
-        'LoginAs' =&gt; 70,
-        'ReportExport' =&gt; 60,
-        'ContentDistribution' =&gt; 60,
-        'BulkApiResult' =&gt; 50,
-        'API' =&gt; 40,
-        'PermissionSetEventLog' =&gt; 50,
-        'Login' =&gt; 20,
-        'Report' =&gt; 30,
-        'ApexExecution' =&gt; 25,
-        'FlowExecution' =&gt; 20,
-        'Logout' =&gt; 5,
-        'URI' =&gt; 10,
-        'LightningInteraction' =&gt; 5,
-        'LightningPageView' =&gt; 5
+    private static final Map<String, Integer> BASE_RISK_SCORES = new Map<String, Integer>{
+        'LoginAs' => 70,
+        'ReportExport' => 60,
+        'ContentDistribution' => 60,
+        'BulkApiResult' => 50,
+        'API' => 40,
+        'PermissionSetEventLog' => 50,
+        'Login' => 20,
+        'Report' => 30,
+        'ApexExecution' => 25,
+        'FlowExecution' => 20,
+        'Logout' => 5,
+        'URI' => 10,
+        'LightningInteraction' => 5,
+        'LightningPageView' => 5
     };
     
     // Risk factor weights
@@ -48,21 +48,21 @@ public with sharing class PrometheionRealtimeMonitor {
      * @description Process incoming real-time event
      * @param eventData The event data to process
      */
-    public static void processRealtimeEvent(Map&lt;String, Object&gt; eventData) {
+    public static void processRealtimeEvent(Map<String, Object> eventData) {
         if (eventData == null || eventData.isEmpty()) {
             return;
         }
         
         // Parse the event
         String eventType = (String)eventData.get('EVENT_TYPE');
-        Map&lt;String, Object&gt; parsedEvent = PrometheionEventParser.parseEvent(eventType, eventData);
+        Map<String, Object> parsedEvent = PrometheionEventParser.parseEvent(eventType, eventData);
         
         // Calculate risk score
         Integer riskScore = calculateRiskScore(eventData);
         parsedEvent.put('calculatedRiskScore', riskScore);
         
         // Determine if alert should be triggered
-        if (riskScore &gt;= HIGH_RISK_THRESHOLD) {
+        if (riskScore >= HIGH_RISK_THRESHOLD) {
             String userId = (String)eventData.get('USER_ID');
             String reason = buildRiskReason(eventData, riskScore);
             
@@ -78,7 +78,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param eventData The event data to score
      * @return Risk score between 0 and 100
      */
-    public static Integer calculateRiskScore(Map&lt;String, Object&gt; eventData) {
+    public static Integer calculateRiskScore(Map<String, Object> eventData) {
         if (eventData == null) {
             return 0;
         }
@@ -112,9 +112,9 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param reason The reason for the alert
      * @param eventData The original event data
      */
-    public static void triggerAlert(String userId, Integer riskScore, String reason, Map&lt;String, Object&gt; eventData) {
+    public static void triggerAlert(String userId, Integer riskScore, String reason, Map<String, Object> eventData) {
         // Determine severity
-        String severity = riskScore &gt;= CRITICAL_RISK_THRESHOLD ? 'CRITICAL' : 'HIGH';
+        String severity = riskScore >= CRITICAL_RISK_THRESHOLD ? 'CRITICAL' : 'HIGH';
         
         // Create alert record (could be custom object or platform event)
         AlertConfig config = new AlertConfig();
@@ -136,16 +136,16 @@ public with sharing class PrometheionRealtimeMonitor {
      * @return Map of statistics
      */
     @AuraEnabled(cacheable=true)
-    public static Map&lt;String, Object&gt; getRealtimeStats(Integer timeWindowMinutes) {
-        Map&lt;String, Object&gt; stats = new Map&lt;String, Object&gt;{
-            'totalEvents' =&gt; 0,
-            'criticalEvents' =&gt; 0,
-            'highRiskEvents' =&gt; 0,
-            'mediumRiskEvents' =&gt; 0,
-            'lowRiskEvents' =&gt; 0,
-            'topEventTypes' =&gt; new List&lt;String&gt;(),
-            'averageRiskScore' =&gt; 0,
-            'timeWindow' =&gt; timeWindowMinutes
+    public static Map<String, Object> getRealtimeStats(Integer timeWindowMinutes) {
+        Map<String, Object> stats = new Map<String, Object>{
+            'totalEvents' => 0,
+            'criticalEvents' => 0,
+            'highRiskEvents' => 0,
+            'mediumRiskEvents' => 0,
+            'lowRiskEvents' => 0,
+            'topEventTypes' => new List<String>(),
+            'averageRiskScore' => 0,
+            'timeWindow' => timeWindowMinutes
         };
         
         // Query recent evidence items as proxy for events
@@ -153,17 +153,17 @@ public with sharing class PrometheionRealtimeMonitor {
         Datetime cutoffTime = Datetime.now().addMinutes(-timeWindowMinutes);
         
         try {
-            List&lt;AggregateResult&gt; results = [
+            List<AggregateResult> results = [
                 SELECT Evidence_Type__c eventType, COUNT(Id) cnt
                 FROM Prometheion_Evidence_Item__c
-                WHERE CreatedDate &gt;= :cutoffTime
+                WHERE CreatedDate >= :cutoffTime
                 GROUP BY Evidence_Type__c
                 ORDER BY COUNT(Id) DESC
                 LIMIT 10
             ];
             
             Integer total = 0;
-            List&lt;String&gt; topTypes = new List&lt;String&gt;();
+            List<String> topTypes = new List<String>();
             
             for (AggregateResult ar : results) {
                 String eventType = (String)ar.get('eventType');
@@ -202,7 +202,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param eventData The event data
      * @return Time factor score
      */
-    private static Integer calculateTimeFactor(Map&lt;String, Object&gt; eventData) {
+    private static Integer calculateTimeFactor(Map<String, Object> eventData) {
         Integer factor = 0;
         
         // Get timestamp from event
@@ -220,7 +220,7 @@ public with sharing class PrometheionRealtimeMonitor {
             : eventTime.hour();
         
         // Outside business hours (before 8 AM or after 6 PM)
-        if (hour &lt; 8 || hour &gt;= 18) {
+        if (hour < 8 || hour >= 18) {
             factor += TIME_FACTOR_OUTSIDE_HOURS;
         }
         
@@ -238,7 +238,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param eventData The event data
      * @return Location factor score
      */
-    private static Integer calculateLocationFactor(Map&lt;String, Object&gt; eventData) {
+    private static Integer calculateLocationFactor(Map<String, Object> eventData) {
         Integer factor = 0;
         
         // Check country
@@ -260,7 +260,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param eventData The event data
      * @return Volume factor score
      */
-    private static Integer calculateVolumeFactor(Map&lt;String, Object&gt; eventData) {
+    private static Integer calculateVolumeFactor(Map<String, Object> eventData) {
         Integer factor = 0;
         
         // Get rows processed
@@ -276,9 +276,9 @@ public with sharing class PrometheionRealtimeMonitor {
         }
         
         // High volume (>1000 rows)
-        if (rows &gt; 10000) {
+        if (rows > 10000) {
             factor += VOLUME_FACTOR_CRITICAL;
-        } else if (rows &gt; 1000) {
+        } else if (rows > 1000) {
             factor += VOLUME_FACTOR_HIGH;
         }
         
@@ -290,7 +290,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param eventData The event data
      * @return User factor score
      */
-    private static Integer calculateUserFactor(Map&lt;String, Object&gt; eventData) {
+    private static Integer calculateUserFactor(Map<String, Object> eventData) {
         Integer factor = 0;
         
         String userId = getString(eventData, 'USER_ID');
@@ -326,8 +326,8 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param riskScore The calculated risk score
      * @return Risk reason string
      */
-    private static String buildRiskReason(Map&lt;String, Object&gt; eventData, Integer riskScore) {
-        List&lt;String&gt; reasons = new List&lt;String&gt;();
+    private static String buildRiskReason(Map<String, Object> eventData, Integer riskScore) {
+        List<String> reasons = new List<String>();
         
         String eventType = getString(eventData, 'EVENT_TYPE');
         reasons.add(eventType + ' event detected');
@@ -345,7 +345,7 @@ public with sharing class PrometheionRealtimeMonitor {
         String rowsStr = getString(eventData, 'ROWS_PROCESSED');
         if (String.isNotBlank(rowsStr)) {
             Integer rows = Integer.valueOf(rowsStr);
-            if (rows &gt; 10000) {
+            if (rows > 10000) {
                 reasons.add('Large data volume: ' + rows + ' rows');
             }
         }
@@ -380,13 +380,13 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param parsedEvent The parsed event data
      * @param riskScore The calculated risk score
      */
-    private static void publishEventNotification(Map&lt;String, Object&gt; parsedEvent, Integer riskScore) {
+    private static void publishEventNotification(Map<String, Object> parsedEvent, Integer riskScore) {
         Prometheion_Event__e notification = new Prometheion_Event__e(
             Event_Type__c = (String)parsedEvent.get('eventType'),
-            Payload__c = JSON.serialize(new Map&lt;String, Object&gt;{
-                'event' =&gt; parsedEvent,
-                'riskScore' =&gt; riskScore,
-                'processedAt' =&gt; Datetime.now()
+            Payload__c = JSON.serialize(new Map<String, Object>{
+                'event' => parsedEvent,
+                'riskScore' => riskScore,
+                'processedAt' => Datetime.now()
             })
         );
         
@@ -403,7 +403,7 @@ public with sharing class PrometheionRealtimeMonitor {
      * @param key Key to retrieve
      * @return String value or empty string
      */
-    private static String getString(Map&lt;String, Object&gt; data, String key) {
+    private static String getString(Map<String, Object> data, String key) {
         if (data == null || !data.containsKey(key)) {
             return '';
         }
@@ -438,7 +438,7 @@ public with sharing class PrometheionRealtimeMonitor {
         public String userId;
         public Integer riskScore;
         public String reason;
-        public Map&lt;String, Object&gt; eventData;
+        public Map<String, Object> eventData;
         public Datetime timestamp;
         public String severity; // CRITICAL, HIGH
         public Boolean requiresImmediate;

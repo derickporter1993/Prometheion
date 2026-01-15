@@ -14,7 +14,7 @@ public with sharing class NaturalLanguageQueryService {
     private static final Integer CACHE_TTL_SECONDS = 1800; // 30 min for queries
     
     // Allowed objects for querying (security)
-    private static final Set&lt;String&gt; ALLOWED_OBJECTS = new Set&lt;String&gt;{
+    private static final Set<String> ALLOWED_OBJECTS = new Set<String>{
         'Prometheion_Audit_Package__c',
         'Prometheion_Evidence_Item__c',
         'Prometheion_Framework_Mapping__c',
@@ -22,7 +22,7 @@ public with sharing class NaturalLanguageQueryService {
     };
     
     // Example queries for suggestions
-    private static final List&lt;String&gt; EXAMPLE_QUERIES = new List&lt;String&gt;{
+    private static final List<String> EXAMPLE_QUERIES = new List<String>{
         'Show me all admin privilege escalations in the last 30 days',
         'Which users accessed data outside business hours?',
         'What controls are failing for HIPAA?',
@@ -59,7 +59,7 @@ public with sharing class NaturalLanguageQueryService {
             if (!isSOQLSafe(generatedSOQL)) {
                 result.confidence = 0;
                 result.naturalLanguageSummary = 'Query rejected for security reasons.';
-                result.results = new List&lt;SObject&gt;();
+                result.results = new List<SObject>();
                 return result;
             }
             
@@ -67,7 +67,7 @@ public with sharing class NaturalLanguageQueryService {
             String secureSOQL = addSecurityEnforced(generatedSOQL);
             
             // Execute query with security enforcement
-            List&lt;SObject&gt; rawResults = Database.query(secureSOQL);
+            List<SObject> rawResults = Database.query(secureSOQL);
             
             // Strip inaccessible fields before returning to UI
             result.results = PrometheionSecurityUtils.stripInaccessibleFields(
@@ -83,7 +83,7 @@ public with sharing class NaturalLanguageQueryService {
             System.debug(LoggingLevel.ERROR, 'NL Query error: ' + e.getMessage());
             result.confidence = 0;
             result.naturalLanguageSummary = 'Error executing query: ' + e.getMessage();
-            result.results = new List&lt;SObject&gt;();
+            result.results = new List<SObject>();
         }
         
         return result;
@@ -95,8 +95,8 @@ public with sharing class NaturalLanguageQueryService {
      * @return List of suggested queries
      */
     @AuraEnabled(cacheable=true)
-    public static List&lt;String&gt; getQuerySuggestions(String partialQuery) {
-        List&lt;String&gt; suggestions = new List&lt;String&gt;();
+    public static List<String> getQuerySuggestions(String partialQuery) {
+        List<String> suggestions = new List<String>();
         
         if (String.isBlank(partialQuery)) {
             // Return example queries
@@ -116,8 +116,8 @@ public with sharing class NaturalLanguageQueryService {
         suggestions.addAll(getContextualSuggestions(partialQuery));
         
         // Limit results
-        if (suggestions.size() &gt; 10) {
-            suggestions = new List&lt;String&gt;(suggestions.subList(0, 10));
+        if (suggestions.size() > 10) {
+            suggestions = new List<String>(suggestions.subList(0, 10));
         }
         
         return suggestions;
@@ -165,10 +165,10 @@ public with sharing class NaturalLanguageQueryService {
      * @return List of recent queries
      */
     @AuraEnabled(cacheable=true)
-    public static List&lt;String&gt; getRecentQueries() {
+    public static List<String> getRecentQueries() {
         // In production, this would query a custom object storing query history
         // For now, return empty list
-        return new List&lt;String&gt;();
+        return new List<String>();
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -213,13 +213,13 @@ public with sharing class NaturalLanguageQueryService {
         req.setHeader('anthropic-version', '2023-06-01');
         req.setTimeout(30000);
         
-        Map&lt;String, Object&gt; body = new Map&lt;String, Object&gt;{
-            'model' =&gt; 'claude-sonnet-4-20250514',
-            'max_tokens' =&gt; 1024,
-            'messages' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'role' =&gt; 'user',
-                    'content' =&gt; prompt
+        Map<String, Object> body = new Map<String, Object>{
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 1024,
+            'messages' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'role' => 'user',
+                    'content' => prompt
                 }
             }
         };
@@ -254,11 +254,11 @@ public with sharing class NaturalLanguageQueryService {
      */
     private static String extractSOQLFromResponse(String response) {
         try {
-            Map&lt;String, Object&gt; responseMap = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(response);
-            List&lt;Object&gt; content = (List&lt;Object&gt;)responseMap.get('content');
+            Map<String, Object> responseMap = (Map<String, Object>)JSON.deserializeUntyped(response);
+            List<Object> content = (List<Object>)responseMap.get('content');
             
             if (content != null &amp;&amp; !content.isEmpty()) {
-                Map&lt;String, Object&gt; firstContent = (Map&lt;String, Object&gt;)content[0];
+                Map<String, Object> firstContent = (Map<String, Object>)content[0];
                 String text = (String)firstContent.get('text');
                 
                 // Clean up the response
@@ -373,8 +373,8 @@ public with sharing class NaturalLanguageQueryService {
     /**
      * @description Get contextual query suggestions
      */
-    private static List&lt;String&gt; getContextualSuggestions(String partialQuery) {
-        List&lt;String&gt; suggestions = new List&lt;String&gt;();
+    private static List<String> getContextualSuggestions(String partialQuery) {
+        List<String> suggestions = new List<String>();
         String lower = partialQuery.toLowerCase();
         
         if (lower.contains('admin') || lower.contains('privilege')) {
@@ -451,7 +451,7 @@ public with sharing class NaturalLanguageQueryService {
     public class QueryResult {
         @AuraEnabled public String originalQuery;
         @AuraEnabled public String generatedSOQL;
-        @AuraEnabled public List&lt;SObject&gt; results;
+        @AuraEnabled public List<SObject> results;
         @AuraEnabled public String naturalLanguageSummary;
         @AuraEnabled public Integer confidence; // 0-100
     }

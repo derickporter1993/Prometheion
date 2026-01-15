@@ -72,45 +72,95 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
     ) {
         IBreachNotificationService.BreachAssessment assessment =
             new IBreachNotificationService.BreachAssessment();
-        assessment.assessmentDate = DateTime.now();
+        assessment.framework = 'HIPAA';
 
-        // Factor 1: Nature and extent of PHI involved
-        assessment.factor1Score = calculateNatureExtentScore(request);
-        assessment.factor1Details = 'PHI types: ' + String.join(request.dataTypesInvolved, ', ') +
-            '. Records affected: ' + request.recordsAffected;
-
-        // Factor 2: Unauthorized person who used/received PHI
-        assessment.factor2Score = calculateUnauthorizedPersonScore(request);
-        assessment.factor2Details = 'Recipient type: ' + request.recipientType +
-            '. Authorization status: ' + (request.recipientAuthorized ? 'Covered Entity' : 'Unauthorized');
-
-        // Factor 3: Whether PHI was actually acquired or viewed
-        assessment.factor3Score = calculateAcquisitionScore(request);
-        assessment.factor3Details = 'Acquisition confirmed: ' + request.dataAcquired +
-            '. Viewing confirmed: ' + request.dataViewed;
-
-        // Factor 4: Extent to which risk has been mitigated
-        assessment.factor4Score = calculateMitigationScore(request);
-        assessment.factor4Details = 'Mitigations applied: ' + String.join(request.mitigationsApplied, ', ');
-
-        // Calculate overall risk score (average of 4 factors)
-        assessment.overallRiskScore = (
-            assessment.factor1Score +
-            assessment.factor2Score +
-            assessment.factor3Score +
-            assessment.factor4Score
-        ) / 4;
-
-        // Determine if notification is required (low probability = score < 3)
-        assessment.notificationRequired = assessment.overallRiskScore >= 3;
-        assessment.riskLevel = getRiskLevel(assessment.overallRiskScore);
-
+        // Calculate risk score based on request data
+        Decimal riskScore = 5.0; // Base score
+        
+        // Adjust based on records affected
+        if (request.recordsAffected != null) {
+            if (request.recordsAffected >= 500) {
+                riskScore += 3.0;
+            } else if (request.recordsAffected >= 100) {
+                riskScore += 2.0;
+            } else if (request.recordsAffected >= 10) {
+                riskScore += 1.0;
+            }
+        }
+        
+        // Adjust based on encryption
+        if (request.encryptionInPlace != null && !request.encryptionInPlace) {
+            riskScore += 2.0;
+        }
+        
+        // Adjust based on data types
+        if (request.dataTypesExposed != null && !request.dataTypesExposed.isEmpty()) {
+            riskScore += 1.0;
+        }
+        
+        assessment.riskScore = Math.min(riskScore, 10.0);
+        assessment.riskLevel = getRiskLevel(assessment.riskScore);
+        assessment.notificationRequired = assessment.riskScore >= 3.0;
+        
         // Set notification deadline if required
+        if (assessment.notificationRequired && request.discoveryDate != null) {
+            assessment.notificationDeadline = request.discoveryDate.addDays(NOTIFICATION_DEADLINE_DAYS);
+        } else if (assessment.notificationRequired) {
+            assessment.notificationDeadline = DateTime.now().addDays(NOTIFICATION_DEADLINE_DAYS);
+        }
+        
+        // Build analysis and mitigation steps
+        assessment.analysis = 'Breach assessment completed. Records affected: ' + 
+            (request.recordsAffected != null ? request.recordsAffected : 0) +
+            '. Encryption in place: ' + (request.encryptionInPlace != null ? request.encryptionInPlace : false);
+        
+        assessment.mitigationSteps = new List<String>{
+            'Notify affected individuals within 60 days',
+            'Document breach details and assessment',
+            'Implement additional safeguards if needed'
+        };
+        
+        // Determine notification types required
+        assessment.notificationTypes = new List<String>();
         if (assessment.notificationRequired) {
-            assessment.notificationDeadline = Date.today().addDays(NOTIFICATION_DEADLINE_DAYS);
+            assessment.notificationTypes.add('INDIVIDUAL');
+            if (request.recordsAffected != null && request.recordsAffected >= HHS_ANNUAL_THRESHOLD) {
+                assessment.notificationTypes.add('REGULATOR');
+                assessment.notificationTypes.add('MEDIA');
+            } else {
+                assessment.notificationTypes.add('REGULATOR');
+            }
+        }
+        
+        // Create breach record if needed
+        if (assessment.notificationRequired) {
+            HIPAA_Breach__c breach = new HIPAA_Breach__c(
+                Description__c = request.description,
+                Discovery_Date__c = request.discoveryDate != null ? request.discoveryDate.date() : Date.today(),
+                Notification_Deadline__c = assessment.notificationDeadline != null ? assessment.notificationDeadline.date() : Date.today().addDays(NOTIFICATION_DEADLINE_DAYS),
+                Records_Affected__c = request.recordsAffected != null ? request.recordsAffected : 0,
+                Breach_Type__c = request.incidentType,
+                Risk_Level__c = assessment.riskLevel,
+                Status__c = 'Open',
+                Notification_Required__c = true
+            );
+            
+            PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            insert breach;
+            assessment.breachId = breach.Id;
         }
 
         return assessment;
+    }
+    
+    /**
+     * Get risk level from score
+     */
+    private String getRiskLevel(Decimal score) {
+        if (score >= 8.0) return 'CRITICAL';
+        if (score >= 6.0) return 'HIGH';
+        if (score >= 4.0) return 'MEDIUM';
+        return 'LOW';
     }
 
     /**
@@ -214,6 +264,100 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         return summary;
     }
 
+    /**
+     * Create breach notification record
+     */
+    public Id createNotification(Id breachId, String notificationType) {
+        HIPAA_Breach__c breach = [
+            SELECT Id, Notification_Deadline__c
+            FROM HIPAA_Breach__c
+            WHERE Id = :breachId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+        
+        // Update breach record based on notification type
+        if (notificationType == 'INDIVIDUAL') {
+            breach.Individuals_Notified__c = true;
+            breach.Individual_Notification_Date__c = Date.today();
+        } else if (notificationType == 'REGULATOR') {
+            breach.HHS_Notified__c = true;
+            breach.HHS_Notification_Date__c = Date.today();
+        } else if (notificationType == 'MEDIA') {
+            breach.Media_Notified__c = true;
+            breach.Media_Notification_Date__c = Date.today();
+        }
+        
+        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_UPDATE);
+        update breach;
+        
+        logAuditEntry('HIPAA_Notification_Created', breachId, 'Created ' + notificationType + ' notification');
+        return breachId;
+    }
+    
+    /**
+     * Get notification deadline for a breach
+     */
+    public DateTime getNotificationDeadline(Id breachId) {
+        HIPAA_Breach__c breach = [
+            SELECT Notification_Deadline__c
+            FROM HIPAA_Breach__c
+            WHERE Id = :breachId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+        
+        return breach.Notification_Deadline__c != null 
+            ? DateTime.newInstance(breach.Notification_Deadline__c, Time.newInstance(0, 0, 0, 0))
+            : null;
+    }
+    
+    /**
+     * Generate breach report for regulators
+     */
+    public Id generateBreachReport(Id breachId) {
+        // This would typically generate a PDF report
+        // For now, return the breach ID as a placeholder
+        logAuditEntry('HIPAA_Breach_Report_Generated', breachId, 'Breach report generated');
+        return breachId;
+    }
+    
+    /**
+     * Get all open breaches requiring action
+     */
+    public List<IBreachNotificationService.BreachSummary> getOpenBreaches() {
+        List<IBreachNotificationService.BreachSummary> summaries = new List<IBreachNotificationService.BreachSummary>();
+        
+        List<HIPAA_Breach__c> breaches = [
+            SELECT Id, Name, Breach_Type__c, Risk_Level__c, Records_Affected__c,
+                   Discovery_Date__c, Notification_Deadline__c, Status__c
+            FROM HIPAA_Breach__c
+            WHERE Status__c != 'Closed'
+            WITH SECURITY_ENFORCED
+            ORDER BY Notification_Deadline__c ASC NULLS LAST
+        ];
+        
+        for (HIPAA_Breach__c breach : breaches) {
+            IBreachNotificationService.BreachSummary summary = new IBreachNotificationService.BreachSummary();
+            summary.breachId = breach.Id;
+            summary.incidentType = breach.Breach_Type__c;
+            summary.severity = breach.Risk_Level__c;
+            summary.recordsAffected = breach.Records_Affected__c != null ? breach.Records_Affected__c.intValue() : 0;
+            summary.discoveryDate = breach.Discovery_Date__c != null 
+                ? DateTime.newInstance(breach.Discovery_Date__c, Time.newInstance(0, 0, 0, 0))
+                : null;
+            summary.notificationDeadline = breach.Notification_Deadline__c != null
+                ? DateTime.newInstance(breach.Notification_Deadline__c, Time.newInstance(0, 0, 0, 0))
+                : null;
+            summary.status = breach.Status__c;
+            summary.framework = 'HIPAA';
+            summary.riskScore = 0.0; // Would need to calculate from breach data
+            summaries.add(summary);
+        }
+        
+        return summaries;
+    }
+    
     /**
      * Get breach metrics for reporting
      */
@@ -527,16 +671,6 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         }
 
         return Math.max(score, 1);
-    }
-
-    private String getRiskLevel(Decimal score) {
-        if (score >= 7) {
-            return 'High';
-        } else if (score >= 4) {
-            return 'Medium';
-        } else {
-            return 'Low';
-        }
     }
 
     // ========== Inner Classes ==========

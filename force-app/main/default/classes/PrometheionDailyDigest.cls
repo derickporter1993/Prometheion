@@ -59,7 +59,7 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
     public static void generateAndSendDigest() {
         DigestData digest = compileDigestData();
         sendDigestEmail(digest);
-        sendDigestToSlack(digest);
+        sendDigestToSlack(JSON.serialize(digest));
     }
     
     /**
@@ -282,7 +282,9 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
      * @description Send digest to Slack
      */
     @future(callout=true)
-    private static void sendDigestToSlack(DigestData digest) {
+    private static void sendDigestToSlack(String digestJson) {
+        // Deserialize digest data
+        DigestData digest = (DigestData)JSON.deserialize(digestJson, DigestData.class);
         // Build Slack message
         Map<String, Object> slackMessage = buildSlackMessage(digest);
         

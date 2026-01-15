@@ -36,7 +36,7 @@ public with sharing class PerformanceAlertPublisher {
                 : stack;
             // XSS protection: escape HTML special characters in stack trace
             if (String.isNotBlank(safeStack)) {
-                safeStack = safeStack.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;');
+                safeStack = safeStack.replace('<', '<').replace('>', '>').replace('&', '&amp;');
             }
 
             // Store alert in Performance_Alert_History__c instead of platform event

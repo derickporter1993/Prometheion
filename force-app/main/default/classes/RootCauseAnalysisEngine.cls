@@ -48,7 +48,7 @@ public with sharing class RootCauseAnalysisEngine {
             ];
             
             // Query related events (same user/time window)
-            List&lt;Prometheion_Evidence_Item__c&gt; relatedEvents = queryRelatedEvents(primaryEvent);
+            List<Prometheion_Evidence_Item__c> relatedEvents = queryRelatedEvents(primaryEvent);
             
             // Build analysis context
             AnalysisContext context = buildAnalysisContext(primaryEvent, relatedEvents);
@@ -76,8 +76,8 @@ public with sharing class RootCauseAnalysisEngine {
      * @return List of RootCauseResult objects
      */
     @AuraEnabled
-    public static List&lt;RootCauseResult&gt; batchAnalyze(List&lt;String&gt; eventIds) {
-        List&lt;RootCauseResult&gt; results = new List&lt;RootCauseResult&gt;();
+    public static List<RootCauseResult> batchAnalyze(List<String> eventIds) {
+        List<RootCauseResult> results = new List<RootCauseResult>();
         
         if (eventIds == null || eventIds.isEmpty()) {
             return results;
@@ -86,7 +86,7 @@ public with sharing class RootCauseAnalysisEngine {
         // Limit batch size to avoid callout limits
         Integer batchLimit = Math.min(eventIds.size(), 10);
         
-        for (Integer i = 0; i &lt; batchLimit; i++) {
+        for (Integer i = 0; i < batchLimit; i++) {
             try {
                 results.add(analyzeRootCause(eventIds[i]));
             } catch (Exception e) {
@@ -103,20 +103,20 @@ public with sharing class RootCauseAnalysisEngine {
      * @return Aggregated analysis summary
      */
     @AuraEnabled(cacheable=true)
-    public static AnalysisSummary getAnalysisSummary(List&lt;String&gt; eventIds) {
+    public static AnalysisSummary getAnalysisSummary(List<String> eventIds) {
         AnalysisSummary summary = new AnalysisSummary();
         summary.totalEvents = eventIds != null ? eventIds.size() : 0;
         summary.analyzedEvents = 0;
-        summary.commonRootCauses = new List&lt;String&gt;();
-        summary.topRemediation = new List&lt;String&gt;();
+        summary.commonRootCauses = new List<String>();
+        summary.topRemediation = new List<String>();
         
         if (eventIds == null || eventIds.isEmpty()) {
             return summary;
         }
         
         // Get cached results for these events
-        Map&lt;String, Integer&gt; causeCounts = new Map&lt;String, Integer&gt;();
-        Map&lt;String, Integer&gt; remediationCounts = new Map&lt;String, Integer&gt;();
+        Map<String, Integer> causeCounts = new Map<String, Integer>();
+        Map<String, Integer> remediationCounts = new Map<String, Integer>();
         
         for (String eventId : eventIds) {
             String cacheKey = 'rca_' + eventId;
@@ -154,7 +154,7 @@ public with sharing class RootCauseAnalysisEngine {
     /**
      * @description Query related events within time window
      */
-    private static List&lt;Prometheion_Evidence_Item__c&gt; queryRelatedEvents(Prometheion_Evidence_Item__c primaryEvent) {
+    private static List<Prometheion_Evidence_Item__c> queryRelatedEvents(Prometheion_Evidence_Item__c primaryEvent) {
         Date eventDate = primaryEvent.Evidence_Date__c;
         Date startDate = eventDate != null ? eventDate.addDays(-1) : Date.today().addDays(-1);
         Date endDate = eventDate != null ? eventDate.addDays(1) : Date.today().addDays(1);
@@ -164,8 +164,8 @@ public with sharing class RootCauseAnalysisEngine {
             FROM Prometheion_Evidence_Item__c
             WHERE Audit_Package__c = :primaryEvent.Audit_Package__c
             AND Id != :primaryEvent.Id
-            AND Evidence_Date__c &gt;= :startDate
-            AND Evidence_Date__c &lt;= :endDate
+            AND Evidence_Date__c >= :startDate
+            AND Evidence_Date__c <= :endDate
             ORDER BY Evidence_Date__c ASC
             LIMIT 50
         ];
@@ -175,14 +175,14 @@ public with sharing class RootCauseAnalysisEngine {
      * @description Build analysis context for AI
      */
     private static AnalysisContext buildAnalysisContext(Prometheion_Evidence_Item__c primary, 
-                                                        List&lt;Prometheion_Evidence_Item__c&gt; related) {
+                                                        List<Prometheion_Evidence_Item__c> related) {
         AnalysisContext ctx = new AnalysisContext();
         ctx.primaryEventType = primary.Evidence_Type__c;
         ctx.primaryDescription = primary.Description__c;
         ctx.framework = primary.Audit_Package__r?.Framework__c;
         ctx.eventDate = primary.Evidence_Date__c;
         ctx.relatedEventCount = related.size();
-        ctx.relatedEventTypes = new Set&lt;String&gt;();
+        ctx.relatedEventTypes = new Set<String>();
         
         for (Prometheion_Evidence_Item__c rel : related) {
             ctx.relatedEventTypes.add(rel.Evidence_Type__c);
@@ -219,7 +219,7 @@ public with sharing class RootCauseAnalysisEngine {
                'Description: ' + context.primaryDescription + '\n' +
                'Framework: ' + context.framework + '\n' +
                'Related Events (' + context.relatedEventCount + '): ' + 
-               String.join(new List&lt;String&gt;(context.relatedEventTypes), ', ') + '\n\n' +
+               String.join(new List<String>(context.relatedEventTypes), ', ') + '\n\n' +
                'Provide analysis in JSON format with:\n' +
                '- rootCause: string\n' +
                '- confidence: number (0-100)\n' +
@@ -240,13 +240,13 @@ public with sharing class RootCauseAnalysisEngine {
         req.setHeader('anthropic-version', '2023-06-01');
         req.setTimeout(60000);
         
-        Map&lt;String, Object&gt; body = new Map&lt;String, Object&gt;{
-            'model' =&gt; 'claude-sonnet-4-20250514',
-            'max_tokens' =&gt; 2048,
-            'messages' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'role' =&gt; 'user',
-                    'content' =&gt; prompt
+        Map<String, Object> body = new Map<String, Object>{
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 2048,
+            'messages' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'role' => 'user',
+                    'content' => prompt
                 }
             }
         };
@@ -271,14 +271,14 @@ public with sharing class RootCauseAnalysisEngine {
         result.status = 'SUCCESS';
         
         try {
-            Map&lt;String, Object&gt; responseMap = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(response);
-            List&lt;Object&gt; content = (List&lt;Object&gt;)responseMap.get('content');
+            Map<String, Object> responseMap = (Map<String, Object>)JSON.deserializeUntyped(response);
+            List<Object> content = (List<Object>)responseMap.get('content');
             
             if (content != null &amp;&amp; !content.isEmpty()) {
-                Map&lt;String, Object&gt; firstContent = (Map&lt;String, Object&gt;)content[0];
+                Map<String, Object> firstContent = (Map<String, Object>)content[0];
                 String text = (String)firstContent.get('text');
                 
-                Map&lt;String, Object&gt; rcaData = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(text);
+                Map<String, Object> rcaData = (Map<String, Object>)JSON.deserializeUntyped(text);
                 
                 result.rootCause = (String)rcaData.get('rootCause');
                 result.confidence = rcaData.containsKey('confidence') 
@@ -297,10 +297,10 @@ public with sharing class RootCauseAnalysisEngine {
         return result;
     }
     
-    private static List&lt;String&gt; parseStringList(Object obj) {
-        List&lt;String&gt; result = new List&lt;String&gt;();
-        if (obj != null &amp;&amp; obj instanceof List&lt;Object&gt;) {
-            for (Object item : (List&lt;Object&gt;)obj) {
+    private static List<String> parseStringList(Object obj) {
+        List<String> result = new List<String>();
+        if (obj != null &amp;&amp; obj instanceof List<Object>) {
+            for (Object item : (List<Object>)obj) {
                 result.add(String.valueOf(item));
             }
         }
@@ -308,26 +308,26 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     private static String getMockRCAResponse() {
-        Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-            'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'type' =&gt; 'text',
-                    'text' =&gt; JSON.serialize(new Map&lt;String, Object&gt;{
-                        'rootCause' =&gt; 'Unauthorized access attempt from suspicious IP',
-                        'confidence' =&gt; 85,
-                        'contributingFactors' =&gt; new List&lt;String&gt;{
+        Map<String, Object> response = new Map<String, Object>{
+            'content' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'type' => 'text',
+                    'text' => JSON.serialize(new Map<String, Object>{
+                        'rootCause' => 'Unauthorized access attempt from suspicious IP',
+                        'confidence' => 85,
+                        'contributingFactors' => new List<String>{
                             'Non-standard login hours',
                             'Foreign IP address'
                         },
-                        'evidenceChain' =&gt; new List&lt;String&gt;{
+                        'evidenceChain' => new List<String>{
                             'Login attempt at 2 AM',
                             'Multiple failed attempts before success'
                         },
-                        'remediation' =&gt; new List&lt;String&gt;{
+                        'remediation' => new List<String>{
                             'Enable MFA for this user',
                             'Review access policies'
                         },
-                        'preventionMeasures' =&gt; new List&lt;String&gt;{
+                        'preventionMeasures' => new List<String>{
                             'Implement geo-blocking',
                             'Add time-based access controls'
                         }
@@ -344,18 +344,18 @@ public with sharing class RootCauseAnalysisEngine {
         result.status = 'ERROR';
         result.errorMessage = errorMsg;
         result.confidence = 0;
-        result.contributingFactors = new List&lt;String&gt;();
-        result.evidenceChain = new List&lt;String&gt;();
-        result.remediation = new List&lt;String&gt;();
-        result.preventionMeasures = new List&lt;String&gt;();
+        result.contributingFactors = new List<String>();
+        result.evidenceChain = new List<String>();
+        result.remediation = new List<String>();
+        result.preventionMeasures = new List<String>();
         return result;
     }
     
-    private static List&lt;String&gt; getTopItems(Map&lt;String, Integer&gt; counts, Integer limit) {
-        List&lt;String&gt; items = new List&lt;String&gt;(counts.keySet());
+    private static List<String> getTopItems(Map<String, Integer> counts, Integer limit) {
+        List<String> items = new List<String>(counts.keySet());
         // Simple sort by count
         items.sort();
-        return items.size() &gt; limit ? new List&lt;String&gt;(items.subList(0, limit)) : items;
+        return items.size() > limit ? new List<String>(items.subList(0, limit)) : items;
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -388,10 +388,10 @@ public with sharing class RootCauseAnalysisEngine {
         @AuraEnabled public String eventId;
         @AuraEnabled public String rootCause;
         @AuraEnabled public Integer confidence; // 0-100
-        @AuraEnabled public List&lt;String&gt; contributingFactors;
-        @AuraEnabled public List&lt;String&gt; evidenceChain;
-        @AuraEnabled public List&lt;String&gt; remediation;
-        @AuraEnabled public List&lt;String&gt; preventionMeasures;
+        @AuraEnabled public List<String> contributingFactors;
+        @AuraEnabled public List<String> evidenceChain;
+        @AuraEnabled public List<String> remediation;
+        @AuraEnabled public List<String> preventionMeasures;
         @AuraEnabled public String status; // SUCCESS, ERROR
         @AuraEnabled public String errorMessage;
     }
@@ -402,13 +402,13 @@ public with sharing class RootCauseAnalysisEngine {
         public String framework;
         public Date eventDate;
         public Integer relatedEventCount;
-        public Set&lt;String&gt; relatedEventTypes;
+        public Set<String> relatedEventTypes;
     }
     
     public class AnalysisSummary {
         @AuraEnabled public Integer totalEvents;
         @AuraEnabled public Integer analyzedEvents;
-        @AuraEnabled public List&lt;String&gt; commonRootCauses;
-        @AuraEnabled public List&lt;String&gt; topRemediation;
+        @AuraEnabled public List<String> commonRootCauses;
+        @AuraEnabled public List<String> topRemediation;
     }
 }

@@ -11,10 +11,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseLoginEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockLoginEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseLoginEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseLoginEvent(raw);
         Test.stopTest();
         
         System.assertEquals('Login', parsed.get('eventType'), 'Event type should be Login');
@@ -26,14 +26,14 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseLoginEvent_GeoLocationBuilt() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'CITY' =&gt; 'San Francisco',
-            'SUBDIVISION' =&gt; 'California',
-            'COUNTRY' =&gt; 'United States'
+        Map<String, Object> raw = new Map<String, Object>{
+            'CITY' => 'San Francisco',
+            'SUBDIVISION' => 'California',
+            'COUNTRY' => 'United States'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseLoginEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseLoginEvent(raw);
         Test.stopTest();
         
         String geoLocation = (String)parsed.get('geoLocation');
@@ -44,10 +44,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseLoginEvent_EmptyInput() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;();
+        Map<String, Object> raw = new Map<String, Object>();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseLoginEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseLoginEvent(raw);
         Test.stopTest();
         
         System.assertEquals('Login', parsed.get('eventType'), 'Event type should be Login');
@@ -60,10 +60,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseLoginAsEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockLoginAsEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockLoginAsEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseLoginAsEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseLoginAsEvent(raw);
         Test.stopTest();
         
         System.assertEquals('LoginAs', parsed.get('eventType'), 'Event type should be LoginAs');
@@ -80,10 +80,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseReportExportEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockReportExportEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockReportExportEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseReportExportEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseReportExportEvent(raw);
         Test.stopTest();
         
         System.assertEquals('ReportExport', parsed.get('eventType'), 'Event type should be ReportExport');
@@ -94,12 +94,12 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseReportExportEvent_LargeExportFlagged() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'ROWS_PROCESSED' =&gt; '5000'
+        Map<String, Object> raw = new Map<String, Object>{
+            'ROWS_PROCESSED' => '5000'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseReportExportEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseReportExportEvent(raw);
         Test.stopTest();
         
         System.assertEquals(true, parsed.get('isLargeExport'), 'Should be flagged as large export');
@@ -108,12 +108,12 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseReportExportEvent_CriticalExportFlagged() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'ROWS_PROCESSED' =&gt; '15000'
+        Map<String, Object> raw = new Map<String, Object>{
+            'ROWS_PROCESSED' => '15000'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseReportExportEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseReportExportEvent(raw);
         Test.stopTest();
         
         System.assertEquals(true, parsed.get('isLargeExport'), 'Should be flagged as large export');
@@ -126,10 +126,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseApiEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockApiEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockApiEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseApiEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseApiEvent(raw);
         Test.stopTest();
         
         System.assertEquals('API', parsed.get('eventType'), 'Event type should be API');
@@ -139,12 +139,12 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseApiEvent_BulkOperationFlagged() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'ROWS_PROCESSED' =&gt; '500'
+        Map<String, Object> raw = new Map<String, Object>{
+            'ROWS_PROCESSED' => '500'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseApiEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseApiEvent(raw);
         Test.stopTest();
         
         System.assertEquals(true, parsed.get('isBulkOperation'), 'Should be flagged as bulk operation');
@@ -156,10 +156,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseContentDistributionEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockContentDistributionEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockContentDistributionEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseContentDistributionEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseContentDistributionEvent(raw);
         Test.stopTest();
         
         System.assertEquals('ContentDistribution', parsed.get('eventType'), 
@@ -172,13 +172,13 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseContentDistributionEvent_UnprotectedPublicFlagged() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'DISTRIBUTION_TYPE' =&gt; 'Public',
-            'IS_PASSWORD_PROTECTED' =&gt; 'false'
+        Map<String, Object> raw = new Map<String, Object>{
+            'DISTRIBUTION_TYPE' => 'Public',
+            'IS_PASSWORD_PROTECTED' => 'false'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseContentDistributionEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseContentDistributionEvent(raw);
         Test.stopTest();
         
         System.assertEquals(true, parsed.get('isUnprotectedPublic'), 
@@ -191,10 +191,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseApexExecutionEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockApexExecutionEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockApexExecutionEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseApexExecutionEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseApexExecutionEvent(raw);
         Test.stopTest();
         
         System.assertEquals('ApexExecution', parsed.get('eventType'), 
@@ -205,13 +205,13 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseApexExecutionEvent_ResourceIntensiveFlagged() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'CPU_TIME' =&gt; '7000',
-            'EXEC_TIME' =&gt; '15000'
+        Map<String, Object> raw = new Map<String, Object>{
+            'CPU_TIME' => '7000',
+            'EXEC_TIME' => '15000'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseApexExecutionEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseApexExecutionEvent(raw);
         Test.stopTest();
         
         System.assertEquals(true, parsed.get('isResourceIntensive'), 
@@ -224,10 +224,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParsePermissionSetEvent_AllFieldsMapped() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockPermissionSetEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockPermissionSetEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parsePermissionSetEvent(raw);
+        Map<String, Object> parsed = PrometheionEventParser.parsePermissionSetEvent(raw);
         Test.stopTest();
         
         System.assertEquals('PermissionSetEventLog', parsed.get('eventType'), 
@@ -244,10 +244,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseEvent_LoginType() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockLoginEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseEvent('Login', raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseEvent('Login', raw);
         Test.stopTest();
         
         System.assertEquals('Login', parsed.get('eventType'), 'Should use Login parser');
@@ -256,10 +256,10 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseEvent_LoginAsType() {
-        Map&lt;String, Object&gt; raw = PrometheionTestDataFactory.createMockLoginAsEvent();
+        Map<String, Object> raw = PrometheionTestDataFactory.createMockLoginAsEvent();
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseEvent('LoginAs', raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseEvent('LoginAs', raw);
         Test.stopTest();
         
         System.assertEquals('LoginAs', parsed.get('eventType'), 'Should use LoginAs parser');
@@ -267,12 +267,12 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseEvent_UnknownType_ReturnsRawWithEventType() {
-        Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{
-            'SOME_FIELD' =&gt; 'someValue'
+        Map<String, Object> raw = new Map<String, Object>{
+            'SOME_FIELD' => 'someValue'
         };
         
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseEvent('UnknownType', raw);
+        Map<String, Object> parsed = PrometheionEventParser.parseEvent('UnknownType', raw);
         Test.stopTest();
         
         System.assertEquals('UnknownType', parsed.get('eventType'), 
@@ -283,15 +283,15 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testParseEvent_AllSupportedTypes() {
-        List&lt;String&gt; supportedTypes = new List&lt;String&gt;{
+        List<String> supportedTypes = new List<String>{
             'Login', 'LoginAs', 'ReportExport', 'API', 
             'ContentDistribution', 'ApexExecution', 'PermissionSetEventLog'
         };
         
         Test.startTest();
         for (String eventType : supportedTypes) {
-            Map&lt;String, Object&gt; raw = new Map&lt;String, Object&gt;{'TEST' =&gt; 'value'};
-            Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseEvent(eventType, raw);
+            Map<String, Object> raw = new Map<String, Object>{'TEST' => 'value'};
+            Map<String, Object> parsed = PrometheionEventParser.parseEvent(eventType, raw);
             System.assertEquals(eventType, parsed.get('eventType'), 
                 eventType + ' should be parsed correctly');
         }
@@ -301,7 +301,7 @@ private class PrometheionEventParserTest {
     @isTest
     static void testParseEvent_NullInput() {
         Test.startTest();
-        Map&lt;String, Object&gt; parsed = PrometheionEventParser.parseEvent('Login', null);
+        Map<String, Object> parsed = PrometheionEventParser.parseEvent('Login', null);
         Test.stopTest();
         
         System.assertEquals('Login', parsed.get('eventType'), 'Should handle null input');
@@ -313,14 +313,14 @@ private class PrometheionEventParserTest {
     
     @isTest
     static void testBatchParseEvents_MultipleEvents() {
-        List&lt;Map&lt;String, Object&gt;&gt; rawEvents = new List&lt;Map&lt;String, Object&gt;&gt;{
+        List<Map<String, Object>> rawEvents = new List<Map<String, Object>>{
             PrometheionTestDataFactory.createMockLoginEvent(),
             PrometheionTestDataFactory.createMockLoginEvent(),
             PrometheionTestDataFactory.createMockLoginEvent()
         };
         
         Test.startTest();
-        List&lt;Map&lt;String, Object&gt;&gt; parsedEvents = PrometheionEventParser.batchParseEvents(
+        List<Map<String, Object>> parsedEvents = PrometheionEventParser.batchParseEvents(
             'Login', rawEvents);
         Test.stopTest();
         
@@ -330,8 +330,8 @@ private class PrometheionEventParserTest {
     @isTest
     static void testBatchParseEvents_EmptyList() {
         Test.startTest();
-        List&lt;Map&lt;String, Object&gt;&gt; parsedEvents = PrometheionEventParser.batchParseEvents(
-            'Login', new List&lt;Map&lt;String, Object&gt;&gt;());
+        List<Map<String, Object>> parsedEvents = PrometheionEventParser.batchParseEvents(
+            'Login', new List<Map<String, Object>>());
         Test.stopTest();
         
         System.assertEquals(0, parsedEvents.size(), 'Should return empty list');
@@ -340,7 +340,7 @@ private class PrometheionEventParserTest {
     @isTest
     static void testBatchParseEvents_NullList() {
         Test.startTest();
-        List&lt;Map&lt;String, Object&gt;&gt; parsedEvents = PrometheionEventParser.batchParseEvents(
+        List<Map<String, Object>> parsedEvents = PrometheionEventParser.batchParseEvents(
             'Login', null);
         Test.stopTest();
         

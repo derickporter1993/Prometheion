@@ -174,12 +174,12 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             Compliance_Gap__c gap = new Compliance_Gap__c();
             gap.Gap_Type__c = 'Access Control';
             gap.Framework__c = 'SOC2';
-            gap.Severity__c = 'Medium';
-            gap.Status__c = 'Open';
-            gap.Description__c = 'User has ' + permSetCount + ' permission sets assigned. ' +
+            gap.Severity__c = 'MEDIUM';
+            gap.Status__c = 'OPEN';
+            gap.Gap_Description__c = 'User has ' + permSetCount + ' permission sets assigned. ' +
                 'Review for excessive access per principle of least privilege.';
-            gap.Remediation_Steps__c = 'Review all permission set assignments and remove unnecessary access.';
-            gap.Due_Date__c = Date.today().addDays(30);
+            gap.Remediation_Plan__c = 'Review all permission set assignments and remove unnecessary access.';
+            gap.Target_Remediation_Date__c = Date.today().addDays(30);
 
             PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
             insert gap;

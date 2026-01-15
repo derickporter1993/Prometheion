@@ -28,14 +28,14 @@ public with sharing class AlertHistoryService {
         };
         PrometheionSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
         
-        Integer limit = Math.max(1, limitSize);
+        Integer limitValue = Math.max(1, limitSize);
         List<AlertRow> out = new List<AlertRow>();
         for (Performance_Alert_History__c r : [
             SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
             FROM Performance_Alert_History__c
             WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
-            LIMIT :limit
+            LIMIT :limitValue
         ]) {
             out.add(new AlertRow(r));
         }

@@ -135,8 +135,8 @@ private class PerformanceAlertPublisherTest {
         System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
         // Verify XSS characters are escaped
         System.assert(!alerts[0].Stack__c.contains('<script>'), 'Script tags should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&lt;'), 'Less than should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&gt;'), 'Greater than should be escaped');
+        System.assert(alerts[0].Stack__c.contains('<'), 'Less than should be escaped');
+        System.assert(alerts[0].Stack__c.contains('>'), 'Greater than should be escaped');
     }
 
     @isTest

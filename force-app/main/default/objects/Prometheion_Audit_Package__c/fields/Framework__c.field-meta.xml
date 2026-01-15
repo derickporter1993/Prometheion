@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Framework__c</fullName>
+    <label>Framework</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SOX</fullName>
+                <default>false</default>
+                <label>SOX</label>
+            </value>
+            <value>
+                <fullName>SOC2</fullName>
+                <default>false</default>
+                <label>SOC 2</label>
+            </value>
+            <value>
+                <fullName>HIPAA</fullName>
+                <default>false</default>
+                <label>HIPAA</label>
+            </value>
+            <value>
+                <fullName>GDPR</fullName>
+                <default>false</default>
+                <label>GDPR</label>
+            </value>
+            <value>
+                <fullName>CCPA</fullName>
+                <default>false</default>
+                <label>CCPA</label>
+            </value>
+            <value>
+                <fullName>GLBA</fullName>
+                <default>false</default>
+                <label>GLBA</label>
+            </value>
+            <value>
+                <fullName>NIST</fullName>
+                <default>false</default>
+                <label>NIST 800-53</label>
+            </value>
+            <value>
+                <fullName>ISO27001</fullName>
+                <default>false</default>
+                <label>ISO 27001</label>
+            </value>
+            <value>
+                <fullName>PCI_DSS</fullName>
+                <default>false</default>
+                <label>PCI-DSS</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

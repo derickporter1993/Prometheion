@@ -11,25 +11,25 @@ public with sharing class PrometheionShieldService {
     // ═══════════════════════════════════════════════════════════════
     
     // Supported event types with their risk levels
-    private static final Map&lt;String, String&gt; EVENT_RISK_LEVELS = new Map&lt;String, String&gt;{
-        'LoginAs' =&gt; 'CRITICAL',
-        'ReportExport' =&gt; 'CRITICAL',
-        'ContentDistribution' =&gt; 'CRITICAL',
-        'BulkApiResult' =&gt; 'HIGH',
-        'API' =&gt; 'HIGH',
-        'PermissionSetEventLog' =&gt; 'HIGH',
-        'Login' =&gt; 'MEDIUM',
-        'Report' =&gt; 'MEDIUM',
-        'ApexExecution' =&gt; 'MEDIUM',
-        'FlowExecution' =&gt; 'MEDIUM',
-        'Logout' =&gt; 'LOW',
-        'URI' =&gt; 'LOW',
-        'LightningInteraction' =&gt; 'LOW',
-        'LightningPageView' =&gt; 'LOW'
+    private static final Map<String, String> EVENT_RISK_LEVELS = new Map<String, String>{
+        'LoginAs' => 'CRITICAL',
+        'ReportExport' => 'CRITICAL',
+        'ContentDistribution' => 'CRITICAL',
+        'BulkApiResult' => 'HIGH',
+        'API' => 'HIGH',
+        'PermissionSetEventLog' => 'HIGH',
+        'Login' => 'MEDIUM',
+        'Report' => 'MEDIUM',
+        'ApexExecution' => 'MEDIUM',
+        'FlowExecution' => 'MEDIUM',
+        'Logout' => 'LOW',
+        'URI' => 'LOW',
+        'LightningInteraction' => 'LOW',
+        'LightningPageView' => 'LOW'
     };
     
     // Valid event types for querying
-    private static final Set&lt;String&gt; VALID_EVENT_TYPES = EVENT_RISK_LEVELS.keySet();
+    private static final Set<String> VALID_EVENT_TYPES = EVENT_RISK_LEVELS.keySet();
     
     // ═══════════════════════════════════════════════════════════════
     // PUBLIC METHODS
@@ -44,11 +44,11 @@ public with sharing class PrometheionShieldService {
      * @throws AuraHandledException if event type is invalid or query fails
      */
     @AuraEnabled(cacheable=true)
-    public static List&lt;EventLogFile&gt; getEventLogFiles(String eventType, Date startDate, Date endDate) {
+    public static List<EventLogFile> getEventLogFiles(String eventType, Date startDate, Date endDate) {
         // Validate event type
         if (!VALID_EVENT_TYPES.contains(eventType)) {
             throw new AuraHandledException('Invalid event type: ' + eventType + 
-                '. Valid types are: ' + String.join(new List&lt;String&gt;(VALID_EVENT_TYPES), ', '));
+                '. Valid types are: ' + String.join(new List<String>(VALID_EVENT_TYPES), ', '));
         }
         
         // Validate date range
@@ -56,7 +56,7 @@ public with sharing class PrometheionShieldService {
             throw new AuraHandledException('Start date and end date are required');
         }
         
-        if (startDate &gt; endDate) {
+        if (startDate > endDate) {
             throw new AuraHandledException('Start date must be before end date');
         }
         
@@ -70,8 +70,8 @@ public with sharing class PrometheionShieldService {
                 SELECT Id, EventType, LogDate, LogFileLength, LogFile, Interval, Sequence, CreatedDate
                 FROM EventLogFile
                 WHERE EventType = :eventType
-                AND LogDate &gt;= :startDate
-                AND LogDate &lt;= :endDate
+                AND LogDate >= :startDate
+                AND LogDate <= :endDate
                 ORDER BY LogDate DESC
                 LIMIT 1000
             ];
@@ -87,7 +87,7 @@ public with sharing class PrometheionShieldService {
      * @throws AuraHandledException if parsing fails
      */
     @AuraEnabled
-    public static List&lt;Map&lt;String, Object&gt;&gt; parseEventLogContent(String logFileId) {
+    public static List<Map<String, Object>> parseEventLogContent(String logFileId) {
         if (String.isBlank(logFileId)) {
             throw new AuraHandledException('Log file ID is required');
         }
@@ -142,8 +142,8 @@ public with sharing class PrometheionShieldService {
      * @return List of available event type names
      */
     @AuraEnabled(cacheable=true)
-    public static List&lt;String&gt; getAvailableEventTypes() {
-        Set&lt;String&gt; availableTypes = new Set&lt;String&gt;();
+    public static List<String> getAvailableEventTypes() {
+        Set<String> availableTypes = new Set<String>();
         
         try {
             // Query distinct event types from EventLogFile
@@ -166,7 +166,7 @@ public with sharing class PrometheionShieldService {
             System.debug(LoggingLevel.WARN, 'Unable to query EventLogFile: ' + e.getMessage());
         }
         
-        return new List&lt;String&gt;(availableTypes);
+        return new List<String>(availableTypes);
     }
     
     /**
@@ -174,13 +174,13 @@ public with sharing class PrometheionShieldService {
      * @return Map containing Shield feature availability
      */
     @AuraEnabled(cacheable=true)
-    public static Map&lt;String, Object&gt; getShieldStatus() {
-        Map&lt;String, Object&gt; status = new Map&lt;String, Object&gt;{
-            'shieldEnabled' =&gt; false,
-            'eventMonitoring' =&gt; false,
-            'platformEncryption' =&gt; false,
-            'fieldAuditTrail' =&gt; false,
-            'availableEventTypes' =&gt; new List&lt;String&gt;()
+    public static Map<String, Object> getShieldStatus() {
+        Map<String, Object> status = new Map<String, Object>{
+            'shieldEnabled' => false,
+            'eventMonitoring' => false,
+            'platformEncryption' => false,
+            'fieldAuditTrail' => false,
+            'availableEventTypes' => new List<String>()
         };
         
         try {
@@ -198,7 +198,7 @@ public with sharing class PrometheionShieldService {
                 Integer tenantSecretCount = Database.countQuery(
                     'SELECT COUNT() FROM TenantSecret WHERE Status = \'Active\''
                 );
-                status.put('platformEncryption', tenantSecretCount &gt; 0);
+                status.put('platformEncryption', tenantSecretCount > 0);
             } catch (Exception e) {
                 status.put('platformEncryption', false);
             }
@@ -229,7 +229,7 @@ public with sharing class PrometheionShieldService {
      * @return Map of event type to risk level
      */
     @AuraEnabled(cacheable=true)
-    public static Map&lt;String, String&gt; getEventRiskLevels() {
+    public static Map<String, String> getEventRiskLevels() {
         return EVENT_RISK_LEVELS;
     }
     
@@ -242,34 +242,34 @@ public with sharing class PrometheionShieldService {
      * @param csvContent The CSV string to parse
      * @return List of maps representing each row
      */
-    private static List&lt;Map&lt;String, Object&gt;&gt; parseCSVContent(String csvContent) {
-        List&lt;Map&lt;String, Object&gt;&gt; results = new List&lt;Map&lt;String, Object&gt;&gt;();
+    private static List<Map<String, Object>> parseCSVContent(String csvContent) {
+        List<Map<String, Object>> results = new List<Map<String, Object>>();
         
         if (String.isBlank(csvContent)) {
             return results;
         }
         
         // Split into lines
-        List&lt;String&gt; lines = csvContent.split('\n');
+        List<String> lines = csvContent.split('\n');
         
-        if (lines.size() &lt; 2) {
+        if (lines.size() < 2) {
             return results; // No data rows
         }
         
         // Parse header row
-        List&lt;String&gt; headers = parseCSVLine(lines[0]);
+        List<String> headers = parseCSVLine(lines[0]);
         
         // Parse data rows
-        for (Integer i = 1; i &lt; lines.size(); i++) {
+        for (Integer i = 1; i < lines.size(); i++) {
             String line = lines[i].trim();
             if (String.isBlank(line)) {
                 continue;
             }
             
-            List&lt;String&gt; values = parseCSVLine(line);
-            Map&lt;String, Object&gt; row = new Map&lt;String, Object&gt;();
+            List<String> values = parseCSVLine(line);
+            Map<String, Object> row = new Map<String, Object>();
             
-            for (Integer j = 0; j &lt; headers.size() &amp;&amp; j &lt; values.size(); j++) {
+            for (Integer j = 0; j < headers.size() &amp;&amp; j < values.size(); j++) {
                 row.put(headers[j], values[j]);
             }
             
@@ -284,8 +284,8 @@ public with sharing class PrometheionShieldService {
      * @param line The CSV line to parse
      * @return List of field values
      */
-    private static List&lt;String&gt; parseCSVLine(String line) {
-        List&lt;String&gt; fields = new List&lt;String&gt;();
+    private static List<String> parseCSVLine(String line) {
+        List<String> fields = new List<String>();
         
         if (String.isBlank(line)) {
             return fields;
@@ -294,12 +294,12 @@ public with sharing class PrometheionShieldService {
         Boolean inQuotes = false;
         String currentField = '';
         
-        for (Integer i = 0; i &lt; line.length(); i++) {
+        for (Integer i = 0; i < line.length(); i++) {
             String c = line.substring(i, i + 1);
             
             if (c == '"') {
                 // Check for escaped quote
-                if (i + 1 &lt; line.length() &amp;&amp; line.substring(i + 1, i + 2) == '"') {
+                if (i + 1 < line.length() &amp;&amp; line.substring(i + 1, i + 2) == '"') {
                     currentField += '"';
                     i++; // Skip next quote
                 } else {

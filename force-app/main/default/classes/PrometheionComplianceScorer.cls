@@ -445,7 +445,6 @@ public with sharing class PrometheionComplianceScorer {
                 WHERE PermissionSet.PermissionsModifyAllData = true
                 AND Assignee.IsActive = true
                 WITH USER_MODE
-                LIMIT 1
             ];
             if (!modifyAllResults.isEmpty()) {
                 modifyAllUsers = (Integer)modifyAllResults[0].get('assignmentCount');
@@ -473,7 +472,6 @@ public with sharing class PrometheionComplianceScorer {
                 WHERE IsActive = true
                 AND LastLoginDate < LAST_N_DAYS:90
                 WITH USER_MODE
-                LIMIT 1
             ];
             if (!inactiveResults.isEmpty()) {
                 inactiveUsersWithAccess = (Integer)inactiveResults[0].get('userCount');
