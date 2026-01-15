@@ -9,7 +9,7 @@
 |------|--------|---------|
 | Core v3.0 | COMPLETE | All 10 compliance frameworks |
 | Security | APPROVED | CRUD/FLS, no injection vulnerabilities |
-| Test Coverage | 48% | Need 75% for AppExchange (269 classes, 119 tests) |
+| Test Coverage | ~52%* | Need 75% for AppExchange (269 classes, 140 tests*) |
 | P1 Blockers | 11/12 done | Only framework validation remaining |
 | v1.5 Features | COMPLETE | All 6 features delivered |
 | CLI Tool | COMPLETE | Prometheion CLI added (PR #114) |
@@ -31,6 +31,10 @@ Update TASK_AUDITOR.md as you complete tasks.
 - ~~P1: Trigger recursion guards (3 triggers)~~ ✅ COMPLETE
 - ~~P1: Bulk tests 200+ records (4 test classes)~~ ✅ COMPLETE
 - ~~P1: LWC test coverage (28 components)~~ ✅ COMPLETE (559 tests passing)
+- ~~Test classes for 21 service/scheduler classes~~ ✅ COMPLETE (2026-01-14)
+- ~~CI/Platform fixes (Corepack, TypeScript)~~ ✅ COMPLETE (2026-01-14)
+
+*Note: Test coverage will improve once `cursor/add-test-classes-for-7-classes` branch is merged (21 new test classes)*
 
 **CLAUDE Tasks** (Architectural):
 - ~~v1.5: Compliance Report Scheduler (Week 1)~~ ✅ COMPLETE
