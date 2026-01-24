@@ -12,6 +12,10 @@
 
 import { createElement } from "lwc";
 import FlowExecutionMonitor from "c/flowExecutionMonitor";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+} from "../../__tests__/axeTestHelper";
 
 // Mock imperative Apex call
 let mockFlowsResult = null;
@@ -238,5 +242,45 @@ describe("c-flow-execution-monitor", () => {
       // key-field is set via property, verify datatable exists
       expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
     });
+  });
+
+  describe("Accessibility (axe)", () => {
+    // Use real timers for axe tests to avoid timeout conflicts
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it("should have no accessibility violations", async () => {
+      mockFlowsResult = MOCK_FLOWS;
+      const element = createElement("c-flow-execution-monitor", {
+        is: FlowExecutionMonitor,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    }, 30000);
+
+    it("should have valid heading hierarchy", async () => {
+      mockFlowsResult = MOCK_FLOWS;
+      const element = createElement("c-flow-execution-monitor", {
+        is: FlowExecutionMonitor,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
+    }, 30000);
   });
 });

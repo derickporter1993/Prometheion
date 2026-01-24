@@ -23,7 +23,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
      * Abstract method - framework-specific control evaluation
      * @return List of violations found
      */
-    protected abstract List<Violation> evaluateControls();
+    protected abstract List<ComplianceServiceBase.InternalViolation> evaluateControls();
 
     /**
      * Abstract method - framework-specific score multiplier
@@ -43,7 +43,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
         }
 
         List<Compliance_Policy__mdt> policies = [
-            SELECT DeveloperName, MasterLabel, Framework__c, Policy_Code__c,
+            SELECT DeveloperName, MasterLabel, Framework__c,
                    Policy_Description__c, Legal_Citation__c, Remediation_Steps__c,
                    Severity__c, Control_Category__c, Risk_Weight__c, Active__c
             FROM Compliance_Policy__mdt
@@ -129,7 +129,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
             Description__c = description,
             Evidence_Data__c = evidenceData,
             Policy_Reference__c = policyReference,
-            Evidence_Date__c = DateTime.now(),
+            Evidence_Date__c = Date.today(),
             Status__c = 'COLLECTED'
         );
 
@@ -285,7 +285,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
         for (String policyRef : gapPenalties.keySet()) {
             Decimal policyWeight = 5.0; // Default weight
             for (Compliance_Policy__mdt policy : policies) {
-                if (policy.DeveloperName == policyRef || policy.Policy_Code__c == policyRef) {
+                if (policy.DeveloperName == policyRef) {
                     policyWeight = policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0;
                     break;
                 }
@@ -303,13 +303,30 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
      * Implementation of IRiskScoringService
      */
     public List<Violation> getViolations() {
-        return evaluateControls();
+        // IRiskScoringService expects List<Violation> (standalone class)
+        // but evaluateControls() returns List<ComplianceServiceBase.InternalViolation> (inner class)
+        // Convert inner violations to standalone Violation instances
+        List<Violation> violations = new List<Violation>();
+        List<ComplianceServiceBase.InternalViolation> innerViolations = evaluateControls();
+        for (ComplianceServiceBase.InternalViolation v : innerViolations) {
+            Violation violation = new Violation();
+            violation.title = v.title;
+            violation.description = v.description;
+            violation.severity = v.severity;
+            violation.remediation = v.remediation != null ? v.remediation : '';
+            violation.entityId = v.entityId;
+            violation.riskScore = v.riskScore;
+            violations.add(violation);
+        }
+        return violations;
     }
 
     /**
-     * Violation data structure
+     * Violation data structure (internal - for framework-specific use)
+     * Note: IRiskScoringService.getViolations() returns List<Violation> (standalone class)
+     * Renamed to InternalViolation to avoid shadowing the standalone Violation class
      */
-    public class Violation {
+    public class InternalViolation {
         @AuraEnabled public String title;
         @AuraEnabled public String description;
         @AuraEnabled public String severity;
@@ -319,7 +336,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
         @AuraEnabled public String entityType;
         @AuraEnabled public String entityId;
 
-        public Violation(String title, String description, String severity,
+        public InternalViolation(String title, String description, String severity,
                         String policyReference, String remediation, Decimal riskScore) {
             this.title = title;
             this.description = description;

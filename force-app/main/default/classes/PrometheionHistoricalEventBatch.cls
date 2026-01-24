@@ -4,7 +4,7 @@
  * @group Shield Integration
  * @author Prometheion Team
  */
-public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SObject&gt;, Database.Stateful {
+public class PrometheionHistoricalEventBatch implements Database.Batchable<SObject>, Database.Stateful {
     
     // ═══════════════════════════════════════════════════════════════
     // CONSTANTS
@@ -28,7 +28,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
     private Integer totalFilesProcessed = 0;
     private Integer totalEventsProcessed = 0;
     private Integer totalErrors = 0;
-    private List&lt;String&gt; errorMessages = new List&lt;String&gt;();
+    private List<String> errorMessages = new List<String>();
     
     // ═══════════════════════════════════════════════════════════════
     // CONSTRUCTOR
@@ -63,8 +63,8 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
             SELECT Id, EventType, LogDate, LogFileLength, LogFile, Interval, Sequence
             FROM EventLogFile
             WHERE EventType = :eventType
-            AND LogDate &gt;= :startDate
-            AND LogDate &lt;= :endDate
+            AND LogDate >= :startDate
+            AND LogDate <= :endDate
             ORDER BY LogDate ASC
         ]);
     }
@@ -74,7 +74,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @param bc Batchable context
      * @param scope List of EventLogFile records to process
      */
-    public void execute(Database.BatchableContext bc, List&lt;EventLogFile&gt; scope) {
+    public void execute(Database.BatchableContext bc, List<EventLogFile> scope) {
         for (EventLogFile logFile : scope) {
             try {
                 processLogFile(logFile);
@@ -102,7 +102,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         publishCompletionEvent();
         
         // Send notification if errors occurred
-        if (totalErrors &gt; 0) {
+        if (totalErrors > 0) {
             sendErrorNotification();
         }
     }
@@ -117,7 +117,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      */
     private void processLogFile(EventLogFile logFile) {
         // Check file size for chunking
-        if (logFile.LogFileLength &gt; CSV_CHUNK_THRESHOLD) {
+        if (logFile.LogFileLength > CSV_CHUNK_THRESHOLD) {
             processLargeLogFile(logFile);
         } else {
             processNormalLogFile(logFile);
@@ -133,7 +133,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         String csvContent = logFile.LogFile.toString();
         
         // Parse the CSV
-        List&lt;Map&lt;String, Object&gt;&gt; events = parseCSVContent(csvContent);
+        List<Map<String, Object>> events = parseCSVContent(csvContent);
         
         // Process and publish events
         processEvents(events, logFile.LogDate);
@@ -148,7 +148,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         String csvContent = logFile.LogFile.toString();
         
         // Split by lines
-        List&lt;String&gt; lines = csvContent.split('\n');
+        List<String> lines = csvContent.split('\n');
         
         if (lines.isEmpty()) {
             return;
@@ -156,23 +156,23 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         
         // Extract header
         String headerLine = lines[0];
-        List&lt;String&gt; headers = parseCSVLine(headerLine);
+        List<String> headers = parseCSVLine(headerLine);
         
         // Process in chunks
         Integer chunkSize = 1000;
         Integer currentIndex = 1; // Skip header
         
-        while (currentIndex &lt; lines.size()) {
-            List&lt;Map&lt;String, Object&gt;&gt; chunkEvents = new List&lt;Map&lt;String, Object&gt;&gt;();
+        while (currentIndex < lines.size()) {
+            List<Map<String, Object>> chunkEvents = new List<Map<String, Object>>();
             Integer endIndex = Math.min(currentIndex + chunkSize, lines.size());
             
-            for (Integer i = currentIndex; i &lt; endIndex; i++) {
+            for (Integer i = currentIndex; i < endIndex; i++) {
                 String line = lines[i].trim();
                 if (String.isNotBlank(line)) {
-                    List&lt;String&gt; values = parseCSVLine(line);
-                    Map&lt;String, Object&gt; row = new Map&lt;String, Object&gt;();
+                    List<String> values = parseCSVLine(line);
+                    Map<String, Object> row = new Map<String, Object>();
                     
-                    for (Integer j = 0; j &lt; headers.size() &amp;&amp; j &lt; values.size(); j++) {
+                    for (Integer j = 0; j < headers.size() &amp;&amp; j < values.size(); j++) {
                         row.put(headers[j], values[j]);
                     }
                     
@@ -192,13 +192,13 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @param events List of parsed event data
      * @param logDate The date of the log file
      */
-    private void processEvents(List&lt;Map&lt;String, Object&gt;&gt; events, Date logDate) {
-        List&lt;Prometheion_Event__e&gt; platformEvents = new List&lt;Prometheion_Event__e&gt;();
+    private void processEvents(List<Map<String, Object>> events, Date logDate) {
+        List<Prometheion_Event__e> platformEvents = new List<Prometheion_Event__e>();
         
-        for (Map&lt;String, Object&gt; eventData : events) {
+        for (Map<String, Object> eventData : events) {
             try {
                 // Parse and enrich the event
-                Map&lt;String, Object&gt; parsedEvent = PrometheionEventParser.parseEvent(eventType, eventData);
+                Map<String, Object> parsedEvent = PrometheionEventParser.parseEvent(eventType, eventData);
                 
                 // Calculate risk score
                 Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
@@ -216,7 +216,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
                 totalEventsProcessed++;
                 
                 // Publish in batches to avoid limits
-                if (platformEvents.size() &gt;= MAX_EVENTS_PER_PUBLISH) {
+                if (platformEvents.size() >= MAX_EVENTS_PER_PUBLISH) {
                     publishEvents(platformEvents);
                     platformEvents.clear();
                 }
@@ -237,13 +237,13 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @description Publish Platform Events
      * @param events List of events to publish
      */
-    private void publishEvents(List&lt;Prometheion_Event__e&gt; events) {
+    private void publishEvents(List<Prometheion_Event__e> events) {
         if (events.isEmpty()) {
             return;
         }
         
         try {
-            List&lt;Database.SaveResult&gt; results = EventBus.publish(events);
+            List<Database.SaveResult> results = EventBus.publish(events);
             
             for (Database.SaveResult sr : results) {
                 if (!sr.isSuccess()) {
@@ -268,33 +268,33 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @param csvContent The CSV string to parse
      * @return List of parsed rows
      */
-    private List&lt;Map&lt;String, Object&gt;&gt; parseCSVContent(String csvContent) {
-        List&lt;Map&lt;String, Object&gt;&gt; results = new List&lt;Map&lt;String, Object&gt;&gt;();
+    private List<Map<String, Object>> parseCSVContent(String csvContent) {
+        List<Map<String, Object>> results = new List<Map<String, Object>>();
         
         if (String.isBlank(csvContent)) {
             return results;
         }
         
-        List&lt;String&gt; lines = csvContent.split('\n');
+        List<String> lines = csvContent.split('\n');
         
-        if (lines.size() &lt; 2) {
+        if (lines.size() < 2) {
             return results;
         }
         
         // Parse header
-        List&lt;String&gt; headers = parseCSVLine(lines[0]);
+        List<String> headers = parseCSVLine(lines[0]);
         
         // Parse data rows
-        for (Integer i = 1; i &lt; lines.size(); i++) {
+        for (Integer i = 1; i < lines.size(); i++) {
             String line = lines[i].trim();
             if (String.isBlank(line)) {
                 continue;
             }
             
-            List&lt;String&gt; values = parseCSVLine(line);
-            Map&lt;String, Object&gt; row = new Map&lt;String, Object&gt;();
+            List<String> values = parseCSVLine(line);
+            Map<String, Object> row = new Map<String, Object>();
             
-            for (Integer j = 0; j &lt; headers.size() &amp;&amp; j &lt; values.size(); j++) {
+            for (Integer j = 0; j < headers.size() &amp;&amp; j < values.size(); j++) {
                 row.put(headers[j], values[j]);
             }
             
@@ -309,8 +309,8 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @param line The CSV line to parse
      * @return List of field values
      */
-    private List&lt;String&gt; parseCSVLine(String line) {
-        List&lt;String&gt; fields = new List&lt;String&gt;();
+    private List<String> parseCSVLine(String line) {
+        List<String> fields = new List<String>();
         
         if (String.isBlank(line)) {
             return fields;
@@ -319,11 +319,11 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         Boolean inQuotes = false;
         String currentField = '';
         
-        for (Integer i = 0; i &lt; line.length(); i++) {
+        for (Integer i = 0; i < line.length(); i++) {
             String c = line.substring(i, i + 1);
             
             if (c == '"') {
-                if (i + 1 &lt; line.length() &amp;&amp; line.substring(i + 1, i + 2) == '"') {
+                if (i + 1 < line.length() &amp;&amp; line.substring(i + 1, i + 2) == '"') {
                     currentField += '"';
                     i++;
                 } else {
@@ -353,14 +353,14 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         try {
             Prometheion_Event__e completionEvent = new Prometheion_Event__e(
                 Event_Type__c = 'BatchComplete',
-                Payload__c = JSON.serialize(new Map&lt;String, Object&gt;{
-                    'eventType' =&gt; eventType,
-                    'startDate' =&gt; startDate,
-                    'endDate' =&gt; endDate,
-                    'filesProcessed' =&gt; totalFilesProcessed,
-                    'eventsProcessed' =&gt; totalEventsProcessed,
-                    'errors' =&gt; totalErrors,
-                    'completedAt' =&gt; Datetime.now()
+                Payload__c = JSON.serialize(new Map<String, Object>{
+                    'eventType' => eventType,
+                    'startDate' => startDate,
+                    'endDate' => endDate,
+                    'filesProcessed' => totalFilesProcessed,
+                    'eventsProcessed' => totalEventsProcessed,
+                    'errors' => totalErrors,
+                    'completedAt' => Datetime.now()
                 })
             );
             
@@ -385,10 +385,10 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
         
         if (!errorMessages.isEmpty()) {
             body += 'Error Messages:\n';
-            for (Integer i = 0; i &lt; Math.min(errorMessages.size(), 10); i++) {
+            for (Integer i = 0; i < Math.min(errorMessages.size(), 10); i++) {
                 body += '- ' + errorMessages[i] + '\n';
             }
-            if (errorMessages.size() &gt; 10) {
+            if (errorMessages.size() > 10) {
                 body += '... and ' + (errorMessages.size() - 10) + ' more errors\n';
             }
         }
@@ -401,7 +401,7 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
             email.setPlainTextBody(body);
             email.setSaveAsActivity(false);
             
-            Messaging.sendEmail(new List&lt;Messaging.SingleEmailMessage&gt;{ email });
+            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ email });
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to send error notification: ' + e.getMessage());
         }
@@ -415,14 +415,14 @@ public class PrometheionHistoricalEventBatch implements Database.Batchable&lt;SO
      * @description Get processing statistics
      * @return Map of statistics
      */
-    public Map&lt;String, Object&gt; getStatistics() {
-        return new Map&lt;String, Object&gt;{
-            'eventType' =&gt; eventType,
-            'startDate' =&gt; startDate,
-            'endDate' =&gt; endDate,
-            'filesProcessed' =&gt; totalFilesProcessed,
-            'eventsProcessed' =&gt; totalEventsProcessed,
-            'errors' =&gt; totalErrors
+    public Map<String, Object> getStatistics() {
+        return new Map<String, Object>{
+            'eventType' => eventType,
+            'startDate' => startDate,
+            'endDate' => endDate,
+            'filesProcessed' => totalFilesProcessed,
+            'eventsProcessed' => totalEventsProcessed,
+            'errors' => totalErrors
         };
     }
 }

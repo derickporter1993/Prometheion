@@ -10,6 +10,10 @@
 import { createElement } from "lwc";
 import ExecutiveKpiDashboard from "c/executiveKpiDashboard";
 import getDashboardSummary from "@salesforce/apex/ComplianceDashboardController.getDashboardSummary";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+} from "../../__tests__/axeTestHelper";
 
 let mockDashboardCallbacks = new Set();
 
@@ -318,6 +322,48 @@ describe("c-executive-kpi-dashboard", () => {
       const errorDiv = element.shadowRoot.querySelector(".slds-text-color_error");
       expect(errorDiv).not.toBeNull();
       expect(errorDiv.textContent).toContain("Network error");
+    });
+  });
+
+  describe("Accessibility (axe)", () => {
+    it("should have no accessibility violations", async () => {
+      const mockData = {
+        frameworks: [
+          { framework: "SOC2", score: 85, status: "COMPLIANT" },
+          { framework: "HIPAA", score: 75, status: "ACTION_REQUIRED" },
+        ],
+        recentGaps: [],
+      };
+
+      const element = await createComponent();
+      await Promise.resolve();
+
+      emitDashboardData(mockData);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    });
+
+    it("should have valid heading hierarchy", async () => {
+      const mockData = {
+        frameworks: [{ framework: "SOC2", score: 85, status: "COMPLIANT" }],
+        recentGaps: [],
+      };
+
+      const element = await createComponent();
+      await Promise.resolve();
+
+      emitDashboardData(mockData);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
     });
   });
 });

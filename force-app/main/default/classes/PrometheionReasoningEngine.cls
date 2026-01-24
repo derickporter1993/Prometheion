@@ -133,8 +133,8 @@ public without sharing class PrometheionReasoningEngine {
         }
         // Escape HTML special characters
         return input.replace('&', '&amp;')
-                   .replace('<', '&lt;')
-                   .replace('>', '&gt;')
+                   .replace('<', '<')
+                   .replace('>', '>')
                    .replace('"', '&quot;')
                    .replace('\'', '&#39;');
     }

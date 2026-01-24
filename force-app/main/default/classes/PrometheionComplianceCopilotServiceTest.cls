@@ -18,11 +18,11 @@ private class PrometheionComplianceCopilotServiceTest {
     
     @isTest
     static void testAnalyzeEventPattern_ReturnsRecommendation() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [
+        List<Prometheion_Evidence_Item__c> items = [
             SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5
         ];
         
-        List&lt;String&gt; eventIds = new List&lt;String&gt;();
+        List<String> eventIds = new List<String>();
         for (Prometheion_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
@@ -37,7 +37,7 @@ private class PrometheionComplianceCopilotServiceTest {
         System.assertNotEquals(null, rec, 'Should return recommendation');
         System.assertNotEquals(null, rec.recommendation, 'Should have recommendation text');
         System.assertNotEquals(null, rec.severity, 'Should have severity');
-        System.assert(rec.confidence &gt;= 0 &amp;&amp; rec.confidence &lt;= 100, 'Confidence should be 0-100');
+        System.assert(rec.confidence >= 0 &amp;&amp; rec.confidence <= 100, 'Confidence should be 0-100');
     }
     
     @isTest
@@ -46,7 +46,7 @@ private class PrometheionComplianceCopilotServiceTest {
         
         Test.startTest();
         PrometheionComplianceCopilotService.ComplianceRecommendation rec = 
-            PrometheionComplianceCopilotService.analyzeEventPattern(new List&lt;String&gt;());
+            PrometheionComplianceCopilotService.analyzeEventPattern(new List<String>());
         Test.stopTest();
         
         System.assertNotEquals(null, rec, 'Should return recommendation even for empty list');
@@ -80,7 +80,7 @@ private class PrometheionComplianceCopilotServiceTest {
         Test.stopTest();
         
         System.assertNotEquals(null, summary, 'Should return summary');
-        System.assert(summary.length() &gt; 0, 'Summary should not be empty');
+        System.assert(summary.length() > 0, 'Summary should not be empty');
     }
     
     @isTest
@@ -120,7 +120,7 @@ private class PrometheionComplianceCopilotServiceTest {
         Test.setMock(HttpCalloutMock.class, new ClaudeRiskPredictionMock());
         
         Test.startTest();
-        List&lt;PrometheionComplianceCopilotService.RiskPrediction&gt; predictions = 
+        List<PrometheionComplianceCopilotService.RiskPrediction> predictions = 
             PrometheionComplianceCopilotService.predictComplianceRisks('HIPAA');
         Test.stopTest();
         
@@ -148,11 +148,11 @@ private class PrometheionComplianceCopilotServiceTest {
     
     @isTest
     static void testCategorizeEvents_ReturnsMappings() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [
+        List<Prometheion_Evidence_Item__c> items = [
             SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 3
         ];
         
-        List&lt;String&gt; eventIds = new List&lt;String&gt;();
+        List<String> eventIds = new List<String>();
         for (Prometheion_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
@@ -160,7 +160,7 @@ private class PrometheionComplianceCopilotServiceTest {
         Test.setMock(HttpCalloutMock.class, new ClaudeCategorizationMock());
         
         Test.startTest();
-        Map&lt;String, String&gt; mappings = 
+        Map<String, String> mappings = 
             PrometheionComplianceCopilotService.categorizeEvents(eventIds, 'HIPAA');
         Test.stopTest();
         
@@ -172,8 +172,8 @@ private class PrometheionComplianceCopilotServiceTest {
         Test.setMock(HttpCalloutMock.class, new ClaudeCategorizationMock());
         
         Test.startTest();
-        Map&lt;String, String&gt; mappings = 
-            PrometheionComplianceCopilotService.categorizeEvents(new List&lt;String&gt;(), 'HIPAA');
+        Map<String, String> mappings = 
+            PrometheionComplianceCopilotService.categorizeEvents(new List<String>(), 'HIPAA');
         Test.stopTest();
         
         System.assertEquals(0, mappings.size(), 'Should return empty map for empty input');
@@ -181,14 +181,14 @@ private class PrometheionComplianceCopilotServiceTest {
     
     @isTest
     static void testCategorizeEvents_NullFramework() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
+        List<Prometheion_Evidence_Item__c> items = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
         
         Test.setMock(HttpCalloutMock.class, new ClaudeCategorizationMock());
         
         Test.startTest();
-        Map&lt;String, String&gt; mappings = 
+        Map<String, String> mappings = 
             PrometheionComplianceCopilotService.categorizeEvents(
-                new List&lt;String&gt;{items[0].Id}, null);
+                new List<String>{items[0].Id}, null);
         Test.stopTest();
         
         System.assertEquals(0, mappings.size(), 'Should return empty map for null framework');
@@ -218,11 +218,11 @@ private class PrometheionComplianceCopilotServiceTest {
     
     private class ClaudeCategorizationMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
-            Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-                'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'text',
-                        'text' =&gt; '{}'
+            Map<String, Object> response = new Map<String, Object>{
+                'content' => new List<Map<String, Object>>{
+                    new Map<String, Object>{
+                        'type' => 'text',
+                        'text' => '{}'
                     }
                 }
             };

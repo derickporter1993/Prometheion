@@ -13,6 +13,10 @@
 
 import { createElement } from "lwc";
 import SystemMonitorDashboard from "c/systemMonitorDashboard";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+} from "../../__tests__/axeTestHelper";
 
 // Mock imperative Apex calls
 let mockStatsResult = null;
@@ -327,5 +331,45 @@ describe("c-system-monitor-dashboard", () => {
         expect(ring.label || ring.getAttribute("label")).toBeTruthy();
       });
     });
+  });
+
+  describe("Accessibility (axe)", () => {
+    // Use real timers for axe tests to avoid timeout conflicts
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it("should have no accessibility violations", async () => {
+      mockStatsResult = MOCK_STATS;
+      const element = createElement("c-system-monitor-dashboard", {
+        is: SystemMonitorDashboard,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    }, 30000);
+
+    it("should have valid heading hierarchy", async () => {
+      mockStatsResult = MOCK_STATS;
+      const element = createElement("c-system-monitor-dashboard", {
+        is: SystemMonitorDashboard,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
+    }, 30000);
   });
 });

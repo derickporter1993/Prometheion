@@ -59,7 +59,9 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
     public static void generateAndSendDigest() {
         DigestData digest = compileDigestData();
         sendDigestEmail(digest);
-        sendDigestToSlack(digest);
+        // Note: @future methods can only accept primitives, so we serialize DigestData
+        // This is necessary for async callout execution
+        sendDigestToSlack(JSON.serialize(digest));
     }
     
     /**
@@ -282,7 +284,11 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
      * @description Send digest to Slack
      */
     @future(callout=true)
-    private static void sendDigestToSlack(DigestData digest) {
+    private static void sendDigestToSlack(String digestJson) {
+        // Deserialize digest data using deserializeUntyped to handle nested types and Maps
+        // Apex's JSON.deserialize() has limitations with nested classes and Map<String, Integer>
+        Map<String, Object> jsonMap = (Map<String, Object>)JSON.deserializeUntyped(digestJson);
+        DigestData digest = reconstructDigestData(jsonMap);
         // Build Slack message
         Map<String, Object> slackMessage = buildSlackMessage(digest);
         
@@ -422,5 +428,114 @@ public with sharing class PrometheionDailyDigest implements Schedulable {
         @AuraEnabled public String user;
         @AuraEnabled public Datetime timestamp;
         @AuraEnabled public String severity;
+    }
+    
+    /**
+     * @description Parse DateTime from JSON ISO 8601 format
+     * JSON.serialize() outputs DateTime as ISO 8601 (e.g., "2026-01-15T12:00:00.000Z")
+     * Datetime.valueOf() expects format "yyyy-MM-dd HH:mm:ss"
+     */
+    private static Datetime parseDateTimeFromJson(String isoString) {
+        if (String.isBlank(isoString)) {
+            return null;
+        }
+        // Remove timezone and milliseconds, replace T with space
+        String cleaned = isoString.replace('T', ' ').replace('Z', '').replace('+00:00', '');
+        // Extract just the date and time part (yyyy-MM-dd HH:mm:ss)
+        if (cleaned.contains('.')) {
+            cleaned = cleaned.substring(0, cleaned.indexOf('.'));
+        }
+        return Datetime.valueOf(cleaned);
+    }
+    
+    /**
+     * @description Reconstruct DigestData from untyped JSON map
+     * Handles nested classes and Map<String, Integer> which JSON.deserialize() cannot reliably handle
+     */
+    private static DigestData reconstructDigestData(Map<String, Object> jsonMap) {
+        DigestData digest = new DigestData();
+        
+        // Simple fields - DateTime fields are serialized as ISO 8601 strings by JSON.serialize()
+        // Convert ISO format (2026-01-15T12:00:00.000Z) to Datetime.valueOf() format (2026-01-15 12:00:00)
+        if (jsonMap.containsKey('generatedAt') && jsonMap.get('generatedAt') != null) {
+            String dtStr = (String)jsonMap.get('generatedAt');
+            digest.generatedAt = parseDateTimeFromJson(dtStr);
+        }
+        if (jsonMap.containsKey('periodStart') && jsonMap.get('periodStart') != null) {
+            String dtStr = (String)jsonMap.get('periodStart');
+            digest.periodStart = parseDateTimeFromJson(dtStr);
+        }
+        if (jsonMap.containsKey('periodEnd') && jsonMap.get('periodEnd') != null) {
+            String dtStr = (String)jsonMap.get('periodEnd');
+            digest.periodEnd = parseDateTimeFromJson(dtStr);
+        }
+        if (jsonMap.containsKey('complianceScore')) {
+            digest.complianceScore = (Decimal)jsonMap.get('complianceScore');
+        }
+        if (jsonMap.containsKey('aiSummary')) {
+            digest.aiSummary = (String)jsonMap.get('aiSummary');
+        }
+        
+        // List<String> fields
+        if (jsonMap.containsKey('trendingUp')) {
+            digest.trendingUp = new List<String>();
+            for (Object item : (List<Object>)jsonMap.get('trendingUp')) {
+                digest.trendingUp.add((String)item);
+            }
+        }
+        if (jsonMap.containsKey('trendingDown')) {
+            digest.trendingDown = new List<String>();
+            for (Object item : (List<Object>)jsonMap.get('trendingDown')) {
+                digest.trendingDown.add((String)item);
+            }
+        }
+        
+        // Nested EventStatistics
+        if (jsonMap.containsKey('statistics')) {
+            Map<String, Object> statsMap = (Map<String, Object>)jsonMap.get('statistics');
+            EventStatistics stats = new EventStatistics();
+            if (statsMap.containsKey('totalEvents')) {
+                stats.totalEvents = (Integer)statsMap.get('totalEvents');
+            }
+            if (statsMap.containsKey('criticalEvents')) {
+                stats.criticalEvents = (Integer)statsMap.get('criticalEvents');
+            }
+            if (statsMap.containsKey('highRiskEvents')) {
+                stats.highRiskEvents = (Integer)statsMap.get('highRiskEvents');
+            }
+            if (statsMap.containsKey('resolvedEvents')) {
+                stats.resolvedEvents = (Integer)statsMap.get('resolvedEvents');
+            }
+            // Map<String, Integer> - requires manual reconstruction
+            if (statsMap.containsKey('eventsByType')) {
+                stats.eventsByType = new Map<String, Integer>();
+                Map<String, Object> eventsMap = (Map<String, Object>)statsMap.get('eventsByType');
+                for (String key : eventsMap.keySet()) {
+                    stats.eventsByType.put(key, (Integer)eventsMap.get(key));
+                }
+            }
+            digest.statistics = stats;
+        }
+        
+        // List<RiskItem>
+        if (jsonMap.containsKey('topRisks')) {
+            digest.topRisks = new List<RiskItem>();
+            for (Object itemObj : (List<Object>)jsonMap.get('topRisks')) {
+                Map<String, Object> itemMap = (Map<String, Object>)itemObj;
+                RiskItem item = new RiskItem();
+                if (itemMap.containsKey('id')) item.id = (String)itemMap.get('id');
+                if (itemMap.containsKey('title')) item.title = (String)itemMap.get('title');
+                if (itemMap.containsKey('description')) item.description = (String)itemMap.get('description');
+                if (itemMap.containsKey('user')) item.user = (String)itemMap.get('user');
+                if (itemMap.containsKey('timestamp') && itemMap.get('timestamp') != null) {
+                    String dtStr = (String)itemMap.get('timestamp');
+                    item.timestamp = parseDateTimeFromJson(dtStr);
+                }
+                if (itemMap.containsKey('severity')) item.severity = (String)itemMap.get('severity');
+                digest.topRisks.add(item);
+            }
+        }
+        
+        return digest;
     }
 }

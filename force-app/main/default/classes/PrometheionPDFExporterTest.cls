@@ -93,7 +93,7 @@ private class PrometheionPDFExporterTest {
     @isTest
     static void testGenerateEvidenceReport_WithControlFilter() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; controlIds = new List&lt;String&gt;{'164.312(b)', '164.312(c)'};
+        List<String> controlIds = new List<String>{'164.312(b)', '164.312(c)'};
         
         Test.startTest();
         Id contentVersionId = PrometheionPDFExporter.generateEvidenceReport(pkg.Id, controlIds);
@@ -143,7 +143,7 @@ private class PrometheionPDFExporterTest {
         Test.stopTest();
         
         // Count lines (header + data rows)
-        List&lt;String&gt; lines = csvContent.split('\n');
+        List<String> lines = csvContent.split('\n');
         System.assertEquals(evidenceCount + 1, lines.size(), 'Should have header + all evidence rows');
     }
     
@@ -157,7 +157,7 @@ private class PrometheionPDFExporterTest {
         Test.stopTest();
         
         // Should only have header
-        List&lt;String&gt; lines = csvContent.split('\n');
+        List<String> lines = csvContent.split('\n');
         System.assertEquals(1, lines.size(), 'Should only have header for empty package');
     }
     
@@ -176,7 +176,7 @@ private class PrometheionPDFExporterTest {
         System.assertNotEquals(null, jsonContent, 'Should return JSON content');
         
         // Verify it's valid JSON
-        Map&lt;String, Object&gt; parsed = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(jsonContent);
+        Map<String, Object> parsed = (Map<String, Object>)JSON.deserializeUntyped(jsonContent);
         System.assert(parsed.containsKey('package'), 'Should contain package data');
         System.assert(parsed.containsKey('evidence'), 'Should contain evidence data');
         System.assert(parsed.containsKey('exportDate'), 'Should contain export date');
@@ -190,10 +190,10 @@ private class PrometheionPDFExporterTest {
         String jsonContent = PrometheionPDFExporter.generateJSONExport(pkg.Id);
         Test.stopTest();
         
-        Map&lt;String, Object&gt; parsed = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(jsonContent);
+        Map<String, Object> parsed = (Map<String, Object>)JSON.deserializeUntyped(jsonContent);
         System.assert(parsed.containsKey('metadata'), 'Should contain metadata');
         
-        Map&lt;String, Object&gt; metadata = (Map&lt;String, Object&gt;)parsed.get('metadata');
+        Map<String, Object> metadata = (Map<String, Object>)parsed.get('metadata');
         System.assert(metadata.containsKey('generatedBy'), 'Should contain generatedBy');
     }
     
@@ -243,14 +243,14 @@ private class PrometheionPDFExporterTest {
         Prometheion_Audit_Package__c pkg2 = PrometheionTestDataFactory.createAuditPackage('SOC2');
         Prometheion_Audit_Package__c pkg3 = PrometheionTestDataFactory.createAuditPackage('GDPR');
         
-        List&lt;Prometheion_Audit_Package__c&gt; allPackages = [SELECT Id FROM Prometheion_Audit_Package__c];
-        List&lt;String&gt; packageIds = new List&lt;String&gt;();
+        List<Prometheion_Audit_Package__c> allPackages = [SELECT Id FROM Prometheion_Audit_Package__c];
+        List<String> packageIds = new List<String>();
         for (Prometheion_Audit_Package__c p : allPackages) {
             packageIds.add(p.Id);
         }
         
         Test.startTest();
-        List&lt;Id&gt; contentVersionIds = PrometheionPDFExporter.batchGeneratePDFs(packageIds);
+        List<Id> contentVersionIds = PrometheionPDFExporter.batchGeneratePDFs(packageIds);
         Test.stopTest();
         
         System.assertEquals(packageIds.size(), contentVersionIds.size(), 'Should generate PDF for each package');

@@ -37,16 +37,12 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
     /**
      * Evaluate HIPAA Privacy Rule controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // §164.514(d) - Minimum Necessary
+        // Add violations from helper methods
         violations.addAll(evaluateMinimumNecessaryAccess());
-
-        // §164.528 - Accounting of Disclosures
         violations.addAll(evaluateDisclosureTracking());
-
-        // §164.530(c) - Safeguards
         violations.addAll(evaluatePHISafeguards());
 
         return violations;
@@ -213,7 +209,7 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             VersionData = Blob.valueOf(logContent),
             Origin = 'H'
         );
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
         insert cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
@@ -226,13 +222,13 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
 
     // ========== Private Helper Methods ==========
 
-    private List<Violation> evaluateMinimumNecessaryAccess() {
-        List<Violation> violations = new List<Violation>();
+    private List<ComplianceServiceBase.InternalViolation> evaluateMinimumNecessaryAccess() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         List<ExcessiveAccessUser> excessiveUsers = getExcessiveAccessUsersList();
 
         if (excessiveUsers.size() > 0) {
-            Violation v = new Violation(
+            ComplianceServiceBase.InternalViolation v = new ComplianceServiceBase.InternalViolation(
                 'Minimum Necessary Violation',
                 excessiveUsers.size() + ' users have excessive PHI access beyond minimum necessary',
                 'HIGH',
@@ -248,13 +244,13 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
         return violations;
     }
 
-    private List<Violation> evaluateDisclosureTracking() {
-        List<Violation> violations = new List<Violation>();
+    private List<ComplianceServiceBase.InternalViolation> evaluateDisclosureTracking() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check if PHI objects have field history enabled
         for (String objectName : PHI_OBJECTS) {
             if (!hasFieldHistoryEnabled(objectName)) {
-                Violation v = new Violation(
+                ComplianceServiceBase.InternalViolation v = new ComplianceServiceBase.InternalViolation(
                     'Missing PHI Audit Trail',
                     'Object ' + objectName + ' does not have Field History Tracking for PHI fields',
                     'HIGH',
@@ -271,14 +267,14 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
         return violations;
     }
 
-    private List<Violation> evaluatePHISafeguards() {
-        List<Violation> violations = new List<Violation>();
+    private List<ComplianceServiceBase.InternalViolation> evaluatePHISafeguards() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check OWD settings for PHI objects
         for (String objectName : PHI_OBJECTS) {
             String owdSetting = getOWDSetting(objectName);
             if (owdSetting == 'Public' || owdSetting == 'PublicReadWrite') {
-                Violation v = new Violation(
+                ComplianceServiceBase.InternalViolation v = new ComplianceServiceBase.InternalViolation(
                     'PHI Object Over-Shared',
                     'Object ' + objectName + ' has OWD set to ' + owdSetting + ' (should be Private)',
                     'CRITICAL',
@@ -362,13 +358,16 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
             if (objType == null) return false;
 
-            Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
-            for (Schema.SObjectField field : fields.values()) {
-                if (field.getDescribe().isHistoryTracked() != null && field.getDescribe().isHistoryTracked()) {
-                    return true;
-                }
+            // Check if object has Field History Tracking enabled
+            // Note: isHistoryTracked() doesn't exist on DescribeFieldResult
+            // Use history table query as proxy check
+            try {
+                String historyTableName = objectName + '__History';
+                Database.query('SELECT Id FROM ' + historyTableName + ' LIMIT 1');
+                return true; // History table exists, Field History is enabled
+            } catch (Exception e) {
+                return false; // History table doesn't exist or Field History not enabled
             }
-            return false;
         } catch (Exception e) {
             return false;
         }

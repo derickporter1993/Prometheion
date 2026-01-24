@@ -13,6 +13,10 @@
 
 import { createElement } from "lwc";
 import PerformanceAlertPanel from "c/performanceAlertPanel";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+} from "../../__tests__/axeTestHelper";
 
 // Mock imperative Apex call
 let mockAlertsResult = null;
@@ -371,5 +375,45 @@ describe("c-performance-alert-panel", () => {
       const helperText = element.shadowRoot.querySelector("p.slds-text-color_weak");
       expect(helperText).not.toBeNull();
     });
+  });
+
+  describe("Accessibility (axe)", () => {
+    // Use real timers for axe tests to avoid timeout conflicts
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it("should have no accessibility violations", async () => {
+      mockAlertsResult = MOCK_ALERTS;
+      const element = createElement("c-performance-alert-panel", {
+        is: PerformanceAlertPanel,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    }, 30000);
+
+    it("should have valid heading hierarchy", async () => {
+      mockAlertsResult = MOCK_ALERTS;
+      const element = createElement("c-performance-alert-panel", {
+        is: PerformanceAlertPanel,
+      });
+      document.body.appendChild(element);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
+    }, 30000);
   });
 });

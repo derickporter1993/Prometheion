@@ -27,7 +27,7 @@ private class NaturalLanguageQueryServiceTest {
         System.assertNotEquals(null, result, 'Should return result');
         System.assertNotEquals(null, result.generatedSOQL, 'Should have generated SOQL');
         System.assertNotEquals(null, result.results, 'Should have results list');
-        System.assert(result.confidence &gt;= 0, 'Should have confidence score');
+        System.assert(result.confidence >= 0, 'Should have confidence score');
     }
     
     @isTest
@@ -77,7 +77,7 @@ private class NaturalLanguageQueryServiceTest {
     @isTest
     static void testGetQuerySuggestions_EmptyInput_ReturnsExamples() {
         Test.startTest();
-        List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions('');
+        List<String> suggestions = NaturalLanguageQueryService.getQuerySuggestions('');
         Test.stopTest();
         
         System.assert(!suggestions.isEmpty(), 'Should return example suggestions');
@@ -86,7 +86,7 @@ private class NaturalLanguageQueryServiceTest {
     @isTest
     static void testGetQuerySuggestions_NullInput_ReturnsExamples() {
         Test.startTest();
-        List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions(null);
+        List<String> suggestions = NaturalLanguageQueryService.getQuerySuggestions(null);
         Test.stopTest();
         
         System.assert(!suggestions.isEmpty(), 'Should return example suggestions for null');
@@ -95,7 +95,7 @@ private class NaturalLanguageQueryServiceTest {
     @isTest
     static void testGetQuerySuggestions_PartialMatch() {
         Test.startTest();
-        List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions('admin');
+        List<String> suggestions = NaturalLanguageQueryService.getQuerySuggestions('admin');
         Test.stopTest();
         
         // Should return suggestions containing 'admin'
@@ -112,7 +112,7 @@ private class NaturalLanguageQueryServiceTest {
     @isTest
     static void testGetQuerySuggestions_ExportKeyword() {
         Test.startTest();
-        List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions('export');
+        List<String> suggestions = NaturalLanguageQueryService.getQuerySuggestions('export');
         Test.stopTest();
         
         System.assert(!suggestions.isEmpty(), 'Should return export-related suggestions');
@@ -168,7 +168,7 @@ private class NaturalLanguageQueryServiceTest {
     @isTest
     static void testGetRecentQueries_ReturnsEmptyList() {
         Test.startTest();
-        List&lt;String&gt; queries = NaturalLanguageQueryService.getRecentQueries();
+        List<String> queries = NaturalLanguageQueryService.getRecentQueries();
         Test.stopTest();
         
         System.assertNotEquals(null, queries, 'Should return a list');
@@ -180,11 +180,11 @@ private class NaturalLanguageQueryServiceTest {
     
     private class NLQueryMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
-            Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-                'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'text',
-                        'text' =&gt; 'SELECT Id, Name FROM Prometheion_Audit_Package__c LIMIT 100'
+            Map<String, Object> response = new Map<String, Object>{
+                'content' => new List<Map<String, Object>>{
+                    new Map<String, Object>{
+                        'type' => 'text',
+                        'text' => 'SELECT Id, Name FROM Prometheion_Audit_Package__c LIMIT 100'
                     }
                 }
             };

@@ -10,6 +10,7 @@
 
 import { createElement } from "lwc";
 import ComplianceDashboard from "c/complianceDashboard";
+import { runAccessibilityAudit, checkHeadingHierarchy } from "../../__tests__/axeTestHelper";
 
 let mockDashboardCallbacks = new Set();
 let mockFrameworkDetailsCallbacks = new Set();
@@ -110,12 +111,8 @@ describe("c-compliance-dashboard", () => {
           { framework: "SOC2", score: 85, status: "COMPLIANT" },
           { framework: "HIPAA", score: 72, status: "ACTION_REQUIRED" },
         ],
-        recentGaps: [
-          { Id: "gap1", Severity__c: "HIGH", Title__c: "Test Gap 1" },
-        ],
-        recentEvidence: [
-          { Id: "ev1", Evidence_Type__c: "Login", Status__c: "COLLECTED" },
-        ],
+        recentGaps: [{ Id: "gap1", Severity__c: "HIGH", Title__c: "Test Gap 1" }],
+        recentEvidence: [{ Id: "ev1", Evidence_Type__c: "Login", Status__c: "COLLECTED" }],
       };
 
       const element = await createComponent();
@@ -295,6 +292,47 @@ describe("c-compliance-dashboard", () => {
 
       const errorDiv = element.shadowRoot.querySelector(".slds-text-color_error");
       expect(errorDiv).toBeNull();
+    });
+  });
+
+  describe("Accessibility (axe)", () => {
+    it("should have no accessibility violations", async () => {
+      const mockData = {
+        frameworks: [{ framework: "SOC2", score: 85, status: "COMPLIANT" }],
+        recentGaps: [],
+        recentEvidence: [],
+      };
+
+      const element = await createComponent();
+      await Promise.resolve();
+
+      emitDashboardData(mockData);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    });
+
+    it("should have valid heading hierarchy", async () => {
+      const mockData = {
+        frameworks: [{ framework: "SOC2", score: 85, status: "COMPLIANT" }],
+        recentGaps: [],
+        recentEvidence: [],
+      };
+
+      const element = await createComponent();
+      await Promise.resolve();
+
+      emitDashboardData(mockData);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
     });
   });
 });

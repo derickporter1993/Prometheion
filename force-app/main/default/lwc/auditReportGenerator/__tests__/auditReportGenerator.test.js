@@ -12,6 +12,11 @@ import { createElement } from "lwc";
 import AuditReportGenerator from "c/auditReportGenerator";
 import generateAuditReport from "@salesforce/apex/AuditReportController.generateAuditReport";
 import exportReportAsPDF from "@salesforce/apex/AuditReportController.exportReportAsPDF";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+  getFocusableElements,
+} from "../../__tests__/axeTestHelper";
 
 jest.mock(
   "@salesforce/apex/AuditReportController.generateAuditReport",
@@ -179,19 +184,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values via DOM events
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -223,9 +222,7 @@ describe("c-audit-report-generator", () => {
 
       // Clear the default framework value
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "" } }));
 
       await flushPromises();
 
@@ -256,19 +253,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -299,19 +290,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -355,19 +340,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values and generate report first
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -409,19 +388,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -458,19 +431,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -490,6 +457,37 @@ describe("c-audit-report-generator", () => {
       const errorDiv = element.shadowRoot.querySelector(".slds-text-color_error");
       expect(errorDiv).not.toBeNull();
       expect(errorDiv.textContent).toContain("Export failed");
+    });
+  });
+
+  describe("Accessibility (axe)", () => {
+    it("should have no accessibility violations", async () => {
+      const element = await createComponent();
+      await flushPromises();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    });
+
+    it("should have valid heading hierarchy", async () => {
+      const element = await createComponent();
+      await flushPromises();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
+    });
+
+    it("should have focusable form elements", async () => {
+      const element = await createComponent();
+      await flushPromises();
+
+      const focusable = getFocusableElements(element.shadowRoot);
+      expect(Array.isArray(focusable)).toBe(true);
+      // Form should have interactive elements
+      expect(focusable.length).toBeGreaterThan(0);
     });
   });
 });

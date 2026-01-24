@@ -15,25 +15,25 @@ public class PrometheionTestDataFactory {
      * @description Create mock Login event data
      * @return Map of event fields simulating a Login event
      */
-    public static Map&lt;String, Object&gt; createMockLoginEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'Login',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'USER_NAME' =&gt; UserInfo.getUserName(),
-            'SOURCE_IP' =&gt; '192.168.1.100',
-            'LOGIN_STATUS' =&gt; 'Success',
-            'LOGIN_TYPE' =&gt; 'Application',
-            'AUTHENTICATION_METHOD_REFERENCE' =&gt; 'Password',
-            'BROWSER_TYPE' =&gt; 'Chrome',
-            'PLATFORM_TYPE' =&gt; 'Windows',
-            'CIPHER_SUITE' =&gt; 'TLS_AES_256_GCM_SHA384',
-            'TLS_PROTOCOL' =&gt; 'TLSv1.3',
-            'CITY' =&gt; 'San Francisco',
-            'SUBDIVISION' =&gt; 'California',
-            'COUNTRY' =&gt; 'United States',
-            'SESSION_KEY' =&gt; 'abc123session',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'MEDIUM'
+    public static Map<String, Object> createMockLoginEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'Login',
+            'USER_ID' => UserInfo.getUserId(),
+            'USER_NAME' => UserInfo.getUserName(),
+            'SOURCE_IP' => '192.168.1.100',
+            'LOGIN_STATUS' => 'Success',
+            'LOGIN_TYPE' => 'Application',
+            'AUTHENTICATION_METHOD_REFERENCE' => 'Password',
+            'BROWSER_TYPE' => 'Chrome',
+            'PLATFORM_TYPE' => 'Windows',
+            'CIPHER_SUITE' => 'TLS_AES_256_GCM_SHA384',
+            'TLS_PROTOCOL' => 'TLSv1.3',
+            'CITY' => 'San Francisco',
+            'SUBDIVISION' => 'California',
+            'COUNTRY' => 'United States',
+            'SESSION_KEY' => 'abc123session',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'MEDIUM'
         };
     }
     
@@ -41,17 +41,17 @@ public class PrometheionTestDataFactory {
      * @description Create mock LoginAs event data (impersonation)
      * @return Map of event fields simulating a LoginAs event
      */
-    public static Map&lt;String, Object&gt; createMockLoginAsEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'LoginAs',
-            'DELEGATED_USER_ID' =&gt; UserInfo.getUserId(),
-            'DELEGATED_USER_NAME' =&gt; UserInfo.getUserName(),
-            'USER_ID' =&gt; '005000000000001AAA',
-            'USER_NAME' =&gt; 'target.user@test.com',
-            'SOURCE_IP' =&gt; '10.0.0.50',
-            'SESSION_KEY' =&gt; 'delegate123session',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'CRITICAL'
+    public static Map<String, Object> createMockLoginAsEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'LoginAs',
+            'DELEGATED_USER_ID' => UserInfo.getUserId(),
+            'DELEGATED_USER_NAME' => UserInfo.getUserName(),
+            'USER_ID' => '005000000000001AAA',
+            'USER_NAME' => 'target.user@test.com',
+            'SOURCE_IP' => '10.0.0.50',
+            'SESSION_KEY' => 'delegate123session',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'CRITICAL'
         };
     }
     
@@ -59,18 +59,18 @@ public class PrometheionTestDataFactory {
      * @description Create mock ReportExport event data
      * @return Map of event fields simulating a ReportExport event
      */
-    public static Map&lt;String, Object&gt; createMockReportExportEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'ReportExport',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'REPORT_ID' =&gt; '00O000000000001AAA',
-            'REPORT_NAME' =&gt; 'Customer Data Export',
-            'EXPORT_TYPE' =&gt; 'CSV',
-            'NUMBER_OF_COLUMNS' =&gt; '15',
-            'ROWS_PROCESSED' =&gt; '5000',
-            'SOURCE_IP' =&gt; '192.168.1.100',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'CRITICAL'
+    public static Map<String, Object> createMockReportExportEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'ReportExport',
+            'USER_ID' => UserInfo.getUserId(),
+            'REPORT_ID' => '00O000000000001AAA',
+            'REPORT_NAME' => 'Customer Data Export',
+            'EXPORT_TYPE' => 'CSV',
+            'NUMBER_OF_COLUMNS' => '15',
+            'ROWS_PROCESSED' => '5000',
+            'SOURCE_IP' => '192.168.1.100',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'CRITICAL'
         };
     }
     
@@ -78,21 +78,21 @@ public class PrometheionTestDataFactory {
      * @description Create mock API event data
      * @return Map of event fields simulating an API event
      */
-    public static Map&lt;String, Object&gt; createMockApiEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'API',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'API_TYPE' =&gt; 'REST',
-            'API_VERSION' =&gt; '58.0',
-            'METHOD_NAME' =&gt; 'query',
-            'ENTITY_NAME' =&gt; 'Account',
-            'ROWS_PROCESSED' =&gt; '1500',
-            'CPU_TIME' =&gt; '500',
-            'RUN_TIME' =&gt; '1200',
-            'CLIENT_NAME' =&gt; 'External Integration',
-            'SOURCE_IP' =&gt; '203.0.113.50',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'HIGH'
+    public static Map<String, Object> createMockApiEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'API',
+            'USER_ID' => UserInfo.getUserId(),
+            'API_TYPE' => 'REST',
+            'API_VERSION' => '58.0',
+            'METHOD_NAME' => 'query',
+            'ENTITY_NAME' => 'Account',
+            'ROWS_PROCESSED' => '1500',
+            'CPU_TIME' => '500',
+            'RUN_TIME' => '1200',
+            'CLIENT_NAME' => 'External Integration',
+            'SOURCE_IP' => '203.0.113.50',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'HIGH'
         };
     }
     
@@ -100,17 +100,17 @@ public class PrometheionTestDataFactory {
      * @description Create mock ContentDistribution event
      * @return Map of event fields simulating a ContentDistribution event
      */
-    public static Map&lt;String, Object&gt; createMockContentDistributionEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'ContentDistribution',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'CONTENT_DOCUMENT_ID' =&gt; '069000000000001AAA',
-            'DISTRIBUTION_TYPE' =&gt; 'Public',
-            'EXPIRATION_DATE' =&gt; String.valueOf(Date.today().addDays(30)),
-            'IS_PASSWORD_PROTECTED' =&gt; 'false',
-            'SOURCE_IP' =&gt; '192.168.1.100',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'CRITICAL'
+    public static Map<String, Object> createMockContentDistributionEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'ContentDistribution',
+            'USER_ID' => UserInfo.getUserId(),
+            'CONTENT_DOCUMENT_ID' => '069000000000001AAA',
+            'DISTRIBUTION_TYPE' => 'Public',
+            'EXPIRATION_DATE' => String.valueOf(Date.today().addDays(30)),
+            'IS_PASSWORD_PROTECTED' => 'false',
+            'SOURCE_IP' => '192.168.1.100',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'CRITICAL'
         };
     }
     
@@ -118,21 +118,21 @@ public class PrometheionTestDataFactory {
      * @description Create mock ApexExecution event
      * @return Map of event fields simulating an ApexExecution event
      */
-    public static Map&lt;String, Object&gt; createMockApexExecutionEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'ApexExecution',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'ENTRY_POINT' =&gt; 'MyController.doSomething',
-            'QUIDDITY' =&gt; 'SYNCHRONOUS',
-            'CPU_TIME' =&gt; '2500',
-            'EXEC_TIME' =&gt; '5000',
-            'CALLOUT_TIME' =&gt; '1000',
-            'DB_TOTAL_TIME' =&gt; '1500',
-            'DML_ROWS' =&gt; '100',
-            'SOQL_QUERIES' =&gt; '5',
-            'SUCCESS' =&gt; 'true',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'MEDIUM'
+    public static Map<String, Object> createMockApexExecutionEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'ApexExecution',
+            'USER_ID' => UserInfo.getUserId(),
+            'ENTRY_POINT' => 'MyController.doSomething',
+            'QUIDDITY' => 'SYNCHRONOUS',
+            'CPU_TIME' => '2500',
+            'EXEC_TIME' => '5000',
+            'CALLOUT_TIME' => '1000',
+            'DB_TOTAL_TIME' => '1500',
+            'DML_ROWS' => '100',
+            'SOQL_QUERIES' => '5',
+            'SUCCESS' => 'true',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'MEDIUM'
         };
     }
     
@@ -140,16 +140,16 @@ public class PrometheionTestDataFactory {
      * @description Create mock PermissionSetEventLog
      * @return Map of event fields simulating a PermissionSetEvent
      */
-    public static Map&lt;String, Object&gt; createMockPermissionSetEvent() {
-        return new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'PermissionSetEventLog',
-            'USER_ID' =&gt; UserInfo.getUserId(),
-            'PERMISSION_SET_ID' =&gt; '0PS000000000001AAA',
-            'OPERATION' =&gt; 'PermissionSetAssignment',
-            'DELEGATE_USER' =&gt; '005000000000002AAA',
-            'SOURCE_IP' =&gt; '192.168.1.100',
-            'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-            'RISK_LEVEL' =&gt; 'HIGH'
+    public static Map<String, Object> createMockPermissionSetEvent() {
+        return new Map<String, Object>{
+            'EVENT_TYPE' => 'PermissionSetEventLog',
+            'USER_ID' => UserInfo.getUserId(),
+            'PERMISSION_SET_ID' => '0PS000000000001AAA',
+            'OPERATION' => 'PermissionSetAssignment',
+            'DELEGATE_USER' => '005000000000002AAA',
+            'SOURCE_IP' => '192.168.1.100',
+            'TIMESTAMP' => String.valueOf(Datetime.now()),
+            'RISK_LEVEL' => 'HIGH'
         };
     }
     
@@ -157,8 +157,8 @@ public class PrometheionTestDataFactory {
      * @description Create high-risk event for alert testing
      * @return Map of event fields with maximum risk factors
      */
-    public static Map&lt;String, Object&gt; createHighRiskEvent() {
-        Map&lt;String, Object&gt; event = createMockLoginAsEvent();
+    public static Map<String, Object> createHighRiskEvent() {
+        Map<String, Object> event = createMockLoginAsEvent();
         event.put('ROWS_PROCESSED', '50000'); // Large data volume
         event.put('COUNTRY', 'Russia'); // Non-US location
         event.put('HOUR', '3'); // Outside business hours
@@ -170,8 +170,8 @@ public class PrometheionTestDataFactory {
      * @param riskLevel The desired risk level (CRITICAL, HIGH, MEDIUM, LOW)
      * @return Map of event fields with specified risk level
      */
-    public static Map&lt;String, Object&gt; createMockEventWithRiskLevel(String riskLevel) {
-        Map&lt;String, Object&gt; event;
+    public static Map<String, Object> createMockEventWithRiskLevel(String riskLevel) {
+        Map<String, Object> event;
         
         if (riskLevel == 'CRITICAL') {
             event = createMockLoginAsEvent();
@@ -180,11 +180,11 @@ public class PrometheionTestDataFactory {
         } else if (riskLevel == 'MEDIUM') {
             event = createMockLoginEvent();
         } else {
-            event = new Map&lt;String, Object&gt;{
-                'EVENT_TYPE' =&gt; 'Logout',
-                'USER_ID' =&gt; UserInfo.getUserId(),
-                'TIMESTAMP' =&gt; String.valueOf(Datetime.now()),
-                'RISK_LEVEL' =&gt; 'LOW'
+            event = new Map<String, Object>{
+                'EVENT_TYPE' => 'Logout',
+                'USER_ID' => UserInfo.getUserId(),
+                'TIMESTAMP' => String.valueOf(Datetime.now()),
+                'RISK_LEVEL' => 'LOW'
             };
         }
         
@@ -204,7 +204,7 @@ public class PrometheionTestDataFactory {
     public static String createMockLoginCSV(Integer rowCount) {
         String csv = 'EVENT_TYPE,USER_ID,USER_NAME,SOURCE_IP,LOGIN_STATUS,LOGIN_TYPE,TIMESTAMP\n';
         
-        for (Integer i = 0; i &lt; rowCount; i++) {
+        for (Integer i = 0; i < rowCount; i++) {
             csv += 'Login,' + UserInfo.getUserId() + ',testuser' + i + '@test.com,192.168.1.' + 
                    Math.mod(i, 255) + ',Success,Application,' + String.valueOf(Datetime.now().addHours(-i)) + '\n';
         }
@@ -298,13 +298,13 @@ public class PrometheionTestDataFactory {
      * @param count Number of items to create
      * @return List of inserted Prometheion_Evidence_Item__c records
      */
-    public static List&lt;Prometheion_Evidence_Item__c&gt; createEvidenceItems(Id packageId, Integer count) {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = new List&lt;Prometheion_Evidence_Item__c&gt;();
+    public static List<Prometheion_Evidence_Item__c> createEvidenceItems(Id packageId, Integer count) {
+        List<Prometheion_Evidence_Item__c> items = new List<Prometheion_Evidence_Item__c>();
         
-        List&lt;String&gt; eventTypes = new List&lt;String&gt;{'Login', 'LoginAs', 'API', 'ReportExport', 'ApexExecution'};
-        List&lt;String&gt; statuses = new List&lt;String&gt;{'COLLECTED', 'REVIEWED', 'APPROVED'};
+        List<String> eventTypes = new List<String>{'Login', 'LoginAs', 'API', 'ReportExport', 'ApexExecution'};
+        List<String> statuses = new List<String>{'COLLECTED', 'REVIEWED', 'APPROVED'};
         
-        for (Integer i = 0; i &lt; count; i++) {
+        for (Integer i = 0; i < count; i++) {
             items.add(new Prometheion_Evidence_Item__c(
                 Audit_Package__c = packageId,
                 Evidence_Type__c = eventTypes[Math.mod(i, eventTypes.size())],
@@ -341,21 +341,21 @@ public class PrometheionTestDataFactory {
      * @param framework The compliance framework
      * @return List of inserted Prometheion_Framework_Mapping__c records
      */
-    public static List&lt;Prometheion_Framework_Mapping__c&gt; createFrameworkMappings(String framework) {
-        List&lt;Prometheion_Framework_Mapping__c&gt; mappings = new List&lt;Prometheion_Framework_Mapping__c&gt;();
+    public static List<Prometheion_Framework_Mapping__c> createFrameworkMappings(String framework) {
+        List<Prometheion_Framework_Mapping__c> mappings = new List<Prometheion_Framework_Mapping__c>();
         
-        Map&lt;String, List&lt;String&gt;&gt; frameworkControls = new Map&lt;String, List&lt;String&gt;&gt;{
-            'HIPAA' =&gt; new List&lt;String&gt;{'164.312(b)', '164.312(c)', '164.312(d)', '164.312(e)'},
-            'SOC2' =&gt; new List&lt;String&gt;{'CC6.1', 'CC6.2', 'CC6.3', 'CC7.2'},
-            'NIST' =&gt; new List&lt;String&gt;{'AC-1', 'AC-2', 'AU-2', 'AU-3'},
-            'GDPR' =&gt; new List&lt;String&gt;{'Article 30', 'Article 32', 'Article 33', 'Article 34'},
-            'FINRA' =&gt; new List&lt;String&gt;{'Rule 3110', 'Rule 4511', 'Rule 4370'},
-            'FedRAMP' =&gt; new List&lt;String&gt;{'AC-2', 'AU-2', 'CA-7', 'SC-8'}
+        Map<String, List<String>> frameworkControls = new Map<String, List<String>>{
+            'HIPAA' => new List<String>{'164.312(b)', '164.312(c)', '164.312(d)', '164.312(e)'},
+            'SOC2' => new List<String>{'CC6.1', 'CC6.2', 'CC6.3', 'CC7.2'},
+            'NIST' => new List<String>{'AC-1', 'AC-2', 'AU-2', 'AU-3'},
+            'GDPR' => new List<String>{'Article 30', 'Article 32', 'Article 33', 'Article 34'},
+            'FINRA' => new List<String>{'Rule 3110', 'Rule 4511', 'Rule 4370'},
+            'FedRAMP' => new List<String>{'AC-2', 'AU-2', 'CA-7', 'SC-8'}
         };
         
-        List&lt;String&gt; controls = frameworkControls.containsKey(framework) 
+        List<String> controls = frameworkControls.containsKey(framework) 
             ? frameworkControls.get(framework) 
-            : new List&lt;String&gt;{'CTRL-001', 'CTRL-002', 'CTRL-003'};
+            : new List<String>{'CTRL-001', 'CTRL-002', 'CTRL-003'};
         
         for (String controlId : controls) {
             mappings.add(new Prometheion_Framework_Mapping__c(
@@ -380,27 +380,27 @@ public class PrometheionTestDataFactory {
      * @return JSON string mimicking Claude API response
      */
     public static String createMockClaudeResponse() {
-        Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-            'id' =&gt; 'msg_' + String.valueOf(Datetime.now().getTime()),
-            'type' =&gt; 'message',
-            'role' =&gt; 'assistant',
-            'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'type' =&gt; 'text',
-                    'text' =&gt; JSON.serialize(new Map&lt;String, Object&gt;{
-                        'recommendation' =&gt; 'Review user access patterns for potential unauthorized activity.',
-                        'severity' =&gt; 'HIGH',
-                        'relatedControls' =&gt; new List&lt;String&gt;{'164.312(b)', 'CC6.1'},
-                        'suggestedActions' =&gt; new List&lt;String&gt;{
+        Map<String, Object> response = new Map<String, Object>{
+            'id' => 'msg_' + String.valueOf(Datetime.now().getTime()),
+            'type' => 'message',
+            'role' => 'assistant',
+            'content' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'type' => 'text',
+                    'text' => JSON.serialize(new Map<String, Object>{
+                        'recommendation' => 'Review user access patterns for potential unauthorized activity.',
+                        'severity' => 'HIGH',
+                        'relatedControls' => new List<String>{'164.312(b)', 'CC6.1'},
+                        'suggestedActions' => new List<String>{
                             'Enable additional authentication factors',
                             'Review login patterns for anomalies'
                         },
-                        'confidence' =&gt; 85
+                        'confidence' => 85
                     })
                 }
             },
-            'model' =&gt; 'claude-sonnet-4-20250514',
-            'stop_reason' =&gt; 'end_turn'
+            'model' => 'claude-sonnet-4-20250514',
+            'stop_reason' => 'end_turn'
         };
         return JSON.serialize(response);
     }
@@ -410,26 +410,26 @@ public class PrometheionTestDataFactory {
      * @return JSON string with risk predictions
      */
     public static String createMockRiskPredictionResponse() {
-        List&lt;Map&lt;String, Object&gt;&gt; predictions = new List&lt;Map&lt;String, Object&gt;&gt;{
-            new Map&lt;String, Object&gt;{
-                'controlId' =&gt; '164.312(b)',
-                'riskProbability' =&gt; 75,
-                'riskReason' =&gt; 'Increasing login failures detected',
-                'predictedDate' =&gt; String.valueOf(Date.today().addDays(14))
+        List<Map<String, Object>> predictions = new List<Map<String, Object>>{
+            new Map<String, Object>{
+                'controlId' => '164.312(b)',
+                'riskProbability' => 75,
+                'riskReason' => 'Increasing login failures detected',
+                'predictedDate' => String.valueOf(Date.today().addDays(14))
             },
-            new Map&lt;String, Object&gt;{
-                'controlId' =&gt; 'CC6.1',
-                'riskProbability' =&gt; 60,
-                'riskReason' =&gt; 'Access pattern anomalies',
-                'predictedDate' =&gt; String.valueOf(Date.today().addDays(30))
+            new Map<String, Object>{
+                'controlId' => 'CC6.1',
+                'riskProbability' => 60,
+                'riskReason' => 'Access pattern anomalies',
+                'predictedDate' => String.valueOf(Date.today().addDays(30))
             }
         };
         
-        Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-            'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'type' =&gt; 'text',
-                    'text' =&gt; JSON.serialize(predictions)
+        Map<String, Object> response = new Map<String, Object>{
+            'content' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'type' => 'text',
+                    'text' => JSON.serialize(predictions)
                 }
             }
         };
@@ -471,7 +471,7 @@ public class PrometheionTestDataFactory {
      * @param permissionSetName The permission set name
      */
     public static void assignPermissionSet(Id userId, String permissionSetName) {
-        List&lt;PermissionSet&gt; psList = [
+        List<PermissionSet> psList = [
             SELECT Id FROM PermissionSet WHERE Name = :permissionSetName LIMIT 1
         ];
         
@@ -504,8 +504,8 @@ public class PrometheionTestDataFactory {
      * @param hoursAgo Hours in the past for the timestamp
      * @return Map of event data
      */
-    public static Map&lt;String, Object&gt; createEventWithTimestamp(String eventType, Integer hoursAgo) {
-        Map&lt;String, Object&gt; event = createMockEventWithRiskLevel('MEDIUM');
+    public static Map<String, Object> createEventWithTimestamp(String eventType, Integer hoursAgo) {
+        Map<String, Object> event = createMockEventWithRiskLevel('MEDIUM');
         event.put('EVENT_TYPE', eventType);
         event.put('TIMESTAMP', String.valueOf(Datetime.now().addHours(-hoursAgo)));
         return event;

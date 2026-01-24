@@ -17,7 +17,7 @@ public with sharing class PrometheionDeliveryService {
      * @throws AuraHandledException if delivery fails
      */
     @AuraEnabled
-    public static void deliverAuditPackage(String packageId, List&lt;String&gt; recipientEmails) {
+    public static void deliverAuditPackage(String packageId, List<String> recipientEmails) {
         // Validate inputs
         if (String.isBlank(packageId)) {
             throw new AuraHandledException('Package ID is required');
@@ -47,11 +47,11 @@ public with sharing class PrometheionDeliveryService {
             ];
             
             // Build and send emails
-            List&lt;Messaging.SingleEmailMessage&gt; emails = new List&lt;Messaging.SingleEmailMessage&gt;();
+            List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
             
             for (String email : recipientEmails) {
                 Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-                message.setToAddresses(new List&lt;String&gt;{ email });
+                message.setToAddresses(new List<String>{ email });
                 message.setSubject('Audit Package: ' + pkg.Package_Name__c + ' (' + pkg.Framework__c + ')');
                 message.setPlainTextBody(buildEmailBody(pkg));
                 message.setHtmlBody(buildHtmlEmailBody(pkg));
@@ -61,7 +61,7 @@ public with sharing class PrometheionDeliveryService {
                 attachment.setFileName(cv.Title + '.pdf');
                 attachment.setBody(cv.VersionData);
                 attachment.setContentType('application/pdf');
-                message.setFileAttachments(new List&lt;Messaging.EmailFileAttachment&gt;{ attachment });
+                message.setFileAttachments(new List<Messaging.EmailFileAttachment>{ attachment });
                 
                 emails.add(message);
             }
@@ -84,7 +84,7 @@ public with sharing class PrometheionDeliveryService {
      * @return Scheduled job ID
      */
     @AuraEnabled
-    public static Id scheduleRecurringDelivery(String packageId, String cronExpression, List&lt;String&gt; recipientEmails) {
+    public static Id scheduleRecurringDelivery(String packageId, String cronExpression, List<String> recipientEmails) {
         // Validate inputs
         if (String.isBlank(packageId)) {
             throw new AuraHandledException('Package ID is required');
@@ -127,7 +127,7 @@ public with sharing class PrometheionDeliveryService {
             throw new AuraHandledException('Package ID is required');
         }
         
-        if (expirationDays == null || expirationDays &lt; 1) {
+        if (expirationDays == null || expirationDays < 1) {
             expirationDays = 30; // Default to 30 days
         }
         
@@ -199,7 +199,7 @@ public with sharing class PrometheionDeliveryService {
             ];
             
             // Build Slack Block Kit message
-            Map&lt;String, Object&gt; slackMessage = buildSlackMessage(pkg, channel);
+            Map<String, Object> slackMessage = buildSlackMessage(pkg, channel);
             
             // Send to Slack webhook
             // In production, use Named Credential
@@ -230,23 +230,23 @@ public with sharing class PrometheionDeliveryService {
      * @return List of delivery records
      */
     @AuraEnabled(cacheable=true)
-    public static List&lt;Map&lt;String, Object&gt;&gt; getDeliveryHistory(String packageId) {
-        List&lt;Map&lt;String, Object&gt;&gt; history = new List&lt;Map&lt;String, Object&gt;&gt;();
+    public static List<Map<String, Object>> getDeliveryHistory(String packageId) {
+        List<Map<String, Object>> history = new List<Map<String, Object>>();
         
         // Query ContentDistribution records
-        List&lt;ContentDocumentLink&gt; links = [
+        List<ContentDocumentLink> links = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :packageId
         ];
         
-        Set&lt;Id&gt; docIds = new Set&lt;Id&gt;();
+        Set<Id> docIds = new Set<Id>();
         for (ContentDocumentLink link : links) {
             docIds.add(link.ContentDocumentId);
         }
         
         if (!docIds.isEmpty()) {
-            List&lt;ContentDistribution&gt; distributions = [
+            List<ContentDistribution> distributions = [
                 SELECT Id, Name, DistributionPublicUrl, ExpiryDate, 
                        FirstViewDate, LastViewDate, ViewCount, CreatedDate
                 FROM ContentDistribution
@@ -255,15 +255,15 @@ public with sharing class PrometheionDeliveryService {
             ];
             
             for (ContentDistribution cd : distributions) {
-                history.add(new Map&lt;String, Object&gt;{
-                    'id' =&gt; cd.Id,
-                    'name' =&gt; cd.Name,
-                    'url' =&gt; cd.DistributionPublicUrl,
-                    'expiryDate' =&gt; cd.ExpiryDate,
-                    'firstViewDate' =&gt; cd.FirstViewDate,
-                    'lastViewDate' =&gt; cd.LastViewDate,
-                    'viewCount' =&gt; cd.ViewCount,
-                    'createdDate' =&gt; cd.CreatedDate
+                history.add(new Map<String, Object>{
+                    'id' => cd.Id,
+                    'name' => cd.Name,
+                    'url' => cd.DistributionPublicUrl,
+                    'expiryDate' => cd.ExpiryDate,
+                    'firstViewDate' => cd.FirstViewDate,
+                    'lastViewDate' => cd.LastViewDate,
+                    'viewCount' => cd.ViewCount,
+                    'createdDate' => cd.CreatedDate
                 });
             }
         }
@@ -295,25 +295,25 @@ public with sharing class PrometheionDeliveryService {
      * @return HTML email body
      */
     private static String buildHtmlEmailBody(Prometheion_Audit_Package__c pkg) {
-        return '&lt;html&gt;&lt;body style="font-family: Arial, sans-serif;"&gt;' +
-               '&lt;div style="background-color: #032d60; color: white; padding: 20px;"&gt;' +
-               '&lt;h1 style="margin: 0;"&gt;Audit Package Delivery&lt;/h1&gt;' +
-               '&lt;/div&gt;' +
-               '&lt;div style="padding: 20px;"&gt;' +
-               '&lt;table style="border-collapse: collapse; width: 100%;"&gt;' +
-               '&lt;tr&gt;&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;&lt;strong&gt;Package:&lt;/strong&gt;&lt;/td&gt;' +
-               '&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;' + pkg.Package_Name__c + '&lt;/td&gt;&lt;/tr&gt;' +
-               '&lt;tr&gt;&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;&lt;strong&gt;Framework:&lt;/strong&gt;&lt;/td&gt;' +
-               '&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;' + pkg.Framework__c + '&lt;/td&gt;&lt;/tr&gt;' +
-               '&lt;tr&gt;&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;&lt;strong&gt;Status:&lt;/strong&gt;&lt;/td&gt;' +
-               '&lt;td style="padding: 10px; border-bottom: 1px solid #ddd;"&gt;' + pkg.Status__c + '&lt;/td&gt;&lt;/tr&gt;' +
-               '&lt;/table&gt;' +
-               '&lt;p&gt;Please find the attached audit package PDF.&lt;/p&gt;' +
-               '&lt;/div&gt;' +
-               '&lt;div style="background-color: #f5f5f5; padding: 10px; font-size: 12px; color: #666;"&gt;' +
+        return '<html><body style="font-family: Arial, sans-serif;">' +
+               '<div style="background-color: #032d60; color: white; padding: 20px;">' +
+               '<h1 style="margin: 0;">Audit Package Delivery</h1>' +
+               '</div>' +
+               '<div style="padding: 20px;">' +
+               '<table style="border-collapse: collapse; width: 100%;">' +
+               '<tr><td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Package:</strong></td>' +
+               '<td style="padding: 10px; border-bottom: 1px solid #ddd;">' + pkg.Package_Name__c + '</td></tr>' +
+               '<tr><td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Framework:</strong></td>' +
+               '<td style="padding: 10px; border-bottom: 1px solid #ddd;">' + pkg.Framework__c + '</td></tr>' +
+               '<tr><td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Status:</strong></td>' +
+               '<td style="padding: 10px; border-bottom: 1px solid #ddd;">' + pkg.Status__c + '</td></tr>' +
+               '</table>' +
+               '<p>Please find the attached audit package PDF.</p>' +
+               '</div>' +
+               '<div style="background-color: #f5f5f5; padding: 10px; font-size: 12px; color: #666;">' +
                'This is an automated message from Prometheion Compliance Platform.' +
-               '&lt;/div&gt;' +
-               '&lt;/body&gt;&lt;/html&gt;';
+               '</div>' +
+               '</body></html>';
     }
     
     /**
@@ -322,54 +322,54 @@ public with sharing class PrometheionDeliveryService {
      * @param channel The Slack channel
      * @return Slack message object
      */
-    private static Map&lt;String, Object&gt; buildSlackMessage(Prometheion_Audit_Package__c pkg, String channel) {
-        List&lt;Object&gt; blocks = new List&lt;Object&gt;{
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'header',
-                'text' =&gt; new Map&lt;String, Object&gt;{
-                    'type' =&gt; 'plain_text',
-                    'text' =&gt; '📋 Audit Package Generated',
-                    'emoji' =&gt; true
+    private static Map<String, Object> buildSlackMessage(Prometheion_Audit_Package__c pkg, String channel) {
+        List<Object> blocks = new List<Object>{
+            new Map<String, Object>{
+                'type' => 'header',
+                'text' => new Map<String, Object>{
+                    'type' => 'plain_text',
+                    'text' => '📋 Audit Package Generated',
+                    'emoji' => true
                 }
             },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'section',
-                'fields' =&gt; new List&lt;Object&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Package:*\n' + pkg.Package_Name__c
+            new Map<String, Object>{
+                'type' => 'section',
+                'fields' => new List<Object>{
+                    new Map<String, Object>{
+                        'type' => 'mrkdwn',
+                        'text' => '*Package:*\n' + pkg.Package_Name__c
                     },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Framework:*\n' + pkg.Framework__c
+                    new Map<String, Object>{
+                        'type' => 'mrkdwn',
+                        'text' => '*Framework:*\n' + pkg.Framework__c
                     },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Status:*\n' + pkg.Status__c
+                    new Map<String, Object>{
+                        'type' => 'mrkdwn',
+                        'text' => '*Status:*\n' + pkg.Status__c
                     },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Generated:*\n' + Datetime.now().format()
+                    new Map<String, Object>{
+                        'type' => 'mrkdwn',
+                        'text' => '*Generated:*\n' + Datetime.now().format()
                     }
                 }
             },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'divider'
+            new Map<String, Object>{
+                'type' => 'divider'
             },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'context',
-                'elements' =&gt; new List&lt;Object&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; 'Sent from *Prometheion Compliance Platform*'
+            new Map<String, Object>{
+                'type' => 'context',
+                'elements' => new List<Object>{
+                    new Map<String, Object>{
+                        'type' => 'mrkdwn',
+                        'text' => 'Sent from *Prometheion Compliance Platform*'
                     }
                 }
             }
         };
         
-        return new Map&lt;String, Object&gt;{
-            'channel' =&gt; channel,
-            'blocks' =&gt; blocks
+        return new Map<String, Object>{
+            'channel' => channel,
+            'blocks' => blocks
         };
     }
 }

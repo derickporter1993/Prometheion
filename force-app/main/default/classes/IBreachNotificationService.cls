@@ -14,7 +14,7 @@ public interface IBreachNotificationService {
      * @param request Breach assessment request details
      * @return Assessment result with risk level and notification requirements
      */
-    BreachAssessment assessBreach(BreachAssessmentRequest request);
+    BreachNotificationTypes.BreachAssessment assessBreach(BreachNotificationTypes.BreachAssessmentRequest request);
 
     /**
      * Create breach notification record
@@ -36,7 +36,7 @@ public interface IBreachNotificationService {
      * @param breachId The breach record Id
      * @return Current notification status
      */
-    NotificationStatus getNotificationStatus(Id breachId);
+    BreachNotificationTypes.NotificationStatus getNotificationStatus(Id breachId);
 
     /**
      * Generate breach report for regulators
@@ -49,88 +49,12 @@ public interface IBreachNotificationService {
      * Get all open breaches requiring action
      * @return List of open breach summaries
      */
-    List<BreachSummary> getOpenBreaches();
+    List<BreachNotificationTypes.BreachSummary> getOpenBreaches();
 
     /**
      * Get breach metrics for reporting
      * @param daysBack Number of days to analyze
      * @return Breach metrics summary
      */
-    BreachMetrics getBreachMetrics(Integer daysBack);
-
-    /**
-     * Breach assessment request
-     */
-    class BreachAssessmentRequest {
-        @AuraEnabled public String incidentType;
-        @AuraEnabled public String description;
-        @AuraEnabled public Integer recordsAffected;
-        @AuraEnabled public List<String> dataTypesExposed;
-        @AuraEnabled public DateTime discoveryDate;
-        @AuraEnabled public String discoveredBy;
-        @AuraEnabled public Boolean encryptionInPlace;
-        @AuraEnabled public String circumstances;
-    }
-
-    /**
-     * Breach assessment result
-     */
-    class BreachAssessment {
-        @AuraEnabled public Id breachId;
-        @AuraEnabled public String riskLevel;
-        @AuraEnabled public Decimal riskScore;
-        @AuraEnabled public Boolean notificationRequired;
-        @AuraEnabled public List<String> notificationTypes;
-        @AuraEnabled public DateTime notificationDeadline;
-        @AuraEnabled public String analysis;
-        @AuraEnabled public List<String> mitigationSteps;
-        @AuraEnabled public String framework;
-    }
-
-    /**
-     * Notification status tracking
-     */
-    class NotificationStatus {
-        @AuraEnabled public Id breachId;
-        @AuraEnabled public Boolean regulatorNotified;
-        @AuraEnabled public DateTime regulatorNotificationDate;
-        @AuraEnabled public Boolean individualsNotified;
-        @AuraEnabled public DateTime individualsNotificationDate;
-        @AuraEnabled public Integer individualsNotifiedCount;
-        @AuraEnabled public Boolean mediaNotified;
-        @AuraEnabled public DateTime mediaNotificationDate;
-        @AuraEnabled public String overallStatus;
-        @AuraEnabled public DateTime deadline;
-        @AuraEnabled public Boolean deadlineMet;
-    }
-
-    /**
-     * Breach summary for listing
-     */
-    class BreachSummary {
-        @AuraEnabled public Id breachId;
-        @AuraEnabled public String incidentType;
-        @AuraEnabled public String severity;
-        @AuraEnabled public Integer recordsAffected;
-        @AuraEnabled public DateTime discoveryDate;
-        @AuraEnabled public DateTime notificationDeadline;
-        @AuraEnabled public String status;
-        @AuraEnabled public String framework;
-        @AuraEnabled public Decimal riskScore;
-    }
-
-    /**
-     * Breach metrics for reporting
-     */
-    class BreachMetrics {
-        @AuraEnabled public Integer totalBreaches;
-        @AuraEnabled public Integer openBreaches;
-        @AuraEnabled public Integer closedBreaches;
-        @AuraEnabled public Decimal averageResolutionDays;
-        @AuraEnabled public Integer deadlinesMet;
-        @AuraEnabled public Integer deadlinesMissed;
-        @AuraEnabled public Map<String, Integer> breachesBySeverity;
-        @AuraEnabled public Map<String, Integer> breachesByType;
-        @AuraEnabled public Integer totalRecordsAffected;
-    }
+    BreachNotificationTypes.BreachMetrics getBreachMetrics(Integer daysBack);
 }

@@ -36,7 +36,7 @@ public with sharing class PrometheionComplianceCopilotService {
      * @return ComplianceRecommendation with analysis results
      */
     @AuraEnabled
-    public static ComplianceRecommendation analyzeEventPattern(List&lt;String&gt; eventIds) {
+    public static ComplianceRecommendation analyzeEventPattern(List<String> eventIds) {
         if (eventIds == null || eventIds.isEmpty()) {
             return createDefaultRecommendation('No events provided for analysis');
         }
@@ -50,7 +50,7 @@ public with sharing class PrometheionComplianceCopilotService {
         
         try {
             // Query evidence items with security enforcement
-            List&lt;Prometheion_Evidence_Item__c&gt; items = [
+            List<Prometheion_Evidence_Item__c> items = [
                 SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c
                 FROM Prometheion_Evidence_Item__c
                 WHERE Id IN :eventIds
@@ -122,7 +122,7 @@ public with sharing class PrometheionComplianceCopilotService {
             ];
             
             // Get event type distribution with security enforcement
-            List&lt;AggregateResult&gt; typeDistribution = [
+            List<AggregateResult> typeDistribution = [
                 SELECT Evidence_Type__c, COUNT(Id) cnt
                 FROM Prometheion_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
@@ -156,21 +156,21 @@ public with sharing class PrometheionComplianceCopilotService {
      * @return List of risk predictions
      */
     @AuraEnabled
-    public static List&lt;RiskPrediction&gt; predictComplianceRisks(String framework) {
+    public static List<RiskPrediction> predictComplianceRisks(String framework) {
         if (String.isBlank(framework)) {
             throw new AuraHandledException('Framework is required');
         }
         
         // Check cache
         String cacheKey = 'risks_' + framework;
-        List&lt;RiskPrediction&gt; cached = getCachedRiskPredictions(cacheKey);
+        List<RiskPrediction> cached = getCachedRiskPredictions(cacheKey);
         if (cached != null) {
             return cached;
         }
         
         try {
             // Get recent evidence for analysis
-            List&lt;Prometheion_Evidence_Item__c&gt; recentEvidence = [
+            List<Prometheion_Evidence_Item__c> recentEvidence = [
                 SELECT Evidence_Type__c, Evidence_Date__c, Status__c
                 FROM Prometheion_Evidence_Item__c
                 WHERE CreatedDate = LAST_N_DAYS:90
@@ -185,7 +185,7 @@ public with sharing class PrometheionComplianceCopilotService {
             String response = callClaudeAPI(prompt);
             
             // Parse predictions
-            List&lt;RiskPrediction&gt; predictions = parseRiskPredictions(response);
+            List<RiskPrediction> predictions = parseRiskPredictions(response);
             
             // Cache result
             cacheRiskPredictions(cacheKey, predictions);
@@ -194,7 +194,7 @@ public with sharing class PrometheionComplianceCopilotService {
             
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Error predicting risks: ' + e.getMessage());
-            return new List&lt;RiskPrediction&gt;();
+            return new List<RiskPrediction>();
         }
     }
     
@@ -205,8 +205,8 @@ public with sharing class PrometheionComplianceCopilotService {
      * @return Map of event ID to control ID
      */
     @AuraEnabled
-    public static Map&lt;String, String&gt; categorizeEvents(List&lt;String&gt; eventIds, String framework) {
-        Map&lt;String, String&gt; mappings = new Map&lt;String, String&gt;();
+    public static Map<String, String> categorizeEvents(List<String> eventIds, String framework) {
+        Map<String, String> mappings = new Map<String, String>();
         
         if (eventIds == null || eventIds.isEmpty() || String.isBlank(framework)) {
             return mappings;
@@ -214,7 +214,7 @@ public with sharing class PrometheionComplianceCopilotService {
         
         try {
             // Query events
-            List&lt;Prometheion_Evidence_Item__c&gt; items = [
+            List<Prometheion_Evidence_Item__c> items = [
                 SELECT Id, Evidence_Type__c, Description__c
                 FROM Prometheion_Evidence_Item__c
                 WHERE Id IN :eventIds
@@ -260,14 +260,14 @@ public with sharing class PrometheionComplianceCopilotService {
         req.setTimeout(TIMEOUT_MS);
         
         // Build request body
-        Map&lt;String, Object&gt; requestBody = new Map&lt;String, Object&gt;{
-            'model' =&gt; CLAUDE_MODEL,
-            'max_tokens' =&gt; MAX_TOKENS,
-            'system' =&gt; SYSTEM_PROMPT,
-            'messages' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                new Map&lt;String, Object&gt;{
-                    'role' =&gt; 'user',
-                    'content' =&gt; userPrompt
+        Map<String, Object> requestBody = new Map<String, Object>{
+            'model' => CLAUDE_MODEL,
+            'max_tokens' => MAX_TOKENS,
+            'system' => SYSTEM_PROMPT,
+            'messages' => new List<Map<String, Object>>{
+                new Map<String, Object>{
+                    'role' => 'user',
+                    'content' => userPrompt
                 }
             }
         };
@@ -288,7 +288,7 @@ public with sharing class PrometheionComplianceCopilotService {
     // PRIVATE METHODS - PROMPT BUILDING
     // ═══════════════════════════════════════════════════════════════
     
-    private static String buildAnalysisPrompt(List&lt;Prometheion_Evidence_Item__c&gt; items) {
+    private static String buildAnalysisPrompt(List<Prometheion_Evidence_Item__c> items) {
         String eventsJson = JSON.serialize(items);
         
         return 'Analyze the following Shield events and provide compliance recommendations.\n\n' +
@@ -302,7 +302,7 @@ public with sharing class PrometheionComplianceCopilotService {
     }
     
     private static String buildSummaryPrompt(Prometheion_Audit_Package__c pkg, Integer evidenceCount, 
-                                             List&lt;AggregateResult&gt; typeDistribution) {
+                                             List<AggregateResult> typeDistribution) {
         String distribution = '';
         for (AggregateResult ar : typeDistribution) {
             distribution += '\n- ' + ar.get('Evidence_Type__c') + ': ' + ar.get('cnt');
@@ -319,8 +319,8 @@ public with sharing class PrometheionComplianceCopilotService {
                'Highlight key findings, risks, and recommendations.';
     }
     
-    private static String buildPredictionPrompt(String framework, List&lt;Prometheion_Evidence_Item__c&gt; evidence) {
-        Map&lt;String, Integer&gt; typeCounts = new Map&lt;String, Integer&gt;();
+    private static String buildPredictionPrompt(String framework, List<Prometheion_Evidence_Item__c> evidence) {
+        Map<String, Integer> typeCounts = new Map<String, Integer>();
         for (Prometheion_Evidence_Item__c item : evidence) {
             String t = item.Evidence_Type__c;
             typeCounts.put(t, (typeCounts.containsKey(t) ? typeCounts.get(t) : 0) + 1);
@@ -335,13 +335,13 @@ public with sharing class PrometheionComplianceCopilotService {
                '- predictedDate: string (YYYY-MM-DD)';
     }
     
-    private static String buildCategorizationPrompt(List&lt;Prometheion_Evidence_Item__c&gt; items, String framework) {
-        List&lt;Map&lt;String, String&gt;&gt; simpleItems = new List&lt;Map&lt;String, String&gt;&gt;();
+    private static String buildCategorizationPrompt(List<Prometheion_Evidence_Item__c> items, String framework) {
+        List<Map<String, String>> simpleItems = new List<Map<String, String>>();
         for (Prometheion_Evidence_Item__c item : items) {
-            simpleItems.add(new Map&lt;String, String&gt;{
-                'id' =&gt; item.Id,
-                'type' =&gt; item.Evidence_Type__c,
-                'description' =&gt; item.Description__c
+            simpleItems.add(new Map<String, String>{
+                'id' => item.Id,
+                'type' => item.Evidence_Type__c,
+                'description' => item.Description__c
             });
         }
         
@@ -358,29 +358,29 @@ public with sharing class PrometheionComplianceCopilotService {
         ComplianceRecommendation rec = new ComplianceRecommendation();
         
         try {
-            Map&lt;String, Object&gt; responseMap = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(response);
-            List&lt;Object&gt; content = (List&lt;Object&gt;)responseMap.get('content');
+            Map<String, Object> responseMap = (Map<String, Object>)JSON.deserializeUntyped(response);
+            List<Object> content = (List<Object>)responseMap.get('content');
             
             if (content != null &amp;&amp; !content.isEmpty()) {
-                Map&lt;String, Object&gt; firstContent = (Map&lt;String, Object&gt;)content[0];
+                Map<String, Object> firstContent = (Map<String, Object>)content[0];
                 String text = (String)firstContent.get('text');
                 
                 // Parse the JSON response
-                Map&lt;String, Object&gt; recData = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(text);
+                Map<String, Object> recData = (Map<String, Object>)JSON.deserializeUntyped(text);
                 
                 rec.recommendation = (String)recData.get('recommendation');
                 rec.severity = (String)recData.get('severity');
-                rec.relatedControls = new List&lt;String&gt;();
-                rec.suggestedActions = new List&lt;String&gt;();
+                rec.relatedControls = new List<String>();
+                rec.suggestedActions = new List<String>();
                 
-                List&lt;Object&gt; controls = (List&lt;Object&gt;)recData.get('relatedControls');
+                List<Object> controls = (List<Object>)recData.get('relatedControls');
                 if (controls != null) {
                     for (Object ctrl : controls) {
                         rec.relatedControls.add(String.valueOf(ctrl));
                     }
                 }
                 
-                List&lt;Object&gt; actions = (List&lt;Object&gt;)recData.get('suggestedActions');
+                List<Object> actions = (List<Object>)recData.get('suggestedActions');
                 if (actions != null) {
                     for (Object action : actions) {
                         rec.suggestedActions.add(String.valueOf(action));
@@ -400,11 +400,11 @@ public with sharing class PrometheionComplianceCopilotService {
     
     private static String extractTextFromResponse(String response) {
         try {
-            Map&lt;String, Object&gt; responseMap = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(response);
-            List&lt;Object&gt; content = (List&lt;Object&gt;)responseMap.get('content');
+            Map<String, Object> responseMap = (Map<String, Object>)JSON.deserializeUntyped(response);
+            List<Object> content = (List<Object>)responseMap.get('content');
             
             if (content != null &amp;&amp; !content.isEmpty()) {
-                Map&lt;String, Object&gt; firstContent = (Map&lt;String, Object&gt;)content[0];
+                Map<String, Object> firstContent = (Map<String, Object>)content[0];
                 return (String)firstContent.get('text');
             }
         } catch (Exception e) {
@@ -414,15 +414,15 @@ public with sharing class PrometheionComplianceCopilotService {
         return 'Unable to generate summary.';
     }
     
-    private static List&lt;RiskPrediction&gt; parseRiskPredictions(String response) {
-        List&lt;RiskPrediction&gt; predictions = new List&lt;RiskPrediction&gt;();
+    private static List<RiskPrediction> parseRiskPredictions(String response) {
+        List<RiskPrediction> predictions = new List<RiskPrediction>();
         
         try {
             String text = extractTextFromResponse(response);
-            List&lt;Object&gt; predList = (List&lt;Object&gt;)JSON.deserializeUntyped(text);
+            List<Object> predList = (List<Object>)JSON.deserializeUntyped(text);
             
             for (Object predObj : predList) {
-                Map&lt;String, Object&gt; pred = (Map&lt;String, Object&gt;)predObj;
+                Map<String, Object> pred = (Map<String, Object>)predObj;
                 
                 RiskPrediction rp = new RiskPrediction();
                 rp.controlId = (String)pred.get('controlId');
@@ -449,13 +449,13 @@ public with sharing class PrometheionComplianceCopilotService {
         return predictions;
     }
     
-    private static Map&lt;String, String&gt; parseCategorizationResponse(String response, 
-                                                                    List&lt;Prometheion_Evidence_Item__c&gt; items) {
-        Map&lt;String, String&gt; mappings = new Map&lt;String, String&gt;();
+    private static Map<String, String> parseCategorizationResponse(String response, 
+                                                                    List<Prometheion_Evidence_Item__c> items) {
+        Map<String, String> mappings = new Map<String, String>();
         
         try {
             String text = extractTextFromResponse(response);
-            Map&lt;String, Object&gt; catMap = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(text);
+            Map<String, Object> catMap = (Map<String, Object>)JSON.deserializeUntyped(text);
             
             for (String key : catMap.keySet()) {
                 mappings.put(key, String.valueOf(catMap.get(key)));
@@ -507,16 +507,16 @@ public with sharing class PrometheionComplianceCopilotService {
         }
     }
     
-    private static List&lt;RiskPrediction&gt; getCachedRiskPredictions(String key) {
+    private static List<RiskPrediction> getCachedRiskPredictions(String key) {
         try {
             Cache.OrgPartition partition = Cache.Org.getPartition(CACHE_PARTITION);
-            return (List&lt;RiskPrediction&gt;)partition.get(key);
+            return (List<RiskPrediction>)partition.get(key);
         } catch (Exception e) {
             return null;
         }
     }
     
-    private static void cacheRiskPredictions(String key, List&lt;RiskPrediction&gt; predictions) {
+    private static void cacheRiskPredictions(String key, List<RiskPrediction> predictions) {
         try {
             Cache.OrgPartition partition = Cache.Org.getPartition(CACHE_PARTITION);
             partition.put(key, predictions, CACHE_TTL_SECONDS);
@@ -533,8 +533,8 @@ public with sharing class PrometheionComplianceCopilotService {
         ComplianceRecommendation rec = new ComplianceRecommendation();
         rec.recommendation = message;
         rec.severity = 'MEDIUM';
-        rec.relatedControls = new List&lt;String&gt;();
-        rec.suggestedActions = new List&lt;String&gt;{'Review event logs manually', 'Consult compliance team'};
+        rec.relatedControls = new List<String>();
+        rec.suggestedActions = new List<String>{'Review event logs manually', 'Consult compliance team'};
         rec.confidence = 50;
         return rec;
     }
@@ -549,8 +549,8 @@ public with sharing class PrometheionComplianceCopilotService {
     public class ComplianceRecommendation {
         @AuraEnabled public String recommendation;
         @AuraEnabled public String severity; // CRITICAL, HIGH, MEDIUM, LOW
-        @AuraEnabled public List&lt;String&gt; relatedControls;
-        @AuraEnabled public List&lt;String&gt; suggestedActions;
+        @AuraEnabled public List<String> relatedControls;
+        @AuraEnabled public List<String> suggestedActions;
         @AuraEnabled public Integer confidence; // 0-100
     }
     

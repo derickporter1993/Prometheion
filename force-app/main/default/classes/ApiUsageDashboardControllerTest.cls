@@ -24,7 +24,7 @@ private class ApiUsageDashboardControllerTest {
         System.assertEquals(5, rows.size(), 'Should return 5 snapshot rows');
         System.assertNotEquals(null, rows[0].takenOn, 'TakenOn should be populated');
         System.assertNotEquals(null, rows[0].used, 'Used should be populated');
-        System.assertEquals(100000, rows[0].limit, 'Limit should be 100000');
+        System.assertEquals(100000, rows[0].dailyLimit, 'DailyLimit should be 100000');
         System.assertNotEquals(null, rows[0].percent, 'Percent should be populated');
     }
 

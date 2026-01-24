@@ -11,6 +11,11 @@
 import { createElement } from "lwc";
 import PrometheionDashboard from "c/prometheionDashboard";
 import { safeCleanupDom } from "../../__tests__/wireAdapterTestUtils";
+import {
+  runAccessibilityAudit,
+  checkHeadingHierarchy,
+  getFocusableElements,
+} from "../../__tests__/axeTestHelper";
 
 // Wire adapter callbacks - must be declared before jest.mock (which is hoisted)
 // Using 'mock' prefix allows Jest to hoist properly
@@ -466,6 +471,34 @@ describe("c-prometheion-dashboard", () => {
 
       // Component should still be functional
       expect(element.shadowRoot.querySelector(".prometheion-dashboard")).not.toBeNull();
+    });
+  });
+
+  describe("Accessibility (axe)", () => {
+    it("should have no accessibility violations", async () => {
+      const element = await createComponent();
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    });
+
+    it("should have valid heading hierarchy", async () => {
+      const element = await createComponent();
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
+    });
+
+    it("should have focusable interactive elements", async () => {
+      const element = await createComponent();
+
+      const focusable = getFocusableElements(element.shadowRoot);
+      expect(Array.isArray(focusable)).toBe(true);
+      // Dashboard should have interactive elements (buttons, combobox, etc.)
+      expect(focusable.length).toBeGreaterThan(0);
     });
   });
 });

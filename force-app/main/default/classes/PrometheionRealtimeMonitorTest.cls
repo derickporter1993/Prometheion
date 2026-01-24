@@ -11,45 +11,45 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testCalculateRiskScore_LoginEvent_ReturnsBaseScore() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginEvent();
         
         Test.startTest();
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
         // Login base score is 20, may have additional factors
-        System.assert(riskScore &gt;= 20, 'Login event should have minimum score of 20');
-        System.assert(riskScore &lt;= 100, 'Score should not exceed 100');
+        System.assert(riskScore >= 20, 'Login event should have minimum score of 20');
+        System.assert(riskScore <= 100, 'Score should not exceed 100');
     }
     
     @isTest
     static void testCalculateRiskScore_LoginAsEvent_ReturnsCriticalScore() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginAsEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginAsEvent();
         
         Test.startTest();
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
         // LoginAs base score is 70
-        System.assert(riskScore &gt;= 70, 'LoginAs event should have minimum score of 70');
+        System.assert(riskScore >= 70, 'LoginAs event should have minimum score of 70');
     }
     
     @isTest
     static void testCalculateRiskScore_HighVolumeEvent_AddsVolumeFactor() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockApiEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockApiEvent();
         eventData.put('ROWS_PROCESSED', '15000'); // High volume
         
         Test.startTest();
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        // API base (40) + volume factor (20 for &gt;10000 rows)
-        System.assert(riskScore &gt;= 60, 'High volume should add 20 to score');
+        // API base (40) + volume factor (20 for >10000 rows)
+        System.assert(riskScore >= 60, 'High volume should add 20 to score');
     }
     
     @isTest
     static void testCalculateRiskScore_NonUSLocation_AddsLocationFactor() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginEvent();
         eventData.put('COUNTRY', 'Russia');
         
         Test.startTest();
@@ -57,12 +57,12 @@ private class PrometheionRealtimeMonitorTest {
         Test.stopTest();
         
         // Login base (20) + location factor (15)
-        System.assert(riskScore &gt;= 35, 'Non-US location should add 15 to score');
+        System.assert(riskScore >= 35, 'Non-US location should add 15 to score');
     }
     
     @isTest
     static void testCalculateRiskScore_GeoLocationNonUS_AddsLocationFactor() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginEvent();
         eventData.put('GEO_LOCATION', 'Moscow, Russia');
         eventData.remove('COUNTRY');
         
@@ -70,16 +70,16 @@ private class PrometheionRealtimeMonitorTest {
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        System.assert(riskScore &gt;= 35, 'Non-US geo location should add 15 to score');
+        System.assert(riskScore >= 35, 'Non-US geo location should add 15 to score');
     }
     
     @isTest
     static void testCalculateRiskScore_MaxCap100() {
         // Create worst-case event
-        Map&lt;String, Object&gt; eventData = new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'LoginAs', // Base 70
-            'ROWS_PROCESSED' =&gt; '50000', // +20
-            'COUNTRY' =&gt; 'Russia' // +15
+        Map<String, Object> eventData = new Map<String, Object>{
+            'EVENT_TYPE' => 'LoginAs', // Base 70
+            'ROWS_PROCESSED' => '50000', // +20
+            'COUNTRY' => 'Russia' // +15
             // Time factor could add more
         };
         
@@ -87,7 +87,7 @@ private class PrometheionRealtimeMonitorTest {
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        System.assert(riskScore &lt;= 100, 'Score should be capped at 100');
+        System.assert(riskScore <= 100, 'Score should be capped at 100');
     }
     
     @isTest
@@ -101,29 +101,29 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testCalculateRiskScore_EmptyEventData_ReturnsBaseScore() {
-        Map&lt;String, Object&gt; eventData = new Map&lt;String, Object&gt;();
+        Map<String, Object> eventData = new Map<String, Object>();
         
         Test.startTest();
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
         // Unknown event type defaults to 10
-        System.assert(riskScore &gt;= 0, 'Empty event should return base score');
+        System.assert(riskScore >= 0, 'Empty event should return base score');
     }
     
     @isTest
     static void testCalculateRiskScore_MediumVolume_AddsSmallFactor() {
-        Map&lt;String, Object&gt; eventData = new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'API',
-            'ROWS_PROCESSED' =&gt; '5000'
+        Map<String, Object> eventData = new Map<String, Object>{
+            'EVENT_TYPE' => 'API',
+            'ROWS_PROCESSED' => '5000'
         };
         
         Test.startTest();
         Integer riskScore = PrometheionRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        // API base (40) + volume factor (10 for &gt;1000 rows)
-        System.assert(riskScore &gt;= 50, 'Medium volume should add factor');
+        // API base (40) + volume factor (10 for >1000 rows)
+        System.assert(riskScore >= 50, 'Medium volume should add factor');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -132,7 +132,7 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testProcessRealtimeEvent_LowRiskEvent_NoAlert() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginEvent();
         
         Test.startTest();
         // Should not throw exception
@@ -145,7 +145,7 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testProcessRealtimeEvent_HighRiskEvent_TriggersAlert() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createHighRiskEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createHighRiskEvent();
         
         Test.startTest();
         PrometheionRealtimeMonitor.processRealtimeEvent(eventData);
@@ -169,7 +169,7 @@ private class PrometheionRealtimeMonitorTest {
     static void testProcessRealtimeEvent_EmptyEventData() {
         Test.startTest();
         // Should not throw exception
-        PrometheionRealtimeMonitor.processRealtimeEvent(new Map&lt;String, Object&gt;());
+        PrometheionRealtimeMonitor.processRealtimeEvent(new Map<String, Object>());
         Test.stopTest();
         
         System.assert(true, 'Should handle empty event gracefully');
@@ -182,7 +182,7 @@ private class PrometheionRealtimeMonitorTest {
     @isTest
     static void testGetRealtimeStats_ReturnsStatsMap() {
         Test.startTest();
-        Map&lt;String, Object&gt; stats = PrometheionRealtimeMonitor.getRealtimeStats(60);
+        Map<String, Object> stats = PrometheionRealtimeMonitor.getRealtimeStats(60);
         Test.stopTest();
         
         System.assertNotEquals(null, stats, 'Should return stats map');
@@ -199,7 +199,7 @@ private class PrometheionRealtimeMonitorTest {
         PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 5);
         
         Test.startTest();
-        Map&lt;String, Object&gt; stats = PrometheionRealtimeMonitor.getRealtimeStats(60);
+        Map<String, Object> stats = PrometheionRealtimeMonitor.getRealtimeStats(60);
         Test.stopTest();
         
         System.assertNotEquals(null, stats, 'Should return stats');
@@ -212,7 +212,7 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testTriggerAlert_CriticalSeverity() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginAsEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginAsEvent();
         
         Test.startTest();
         PrometheionRealtimeMonitor.triggerAlert(
@@ -229,7 +229,7 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testTriggerAlert_HighSeverity() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockReportExportEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockReportExportEvent();
         
         Test.startTest();
         PrometheionRealtimeMonitor.triggerAlert(
@@ -245,7 +245,7 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testTriggerAlert_AtThreshold() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockApiEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockApiEvent();
         
         Test.startTest();
         PrometheionRealtimeMonitor.triggerAlert(
@@ -277,9 +277,9 @@ private class PrometheionRealtimeMonitorTest {
     
     @isTest
     static void testCalculateRiskScore_InvalidRowsProcessed() {
-        Map&lt;String, Object&gt; eventData = new Map&lt;String, Object&gt;{
-            'EVENT_TYPE' =&gt; 'API',
-            'ROWS_PROCESSED' =&gt; 'invalid_number'
+        Map<String, Object> eventData = new Map<String, Object>{
+            'EVENT_TYPE' => 'API',
+            'ROWS_PROCESSED' => 'invalid_number'
         };
         
         Test.startTest();
@@ -287,12 +287,12 @@ private class PrometheionRealtimeMonitorTest {
         Test.stopTest();
         
         // Should handle invalid number gracefully
-        System.assert(riskScore &gt;= 0, 'Should handle invalid rows gracefully');
+        System.assert(riskScore >= 0, 'Should handle invalid rows gracefully');
     }
     
     @isTest
     static void testCalculateRiskScore_OutsideBusinessHours() {
-        Map&lt;String, Object&gt; eventData = PrometheionTestDataFactory.createMockLoginEvent();
+        Map<String, Object> eventData = PrometheionTestDataFactory.createMockLoginEvent();
         eventData.put('HOUR', '3'); // 3 AM
         
         Test.startTest();
@@ -300,6 +300,6 @@ private class PrometheionRealtimeMonitorTest {
         Test.stopTest();
         
         // Should add time factor
-        System.assert(riskScore &gt; 20, 'Outside business hours should add risk');
+        System.assert(riskScore > 20, 'Outside business hours should add risk');
     }
 }

@@ -1,19 +1,19 @@
 /**
  * @description Schedulable class for recurring audit package delivery
- * @group Export &amp; Delivery
+ * @group Export & Delivery
  * @author Prometheion Team
  */
 global class PrometheionScheduledDelivery implements Schedulable {
     
     private String packageId;
-    private List&lt;String&gt; recipientEmails;
+    private List<String> recipientEmails;
     
     /**
      * @description Constructor for scheduled delivery
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      */
-    global PrometheionScheduledDelivery(String packageId, List&lt;String&gt; recipientEmails) {
+    global PrometheionScheduledDelivery(String packageId, List<String> recipientEmails) {
         this.packageId = packageId;
         this.recipientEmails = recipientEmails;
     }
@@ -58,7 +58,7 @@ global class PrometheionScheduledDelivery implements Schedulable {
             email.setSaveAsActivity(false);
             
             if (!Test.isRunningTest()) {
-                Messaging.sendEmail(new List&lt;Messaging.SingleEmailMessage&gt;{ email });
+                Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ email });
             }
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to send error notification: ' + e.getMessage());
@@ -72,7 +72,7 @@ global class PrometheionScheduledDelivery implements Schedulable {
      * @param cronExpression The cron expression
      * @return Job ID
      */
-    public static Id scheduleDelivery(String packageId, List&lt;String&gt; recipientEmails, String cronExpression) {
+    public static Id scheduleDelivery(String packageId, List<String> recipientEmails, String cronExpression) {
         PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(packageId, recipientEmails);
         String jobName = 'Prometheion_Delivery_' + packageId.left(15) + '_' + Datetime.now().getTime();
         return System.schedule(jobName, cronExpression, scheduler);
@@ -84,7 +84,7 @@ global class PrometheionScheduledDelivery implements Schedulable {
      * @param recipientEmails List of recipient email addresses
      * @return Job ID
      */
-    public static Id scheduleWeekly(String packageId, List&lt;String&gt; recipientEmails) {
+    public static Id scheduleWeekly(String packageId, List<String> recipientEmails) {
         return scheduleDelivery(packageId, recipientEmails, '0 0 8 ? * MON');
     }
     
@@ -94,7 +94,7 @@ global class PrometheionScheduledDelivery implements Schedulable {
      * @param recipientEmails List of recipient email addresses
      * @return Job ID
      */
-    public static Id scheduleMonthly(String packageId, List&lt;String&gt; recipientEmails) {
+    public static Id scheduleMonthly(String packageId, List<String> recipientEmails) {
         return scheduleDelivery(packageId, recipientEmails, '0 0 8 1 * ?');
     }
     
@@ -104,7 +104,7 @@ global class PrometheionScheduledDelivery implements Schedulable {
      * @param recipientEmails List of recipient email addresses
      * @return Job ID
      */
-    public static Id scheduleQuarterly(String packageId, List&lt;String&gt; recipientEmails) {
+    public static Id scheduleQuarterly(String packageId, List<String> recipientEmails) {
         return scheduleDelivery(packageId, recipientEmails, '0 0 8 1 1,4,7,10 ?');
     }
 }

@@ -11,6 +11,7 @@
 
 import { createElement } from "lwc";
 import ComplianceScoreCard from "c/complianceScoreCard";
+import { runAccessibilityAudit, checkHeadingHierarchy } from "../../__tests__/axeTestHelper";
 
 let mockFrameworkDetailsCallbacks = new Set();
 
@@ -282,6 +283,29 @@ describe("c-compliance-score-card", () => {
       const spinner = element.shadowRoot.querySelector("lightning-spinner");
       // Spinner may or may not be present depending on wire state
       expect(element.shadowRoot).not.toBeNull();
+    });
+  });
+
+  describe("Accessibility (axe)", () => {
+    it("should have no accessibility violations", async () => {
+      const element = await createComponent({
+        framework: { framework: "SOC2", score: 85, status: "COMPLIANT" },
+      });
+
+      const results = await runAccessibilityAudit(element);
+      expect(results.violations).toHaveLength(0);
+    });
+
+    it("should have valid heading hierarchy", async () => {
+      const element = await createComponent({
+        framework: { framework: "SOC2", score: 85, status: "COMPLIANT" },
+      });
+
+      const { isValid, errors } = checkHeadingHierarchy(element.shadowRoot);
+      if (!isValid) {
+        console.warn("Heading hierarchy issues:", errors);
+      }
+      expect(isValid).toBe(true);
     });
   });
 });

@@ -29,14 +29,14 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
     /**
      * Evaluate audit controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check audit log coverage
         AuditCoverageResult coverage = evaluateAuditCoverage();
         if (!coverage.compliant) {
             for (String gap : coverage.gaps) {
-                violations.add(new Violation(
+                violations.add(new ComplianceServiceBase.InternalViolation(
                     'Audit Log Gap',
                     gap,
                     'HIGH',
@@ -50,7 +50,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         // Check for suspicious access patterns
         List<SuspiciousAccess> suspicious = detectSuspiciousAccess();
         for (SuspiciousAccess access : suspicious) {
-            violations.add(new Violation(
+            violations.add(new ComplianceServiceBase.InternalViolation(
                 'Suspicious PHI Access',
                 'User ' + access.userName + ' accessed ' + access.accessCount + ' PHI records',
                 access.riskLevel,
@@ -62,7 +62,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
 
         // Check audit log retention
         if (!checkRetentionCompliance()) {
-            violations.add(new Violation(
+            violations.add(new ComplianceServiceBase.InternalViolation(
                 'Audit Retention Gap',
                 'Audit logs may not be retained for required 6-year period',
                 'MEDIUM',
@@ -265,7 +265,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId
@@ -326,15 +326,16 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
             try {
                 Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
                 if (objType != null) {
-                    Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
+                    // Check if object has Field History Tracking enabled
+                    // Note: isHistoryTracked() doesn't exist on DescribeFieldResult
+                    // Use history table query as proxy check
                     Boolean hasTracking = false;
-
-                    for (Schema.SObjectField field : fields.values()) {
-                        Schema.DescribeFieldResult fieldDesc = field.getDescribe();
-                        if (fieldDesc.isHistoryTracked() != null && fieldDesc.isHistoryTracked()) {
-                            hasTracking = true;
-                            break;
-                        }
+                    try {
+                        String historyTableName = objectName + '__History';
+                        Database.query('SELECT Id FROM ' + historyTableName + ' LIMIT 1');
+                        hasTracking = true; // History table exists, Field History is enabled
+                    } catch (Exception e) {
+                        hasTracking = false; // History table doesn't exist or Field History not enabled
                     }
 
                     if (hasTracking) {

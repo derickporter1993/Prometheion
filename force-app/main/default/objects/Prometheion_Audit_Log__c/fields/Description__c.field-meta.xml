@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Description__c</fullName>
-    <description>Description of the KPI metric and what it measures</description>
+    <description>Description of the audit log entry</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Description</label>
-    <length>32768</length>
     <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
+    <length>32768</length>
     <visibleLines>5</visibleLines>
 </CustomField>

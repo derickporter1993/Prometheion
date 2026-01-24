@@ -64,7 +64,7 @@
       <!-- Framework Scores -->
       <div class="framework-scores">
         <div class="framework-header-section">
-          <h3 class="section-title">Framework Compliance</h3>
+          <h2 class="section-title">Framework Compliance</h2>
           <lightning-combobox
             label="Filter by Framework"
             value={selectedFramework}
@@ -85,7 +85,7 @@
             </button>
             <template lwc:if={selectedFrameworkDetails}>
               <div class="framework-detail-card">
-                <h4>{selectedFrameworkDetails.name}</h4>
+                <h3>{selectedFrameworkDetails.name}</h3>
                 <p class="framework-description">{selectedFrameworkDetails.description}</p>
                 <div class="framework-score-large">
                   <span class="score-value-large">{selectedFrameworkDetails.score}%</span>
@@ -127,7 +127,7 @@
 
     <!-- Score Factors -->
     <div class="factors-section">
-      <h3 class="section-title">
+      <h2 class="section-title">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -138,7 +138,7 @@
           <path d="M12 20V10M18 20V4M6 20V16" />
         </svg>
         Score Breakdown
-      </h3>
+      </h2>
       <div class="factors-grid">
         <template for:each={factors} for:item="factor">
           <div key={factor.name} class="factor-card">
@@ -166,7 +166,7 @@
     <!-- Top Risks -->
     <template lwc:if={hasRisks}>
       <div class="risks-section">
-        <h3 class="section-title">
+        <h2 class="section-title">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -180,7 +180,7 @@
             <path d="M12 9V13M12 17H12.01" />
           </svg>
           Top Risks
-        </h3>
+        </h2>
         <div class="risks-list">
           <template for:each={filteredTopRisks} for:item="risk">
             <div key={risk.nodeId} class="risk-card">
@@ -188,7 +188,7 @@
                 <span class={risk.severityClass}>{risk.severity}</span>
               </div>
               <div class="risk-content">
-                <h4 class="risk-title">{risk.title}</h4>
+                <h3 class="risk-title">{risk.title}</h3>
                 <p class="risk-description">{risk.description}</p>
                 <div class="risk-meta">
                   <span class="risk-framework">{risk.framework}</span>
@@ -212,7 +212,7 @@
     <!-- Audit Packages Section -->
     <template lwc:if={hasAuditPackages}>
       <div class="audit-packages-section">
-        <h3 class="section-title">
+        <h2 class="section-title">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -226,7 +226,7 @@
             <path d="M14 2V8H20" />
           </svg>
           Recent Audit Packages
-        </h3>
+        </h2>
         <div class="audit-packages-list">
           <template for:each={formattedAuditPackages} for:item="pkg">
             <div

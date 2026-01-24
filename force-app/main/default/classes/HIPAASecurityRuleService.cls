@@ -26,11 +26,14 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
     /**
      * Evaluate HIPAA Security Rule controls
      */
-    protected override List<Violation> evaluateControls() {
-        List<Violation> violations = new List<Violation>();
-        violations.addAll(checkAccessControls().violations);
-        violations.addAll(checkAuditControls().violations);
-        violations.addAll(checkIntegrityControls().violations);
+    protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
+        // Add violations from helper methods
+        violations.addAll(evaluateAccessControls().violations);
+        violations.addAll(evaluateAuditControls().violations);
+        violations.addAll(evaluateIntegrityControls().violations);
+        violations.addAll(evaluateTransmissionSecurity().violations);
+        
         return violations;
     }
 
@@ -43,10 +46,10 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         TechnicalSafeguardResult result = new TechnicalSafeguardResult();
         result.evaluationDate = DateTime.now();
 
-        result.accessControlResult = service.checkAccessControls();
-        result.auditControlResult = service.checkAuditControls();
-        result.integrityControlResult = service.checkIntegrityControls();
-        result.transmissionResult = service.checkTransmissionSecurity();
+        result.accessControlResult = service.evaluateAccessControls();
+        result.auditControlResult = service.evaluateAuditControls();
+        result.integrityControlResult = service.evaluateIntegrityControls();
+        result.transmissionResult = service.evaluateTransmissionSecurity();
 
         // Calculate overall score
         Decimal totalScore = result.accessControlResult.score +
@@ -148,7 +151,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
 
     private AccessControlResult evaluateAccessControls() {
         AccessControlResult result = new AccessControlResult();
-        result.violations = new List<Violation>();
+        result.violations = new List<ComplianceServiceBase.InternalViolation>();
         result.gaps = new List<String>();
         result.score = 100;
 
@@ -157,7 +160,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         if (!result.uniqueUserIdCompliant) {
             result.gaps.add('Shared accounts detected');
             result.score -= 15;
-            result.violations.add(new Violation(
+            result.violations.add(new ComplianceServiceBase.InternalViolation(
                 'Shared User Accounts',
                 'Users may be sharing credentials (detected by login patterns)',
                 'HIGH',
@@ -172,7 +175,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         if (!result.autoLogoffConfigured) {
             result.gaps.add('Auto logoff not configured');
             result.score -= 10;
-            result.violations.add(new Violation(
+            result.violations.add(new ComplianceServiceBase.InternalViolation(
                 'Missing Auto Logoff',
                 'Session timeout not properly configured',
                 'MEDIUM',
@@ -187,7 +190,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         if (!result.encryptionEnabled) {
             result.gaps.add('Shield Platform Encryption not enabled');
             result.score -= 20;
-            result.violations.add(new Violation(
+            result.violations.add(new ComplianceServiceBase.InternalViolation(
                 'Missing Encryption',
                 'PHI data is not encrypted at rest',
                 'CRITICAL',
@@ -203,7 +206,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
 
     private AuditControlResult evaluateAuditControls() {
         AuditControlResult result = new AuditControlResult();
-        result.violations = new List<Violation>();
+        result.violations = new List<ComplianceServiceBase.InternalViolation>();
         result.gaps = new List<String>();
         result.score = 100;
 
@@ -212,7 +215,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         if (!result.auditTrailEnabled) {
             result.gaps.add('Field History Tracking not enabled on PHI objects');
             result.score -= 25;
-            result.violations.add(new Violation(
+            result.violations.add(new ComplianceServiceBase.InternalViolation(
                 'Incomplete Audit Trail',
                 'Field History Tracking not enabled on all PHI objects',
                 'HIGH',
@@ -232,7 +235,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
 
     private IntegrityControlResult evaluateIntegrityControls() {
         IntegrityControlResult result = new IntegrityControlResult();
-        result.violations = new List<Violation>();
+        result.violations = new List<ComplianceServiceBase.InternalViolation>();
         result.gaps = new List<String>();
         result.score = 100;
 
@@ -244,7 +247,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         if (!result.bulkDeleteRestricted) {
             result.gaps.add('Bulk delete not restricted on PHI objects');
             result.score -= 15;
-            result.violations.add(new Violation(
+            result.violations.add(new ComplianceServiceBase.InternalViolation(
                 'Bulk Delete Allowed',
                 'Users can perform bulk deletes on PHI data',
                 'MEDIUM',
@@ -260,7 +263,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
 
     private TransmissionResult evaluateTransmissionSecurity() {
         TransmissionResult result = new TransmissionResult();
-        result.violations = new List<Violation>();
+        result.violations = new List<ComplianceServiceBase.InternalViolation>();
         result.gaps = new List<String>();
         result.score = 100;
 
@@ -299,17 +302,16 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         Set<String> phiObjects = new Set<String>{'Contact', 'Lead'};
         for (String objectName : phiObjects) {
             try {
-                Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
-                if (objType != null) {
-                    Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
-                    Boolean hasTracking = false;
-                    for (Schema.SObjectField field : fields.values()) {
-                        if (field.getDescribe().isHistoryTracked() != null && field.getDescribe().isHistoryTracked()) {
-                            hasTracking = true;
-                            break;
-                        }
-                    }
-                    if (!hasTracking) return false;
+                // Check if object has Field History Tracking enabled
+                // Note: isHistoryTracked() doesn't exist on DescribeFieldResult
+                // Use history table query as proxy check
+                try {
+                    String historyTableName = objectName + '__History';
+                    Database.query('SELECT Id FROM ' + historyTableName + ' LIMIT 1');
+                    // History table exists, Field History is enabled
+                } catch (Exception e) {
+                    // History table doesn't exist or Field History not enabled
+                    return false;
                 }
             } catch (Exception e) {
                 return false;
@@ -353,7 +355,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         @AuraEnabled public Boolean compliant;
         @AuraEnabled public Decimal score;
         @AuraEnabled public List<String> gaps;
-        @AuraEnabled public List<Violation> violations;
+        @AuraEnabled public List<ComplianceServiceBase.InternalViolation> violations;
     }
 
     public class AuditControlResult {
@@ -363,7 +365,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         @AuraEnabled public Boolean compliant;
         @AuraEnabled public Decimal score;
         @AuraEnabled public List<String> gaps;
-        @AuraEnabled public List<Violation> violations;
+        @AuraEnabled public List<ComplianceServiceBase.InternalViolation> violations;
     }
 
     public class IntegrityControlResult {
@@ -372,7 +374,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         @AuraEnabled public Boolean compliant;
         @AuraEnabled public Decimal score;
         @AuraEnabled public List<String> gaps;
-        @AuraEnabled public List<Violation> violations;
+        @AuraEnabled public List<ComplianceServiceBase.InternalViolation> violations;
     }
 
     public class TransmissionResult {
@@ -382,7 +384,7 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
         @AuraEnabled public Boolean compliant;
         @AuraEnabled public Decimal score;
         @AuraEnabled public List<String> gaps;
-        @AuraEnabled public List<Violation> violations;
+        @AuraEnabled public List<ComplianceServiceBase.InternalViolation> violations;
     }
 
     public class EncryptionInfo {

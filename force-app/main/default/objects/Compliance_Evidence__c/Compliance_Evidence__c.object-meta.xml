@@ -204,8 +204,8 @@
         <label>Reviewed By</label>
         <type>Lookup</type>
         <referenceTo>User</referenceTo>
-        <relationshipLabel>Evidence Reviews</relationshipLabel>
-        <relationshipName>Evidence_Reviews</relationshipName>
+        <relationshipLabel>Compliance Evidence Reviews</relationshipLabel>
+        <relationshipName>Compliance_Evidence_Reviews</relationshipName>
     </fields>
     <fields>
         <fullName>Reviewed_Date__c</fullName>

@@ -1,7 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import getEscalationPath from '@salesforce/apex/MobileAlertPublisher.getEscalationPath';
 import getEscalationPaths from '@salesforce/apex/EscalationPathController.getPaths';
 import createPath from '@salesforce/apex/EscalationPathController.createPath';
 import updatePath from '@salesforce/apex/EscalationPathController.updatePath';
@@ -252,7 +251,6 @@ export default class EscalationPathConfig extends LightningElement {
     handleError(error) {
         const message = error.body?.message || error.message || 'An error occurred';
         this.showToast('Error', message, 'error');
-        console.error('Error:', error);
     }
 
     handleRefresh() {

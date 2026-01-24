@@ -8,39 +8,39 @@
     </values>
     <values>
         <field>Policy_Description__c</field>
-        <value xsi:type="xsd:string">CCPA Section 1798.105 requires businesses to delete personal information upon consumer request, subject to certain exceptions. Organizations must have processes to identify, locate, and delete consumer data within 45 days.</value>
+        <value xsi:type="xsd:string">Consumers have the right to request deletion of their personal information. Businesses must delete personal information upon verifiable consumer request, with limited exceptions.</value>
     </values>
     <values>
         <field>Legal_Citation__c</field>
-        <value xsi:type="xsd:string">CCPA Section 1798.105 - Right to Deletion</value>
+        <value xsi:type="xsd:string">CCPA Section 1798.105(a)</value>
     </values>
     <values>
         <field>Remediation_Steps__c</field>
-        <value xsi:type="xsd:string">1. Implement data deletion workflow for CCPA requests.
-2. Identify all systems and objects containing consumer personal information.
-3. Process deletion requests within 45 days of receipt.
-4. Maintain audit trail of deletion requests and completion.
-5. Document exceptions to deletion (legal obligations, business purposes).</value>
+        <value xsi:type="xsd:string">1. Implement data deletion workflows
+2. Create automated deletion process for consumer requests
+3. Document exceptions (legal hold, ongoing transactions)
+4. Verify consumer identity before deletion
+5. Maintain audit trail of deletion requests</value>
     </values>
     <values>
         <field>Risk_Weight__c</field>
-        <value xsi:type="xsd:double">8.0</value>
+        <value xsi:type="xsd:double">9.0</value>
     </values>
     <values>
         <field>Entity_Types__c</field>
-        <value xsi:type="xsd:string">OBJECT,FIELD,USER</value>
+        <value xsi:type="xsd:string">CUSTOM_OBJECT,FLOW,APEX_CLASS</value>
     </values>
     <values>
         <field>Auto_Remediation_Allowed__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Severity__c</field>
-        <value xsi:type="xsd:string">HIGH</value>
+        <value xsi:type="xsd:string">CRITICAL</value>
     </values>
     <values>
         <field>Detection_Pattern__c</field>
-        <value xsi:type="xsd:string">{"deletionWorkflowRequired":true,"deletionSlaDays":45,"dataInventoryRequired":true}</value>
+        <value xsi:type="xsd:string">{"pattern": "deletion_workflow", "required": ["verification", "audit_trail"], "threshold": 1}</value>
     </values>
     <values>
         <field>Is_Active__c</field>

@@ -36,7 +36,10 @@ public with sharing class PerformanceAlertPublisher {
                 : stack;
             // XSS protection: escape HTML special characters in stack trace
             if (String.isNotBlank(safeStack)) {
-                safeStack = safeStack.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;');
+                // Escape & first to avoid double-escaping
+                safeStack = safeStack.replace('&', '&amp;')
+                                    .replace('<', '&lt;')
+                                    .replace('>', '&gt;');
             }
 
             // Store alert in Performance_Alert_History__c instead of platform event
@@ -51,11 +54,12 @@ public with sharing class PerformanceAlertPublisher {
             insert alertHistory;
             
             // Also send Slack notification if configured
-            try {
-                SlackNotifier.notifyPerformanceAlert(metric, value, threshold, contextRecordId);
-            } catch (Exception slackError) {
-                System.debug(LoggingLevel.WARN, 'PerformanceAlertPublisher: Slack notification failed: ' + slackError.getMessage());
-            }
+            // Note: SlackNotifier class not yet implemented - placeholder for future integration
+            // try {
+            //     SlackNotifier.notifyPerformanceAlert(metric, value, threshold, contextRecordId);
+            // } catch (Exception slackError) {
+            //     System.debug(LoggingLevel.WARN, 'PerformanceAlertPublisher: Slack notification failed: ' + slackError.getMessage());
+            // }
             
         } catch (IllegalArgumentException e) {
             System.debug(LoggingLevel.ERROR, 'PerformanceAlertPublisher: Validation error: ' + e.getMessage());

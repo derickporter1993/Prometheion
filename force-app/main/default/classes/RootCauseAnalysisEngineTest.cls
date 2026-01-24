@@ -31,7 +31,7 @@ private class RootCauseAnalysisEngineTest {
         System.assertNotEquals(null, result, 'Should return result');
         System.assertEquals('SUCCESS', result.status, 'Status should be SUCCESS');
         System.assertNotEquals(null, result.rootCause, 'Should have root cause');
-        System.assert(result.confidence &gt;= 0 &amp;&amp; result.confidence &lt;= 100, 'Confidence should be 0-100');
+        System.assert(result.confidence >= 0 &amp;&amp; result.confidence <= 100, 'Confidence should be 0-100');
     }
     
     @isTest
@@ -82,11 +82,11 @@ private class RootCauseAnalysisEngineTest {
     
     @isTest
     static void testBatchAnalyze_ReturnsMultipleResults() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [
+        List<Prometheion_Evidence_Item__c> items = [
             SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 3
         ];
         
-        List&lt;String&gt; eventIds = new List&lt;String&gt;();
+        List<String> eventIds = new List<String>();
         for (Prometheion_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
@@ -94,7 +94,7 @@ private class RootCauseAnalysisEngineTest {
         Test.setMock(HttpCalloutMock.class, new RootCauseAPIMock());
         
         Test.startTest();
-        List&lt;RootCauseAnalysisEngine.RootCauseResult&gt; results = 
+        List<RootCauseAnalysisEngine.RootCauseResult> results = 
             RootCauseAnalysisEngine.batchAnalyze(eventIds);
         Test.stopTest();
         
@@ -106,8 +106,8 @@ private class RootCauseAnalysisEngineTest {
         Test.setMock(HttpCalloutMock.class, new RootCauseAPIMock());
         
         Test.startTest();
-        List&lt;RootCauseAnalysisEngine.RootCauseResult&gt; results = 
-            RootCauseAnalysisEngine.batchAnalyze(new List&lt;String&gt;());
+        List<RootCauseAnalysisEngine.RootCauseResult> results = 
+            RootCauseAnalysisEngine.batchAnalyze(new List<String>());
         Test.stopTest();
         
         System.assertEquals(0, results.size(), 'Should return empty list for empty input');
@@ -118,7 +118,7 @@ private class RootCauseAnalysisEngineTest {
         Test.setMock(HttpCalloutMock.class, new RootCauseAPIMock());
         
         Test.startTest();
-        List&lt;RootCauseAnalysisEngine.RootCauseResult&gt; results = 
+        List<RootCauseAnalysisEngine.RootCauseResult> results = 
             RootCauseAnalysisEngine.batchAnalyze(null);
         Test.stopTest();
         
@@ -131,9 +131,9 @@ private class RootCauseAnalysisEngineTest {
     
     @isTest
     static void testGetAnalysisSummary_ReturnsSummary() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5];
+        List<Prometheion_Evidence_Item__c> items = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5];
         
-        List&lt;String&gt; eventIds = new List&lt;String&gt;();
+        List<String> eventIds = new List<String>();
         for (Prometheion_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
@@ -151,7 +151,7 @@ private class RootCauseAnalysisEngineTest {
     static void testGetAnalysisSummary_EmptyList() {
         Test.startTest();
         RootCauseAnalysisEngine.AnalysisSummary summary = 
-            RootCauseAnalysisEngine.getAnalysisSummary(new List&lt;String&gt;());
+            RootCauseAnalysisEngine.getAnalysisSummary(new List<String>());
         Test.stopTest();
         
         System.assertEquals(0, summary.totalEvents, 'Should have 0 total events');
@@ -173,26 +173,26 @@ private class RootCauseAnalysisEngineTest {
     
     private class RootCauseAPIMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
-            Map&lt;String, Object&gt; response = new Map&lt;String, Object&gt;{
-                'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'text',
-                        'text' =&gt; JSON.serialize(new Map&lt;String, Object&gt;{
-                            'rootCause' =&gt; 'Unauthorized access attempt from suspicious IP',
-                            'confidence' =&gt; 85,
-                            'contributingFactors' =&gt; new List&lt;String&gt;{
+            Map<String, Object> response = new Map<String, Object>{
+                'content' => new List<Map<String, Object>>{
+                    new Map<String, Object>{
+                        'type' => 'text',
+                        'text' => JSON.serialize(new Map<String, Object>{
+                            'rootCause' => 'Unauthorized access attempt from suspicious IP',
+                            'confidence' => 85,
+                            'contributingFactors' => new List<String>{
                                 'Non-standard login hours',
                                 'Foreign IP address'
                             },
-                            'evidenceChain' =&gt; new List&lt;String&gt;{
+                            'evidenceChain' => new List<String>{
                                 'Login attempt at 2 AM',
                                 'Multiple failed attempts before success'
                             },
-                            'remediation' =&gt; new List&lt;String&gt;{
+                            'remediation' => new List<String>{
                                 'Enable MFA for this user',
                                 'Review access policies'
                             },
-                            'preventionMeasures' =&gt; new List&lt;String&gt;{
+                            'preventionMeasures' => new List<String>{
                                 'Implement geo-blocking',
                                 'Add time-based access controls'
                             }

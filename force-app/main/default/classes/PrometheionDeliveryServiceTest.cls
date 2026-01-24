@@ -18,7 +18,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testDeliverAuditPackage_SendsEmail() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
         // In test context, email is not actually sent
@@ -32,7 +32,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testDeliverAuditPackage_MultipleRecipients() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{
+        List<String> recipients = new List<String>{
             'test1@example.com',
             'test2@example.com',
             'test3@example.com'
@@ -49,7 +49,7 @@ private class PrometheionDeliveryServiceTest {
     static void testDeliverAuditPackage_NullPackageId_ThrowsException() {
         Test.startTest();
         try {
-            PrometheionDeliveryService.deliverAuditPackage(null, new List&lt;String&gt;{'test@example.com'});
+            PrometheionDeliveryService.deliverAuditPackage(null, new List<String>{'test@example.com'});
             System.assert(false, 'Should throw exception');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('required'), 'Should mention required fields');
@@ -63,7 +63,7 @@ private class PrometheionDeliveryServiceTest {
         
         Test.startTest();
         try {
-            PrometheionDeliveryService.deliverAuditPackage(pkg.Id, new List&lt;String&gt;());
+            PrometheionDeliveryService.deliverAuditPackage(pkg.Id, new List<String>());
             System.assert(false, 'Should throw exception');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('required'), 'Should mention required fields');
@@ -93,7 +93,7 @@ private class PrometheionDeliveryServiceTest {
     static void testScheduleRecurringDelivery_CreatesScheduledJob() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
         String cronExpression = '0 0 6 * * ?'; // Daily at 6 AM
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
         Id jobId = PrometheionDeliveryService.scheduleRecurringDelivery(
@@ -126,7 +126,7 @@ private class PrometheionDeliveryServiceTest {
             PrometheionDeliveryService.scheduleRecurringDelivery(
                 pkg.Id,
                 null,
-                new List&lt;String&gt;{'test@example.com'}
+                new List<String>{'test@example.com'}
             );
             System.assert(false, 'Should throw exception');
         } catch (AuraHandledException e) {
@@ -144,7 +144,7 @@ private class PrometheionDeliveryServiceTest {
             PrometheionDeliveryService.scheduleRecurringDelivery(
                 pkg.Id,
                 '',
-                new List&lt;String&gt;{'test@example.com'}
+                new List<String>{'test@example.com'}
             );
             System.assert(false, 'Should throw exception');
         } catch (AuraHandledException e) {
@@ -168,7 +168,7 @@ private class PrometheionDeliveryServiceTest {
         System.assertNotEquals(null, shareableUrl, 'Should return shareable URL');
         
         // Verify ContentDistribution was created
-        List&lt;ContentDistribution&gt; distributions = [
+        List<ContentDistribution> distributions = [
             SELECT ExpiryDate, PreferencesPasswordRequired
             FROM ContentDistribution
             WHERE Name LIKE '%Audit Package Share%'
@@ -187,7 +187,7 @@ private class PrometheionDeliveryServiceTest {
         Test.stopTest();
         
         // Should default to 30 days
-        List&lt;ContentDistribution&gt; distributions = [
+        List<ContentDistribution> distributions = [
             SELECT ExpiryDate
             FROM ContentDistribution
             WHERE Name LIKE '%Audit Package Share%'
@@ -252,7 +252,7 @@ private class PrometheionDeliveryServiceTest {
         PrometheionDeliveryService.generateShareableLink(pkg.Id, 30);
         
         Test.startTest();
-        List&lt;Map&lt;String, Object&gt;&gt; history = PrometheionDeliveryService.getDeliveryHistory(pkg.Id);
+        List<Map<String, Object>> history = PrometheionDeliveryService.getDeliveryHistory(pkg.Id);
         Test.stopTest();
         
         System.assert(!history.isEmpty(), 'Should return delivery history');
@@ -264,7 +264,7 @@ private class PrometheionDeliveryServiceTest {
         Prometheion_Audit_Package__c newPkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
         
         Test.startTest();
-        List&lt;Map&lt;String, Object&gt;&gt; history = PrometheionDeliveryService.getDeliveryHistory(newPkg.Id);
+        List<Map<String, Object>> history = PrometheionDeliveryService.getDeliveryHistory(newPkg.Id);
         Test.stopTest();
         
         System.assertEquals(0, history.size(), 'Should return empty list for new package');
@@ -277,7 +277,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testScheduledDelivery_Execute() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
             pkg.Id, recipients
@@ -293,7 +293,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testScheduledDelivery_ScheduleWeekly() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
         Id jobId = PrometheionScheduledDelivery.scheduleWeekly(pkg.Id, recipients);
@@ -308,7 +308,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testScheduledDelivery_ScheduleMonthly() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
         Id jobId = PrometheionScheduledDelivery.scheduleMonthly(pkg.Id, recipients);
@@ -323,7 +323,7 @@ private class PrometheionDeliveryServiceTest {
     @isTest
     static void testScheduledDelivery_ScheduleQuarterly() {
         Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        List&lt;String&gt; recipients = new List&lt;String&gt;{'test@example.com'};
+        List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
         Id jobId = PrometheionScheduledDelivery.scheduleQuarterly(pkg.Id, recipients);
