@@ -7,8 +7,8 @@ private class RootCauseAnalysisEngineTest {
     
     @testSetup
     static void setupTestData() {
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('HIPAA');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 10);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('HIPAA');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 10);
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -17,8 +17,8 @@ private class RootCauseAnalysisEngineTest {
     
     @isTest
     static void testAnalyzeRootCause_ReturnsResult() {
-        Prometheion_Evidence_Item__c item = [
-            SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1
+        Elaro_Evidence_Item__c item = [
+            SELECT Id FROM Elaro_Evidence_Item__c LIMIT 1
         ];
         
         Test.setMock(HttpCalloutMock.class, new RootCauseAPIMock());
@@ -82,12 +82,12 @@ private class RootCauseAnalysisEngineTest {
     
     @isTest
     static void testBatchAnalyze_ReturnsMultipleResults() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [
-            SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 3
+        List&lt;Elaro_Evidence_Item__c&gt; items = [
+            SELECT Id FROM Elaro_Evidence_Item__c LIMIT 3
         ];
         
         List&lt;String&gt; eventIds = new List&lt;String&gt;();
-        for (Prometheion_Evidence_Item__c item : items) {
+        for (Elaro_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
         
@@ -131,10 +131,10 @@ private class RootCauseAnalysisEngineTest {
     
     @isTest
     static void testGetAnalysisSummary_ReturnsSummary() {
-        List&lt;Prometheion_Evidence_Item__c&gt; items = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5];
+        List&lt;Elaro_Evidence_Item__c&gt; items = [SELECT Id FROM Elaro_Evidence_Item__c LIMIT 5];
         
         List&lt;String&gt; eventIds = new List&lt;String&gt;();
-        for (Prometheion_Evidence_Item__c item : items) {
+        for (Elaro_Evidence_Item__c item : items) {
             eventIds.add(item.Id);
         }
         

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Accessibility Audit Script for Prometheion LWC Components
+ * Accessibility Audit Script for Elaro LWC Components
  *
  * This script performs static analysis of LWC HTML templates to identify
  * common WCAG 2.1 AA accessibility issues.
@@ -339,7 +339,7 @@ function formatViolations(violations) {
  * Main function
  */
 function main() {
-  console.log("🔍 Prometheion Accessibility Audit");
+  console.log("🔍 Elaro Accessibility Audit");
   console.log("═".repeat(60));
   console.log("Scanning LWC components for WCAG 2.1 AA violations...\n");
 

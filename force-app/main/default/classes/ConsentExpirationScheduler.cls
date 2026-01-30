@@ -8,7 +8,7 @@
  * Schedule Example:
  * System.schedule('Consent Expiration Check', '0 0 8 * * ?', new ConsentExpirationScheduler());
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class ConsentExpirationScheduler implements Schedulable {
@@ -50,7 +50,7 @@ public with sharing class ConsentExpirationScheduler implements Schedulable {
      */
     private Integer getBatchSize() {
         try {
-            Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance('ConsentExpiration');
+            Elaro_Scheduler_Config__mdt config = Elaro_Scheduler_Config__mdt.getInstance('ConsentExpiration');
             if (config != null && config.Batch_Size__c != null) {
                 return config.Batch_Size__c.intValue();
             }

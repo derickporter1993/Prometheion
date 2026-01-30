@@ -1,6 +1,6 @@
-# Contributing to Prometheion
+# Contributing to Elaro
 
-Thank you for your interest in contributing to Prometheion! This document provides guidelines and best practices for contributing to the project.
+Thank you for your interest in contributing to Elaro! This document provides guidelines and best practices for contributing to the project.
 
 ---
 
@@ -43,11 +43,11 @@ We are committed to providing a welcoming and inclusive environment for all cont
 ```bash
 # Fork the repository on GitHub
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/prometheion.git
-cd prometheion
+git clone https://github.com/YOUR_USERNAME/elaro.git
+cd elaro
 
 # Add upstream remote
-git remote add upstream https://github.com/prometheion/prometheion.git
+git remote add upstream https://github.com/elaro/elaro.git
 
 # Install dependencies
 npm install
@@ -56,7 +56,7 @@ npm install
 ./scripts/orgInit.sh
 
 # Assign permission set
-sf org assign permset --name Prometheion_Admin
+sf org assign permset --name Elaro_Admin
 ```
 
 ---
@@ -196,9 +196,9 @@ public with sharing class ClassName {
    ];
    ```
 
-3. **Use PrometheionSecurityUtils for CRUD/FLS checks**
+3. **Use ElaroSecurityUtils for CRUD/FLS checks**
    ```apex
-   PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
+   ElaroSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
    update Security.stripInaccessible(AccessType.UPDATABLE, accounts).getRecords();
    ```
 
@@ -213,7 +213,7 @@ public with sharing class ClassName {
    String apiKey = 'sk-abc123';
 
    // ✅ GOOD
-   String apiKey = [SELECT API_Key__c FROM Prometheion_API_Config__mdt WHERE DeveloperName = 'ClaudeAI'].API_Key__c;
+   String apiKey = [SELECT API_Key__c FROM Elaro_API_Config__mdt WHERE DeveloperName = 'ClaudeAI'].API_Key__c;
    ```
 
 ### Lightning Web Components
@@ -333,7 +333,7 @@ private class MyClassTest {
     @TestSetup
     static void setup() {
         // Create test data
-        PrometheionTestDataFactory.createComprehensiveTestDataset();
+        ElaroTestDataFactory.createComprehensiveTestDataset();
     }
 
     @isTest
@@ -374,13 +374,13 @@ Use provided test data factories:
 
 ```apex
 // User factory
-User admin = PrometheionTestUserFactory.createPrometheionAdmin();
+User admin = ElaroTestUserFactory.createElaroAdmin();
 System.runAs(admin) {
     // Test code
 }
 
 // Data factory
-List<Compliance_Score__c> scores = PrometheionTestDataFactory.createBulkComplianceScores(250, true);
+List<Compliance_Score__c> scores = ElaroTestDataFactory.createBulkComplianceScores(250, true);
 ```
 
 ### LWC Tests
@@ -610,7 +610,7 @@ public ComplianceScore calculateScore(String framework, Boolean includeHistory) 
 **DO NOT open public GitHub issues for security vulnerabilities.**
 
 Instead:
-1. Email: security@prometheion.io
+1. Email: security@elaro.io
 2. Include:
    - Detailed description of vulnerability
    - Steps to reproduce
@@ -630,7 +630,7 @@ We will respond within 48 hours.
    - Sanitize before using in SOQL/DML
 
 3. **Use security utilities**
-   - `PrometheionSecurityUtils.validateCRUDAccess()`
+   - `ElaroSecurityUtils.validateCRUDAccess()`
    - `Security.stripInaccessible()`
    - `WITH SECURITY_ENFORCED` on all SOQL
 
@@ -644,9 +644,9 @@ We will respond within 48 hours.
 ## Getting Help
 
 - **Documentation:** [docs/](docs/)
-- **Issues:** [GitHub Issues](https://github.com/prometheion/prometheion/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/prometheion/prometheion/discussions)
-- **Email:** support@prometheion.io
+- **Issues:** [GitHub Issues](https://github.com/elaro/elaro/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/elaro/elaro/discussions)
+- **Email:** support@elaro.io
 
 ---
 
@@ -663,10 +663,10 @@ Contributors will be recognized in:
 - Contributors list
 - Project documentation
 
-Thank you for contributing to Prometheion! 🚀
+Thank you for contributing to Elaro! 🚀
 
 ---
 
 **Version:** 1.0
 **Last Updated:** 2026-01-11
-**Maintainers:** Prometheion Engineering Team
+**Maintainers:** Elaro Engineering Team

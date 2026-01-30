@@ -111,7 +111,7 @@ Create the following fields on the Integration_Error\_\_c object:
 For each field, set **Visible** for:
 
 - System Administrator
-- Prometheion Admin (if exists)
+- Elaro Admin (if exists)
 
 ### Step 4: Create Page Layout
 
@@ -124,7 +124,7 @@ For each field, set **Visible** for:
 
 ### Step 5: Grant Object Permissions
 
-1. Navigate to **Setup** → **Permission Sets** → **Prometheion_Admin**
+1. Navigate to **Setup** → **Permission Sets** → **Elaro_Admin**
 2. Add **Integration_Error\_\_c** object permissions:
    - Read: ✓
    - Create: ✓
@@ -164,14 +164,14 @@ sf project deploy start --source-dir force-app/main/default/objects/Integration_
 Once the object is created, uncomment the error logging code in these files:
 
 1. **PerformanceAlertPublisher.cls** (lines 65-80)
-2. **PrometheionGraphIndexer.cls** (lines 137-152)
+2. **ElaroGraphIndexer.cls** (lines 137-152)
 3. **SlackNotifier.cls** (lines 321-336)
 
 ### Redeploy Classes
 
 ```bash
 sf project deploy start --source-dir force-app/main/default/classes/PerformanceAlertPublisher.cls
-sf project deploy start --source-dir force-app/main/default/classes/PrometheionGraphIndexer.cls
+sf project deploy start --source-dir force-app/main/default/classes/ElaroGraphIndexer.cls
 sf project deploy start --source-dir force-app/main/default/classes/SlackNotifier.cls
 ```
 

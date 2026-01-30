@@ -1,14 +1,14 @@
-# Prometheion Demo Org Setup Guide
+# Elaro Demo Org Setup Guide
 
 ## Overview
 
-This guide provides step-by-step instructions for setting up a Prometheion demo org with sample data, configuration, and permission sets for demonstration purposes.
+This guide provides step-by-step instructions for setting up a Elaro demo org with sample data, configuration, and permission sets for demonstration purposes.
 
 ## Prerequisites
 
 - Salesforce CLI (sf) installed and authenticated
 - Access to create scratch orgs or sandbox
-- Prometheion package deployed
+- Elaro package deployed
 
 ## Quick Start
 
@@ -31,43 +31,43 @@ Follow the steps below for manual setup.
 ### Step 1: Create Scratch Org
 
 ```bash
-# Create scratch org with Prometheion configuration
+# Create scratch org with Elaro configuration
 sf org create scratch \
-  -f config/prometheion-scratch-def.json \
-  -a prometheion-demo \
+  -f config/elaro-scratch-def.json \
+  -a elaro-demo \
   -d 30
 
 # Open the org
-sf org open -o prometheion-demo
+sf org open -o elaro-demo
 ```
 
 ### Step 2: Deploy Source Code
 
 ```bash
 # Deploy all metadata
-sf project deploy start -o prometheion-demo
+sf project deploy start -o elaro-demo
 
 # Verify deployment
-sf project deploy report -o prometheion-demo
+sf project deploy report -o elaro-demo
 ```
 
 ### Step 3: Assign Permission Sets
 
 ```bash
-# Assign Prometheion Admin permission set
+# Assign Elaro Admin permission set
 sf org assign permset \
-  --name Prometheion_Admin \
-  -o prometheion-demo
+  --name Elaro_Admin \
+  -o elaro-demo
 
-# Assign Prometheion User permission set
+# Assign Elaro User permission set
 sf org assign permset \
-  --name Prometheion_User \
-  -o prometheion-demo
+  --name Elaro_User \
+  -o elaro-demo
 
-# Assign Prometheion Auditor permission set (optional)
+# Assign Elaro Auditor permission set (optional)
 sf org assign permset \
-  --name Prometheion_Auditor \
-  -o prometheion-demo
+  --name Elaro_Auditor \
+  -o elaro-demo
 ```
 
 ### Step 4: Configure Named Credentials
@@ -76,7 +76,7 @@ Named Credentials must be configured in the org UI (cannot be deployed):
 
 1. Navigate to **Setup** → **Named Credentials**
 2. Configure the following:
-   - `Prometheion_Claude_API` - Claude API endpoint for AI features
+   - `Elaro_Claude_API` - Claude API endpoint for AI features
    - `Slack_Webhook` - Slack integration (optional)
    - `Teams_Webhook` - Microsoft Teams integration (optional)
 
@@ -90,7 +90,7 @@ Named Credentials must be configured in the org UI (cannot be deployed):
 # Execute test data creation script
 sf apex run \
   --file scripts/create-test-data.apex \
-  -o prometheion-demo
+  -o elaro-demo
 ```
 
 #### Option B: Using Data Import
@@ -107,17 +107,17 @@ sf apex run \
 Create sample records via UI:
 
 1. **Compliance Scores**:
-   - Navigate to Prometheion → Compliance Scores
+   - Navigate to Elaro → Compliance Scores
    - Create scores for different frameworks (HIPAA, SOC2, GDPR, etc.)
    - Set scores between 60-95% for variety
 
 2. **Compliance Gaps**:
-   - Navigate to Prometheion → Compliance Gaps
+   - Navigate to Elaro → Compliance Gaps
    - Create gaps with different severity levels
    - Link to frameworks and controls
 
 3. **Evidence Items**:
-   - Navigate to Prometheion → Evidence Items
+   - Navigate to Elaro → Evidence Items
    - Create evidence for audit packages
    - Set various statuses (Pending, Verified, Rejected)
 
@@ -136,15 +136,15 @@ Custom Metadata records are deployed automatically, but verify they exist:
 #### Check Key Components
 
 1. **Lightning Apps**:
-   - Navigate to App Launcher → Prometheion
+   - Navigate to App Launcher → Elaro
    - Verify app loads without errors
 
 2. **Dashboards**:
-   - Navigate to Prometheion → Compliance Dashboard
+   - Navigate to Elaro → Compliance Dashboard
    - Verify data displays correctly
 
 3. **AI Features** (if Named Credentials configured):
-   - Navigate to Prometheion → Compliance Copilot
+   - Navigate to Elaro → Compliance Copilot
    - Test a sample query
 
 #### Run Health Check
@@ -152,7 +152,7 @@ Custom Metadata records are deployed automatically, but verify they exist:
 ```bash
 # Run Apex tests to verify everything works
 sf apex run test \
-  --target-org prometheion-demo \
+  --target-org elaro-demo \
   --code-coverage \
   --wait 30
 ```
@@ -161,21 +161,21 @@ sf apex run test \
 
 ### Scenario 1: Compliance Dashboard Overview
 
-1. Navigate to **Prometheion** → **Compliance Dashboard**
+1. Navigate to **Elaro** → **Compliance Dashboard**
 2. Review overall compliance scores
 3. Drill down into specific frameworks
 4. Review compliance gaps and remediation status
 
 ### Scenario 2: Executive KPI Dashboard
 
-1. Navigate to **Prometheion** → **Executive KPI Dashboard**
+1. Navigate to **Elaro** → **Executive KPI Dashboard**
 2. Review key performance indicators
 3. Verify thresholds and status indicators
 4. Test real-time refresh functionality
 
 ### Scenario 3: Compliance Copilot (AI Assistant)
 
-1. Navigate to **Prometheion** → **Compliance Copilot**
+1. Navigate to **Elaro** → **Compliance Copilot**
 2. Ask questions like:
    - "What are the critical compliance gaps for HIPAA?"
    - "Show me evidence items pending review"
@@ -184,14 +184,14 @@ sf apex run test \
 
 ### Scenario 4: Audit Package Builder
 
-1. Navigate to **Prometheion** → **Audit Package Builder**
+1. Navigate to **Elaro** → **Audit Package Builder**
 2. Create a new audit package for SOC2
 3. Add evidence items
 4. Generate audit report
 
 ### Scenario 5: Risk Heatmap
 
-1. Navigate to **Prometheion** → **Risk Heatmap**
+1. Navigate to **Elaro** → **Risk Heatmap**
 2. Review risk visualization by framework
 3. Filter by severity level
 4. Drill down into specific risks
@@ -203,7 +203,7 @@ sf apex run test \
 **Solution**: Verify permission sets were deployed:
 
 ```bash
-sf project deploy start --source-dir force-app/main/default/permissionsets -o prometheion-demo
+sf project deploy start --source-dir force-app/main/default/permissionsets -o elaro-demo
 ```
 
 ### Issue: Custom Metadata Missing
@@ -211,7 +211,7 @@ sf project deploy start --source-dir force-app/main/default/permissionsets -o pr
 **Solution**: Redeploy custom metadata:
 
 ```bash
-sf project deploy start --source-dir force-app/main/default/customMetadata -o prometheion-demo
+sf project deploy start --source-dir force-app/main/default/customMetadata -o elaro-demo
 ```
 
 ### Issue: No Data in Dashboards
@@ -234,7 +234,7 @@ sf project deploy start --source-dir force-app/main/default/customMetadata -o pr
 
 ### Enable Features
 
-1. Navigate to **Prometheion** → **AI Settings**
+1. Navigate to **Elaro** → **AI Settings**
 2. Enable desired AI features:
    - AI Reasoning
    - Compliance Copilot
@@ -244,13 +244,13 @@ sf project deploy start --source-dir force-app/main/default/customMetadata -o pr
 
 1. Navigate to **Setup** → **Apex Classes**
 2. Schedule required jobs:
-   - `PrometheionISO27001QuarterlyScheduler`
+   - `ElaroISO27001QuarterlyScheduler`
    - `WeeklyScorecardScheduler`
    - `ConsentExpirationScheduler`
 
 ### Set Up Notifications
 
-1. Navigate to **Prometheion** → **Settings**
+1. Navigate to **Elaro** → **Settings**
 2. Configure notification channels:
    - Slack webhooks
    - Teams webhooks
@@ -272,21 +272,21 @@ To reset the demo org:
 
 ```bash
 # Delete and recreate scratch org
-sf org delete scratch -o prometheion-demo -p
-sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-demo -d 30
+sf org delete scratch -o elaro-demo -p
+sf org create scratch -f config/elaro-scratch-def.json -a elaro-demo -d 30
 
 # Or use destructive changes
 sf project deploy start \
   --source-dir destructiveChanges \
-  -o prometheion-demo
+  -o elaro-demo
 ```
 
 ## Support
 
 For issues or questions:
 
-- Review logs: `sf apex get log -o prometheion-demo`
-- Check deployment status: `sf project deploy report -o prometheion-demo`
+- Review logs: `sf apex get log -o elaro-demo`
+- Check deployment status: `sf project deploy report -o elaro-demo`
 - Review documentation: `docs/` directory
 
 ## Last Updated

@@ -1,8 +1,8 @@
 /**
- * @description PagerDuty integration service for Prometheion
+ * @description PagerDuty integration service for Elaro
  * Provides incident triggering and resolution
  * @group Integrations
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class PagerDutyIntegration {
     
@@ -27,16 +27,16 @@ public with sharing class PagerDutyIntegration {
         
         String severity = (String)alertData.get('severity');
         String pdSeverity = mapSeverity(severity);
-        String dedupKey = 'prometheion-' + alertData.get('alertId');
+        String dedupKey = 'elaro-' + alertData.get('alertId');
         
         Map<String, Object> event = new Map<String, Object>{
             'routing_key' => routingKey,
             'event_action' => 'trigger',
             'dedup_key' => dedupKey,
             'payload' => new Map<String, Object>{
-                'summary' => 'Prometheion Compliance Alert: ' + alertData.get('eventType'),
+                'summary' => 'Elaro Compliance Alert: ' + alertData.get('eventType'),
                 'severity' => pdSeverity,
-                'source' => 'Prometheion Compliance Platform',
+                'source' => 'Elaro Compliance Platform',
                 'component' => 'compliance-monitoring',
                 'group' => (String)alertData.get('framework'),
                 'class' => 'compliance',
@@ -51,8 +51,8 @@ public with sharing class PagerDutyIntegration {
             },
             'links' => new List<Object>{
                 new Map<String, Object>{
-                    'href' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/n/Prometheion',
-                    'text' => 'View in Prometheion'
+                    'href' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/n/Elaro',
+                    'text' => 'View in Elaro'
                 }
             }
         };
@@ -116,7 +116,7 @@ public with sharing class PagerDutyIntegration {
      */
     @AuraEnabled
     public static String createIncident(String title, String description, String severity, String alertId) {
-        String dedupKey = 'prometheion-' + (String.isNotBlank(alertId) ? alertId : String.valueOf(Datetime.now().getTime()));
+        String dedupKey = 'elaro-' + (String.isNotBlank(alertId) ? alertId : String.valueOf(Datetime.now().getTime()));
         
         Map<String, Object> alertData = new Map<String, Object>{
             'alertId' => alertId,
@@ -187,9 +187,9 @@ public with sharing class PagerDutyIntegration {
     private static String getRoutingKey() {
         try {
             // Query Protected Custom Metadata for PagerDuty routing key
-            List<Prometheion_API_Config__mdt> configs = [
+            List<Elaro_API_Config__mdt> configs = [
                 SELECT API_Key__c, Is_Active__c
-                FROM Prometheion_API_Config__mdt
+                FROM Elaro_API_Config__mdt
                 WHERE DeveloperName = 'PagerDuty'
                 AND Is_Active__c = true
                 LIMIT 1
@@ -198,7 +198,7 @@ public with sharing class PagerDutyIntegration {
             if (configs.isEmpty()) {
                 System.debug(LoggingLevel.WARN, 
                     '[PagerDutyIntegration] PagerDuty integration not configured. ' +
-                    'Create Prometheion_API_Config__mdt record with DeveloperName=PagerDuty');
+                    'Create Elaro_API_Config__mdt record with DeveloperName=PagerDuty');
                 return null;
             }
 
@@ -207,7 +207,7 @@ public with sharing class PagerDutyIntegration {
             if (String.isBlank(routingKey) || routingKey.contains('PLACEHOLDER')) {
                 System.debug(LoggingLevel.ERROR, 
                     '[PagerDutyIntegration] PagerDuty routing key not set. ' +
-                    'Update Prometheion_API_Config__mdt.PagerDuty record with actual routing key');
+                    'Update Elaro_API_Config__mdt.PagerDuty record with actual routing key');
                 return null;
             }
 

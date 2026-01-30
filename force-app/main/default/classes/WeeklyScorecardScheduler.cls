@@ -8,15 +8,15 @@
  * - Schedule via Setup → Apex → Schedule Apex
  * - Or call WeeklyScorecardScheduler.scheduleWeekly() to schedule programmatically
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.2
  */
 public with sharing class WeeklyScorecardScheduler implements Schedulable {
 
-    // Channel constants (using PrometheionConstants for consistency)
-    public static final String SLACK = PrometheionConstants.CHANNEL_SLACK;
-    public static final String TEAMS = PrometheionConstants.CHANNEL_TEAMS;
-    public static final String BOTH = PrometheionConstants.CHANNEL_BOTH;
+    // Channel constants (using ElaroConstants for consistency)
+    public static final String SLACK = ElaroConstants.CHANNEL_SLACK;
+    public static final String TEAMS = ElaroConstants.CHANNEL_TEAMS;
+    public static final String BOTH = ElaroConstants.CHANNEL_BOTH;
 
     // Logging prefix for easy log filtering
     private static final String LOG_PREFIX = '[WeeklyScorecardScheduler] ';
@@ -38,7 +38,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
         try {
             // Calculate current compliance score
             Long startTime = System.currentTimeMillis();
-            PrometheionComplianceScorer.ScoreResult scoreResult = PrometheionComplianceScorer.calculateReadinessScore();
+            ElaroComplianceScorer.ScoreResult scoreResult = ElaroComplianceScorer.calculateReadinessScore();
             Long duration = System.currentTimeMillis() - startTime;
 
             System.debug(LoggingLevel.INFO, LOG_PREFIX + 'Score calculation completed in ' + duration + 'ms. Score: ' + scoreResult.overallScore);
@@ -65,7 +65,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             System.debug(LoggingLevel.INFO, LOG_PREFIX + 'Weekly scorecard sent successfully');
 
         } catch (Exception e) {
-            // Safely handle null error messages (consistent with PrometheionComplianceCopilot)
+            // Safely handle null error messages (consistent with ElaroComplianceCopilot)
             String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
             System.debug(LoggingLevel.ERROR, LOG_PREFIX + 'Error: ' + errorMsg + '\n' + e.getStackTraceString());
 
@@ -89,7 +89,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     /**
      * Send scorecard to Slack
      */
-    private static void sendSlackScorecard(PrometheionComplianceScorer.ScoreResult scoreResult) {
+    private static void sendSlackScorecard(ElaroComplianceScorer.ScoreResult scoreResult) {
         String emoji = getScoreEmoji(scoreResult.overallScore);
         String color = getScoreColor(scoreResult.overallScore);
 
@@ -154,7 +154,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             });
             List<Map<String, Object>> factorFields = new List<Map<String, Object>>();
 
-            for (PrometheionComplianceScorer.ScoreFactor factor : scoreResult.factors) {
+            for (ElaroComplianceScorer.ScoreFactor factor : scoreResult.factors) {
                 Map<String, Object> field = new Map<String, Object>();
                 field.put('type', 'mrkdwn');
                 field.put('text', '*' + factor.name + '*\n' + factor.score.setScale(0) + '/100 (' + factor.status + ')');
@@ -177,7 +177,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             });
             blocks.add(risksSection);
 
-            for (PrometheionComplianceScorer.Risk risk : scoreResult.topRisks) {
+            for (ElaroComplianceScorer.Risk risk : scoreResult.topRisks) {
                 Map<String, Object> riskSection = new Map<String, Object>();
                 riskSection.put('type', 'section');
                 Map<String, Object> riskText = new Map<String, Object>();
@@ -215,7 +215,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
         List<Map<String, Object>> attachments = new List<Map<String, Object>>();
         Map<String, Object> attachment = new Map<String, Object>();
         attachment.put('color', color);
-        attachment.put('footer', 'Prometheion ' + Label.Scorecard_Weekly_Title + ' | ' + Datetime.now().format('yyyy-MM-dd'));
+        attachment.put('footer', 'Elaro ' + Label.Scorecard_Weekly_Title + ' | ' + Datetime.now().format('yyyy-MM-dd'));
         attachments.add(attachment);
         payload.put('attachments', attachments);
 
@@ -225,23 +225,23 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     /**
      * Send scorecard to Teams
      */
-    private static void sendTeamsScorecard(PrometheionComplianceScorer.ScoreResult scoreResult) {
+    private static void sendTeamsScorecard(ElaroComplianceScorer.ScoreResult scoreResult) {
         // Use existing TeamsNotifier method
         TeamsNotifier.sendWeeklyScorecard();
     }
 
     /**
-     * Get emoji based on score (using PrometheionConstants)
+     * Get emoji based on score (using ElaroConstants)
      */
     private static String getScoreEmoji(Decimal score) {
-        return PrometheionConstants.getScoreEmoji(score);
+        return ElaroConstants.getScoreEmoji(score);
     }
 
     /**
-     * Get color hex code based on score (using PrometheionConstants)
+     * Get color hex code based on score (using ElaroConstants)
      */
     private static String getScoreColor(Decimal score) {
-        return PrometheionConstants.getScoreColor(score);
+        return ElaroConstants.getScoreColor(score);
     }
 
     /**
@@ -266,7 +266,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             9, 0, 0
         );
 
-        String jobName = 'Prometheion Weekly Scorecard - ' + channel + ' - ' + Datetime.now().format('yyyy-MM-dd');
+        String jobName = 'Elaro Weekly Scorecard - ' + channel + ' - ' + Datetime.now().format('yyyy-MM-dd');
         String cronExpression = getCronExpression(nextRun);
 
         WeeklyScorecardScheduler scheduler = new WeeklyScorecardScheduler();

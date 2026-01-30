@@ -8,7 +8,7 @@
  * - Priority calculation based on risk reduction and effort
  * - Auto-remediation payload generation for supported types
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class RemediationSuggestionService {

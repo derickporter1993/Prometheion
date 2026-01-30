@@ -2,7 +2,7 @@
  * Test class for CCPAConsumerRightsService
  * Tests CCPA consumer rights: Know, Delete, Opt-Out
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

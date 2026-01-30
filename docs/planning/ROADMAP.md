@@ -1,8 +1,8 @@
-# Prometheion Product Roadmap
+# Elaro Product Roadmap
 
 **Last Updated**: 2026-01-09
 
-This roadmap outlines Prometheion's evolution from a compliance drift detector to a comprehensive Salesforce governance platform.
+This roadmap outlines Elaro's evolution from a compliance drift detector to a comprehensive Salesforce governance platform.
 
 ---
 
@@ -10,7 +10,7 @@ This roadmap outlines Prometheion's evolution from a compliance drift detector t
 
 **Make every Salesforce org audit-ready by default** — no matter the size, industry, or compliance requirements.
 
-Prometheion starts as a **compliance drift guardrail** for regulated organizations, then expands to automated remediation, multi-org governance, and policy-as-code enforcement.
+Elaro starts as a **compliance drift guardrail** for regulated organizations, then expands to automated remediation, multi-org governance, and policy-as-code enforcement.
 
 ---
 
@@ -53,7 +53,7 @@ Prometheion starts as a **compliance drift guardrail** for regulated organizatio
 ### User Feedback Themes (Expected)
 
 - ❓ "Can I customize the Audit Readiness Score?" → v2.0
-- ❓ "Can Prometheion prevent changes, not just detect them?" → v3.0
+- ❓ "Can Elaro prevent changes, not just detect them?" → v3.0
 - ❓ "Can I monitor multiple orgs from one dashboard?" → v2.0
 - ❓ "Can you explain WHY a change is risky?" → v1.5
 
@@ -168,21 +168,21 @@ Compliance Impact: Reduces risk score by 20 points
 
 #### 3. **Jira Integration** 🎫
 
-**Problem**: Compliance teams work in Jira, but Prometheion alerts live in Salesforce/Slack.
+**Problem**: Compliance teams work in Jira, but Elaro alerts live in Salesforce/Slack.
 **Solution**: Auto-create Jira tickets for high-risk changes, with bidirectional sync.
 
 **Features**:
 
 - Create Jira ticket when drift event detected
 - Attach compliance evidence (audit logs, metadata exports)
-- Update Prometheion when Jira ticket is resolved
-- Link Prometheion dashboard to Jira issues
+- Update Elaro when Jira ticket is resolved
+- Link Elaro dashboard to Jira issues
 
 **Configuration**:
 
 ```apex
 // Jira Named Credential setup
-Prometheion_Settings__c settings = Prometheion_Settings__c.getInstance();
+Elaro_Settings__c settings = Elaro_Settings__c.getInstance();
 settings.Jira_Integration_Enabled__c = true;
 settings.Jira_Project_Key__c = 'COMPLIANCE';
 settings.Jira_Issue_Type__c = 'Compliance Violation';
@@ -210,7 +210,7 @@ upsert settings;
 ```apex
 // Schedule weekly report every Monday at 8 AM
 System.schedule(
-    'Prometheion_Weekly_Report',
+    'Elaro_Weekly_Report',
     '0 0 8 ? * MON *',
     new ComplianceReportScheduler('weekly', 'compliance@acme.org')
 );
@@ -228,7 +228,7 @@ System.schedule(
 **Features**:
 
 - Push notifications for Critical/High-risk changes
-- Deep links to Prometheion dashboard
+- Deep links to Elaro dashboard
 - Snooze/acknowledge alerts
 - Escalation if not acknowledged in 30 minutes
 
@@ -252,7 +252,7 @@ System.schedule(
 
 ### Goals
 
-- Scale Prometheion to enterprise customers with 10+ Salesforce orgs
+- Scale Elaro to enterprise customers with 10+ Salesforce orgs
 - Centralize compliance evidence across prod, sandboxes, dev orgs
 - Add AI governance (track Einstein/AI feature usage)
 
@@ -274,7 +274,7 @@ System.schedule(
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ Prometheion Multi-Org Dashboard                                │
+│ Elaro Multi-Org Dashboard                                │
 ├─────────────────────────────────────────────────────────────┤
 │ Overall Readiness: 74/100 🟡                                │
 │ Critical Issues: 12    High: 34    Medium: 67              │
@@ -372,12 +372,12 @@ Compliance Status: ✅ GDPR Article 22 Compliant
 
 #### 4. **SIEM Export** 📤
 
-**Problem**: Security teams want Prometheion events in their SIEM (Splunk, Datadog, etc.).
+**Problem**: Security teams want Elaro events in their SIEM (Splunk, Datadog, etc.).
 **Solution**: Real-time event streaming to SIEM tools.
 
 **Features**:
 
-- Push Prometheion events to SIEM via REST API
+- Push Elaro events to SIEM via REST API
 - Support for Splunk, Datadog, Sumo Logic, AWS Security Hub
 - Event normalization (map Salesforce events to SIEM schema)
 - Configurable event filtering (only send Critical/High events)
@@ -503,7 +503,7 @@ Approvers:
 
 Comments:
 - j.smith: "Need this to debug production issue"
-- Prometheion AI: "This change affects 45 users and increases risk score by 15 points"
+- Elaro AI: "This change affects 45 users and increases risk score by 15 points"
 ```
 
 **Estimated Effort**: 12 weeks
@@ -554,7 +554,7 @@ enforcement:
 
 ```bash
 # GitHub Actions workflow
-- name: Prometheion Policy Check
+- name: Elaro Policy Check
   run: |
     sf sentinel policy validate \
       --policy acme-healthcare-compliance-policy.yml \
@@ -569,7 +569,7 @@ enforcement:
 #### 4. **AppExchange Listing** 🏪
 
 **Problem**: Installation is complex (git clone, deploy, configure).
-**Solution**: Publish Prometheion as a managed package on AppExchange.
+**Solution**: Publish Elaro as a managed package on AppExchange.
 
 **Features**:
 
@@ -625,7 +625,7 @@ We welcome community input on this roadmap!
 
 **How to suggest features**:
 
-1. Open a GitHub Discussion: [Feature Requests](https://github.com/derickporter1993/Prometheion/discussions/categories/feature-requests)
+1. Open a GitHub Discussion: [Feature Requests](https://github.com/derickporter1993/Elaro/discussions/categories/feature-requests)
 2. Describe the problem you're solving (not just the solution)
 3. Explain who benefits (compliance teams, auditors, developers?)
 4. Vote on existing feature requests

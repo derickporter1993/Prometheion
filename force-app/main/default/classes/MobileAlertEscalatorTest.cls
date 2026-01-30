@@ -1,6 +1,6 @@
 /**
  * @description Test class for MobileAlertEscalator
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest
@@ -12,20 +12,20 @@ private class MobileAlertEscalatorTest {
         Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User testUser = new User(
             Alias = 'escusr',
-            Email = 'escalationuser@prometheion.test',
+            Email = 'escalationuser@elaro.test',
             EmailEncodingKey = 'UTF-8',
             LastName = 'Escalation',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
             ProfileId = p.Id,
             TimeZoneSidKey = 'America/New_York',
-            UserName = 'escalationuser' + Datetime.now().getTime() + '@prometheion.test'
+            UserName = 'escalationuser' + Datetime.now().getTime() + '@elaro.test'
         );
         insert testUser;
 
         // Create escalation paths for all levels
-        List<Prometheion_Escalation_Path__c> escalationPaths = new List<Prometheion_Escalation_Path__c>();
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        List<Elaro_Escalation_Path__c> escalationPaths = new List<Elaro_Escalation_Path__c>();
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 1,
             Active__c = true,
@@ -33,7 +33,7 @@ private class MobileAlertEscalatorTest {
             Notification_Method__c = 'Both',
             Escalation_Delay_Minutes__c = 15
         ));
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 2,
             Active__c = true,
@@ -41,7 +41,7 @@ private class MobileAlertEscalatorTest {
             Notification_Method__c = 'Both',
             Escalation_Delay_Minutes__c = 30
         ));
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 3,
             Active__c = true,
@@ -220,8 +220,8 @@ private class MobileAlertEscalatorTest {
     @isTest
     static void testEscalator_NoEscalationRecipients() {
         // Deactivate all escalation paths
-        List<Prometheion_Escalation_Path__c> paths = [SELECT Id FROM Prometheion_Escalation_Path__c];
-        for (Prometheion_Escalation_Path__c path : paths) {
+        List<Elaro_Escalation_Path__c> paths = [SELECT Id FROM Elaro_Escalation_Path__c];
+        for (Elaro_Escalation_Path__c path : paths) {
             path.Active__c = false;
         }
         update paths;

@@ -3,7 +3,7 @@
  * 
  * Report generation for compliance audits
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class AuditReportController {
@@ -92,8 +92,8 @@ public with sharing class AuditReportController {
         String pdfContent = generatePDFContent(report);
         
         // Validate CRUD access before DML
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', 
-            PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', 
+            ElaroSecurityUtils.DmlOperation.DML_INSERT);
         
         // Create ContentVersion
         ContentVersion cv = new ContentVersion();

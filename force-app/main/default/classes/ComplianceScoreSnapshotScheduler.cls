@@ -7,12 +7,12 @@
  * Schedule: Daily (recommended)
  * Example: System.schedule('Daily Compliance Snapshot', '0 0 1 * * ?', new ComplianceScoreSnapshotScheduler());
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ComplianceScoreSnapshotScheduler implements Schedulable {
 
-    private static final String JOB_NAME = 'Prometheion Compliance Snapshot';
+    private static final String JOB_NAME = 'Elaro Compliance Snapshot';
 
     // Frameworks to evaluate
     private static final List<String> FRAMEWORKS = new List<String>{
@@ -65,7 +65,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
 
             // Insert all snapshots
             if (!snapshots.isEmpty()) {
-                PrometheionSecurityUtils.validateCRUDAccess('Compliance_Score__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+                ElaroSecurityUtils.validateCRUDAccess('Compliance_Score__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
                 insert snapshots;
             }
 
@@ -198,12 +198,12 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             summaryDetails += '\nCompliant: ' + compliantCount + '/' + results.size() + ' frameworks';
 
             // Create audit log with summary
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Daily Compliance Summary';
             log.Status__c = nonCompliantCount == 0 ? 'Success' : 'Warning';
             log.Details__c = summaryDetails;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
 
         } catch (Exception e) {
@@ -246,7 +246,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             gap.Remediation_Steps__c = 'Review recent changes and address new violations.';
             gap.Due_Date__c = Date.today().addDays(7);
 
-            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert gap;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to create score alert: ' + e.getMessage());
@@ -268,7 +268,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             gap.Remediation_Steps__c = 'Immediate attention required. Review all violations and remediate.';
             gap.Due_Date__c = Date.today().addDays(3);
 
-            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert gap;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to create compliance alert: ' + e.getMessage());
@@ -280,13 +280,13 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
      */
     private void logExecution(String message, Integer snapshotsCreated, Decimal overallScore) {
         try {
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Compliance Score Snapshot';
             log.Status__c = 'Success';
             log.Details__c = message + '. Snapshots: ' + snapshotsCreated +
                 '. Overall Score: ' + overallScore + '%';
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log execution: ' + e.getMessage());
@@ -298,12 +298,12 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
      */
     private void logError(String message) {
         try {
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Compliance Score Snapshot';
             log.Status__c = 'Error';
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log error: ' + e.getMessage());

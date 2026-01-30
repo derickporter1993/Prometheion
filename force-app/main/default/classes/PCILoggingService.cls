@@ -8,7 +8,7 @@
  * - Requirement 10.3: Record at least audit trail entries
  * - Requirement 10.5: Secure audit trails so they cannot be altered
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class PCILoggingService extends ComplianceServiceBase {
@@ -39,7 +39,7 @@ public with sharing class PCILoggingService extends ComplianceServiceBase {
                 'resourceName' => resourceName
             });
             
-            // Log to Prometheion_Audit_Log__c
+            // Log to Elaro_Audit_Log__c
             logAuditEvent('PCI_' + eventType, resourceName, userId, 
                 JSON.serialize(details != null ? details : new Map<String, Object>()));
             
@@ -64,9 +64,9 @@ public with sharing class PCILoggingService extends ComplianceServiceBase {
     public Map<String, Object> monitorLogIntegrity() {
         try {
             // Query recent audit logs
-            List<Prometheion_Audit_Log__c> recentLogs = [
+            List<Elaro_Audit_Log__c> recentLogs = [
                 SELECT Id, Action__c, Entity_Type__c, Timestamp__c, User__c
-                FROM Prometheion_Audit_Log__c
+                FROM Elaro_Audit_Log__c
                 WHERE Timestamp__c >= LAST_N_DAYS:7
                 WITH SECURITY_ENFORCED
                 ORDER BY Timestamp__c DESC
@@ -141,9 +141,9 @@ public with sharing class PCILoggingService extends ComplianceServiceBase {
             DateTime cutoffDate = DateTime.now().addDays(-retentionDays);
             
             // Query logs older than retention period
-            List<Prometheion_Audit_Log__c> logsToArchive = [
+            List<Elaro_Audit_Log__c> logsToArchive = [
                 SELECT Id, Action__c, Timestamp__c
-                FROM Prometheion_Audit_Log__c
+                FROM Elaro_Audit_Log__c
                 WHERE Timestamp__c < :cutoffDate
                 WITH SECURITY_ENFORCED
                 LIMIT 10000
@@ -152,7 +152,7 @@ public with sharing class PCILoggingService extends ComplianceServiceBase {
             // In production, would export to external storage before deletion
             // For now, just log the count
             
-            logAuditEvent('LOGS_ARCHIVED', 'Prometheion_Audit_Log__c', null, 
+            logAuditEvent('LOGS_ARCHIVED', 'Elaro_Audit_Log__c', null, 
                 JSON.serialize(new Map<String, Object>{
                     'logsArchived' => logsToArchive.size(),
                     'retentionDays' => retentionDays,
@@ -177,7 +177,7 @@ public with sharing class PCILoggingService extends ComplianceServiceBase {
     
     // Private helper methods
     
-    private List<String> detectAnomalies(List<Prometheion_Audit_Log__c> logs) {
+    private List<String> detectAnomalies(List<Elaro_Audit_Log__c> logs) {
         List<String> anomalies = new List<String>();
         
         // Check for gaps in timestamps

@@ -4,7 +4,7 @@
  * Automates periodic access reviews per SOC2 CC6.2/CC6.3.
  * Handles access review cycles, permission analysis, and revocation.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class SOC2AccessReviewService extends ComplianceServiceBase implements IAccessControlService {

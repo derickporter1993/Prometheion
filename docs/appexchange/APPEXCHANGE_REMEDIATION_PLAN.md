@@ -8,7 +8,7 @@
 
 ## Overview
 
-This plan addresses all four priorities to prepare Prometheion for AppExchange submission:
+This plan addresses all four priorities to prepare Elaro for AppExchange submission:
 1. **P0 Security Fixes** (Blocking for security review)
 2. **Test Coverage Improvement** (29% → 75% required)
 3. **P1 Reliability Issues** (Governor limits, error handling, permission sets)
@@ -18,9 +18,9 @@ This plan addresses all four priorities to prepare Prometheion for AppExchange s
 
 ## Phase 1: P0 Security Fixes (Blocking - Week 1, Days 1-2)
 
-### 1.1 Fix Deterministic Hashing in PrometheionReasoningEngine
+### 1.1 Fix Deterministic Hashing in ElaroReasoningEngine
 
-**File**: `force-app/main/default/classes/PrometheionReasoningEngine.cls`
+**File**: `force-app/main/default/classes/ElaroReasoningEngine.cls`
 
 **Issue**: `generateCorrelationId()` uses `System.now().getTime()` making correlation IDs non-deterministic (line 196)
 
@@ -46,9 +46,9 @@ private static String generateCorrelationId(String nodeHash) {
 
 ---
 
-### 1.2 Implement Audit Logging in PrometheionAISettingsController
+### 1.2 Implement Audit Logging in ElaroAISettingsController
 
-**File**: `force-app/main/default/classes/PrometheionAISettingsController.cls`
+**File**: `force-app/main/default/classes/ElaroAISettingsController.cls`
 
 **Issue**: TODO comment indicates audit logging not implemented (line 125)
 
@@ -57,9 +57,9 @@ private static String generateCorrelationId(String nodeHash) {
 private static void logAuditEvent(String action, String entityType, String entityId, String details) {
     try {
         System.debug(LoggingLevel.INFO, '[Audit] ' + action + ' - ' + entityType + ' (' + entityId + '): ' + details);
-        // TODO: Insert into Prometheion_Audit_Log__c when object is created
+        // TODO: Insert into Elaro_Audit_Log__c when object is created
     } catch (Exception e) {
-        System.debug(LoggingLevel.WARN, 'PrometheionAISettingsController: Failed to log audit event: ' + e.getMessage());
+        System.debug(LoggingLevel.WARN, 'ElaroAISettingsController: Failed to log audit event: ' + e.getMessage());
     }
 }
 ```
@@ -68,7 +68,7 @@ private static void logAuditEvent(String action, String entityType, String entit
 ```apex
 private static void logAuditEvent(String action, String entityType, String entityId, String details) {
     try {
-        Prometheion_Audit_Log__c auditLog = new Prometheion_Audit_Log__c(
+        Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
             Action__c = action,
             Entity_Type__c = entityType,
             Entity_Id__c = entityId,
@@ -80,27 +80,27 @@ private static void logAuditEvent(String action, String entityType, String entit
         // Strip inaccessible fields for security
         SObjectAccessDecision decision = Security.stripInaccessible(
             AccessType.CREATABLE,
-            new List<Prometheion_Audit_Log__c>{ auditLog }
+            new List<Elaro_Audit_Log__c>{ auditLog }
         );
         
-        List<Prometheion_Audit_Log__c> sanitizedLogs = decision.getRecords();
+        List<Elaro_Audit_Log__c> sanitizedLogs = decision.getRecords();
         if (!sanitizedLogs.isEmpty()) {
             insert sanitizedLogs[0];
         }
     } catch (Exception e) {
         // Don't fail the main operation if audit logging fails
-        System.debug(LoggingLevel.WARN, 'PrometheionAISettingsController: Failed to log audit event: ' + e.getMessage());
+        System.debug(LoggingLevel.WARN, 'ElaroAISettingsController: Failed to log audit event: ' + e.getMessage());
     }
 }
 ```
 
-**Note**: Verify `Prometheion_Audit_Log__c` object exists and has required fields
+**Note**: Verify `Elaro_Audit_Log__c` object exists and has required fields
 
 ---
 
-### 1.3 Verify PrometheionGraphIndexer Deterministic Hashing
+### 1.3 Verify ElaroGraphIndexer Deterministic Hashing
 
-**File**: `force-app/main/default/classes/PrometheionGraphIndexer.cls`
+**File**: `force-app/main/default/classes/ElaroGraphIndexer.cls`
 
 **Status**: ✅ Already fixed (lines 62-66 use only stable inputs: entityType, entityId, framework)
 
@@ -112,9 +112,9 @@ private static void logAuditEvent(String action, String entityType, String entit
 ### 1.4 Verify CRUD/FLS Enforcement
 
 **Files to verify**:
-- ✅ `PrometheionAISettingsController.cls` - Already uses `Security.stripInaccessible`
-- ✅ `PrometheionReasoningEngine.cls` - Uses `without sharing` (documented justification)
-- ✅ `PrometheionGraphIndexer.cls` - Uses `with sharing` and `WITH USER_MODE`
+- ✅ `ElaroAISettingsController.cls` - Already uses `Security.stripInaccessible`
+- ✅ `ElaroReasoningEngine.cls` - Uses `without sharing` (documented justification)
+- ✅ `ElaroGraphIndexer.cls` - Uses `with sharing` and `WITH USER_MODE`
 
 **Action**: Document all `without sharing` classes in `ENTRY_POINT_AUDIT.md`
 
@@ -131,8 +131,8 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 **Priority classes needing tests**:
 
-1. **PrometheionAISettingsController** (0% coverage)
-   - Create `PrometheionAISettingsControllerTest.cls`
+1. **ElaroAISettingsController** (0% coverage)
+   - Create `ElaroAISettingsControllerTest.cls`
    - Test scenarios:
      - `getSettings()` with null org defaults (should create)
      - `getSettings()` with existing defaults (should return)
@@ -141,8 +141,8 @@ private static void logAuditEvent(String action, String entityType, String entit
      - Audit logging on save
      - Bulk operations (200+ records)
 
-2. **PrometheionComplianceScorer** (has test, verify coverage)
-   - Enhance `PrometheionComplianceScorerTest.cls`
+2. **ElaroComplianceScorer** (has test, verify coverage)
+   - Enhance `ElaroComplianceScorerTest.cls`
    - Add bulk tests (200+ permission sets)
    - Add governor limit tests
    - Add error path tests
@@ -153,20 +153,20 @@ private static void logAuditEvent(String action, String entityType, String entit
    - Add error path tests
    - Add platform event publishing failure tests
 
-4. **PrometheionReasoningEngine** (has test, verify coverage)
-   - Enhance `PrometheionReasoningEngineTest.cls`
+4. **ElaroReasoningEngine** (has test, verify coverage)
+   - Enhance `ElaroReasoningEngineTest.cls`
    - Add null safety tests
    - Add deterministic hash tests
    - Add Big Object query tests
 
 5. **Framework Services** (verify all have tests)
-   - ✅ `PrometheionGDPRDataErasureServiceTest.cls` - exists
-   - ✅ `PrometheionCCPADataInventoryServiceTest.cls` - exists
-   - ✅ `PrometheionGLBAPrivacyNoticeServiceTest.cls` - exists
-   - ✅ `PrometheionISO27001AccessReviewServiceTest.cls` - exists
-   - ⚠️ `PrometheionHIPAAComplianceService` - verify test exists
-   - ⚠️ `PrometheionSOC2ComplianceService` - verify test exists
-   - ⚠️ `PrometheionPCIDSSComplianceService` - verify test exists
+   - ✅ `ElaroGDPRDataErasureServiceTest.cls` - exists
+   - ✅ `ElaroCCPADataInventoryServiceTest.cls` - exists
+   - ✅ `ElaroGLBAPrivacyNoticeServiceTest.cls` - exists
+   - ✅ `ElaroISO27001AccessReviewServiceTest.cls` - exists
+   - ⚠️ `ElaroHIPAAComplianceService` - verify test exists
+   - ⚠️ `ElaroSOC2ComplianceService` - verify test exists
+   - ⚠️ `ElaroPCIDSSComplianceService` - verify test exists
 
 ### 2.2 Test Coverage Targets
 
@@ -182,7 +182,7 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 ```apex
 @IsTest
-private class PrometheionAISettingsControllerTest {
+private class ElaroAISettingsControllerTest {
     @TestSetup
     static void setupTestData() {
         // Create test data
@@ -228,9 +228,9 @@ private class PrometheionAISettingsControllerTest {
 
 ## Phase 3: P1 Reliability Improvements - Week 2, Days 1-3
 
-### 3.1 Batch Queries in PrometheionComplianceScorer
+### 3.1 Batch Queries in ElaroComplianceScorer
 
-**File**: `force-app/main/default/classes/PrometheionComplianceScorer.cls`
+**File**: `force-app/main/default/classes/ElaroComplianceScorer.cls`
 
 **Issue**: Multiple synchronous COUNT queries risk governor exhaustion
 
@@ -287,51 +287,51 @@ private static ScoreFactor calculatePermissionSprawlScore() {
 
 ### 3.2 Add Permission Set Access for Framework Services
 
-**File**: `force-app/main/default/permissionsets/Prometheion_Admin.permissionset-meta.xml`
+**File**: `force-app/main/default/permissionsets/Elaro_Admin.permissionset-meta.xml`
 
 **Issue**: Missing class access for framework services (GDPR, CCPA, GLBA, ISO27001, HIPAA, SOC2, PCI-DSS)
 
 **Current State**: Only has access to:
-- `PrometheionComplianceCopilot`
-- `PrometheionComplianceScorer`
+- `ElaroComplianceCopilot`
+- `ElaroComplianceScorer`
 
 **Fix**: Add `<classAccesses>` entries for:
 ```xml
 <classAccesses>
-    <apexClass>PrometheionGDPRComplianceService</apexClass>
+    <apexClass>ElaroGDPRComplianceService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionCCPAComplianceService</apexClass>
+    <apexClass>ElaroCCPAComplianceService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionGLBAPrivacyNoticeService</apexClass>
+    <apexClass>ElaroGLBAPrivacyNoticeService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionISO27001AccessReviewService</apexClass>
+    <apexClass>ElaroISO27001AccessReviewService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionHIPAAComplianceService</apexClass>
+    <apexClass>ElaroHIPAAComplianceService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionSOC2ComplianceService</apexClass>
+    <apexClass>ElaroSOC2ComplianceService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionPCIDSSComplianceService</apexClass>
+    <apexClass>ElaroPCIDSSComplianceService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 ```
 
 ---
 
-### 3.3 Create Prometheion_User Permission Set
+### 3.3 Create Elaro_User Permission Set
 
-**File**: `force-app/main/default/permissionsets/Prometheion_User.permissionset-meta.xml` (new file)
+**File**: `force-app/main/default/permissionsets/Elaro_User.permissionset-meta.xml` (new file)
 
 **Purpose**: Read-only access for end users
 
@@ -346,10 +346,10 @@ private static ScoreFactor calculatePermissionSprawlScore() {
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
   <hasActivationRequired>false</hasActivationRequired>
-  <label>Prometheion User</label>
-  <description>Read-only access to Prometheion compliance features</description>
+  <label>Elaro User</label>
+  <description>Read-only access to Elaro compliance features</description>
   <classAccesses>
-    <apexClass>PrometheionComplianceScorer</apexClass>
+    <apexClass>ElaroComplianceScorer</apexClass>
     <enabled>true</enabled>
   </classAccesses>
   <!-- Add object permissions for read-only access -->
@@ -391,7 +391,7 @@ private static ScoreFactor calculatePermissionSprawlScore() {
 ```markdown
 | Entry Point | Class | Method | Intended Users | Permission Set | Security Model |
 |-------------|-------|--------|----------------|----------------|----------------|
-| getComplianceScore | PrometheionComplianceScorer | calculateReadinessScore | All Users | Prometheion_User | with sharing |
+| getComplianceScore | ElaroComplianceScorer | calculateReadinessScore | All Users | Elaro_User | with sharing |
 ```
 
 ---
@@ -460,7 +460,7 @@ sf code-analyzer run --target force-app/ --outfile security-report.html
 - **Days 1-3**: P1 Reliability (6-8 hours)
   - Batch queries in ComplianceScorer
   - Add permission set access
-  - Create Prometheion_User permission set
+  - Create Elaro_User permission set
   - Enhance error handling
 
 - **Days 4-5**: Security Review Prep (4-6 hours)

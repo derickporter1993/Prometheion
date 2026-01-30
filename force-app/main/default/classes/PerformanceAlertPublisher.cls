@@ -7,7 +7,7 @@
  * This version stores alerts in Performance_Alert_History__c instead.
  */
 public with sharing class PerformanceAlertPublisher {
-    private static final String RATE_LIMIT_PARTITION = 'PrometheionRateLimit';
+    private static final String RATE_LIMIT_PARTITION = 'ElaroRateLimit';
     private static final Integer RATE_LIMIT_MAX_CALLS = 100;
     private static final Integer RATE_LIMIT_WINDOW_SECONDS = 60;
     

@@ -1,5 +1,5 @@
 {
-  "orgName": "Prometheion",
+  "orgName": "Elaro",
   "edition": "Enterprise",
   "features": ["EnableSetPasswordInApi", "PlatformEncryption"],
   "settings": { "lightningExperienceSettings": { "enableS1DesktopEnabled": true } }

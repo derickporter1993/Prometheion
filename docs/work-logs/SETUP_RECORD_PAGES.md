@@ -60,15 +60,15 @@ By default, all fields are visible. Only customize if you need to restrict acces
 
 ## 📊 Step 3: Test the Dashboard
 
-### Access the Prometheion Compliance Hub
+### Access the Elaro Compliance Hub
 
-1. **Open the Prometheion App**
-   - Click App Launcher (9 dots) → Search "Prometheion" → Click "Prometheion"
-   - Or navigate to: `/lightning/n/Prometheion`
+1. **Open the Elaro App**
+   - Click App Launcher (9 dots) → Search "Elaro" → Click "Elaro"
+   - Or navigate to: `/lightning/n/Elaro`
 
 2. **Navigate to Compliance Hub**
-   - In the app, look for "Prometheion Compliance Hub" tab or page
-   - If not visible, go to: Setup → App Manager → Prometheion → Edit → Add the page
+   - In the app, look for "Elaro Compliance Hub" tab or page
+   - If not visible, go to: Setup → App Manager → Elaro → Edit → Add the page
 
 3. **Verify Components**
    You should see these 9 new components:
@@ -85,15 +85,15 @@ By default, all fields are visible. Only customize if you need to restrict acces
 ### If Components Don't Appear
 
 1. **Check Permission Sets**
-   - Ensure you have "Prometheion Admin Extended" assigned
-   - Setup → Permission Sets → Prometheion Admin Extended → Manage Assignments
+   - Ensure you have "Elaro Admin Extended" assigned
+   - Setup → Permission Sets → Elaro Admin Extended → Manage Assignments
 
 2. **Check App Page Assignment**
-   - Setup → App Manager → Prometheion → Edit
-   - Ensure "Prometheion Compliance Hub" is in the navigation
+   - Setup → App Manager → Elaro → Edit
+   - Ensure "Elaro Compliance Hub" is in the navigation
 
 3. **Check Component Visibility**
-   - Setup → Lightning App Builder → Prometheion Compliance Hub
+   - Setup → Lightning App Builder → Elaro Compliance Hub
    - Verify all components are added and visible
 
 ## 🎯 Quick Verification Checklist
@@ -101,7 +101,7 @@ By default, all fields are visible. Only customize if you need to restrict acces
 - [ ] All 4 record pages assigned as org default
 - [ ] Field visibility configured (if needed)
 - [ ] Permission sets assigned to your user
-- [ ] Prometheion app accessible
+- [ ] Elaro app accessible
 - [ ] Compliance Hub page visible
 - [ ] All 9 new components displaying correctly
 

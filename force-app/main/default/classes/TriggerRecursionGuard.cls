@@ -5,7 +5,7 @@
  * Use this in triggers to avoid infinite loops when triggers
  * cause DML operations that re-fire the same trigger.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class TriggerRecursionGuard {

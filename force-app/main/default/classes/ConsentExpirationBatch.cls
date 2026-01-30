@@ -2,7 +2,7 @@
  * Batch class for processing expiring consents
  * Checks for consents expiring within the warning period and sends renewal reminders
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class ConsentExpirationBatch implements Database.Batchable<SObject> {

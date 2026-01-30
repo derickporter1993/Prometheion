@@ -5,7 +5,7 @@
  * Provides common functionality for gap creation, evidence collection,
  * audit logging, and policy retrieval.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public abstract with sharing class ComplianceServiceBase implements IRiskScoringService {
@@ -190,12 +190,12 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
      */
     protected void logAuditEntry(String action, String description, Id relatedRecordId) {
         try {
-            if (!Schema.sObjectType.Prometheion_Audit_Log__c.isCreateable()) {
+            if (!Schema.sObjectType.Elaro_Audit_Log__c.isCreateable()) {
                 System.debug(LoggingLevel.WARN, 'Cannot create audit log entry - insufficient permissions');
                 return;
             }
 
-            Prometheion_Audit_Log__c auditLog = new Prometheion_Audit_Log__c(
+            Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
                 Action__c = action,
                 Description__c = description,
                 Framework__c = getFrameworkName(),

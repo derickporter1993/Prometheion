@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Elaro_Critical_Alert</customNotifTypeName>
+    <description>Critical compliance alerts requiring immediate attention. Sent for high-risk changes and security violations.</description>
+    <desktop>true</desktop>
+    <masterLabel>Elaro Critical Alert</masterLabel>
+    <mobile>true</mobile>
+    <slack>false</slack>
+</CustomNotificationType>

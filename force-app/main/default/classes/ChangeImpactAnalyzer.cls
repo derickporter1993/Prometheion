@@ -3,7 +3,7 @@
  * 
  * Pre-deployment analysis of metadata changes
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ChangeImpactAnalyzer {

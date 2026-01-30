@@ -3,7 +3,7 @@
  * 
  * Tests notification methods, error handling, and Adaptive Card formatting
  * 
- * @author Prometheion Enterprise
+ * @author Elaro Enterprise
  * @version 1.0
  */
 @isTest
@@ -87,8 +87,8 @@ private class TeamsNotifierTest {
         try {
             TeamsNotifier.notifyComplianceAlert(
                 'Test Alert',
-                PrometheionConstants.SEVERITY_HIGH,
-                PrometheionConstants.FRAMEWORK_HIPAA,
+                ElaroConstants.SEVERITY_HIGH,
+                ElaroConstants.FRAMEWORK_HIPAA,
                 'This is a test compliance alert',
                 'node123',
                 0.95
@@ -109,10 +109,10 @@ private class TeamsNotifierTest {
         Test.setMock(HttpCalloutMock.class, new TeamsCalloutMock(200, 'OK'));
         
         List<String> severities = new List<String>{
-            PrometheionConstants.SEVERITY_CRITICAL,
-            PrometheionConstants.SEVERITY_HIGH,
-            PrometheionConstants.SEVERITY_MEDIUM,
-            PrometheionConstants.SEVERITY_LOW
+            ElaroConstants.SEVERITY_CRITICAL,
+            ElaroConstants.SEVERITY_HIGH,
+            ElaroConstants.SEVERITY_MEDIUM,
+            ElaroConstants.SEVERITY_LOW
         };
         
         System.assertEquals(4, severities.size(), 'Should test 4 severity levels');
@@ -124,7 +124,7 @@ private class TeamsNotifierTest {
                 TeamsNotifier.notifyComplianceAlert(
                     'Test Alert - ' + severity,
                     severity,
-                    PrometheionConstants.FRAMEWORK_SOC2,
+                    ElaroConstants.FRAMEWORK_SOC2,
                     'Test description',
                     'node123',
                     0.85
@@ -146,11 +146,11 @@ private class TeamsNotifierTest {
         Test.setMock(HttpCalloutMock.class, new TeamsCalloutMock(200, 'OK'));
         
         List<String> frameworks = new List<String>{
-            PrometheionConstants.FRAMEWORK_HIPAA,
-            PrometheionConstants.FRAMEWORK_SOC2,
-            PrometheionConstants.FRAMEWORK_NIST,
-            PrometheionConstants.FRAMEWORK_FEDRAMP,
-            PrometheionConstants.FRAMEWORK_GDPR
+            ElaroConstants.FRAMEWORK_HIPAA,
+            ElaroConstants.FRAMEWORK_SOC2,
+            ElaroConstants.FRAMEWORK_NIST,
+            ElaroConstants.FRAMEWORK_FEDRAMP,
+            ElaroConstants.FRAMEWORK_GDPR
         };
         
         System.assertEquals(5, frameworks.size(), 'Should test 5 frameworks');
@@ -161,7 +161,7 @@ private class TeamsNotifierTest {
             for (String framework : frameworks) {
                 TeamsNotifier.notifyComplianceAlert(
                     'Test Alert - ' + framework,
-                    PrometheionConstants.SEVERITY_HIGH,
+                    ElaroConstants.SEVERITY_HIGH,
                     framework,
                     'Test description',
                     'node123',
@@ -244,8 +244,8 @@ private class TeamsNotifierTest {
         Test.setMock(HttpCalloutMock.class, new TeamsCalloutMock(200, 'OK'));
         
         // Create mock remediation result
-        PrometheionRemediationEngine.RemediationResult result = 
-            new PrometheionRemediationEngine.RemediationResult();
+        ElaroRemediationEngine.RemediationResult result = 
+            new ElaroRemediationEngine.RemediationResult();
         result.success = true;
         result.action = 'Permission Set Removed';
         result.message = 'Test remediation completed';
@@ -257,7 +257,7 @@ private class TeamsNotifierTest {
         Test.startTest();
         Exception caughtException = null;
         try {
-            TeamsNotifier.notifyRemediation(result, PrometheionConstants.FRAMEWORK_HIPAA);
+            TeamsNotifier.notifyRemediation(result, ElaroConstants.FRAMEWORK_HIPAA);
         } catch (Exception e) {
             caughtException = e;
         }

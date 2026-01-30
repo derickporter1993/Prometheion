@@ -142,7 +142,7 @@ pending → loading → designing → implementing → validating → complete
 
 ### Shell Alias:
 ```bash
-alias ws='cd ~/path/to/prometheion && .ai-workflow/sync.sh status'
+alias ws='cd ~/path/to/elaro && .ai-workflow/sync.sh status'
 ```
 
 ### Watch Mode:
@@ -152,7 +152,7 @@ watch -n 5 '.ai-workflow/sync.sh status'
 
 ### Quick Jump:
 ```bash
-alias wt='cd ~/path/to/prometheion && cat .ai-workflow/current-task.md'
+alias wt='cd ~/path/to/elaro && cat .ai-workflow/current-task.md'
 ```
 
 ---

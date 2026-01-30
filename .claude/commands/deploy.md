@@ -82,7 +82,7 @@ sf project deploy start --metadata ApexClass:MyClass --target-org [alias]
 
 ### Deploy with Specific Tests
 ```bash
-sf project deploy start --target-org [alias] --test-level RunSpecifiedTests --tests PrometheionSecurityUtilsTest,MyComponentTest
+sf project deploy start --target-org [alias] --test-level RunSpecifiedTests --tests ElaroSecurityUtilsTest,MyComponentTest
 ```
 
 ### Check Deployment Status
@@ -94,8 +94,8 @@ sf project deploy report --job-id [deployment-id] --target-org [alias]
 
 The following commands are **BLOCKED** in settings.json:
 - ❌ `sf project deploy start --target-org prod-org`
-- ❌ `sf project deploy start --target-org prometheion-prod`
-- ❌ `sf org delete scratch -o prometheion-prod`
+- ❌ `sf project deploy start --target-org elaro-prod`
+- ❌ `sf org delete scratch -o elaro-prod`
 
 ## Rollback Strategy
 
@@ -123,7 +123,7 @@ If deployment fails or causes issues:
 
 ### Deployment Fails with SOQL Error
 - Check for missing `WITH SECURITY_ENFORCED` clauses
-- Verify FLS/CRUD checks using PrometheionSecurityUtils
+- Verify FLS/CRUD checks using ElaroSecurityUtils
 - Review object permissions in scratch org
 
 ### Component Conflicts

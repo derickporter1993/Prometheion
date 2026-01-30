@@ -3,18 +3,18 @@
     {
       "path": "force-app",
       "default": true,
-      "package": "prometheion",
+      "package": "elaro",
       "versionName": "v3.0 Enterprise",
       "versionNumber": "3.0.0.NEXT",
-      "definitionFile": "config/prometheion-scratch-def.json"
+      "definitionFile": "config/elaro-scratch-def.json"
     }
   ],
-  "name": "Prometheion",
+  "name": "Elaro",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "65.0",
   "packageAliases": {
-    "prometheion": "0HoXXXXXXXXXXXX"
+    "elaro": "0HoXXXXXXXXXXXX"
   },
   "plugins": {}
 }

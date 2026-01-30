@@ -5,7 +5,7 @@
  * Evaluates retention policies, identifies objects without proper retention,
  * and generates compliance evidence.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class SOC2DataRetentionService extends ComplianceServiceBase {
@@ -19,7 +19,7 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
     private static final Set<String> SENSITIVE_OBJECTS = new Set<String>{
         'Account', 'Contact', 'Lead', 'Opportunity', 'Case',
         'Compliance_Score__c', 'Compliance_Gap__c', 'Compliance_Evidence__c',
-        'Access_Review__c', 'Security_Incident__c', 'Prometheion_Audit_Log__c'
+        'Access_Review__c', 'Security_Incident__c', 'Elaro_Audit_Log__c'
     };
 
     /**

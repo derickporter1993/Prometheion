@@ -14,9 +14,9 @@ const VERSION = "0.1.0";
 const program = new Command();
 
 program
-  .name("prometheion")
+  .name("elaro")
   .description(
-    chalk.bold("Prometheion CLI") +
+    chalk.bold("Elaro CLI") +
       " - AI Compliance Brain for Salesforce\n\n" +
       "  Court-defensible compliance and AI governance platform for regulated organizations.\n" +
       "  Monitors configuration drift, permission sprawl, and compliance violations."
@@ -39,17 +39,17 @@ program.addHelpText(
   "after",
   `
 ${chalk.bold("Examples:")}
-  $ prometheion status                    Check project and org status
-  $ prometheion scan --framework hipaa    Run HIPAA compliance scan
-  $ prometheion deploy --validate         Validate deployment (dry-run)
-  $ prometheion test --apex               Run Apex tests
-  $ prometheion org list                  List connected orgs
+  $ elaro status                    Check project and org status
+  $ elaro scan --framework hipaa    Run HIPAA compliance scan
+  $ elaro deploy --validate         Validate deployment (dry-run)
+  $ elaro test --apex               Run Apex tests
+  $ elaro org list                  List connected orgs
 
 ${chalk.bold("Documentation:")}
-  https://github.com/derickporter1993/Prometheion
+  https://github.com/derickporter1993/Elaro
 
 ${chalk.bold("Support:")}
-  For issues, visit: https://github.com/derickporter1993/Prometheion/issues
+  For issues, visit: https://github.com/derickporter1993/Elaro/issues
 `
 );
 

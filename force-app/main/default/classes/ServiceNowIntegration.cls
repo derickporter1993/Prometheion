@@ -1,15 +1,15 @@
 /**
- * @description ServiceNow integration service for Prometheion
+ * @description ServiceNow integration service for Elaro
  * Provides control sync, evidence push, and incident creation
  * @group Integrations
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class ServiceNowIntegration {
     
     private static final String NAMED_CREDENTIAL = 'callout:ServiceNow_API';
     
     /**
-     * @description Sync controls from Prometheion to ServiceNow GRC
+     * @description Sync controls from Elaro to ServiceNow GRC
      * @param frameworkName Framework name (HIPAA, SOC2, etc.)
      */
     @future(callout=true)
@@ -28,9 +28,9 @@ public with sharing class ServiceNowIntegration {
      */
     @future(callout=true)
     public static void pushEvidence(String evidenceId) {
-        Prometheion_Evidence_Item__c evidence = [
+        Elaro_Evidence_Item__c evidence = [
             SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c, Status__c
-            FROM Prometheion_Evidence_Item__c
+            FROM Elaro_Evidence_Item__c
             WHERE Id = :evidenceId
             LIMIT 1
         ];
@@ -42,7 +42,7 @@ public with sharing class ServiceNowIntegration {
             'description' => evidence.Description__c,
             'u_evidence_date' => evidence.Evidence_Date__c,
             'u_status' => evidence.Status__c,
-            'u_source' => 'Prometheion'
+            'u_source' => 'Elaro'
         };
         
         HttpRequest req = new HttpRequest();
@@ -82,7 +82,7 @@ public with sharing class ServiceNowIntegration {
             'category' => 'Security',
             'subcategory' => 'Compliance',
             'u_compliance_alert_id' => incidentData.get('alertId'),
-            'u_source' => 'Prometheion'
+            'u_source' => 'Elaro'
         };
         
         HttpRequest req = new HttpRequest();
@@ -143,15 +143,15 @@ public with sharing class ServiceNowIntegration {
      */
     @future(callout=true)
     public static void syncComplianceStatus(String auditPackageId) {
-        Prometheion_Audit_Package__c pkg = [
+        Elaro_Audit_Package__c pkg = [
             SELECT Id, Name, Package_Name__c, Framework__c, Status__c
-            FROM Prometheion_Audit_Package__c
+            FROM Elaro_Audit_Package__c
             WHERE Id = :auditPackageId
             LIMIT 1
         ];
         
         // Calculate compliance score
-        Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
+        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
         Decimal score = (Decimal)scoreData.get('overallScore');
         
         Map<String, Object> complianceStatus = new Map<String, Object>{
@@ -205,7 +205,7 @@ public with sharing class ServiceNowIntegration {
             'description' => control.get('description'),
             'u_severity' => control.get('severity'),
             'u_framework' => control.get('framework'),
-            'u_source' => 'Prometheion'
+            'u_source' => 'Elaro'
         };
         
         HttpRequest req = new HttpRequest();

@@ -2,7 +2,7 @@
  * @description AI-powered root cause analysis engine for compliance events
  * Uses Claude API to analyze event chains and identify root causes
  * @group AI Integration
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class RootCauseAnalysisEngine {
     
@@ -10,7 +10,7 @@ public with sharing class RootCauseAnalysisEngine {
     // CONSTANTS
     // ═══════════════════════════════════════════════════════════════
     
-    private static final String CACHE_PARTITION = 'local.PrometheionCache';
+    private static final String CACHE_PARTITION = 'local.ElaroCache';
     private static final Integer CACHE_TTL_SECONDS = 3600;
     private static final Integer RELATED_EVENT_WINDOW_HOURS = 24;
     
@@ -38,17 +38,17 @@ public with sharing class RootCauseAnalysisEngine {
         
         try {
             // Query the primary event
-            Prometheion_Evidence_Item__c primaryEvent = [
+            Elaro_Evidence_Item__c primaryEvent = [
                 SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, 
                        Description__c, Status__c, Audit_Package__c,
                        Audit_Package__r.Framework__c
-                FROM Prometheion_Evidence_Item__c
+                FROM Elaro_Evidence_Item__c
                 WHERE Id = :eventId
                 LIMIT 1
             ];
             
             // Query related events (same user/time window)
-            List&lt;Prometheion_Evidence_Item__c&gt; relatedEvents = queryRelatedEvents(primaryEvent);
+            List&lt;Elaro_Evidence_Item__c&gt; relatedEvents = queryRelatedEvents(primaryEvent);
             
             // Build analysis context
             AnalysisContext context = buildAnalysisContext(primaryEvent, relatedEvents);
@@ -154,14 +154,14 @@ public with sharing class RootCauseAnalysisEngine {
     /**
      * @description Query related events within time window
      */
-    private static List&lt;Prometheion_Evidence_Item__c&gt; queryRelatedEvents(Prometheion_Evidence_Item__c primaryEvent) {
+    private static List&lt;Elaro_Evidence_Item__c&gt; queryRelatedEvents(Elaro_Evidence_Item__c primaryEvent) {
         Date eventDate = primaryEvent.Evidence_Date__c;
         Date startDate = eventDate != null ? eventDate.addDays(-1) : Date.today().addDays(-1);
         Date endDate = eventDate != null ? eventDate.addDays(1) : Date.today().addDays(1);
         
         return [
             SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c
-            FROM Prometheion_Evidence_Item__c
+            FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :primaryEvent.Audit_Package__c
             AND Id != :primaryEvent.Id
             AND Evidence_Date__c &gt;= :startDate
@@ -174,8 +174,8 @@ public with sharing class RootCauseAnalysisEngine {
     /**
      * @description Build analysis context for AI
      */
-    private static AnalysisContext buildAnalysisContext(Prometheion_Evidence_Item__c primary, 
-                                                        List&lt;Prometheion_Evidence_Item__c&gt; related) {
+    private static AnalysisContext buildAnalysisContext(Elaro_Evidence_Item__c primary, 
+                                                        List&lt;Elaro_Evidence_Item__c&gt; related) {
         AnalysisContext ctx = new AnalysisContext();
         ctx.primaryEventType = primary.Evidence_Type__c;
         ctx.primaryDescription = primary.Description__c;
@@ -184,7 +184,7 @@ public with sharing class RootCauseAnalysisEngine {
         ctx.relatedEventCount = related.size();
         ctx.relatedEventTypes = new Set&lt;String&gt;();
         
-        for (Prometheion_Evidence_Item__c rel : related) {
+        for (Elaro_Evidence_Item__c rel : related) {
             ctx.relatedEventTypes.add(rel.Evidence_Type__c);
         }
         
@@ -234,7 +234,7 @@ public with sharing class RootCauseAnalysisEngine {
      */
     private static String callAI(String prompt) {
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Prometheion_Claude_API');
+        req.setEndpoint('callout:Elaro_Claude_API');
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('anthropic-version', '2023-06-01');

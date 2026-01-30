@@ -18,7 +18,7 @@ SVG icons without `aria-hidden="true"` are announced by screen readers, creating
 
 | File | Lines with SVG |
 |------|----------------|
-| `prometheionCopilot.html` | 8-12, 21-23, 49-85, 106-108, 117-121, 130-133, 167-170 |
+| `elaroCopilot.html` | 8-12, 21-23, 49-85, 106-108, 117-121, 130-133, 167-170 |
 | All components with `<svg>` or `<lightning-icon>` decorative icons |
 
 ### Fix Pattern
@@ -86,13 +86,13 @@ get riskAriaLabel() {
 
 ---
 
-## TASK A3: prometheionROICalculator.html - Fix Form Labels
+## TASK A3: elaroROICalculator.html - Fix Form Labels
 
 ### Problem
 Form inputs without proper labels fail WCAG 2.1 Level A (1.3.1 Info and Relationships).
 
 ### File
-`force-app/main/default/lwc/prometheionROICalculator/prometheionROICalculator.html`
+`force-app/main/default/lwc/elaroROICalculator/elaroROICalculator.html`
 
 ### Fix Pattern
 
@@ -133,9 +133,9 @@ Components without loading spinners and error messages provide poor UX and fail 
 | L3 | systemMonitorDashboard | `lwc/systemMonitorDashboard/` |
 | L4 | flowExecutionMonitor | `lwc/flowExecutionMonitor/` |
 | L5 | performanceAlertPanel | `lwc/performanceAlertPanel/` |
-| L6 | prometheionAiSettings | `lwc/prometheionAiSettings/` |
-| L7 | prometheionROICalculator | `lwc/prometheionROICalculator/` |
-| L8 | prometheionTrendAnalyzer | `lwc/prometheionTrendAnalyzer/` |
+| L6 | elaroAiSettings | `lwc/elaroAiSettings/` |
+| L7 | elaroROICalculator | `lwc/elaroROICalculator/` |
+| L8 | elaroTrendAnalyzer | `lwc/elaroTrendAnalyzer/` |
 | L9 | riskHeatmap | `lwc/riskHeatmap/` |
 | L10 | complianceScoreCard | `lwc/complianceScoreCard/` |
 | L11 | complianceDashboard | `lwc/complianceDashboard/` |
@@ -277,7 +277,7 @@ grep -rn "error\.body\.message" force-app/main/default/lwc/**/*.js
 ## TASK J2: Wrap JSON.parse in Try-Catch
 
 ### File
-`force-app/main/default/lwc/prometheionDrillDownViewer/prometheionDrillDownViewer.js`
+`force-app/main/default/lwc/elaroDrillDownViewer/elaroDrillDownViewer.js`
 
 ### Lines
 29, 69, 86
@@ -336,7 +336,7 @@ git commit -m "fix: Add ARIA labels and accessibility improvements to LWC compon
 
 - Add aria-hidden to decorative icons
 - Add screen reader text to riskHeatmap color indicators
-- Fix form labels in prometheionROICalculator"
+- Fix form labels in elaroROICalculator"
 ```
 
 ### Commit 2: Loading/Error States (L1-L12)

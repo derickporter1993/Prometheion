@@ -7,12 +7,12 @@
  * Schedule: Daily (recommended)
  * Example: System.schedule('Breach Deadline Monitor', '0 0 8 * * ?', new BreachDeadlineMonitor());
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class BreachDeadlineMonitor implements Schedulable {
 
-    private static final String JOB_NAME = 'Prometheion Breach Deadline Monitor';
+    private static final String JOB_NAME = 'Elaro Breach Deadline Monitor';
     private static final Integer ALERT_DAYS_BEFORE = 14; // Alert 2 weeks before deadline
     private static final Integer CRITICAL_DAYS_BEFORE = 7; // Critical alert 1 week before
     private static final Integer HHS_THRESHOLD = 500; // HHS immediate notification threshold
@@ -235,7 +235,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             }
 
             if (!newGaps.isEmpty()) {
-                PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+                ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
                 insert newGaps;
             }
         }
@@ -248,11 +248,11 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
      * Publish platform events for real-time alerts
      */
     private void publishAlertEvents(MonitoringResult result) {
-        List<Prometheion_Alert_Event__e> events = new List<Prometheion_Alert_Event__e>();
+        List<Elaro_Alert_Event__e> events = new List<Elaro_Alert_Event__e>();
 
         // Overdue breach alerts
         for (HIPAA_Breach__c breach : result.overdueBreaches) {
-            events.add(new Prometheion_Alert_Event__e(
+            events.add(new Elaro_Alert_Event__e(
                 Alert_Type__c = 'HIPAA Breach Overdue',
                 Severity__c = 'Critical',
                 Message__c = 'Breach ' + breach.Name + ' notification is OVERDUE',
@@ -263,7 +263,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
         // Critical deadline alerts
         for (HIPAA_Breach__c breach : result.criticalBreaches) {
             Integer daysRemaining = Date.today().daysBetween(breach.Notification_Deadline__c);
-            events.add(new Prometheion_Alert_Event__e(
+            events.add(new Elaro_Alert_Event__e(
                 Alert_Type__c = 'HIPAA Breach Deadline',
                 Severity__c = 'High',
                 Message__c = 'Breach ' + breach.Name + ' deadline in ' + daysRemaining + ' days',
@@ -291,7 +291,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
         }
 
         if (!breachesToUpdate.isEmpty()) {
-            PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_UPDATE);
+            ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', ElaroSecurityUtils.DmlOperation.DML_UPDATE);
             update breachesToUpdate;
         }
     }
@@ -307,12 +307,12 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             details += '- Upcoming (< 14 days): ' + result.upcomingBreaches.size() + '\n';
             details += '- HHS notification required: ' + result.hhsRequired.size();
 
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Breach Deadline Monitor';
             log.Status__c = result.overdueBreaches.isEmpty() ? 'Success' : 'Warning';
             log.Details__c = details;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log execution: ' + e.getMessage());
@@ -324,12 +324,12 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
      */
     private void logError(String message) {
         try {
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Breach Deadline Monitor';
             log.Status__c = 'Error';
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log error: ' + e.getMessage());

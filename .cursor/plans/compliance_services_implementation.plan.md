@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implement the full suite of regulatory compliance services for GDPR, CCPA, PCI DSS, GLBA, and ISO 27001 as described in the [Solentra architecture](https://github.com/derickporter1993/Solentra), transforming Prometheion into a complete multi-framework compliance platform.
+Implement the full suite of regulatory compliance services for GDPR, CCPA, PCI DSS, GLBA, and ISO 27001 as described in the [Solentra architecture](https://github.com/derickporter1993/Solentra), transforming Elaro into a complete multi-framework compliance platform.
 
 **Scope:** 7 service classes + 7 schedulers + 4 LWC components + 5 custom objects + 4 platform events + 2 triggers
 

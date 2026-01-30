@@ -7,12 +7,12 @@
  * - Level 2: Manager (if Level 1 not acknowledged)
  * - Level 3: CISO/Director (final escalation)
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class MobileAlertEscalator implements Schedulable {
 
-    private static final String CRITICAL_NOTIFICATION_TYPE = 'Prometheion_Critical_Alert';
+    private static final String CRITICAL_NOTIFICATION_TYPE = 'Elaro_Critical_Alert';
     private static final Integer MAX_ESCALATION_LEVEL = 3;
 
     private String alertId;
@@ -105,16 +105,16 @@ public with sharing class MobileAlertEscalator implements Schedulable {
      * @return List of user IDs for that escalation level
      */
     private List<Id> getEscalationRecipients(Integer level) {
-        List<Prometheion_Escalation_Path__c> paths = [
+        List<Elaro_Escalation_Path__c> paths = [
             SELECT User__c
-            FROM Prometheion_Escalation_Path__c
+            FROM Elaro_Escalation_Path__c
             WHERE Level__c = :level
             AND Active__c = true
             WITH USER_MODE
         ];
 
         List<Id> userIds = new List<Id>();
-        for (Prometheion_Escalation_Path__c path : paths) {
+        for (Elaro_Escalation_Path__c path : paths) {
             userIds.add(path.User__c);
         }
         return userIds;
@@ -126,9 +126,9 @@ public with sharing class MobileAlertEscalator implements Schedulable {
      * @return Delay in minutes
      */
     private Integer getEscalationDelay(Integer level) {
-        List<Prometheion_Escalation_Path__c> paths = [
+        List<Elaro_Escalation_Path__c> paths = [
             SELECT Escalation_Delay_Minutes__c
-            FROM Prometheion_Escalation_Path__c
+            FROM Elaro_Escalation_Path__c
             WHERE Level__c = :level
             AND Active__c = true
             WITH USER_MODE
@@ -212,7 +212,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
      */
     private void scheduleNextEscalation(String alertId, Integer nextLevel) {
         Integer delay = getEscalationDelay(nextLevel);
-        String jobName = 'Prometheion Escalation L' + nextLevel + ' - ' + alertId.substring(0, 15);
+        String jobName = 'Elaro Escalation L' + nextLevel + ' - ' + alertId.substring(0, 15);
 
         Datetime futureTime = Datetime.now().addMinutes(delay);
         String cronExp = futureTime.second() + ' ' + futureTime.minute() + ' ' +

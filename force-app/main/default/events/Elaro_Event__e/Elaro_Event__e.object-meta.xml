@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <eventType>PlatformEvent</eventType>
+    <label>Elaro Event</label>
+    <pluralLabel>Elaro Events</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+    <fields>
+        <fullName>Event_Type__c</fullName>
+        <label>Event Type</label>
+        <type>Text</type>
+        <length>100</length>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Entity_Type__c</fullName>
+        <label>Entity Type</label>
+        <type>Text</type>
+        <length>50</length>
+    </fields>
+    <fields>
+        <fullName>Entity_Id__c</fullName>
+        <label>Entity ID</label>
+        <type>Text</type>
+        <length>18</length>
+    </fields>
+    <fields>
+        <fullName>Event_Data__c</fullName>
+        <label>Event Data (JSON)</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Timestamp__c</fullName>
+        <label>Timestamp</label>
+        <type>DateTime</type>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Framework__c</fullName>
+        <label>Framework</label>
+        <type>Text</type>
+        <length>50</length>
+    </fields>
+    <fields>
+        <fullName>Correlation_Id__c</fullName>
+        <label>Correlation ID</label>
+        <type>Text</type>
+        <length>100</length>
+    </fields>
+</CustomObject>

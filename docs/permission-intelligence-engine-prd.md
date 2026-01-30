@@ -1,7 +1,7 @@
-# PRD — Prometheion Permissions Intelligence (Months 1–2)
+# PRD — Elaro Permissions Intelligence (Months 1–2)
 
 ## 1. Product Overview
-- **Product name (working):** Prometheion Permissions Intelligence
+- **Product name (working):** Elaro Permissions Intelligence
 - **Module:** Core Trio – Feature 1 of 3
 - **Goal:** Continuously analyze Salesforce permissions (Profiles, Permission Sets, Assignments) and produce:
   - User risk scores
@@ -18,7 +18,7 @@
   - "Why do they have that access?"
   - "Which changes increased risk this week?"
 - Current workflows (reports, Permission Set Explorer, spreadsheets) are manual and fail CISO expectations for IAM visibility.
-- Prometheion solves this with a continuous, explainable permission intelligence layer.
+- Elaro solves this with a continuous, explainable permission intelligence layer.
 
 ## 3. Objectives & Success Metrics
 ### Objectives
@@ -84,14 +84,14 @@
 - **Weekly Changes View:** Timeline/table with date, actor, change type, impact (risk delta). Filters for high-risk changes and time window (7/30 days).
 
 ## 7. Data Model & Storage (Conceptual)
-- Native-first approach using custom objects such as Prometheion_User_Risk__c, Prometheion_Permission_Snapshot__c, Prometheion_Permission_Lineage__c, Prometheion_Change_Event__c.
+- Native-first approach using custom objects such as Elaro_User_Risk__c, Elaro_Permission_Snapshot__c, Elaro_Permission_Lineage__c, Elaro_Change_Event__c.
 - Fields capture risk scores/flags, effective permission snapshots, permission lineage sources, change events, and optional hashed sensitive data.
 
 ## 8. Algorithms & Implementation Sketch
 ### Effective Permission Resolution (High-Level)
 1. Query all Users, Profiles, Permission Sets, and Assignments.
 2. For each user: start with Profile permissions, overlay Permission Set/Group permissions, resolve CRUD/FLS per object/field.
-3. Store results in Prometheion_Permission_Snapshot__c.
+3. Store results in Elaro_Permission_Snapshot__c.
 
 **Example SOQL snippets:**
 - Permission set assignments: `SELECT AssigneeId, PermissionSetId FROM PermissionSetAssignment`

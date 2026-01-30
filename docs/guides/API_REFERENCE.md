@@ -1,20 +1,20 @@
-# Prometheion API Reference
+# Elaro API Reference
 
-Complete API documentation for Prometheion Apex classes and Lightning Web Components.
+Complete API documentation for Elaro Apex classes and Lightning Web Components.
 
 ## Table of Contents
 
-- [PrometheionComplianceScorer](#prometheioncompliancescorer)
-- [PrometheionComplianceCopilot](#prometheioncompliancecopilot)
-- [PrometheionClaudeService](#prometheionclaudeservice)
-- [PrometheionQuickActionsService](#prometheionquickactionsservice)
-- [PrometheionEmailDigestService](#prometheionemaildigestservice)
-- [PrometheionComplianceChecklistService](#prometheioncompliancechecklistservice)
-- [PrometheionConstants](#prometheionconstants)
+- [ElaroComplianceScorer](#elarocompliancescorer)
+- [ElaroComplianceCopilot](#elarocompliancecopilot)
+- [ElaroClaudeService](#elaroclaudeservice)
+- [ElaroQuickActionsService](#elaroquickactionsservice)
+- [ElaroEmailDigestService](#elaroemaildigestservice)
+- [ElaroComplianceChecklistService](#elarocompliancechecklistservice)
+- [ElaroConstants](#elaroconstants)
 
 ---
 
-## PrometheionComplianceScorer
+## ElaroComplianceScorer
 
 Calculates comprehensive compliance scores across multiple frameworks.
 
@@ -44,17 +44,17 @@ public static ScoreResult calculateReadinessScore()
 **Example:**
 
 ```apex
-PrometheionComplianceScorer.ScoreResult result =
-    PrometheionComplianceScorer.calculateReadinessScore();
+ElaroComplianceScorer.ScoreResult result =
+    ElaroComplianceScorer.calculateReadinessScore();
 System.debug('Overall Score: ' + result.overallScore);
 System.debug('Rating: ' + result.rating);
 ```
 
-**Caching:** Results are cached for 5 minutes in Platform Cache partition `local.PrometheionCompliance`
+**Caching:** Results are cached for 5 minutes in Platform Cache partition `local.ElaroCompliance`
 
 ---
 
-## PrometheionComplianceCopilot
+## ElaroComplianceCopilot
 
 Natural language AI interface for compliance queries.
 
@@ -87,8 +87,8 @@ public static CopilotResponse askCopilot(String query)
 **Example:**
 
 ```apex
-PrometheionComplianceCopilot.CopilotResponse response =
-    PrometheionComplianceCopilot.askCopilot('What are our top compliance risks?');
+ElaroComplianceCopilot.CopilotResponse response =
+    ElaroComplianceCopilot.askCopilot('What are our top compliance risks?');
 System.debug('Answer: ' + response.answer);
 System.debug('Confidence: ' + response.confidence);
 ```
@@ -113,8 +113,8 @@ public static CopilotResponse deepAnalysis(String topic)
 **Example:**
 
 ```apex
-PrometheionComplianceCopilot.CopilotResponse analysis =
-    PrometheionComplianceCopilot.deepAnalysis('HIPAA compliance');
+ElaroComplianceCopilot.CopilotResponse analysis =
+    ElaroComplianceCopilot.deepAnalysis('HIPAA compliance');
 ```
 
 #### `getQuickCommands()`
@@ -132,7 +132,7 @@ public static List<String> getQuickCommands()
 
 ---
 
-## PrometheionClaudeService
+## ElaroClaudeService
 
 Integration service for Anthropic Claude API.
 
@@ -161,11 +161,11 @@ public static ClaudeResponse askCompliance(String query, String orgContext)
 - `content` (String): Claude's response text
 - `errorMessage` (String): Error message if failed
 
-**Note:** This is an internal service method. Use `PrometheionComplianceCopilot.askCopilot()` for public API.
+**Note:** This is an internal service method. Use `ElaroComplianceCopilot.askCopilot()` for public API.
 
 ---
 
-## PrometheionQuickActionsService
+## ElaroQuickActionsService
 
 One-click remediation actions for compliance violations.
 
@@ -192,7 +192,7 @@ public static void revokeModifyAllData(List<Id> userIds)
 
 ```apex
 List<Id> userIds = new List<Id>{'005xx000000abc', '005xx000000def'};
-PrometheionQuickActionsService.revokeModifyAllData(userIds);
+ElaroQuickActionsService.revokeModifyAllData(userIds);
 ```
 
 #### `deactivateInactiveUsers(Integer daysInactive)`
@@ -215,7 +215,7 @@ public static Integer deactivateInactiveUsers(Integer daysInactive)
 **Example:**
 
 ```apex
-Integer deactivated = PrometheionQuickActionsService.deactivateInactiveUsers(90);
+Integer deactivated = ElaroQuickActionsService.deactivateInactiveUsers(90);
 System.debug('Deactivated ' + deactivated + ' users');
 ```
 
@@ -238,7 +238,7 @@ public static void removePermissionSetAssignment(Id assignmentId)
 
 ---
 
-## PrometheionEmailDigestService
+## ElaroEmailDigestService
 
 Service for sending weekly compliance summary emails.
 
@@ -246,13 +246,13 @@ Service for sending weekly compliance summary emails.
 
 #### `sendWeeklyDigest()`
 
-Sends weekly compliance digest to all Prometheion Admin users.
+Sends weekly compliance digest to all Elaro Admin users.
 
 **Signature:**
 
 ```apex
 @InvocableMethod(label='Send Weekly Compliance Digest'
-                 description='Sends a weekly compliance summary email to Prometheion administrators.')
+                 description='Sends a weekly compliance summary email to Elaro administrators.')
 public static void sendWeeklyDigest()
 ```
 
@@ -267,13 +267,13 @@ public static void sendWeeklyDigest()
 ```apex
 // Schedule weekly digest (every Monday at 9 AM)
 String cronExp = '0 0 9 ? * MON';
-System.schedule('Prometheion Weekly Digest', cronExp,
-    new PrometheionEmailDigestScheduler());
+System.schedule('Elaro Weekly Digest', cronExp,
+    new ElaroEmailDigestScheduler());
 ```
 
 ---
 
-## PrometheionComplianceChecklistService
+## ElaroComplianceChecklistService
 
 Provides compliance checklist items for each framework.
 
@@ -308,58 +308,58 @@ public static List<ChecklistItem> getComplianceChecklist(String framework)
 **Example:**
 
 ```apex
-List<PrometheionComplianceChecklistService.ChecklistItem> items =
-    PrometheionComplianceChecklistService.getComplianceChecklist('HIPAA');
-for (PrometheionComplianceChecklistService.ChecklistItem item : items) {
+List<ElaroComplianceChecklistService.ChecklistItem> items =
+    ElaroComplianceChecklistService.getComplianceChecklist('HIPAA');
+for (ElaroComplianceChecklistService.ChecklistItem item : items) {
     System.debug(item.title + ': ' + (item.completed ? 'Complete' : 'Incomplete'));
 }
 ```
 
 ---
 
-## PrometheionConstants
+## ElaroConstants
 
-Centralized constants for the Prometheion application.
+Centralized constants for the Elaro application.
 
 ### Framework Constants
 
 ```apex
-PrometheionConstants.FRAMEWORK_HIPAA      // "HIPAA"
-PrometheionConstants.FRAMEWORK_SOC2       // "SOC2"
-PrometheionConstants.FRAMEWORK_NIST       // "NIST"
-PrometheionConstants.FRAMEWORK_FEDRAMP    // "FedRAMP"
-PrometheionConstants.FRAMEWORK_GDPR       // "GDPR"
-PrometheionConstants.FRAMEWORK_ISO27001   // "ISO27001"
-PrometheionConstants.FRAMEWORK_PCI_DSS    // "PCI_DSS"
+ElaroConstants.FRAMEWORK_HIPAA      // "HIPAA"
+ElaroConstants.FRAMEWORK_SOC2       // "SOC2"
+ElaroConstants.FRAMEWORK_NIST       // "NIST"
+ElaroConstants.FRAMEWORK_FEDRAMP    // "FedRAMP"
+ElaroConstants.FRAMEWORK_GDPR       // "GDPR"
+ElaroConstants.FRAMEWORK_ISO27001   // "ISO27001"
+ElaroConstants.FRAMEWORK_PCI_DSS    // "PCI_DSS"
 ```
 
 ### Severity Constants
 
 ```apex
-PrometheionConstants.SEVERITY_CRITICAL    // "CRITICAL"
-PrometheionConstants.SEVERITY_HIGH         // "HIGH"
-PrometheionConstants.SEVERITY_MEDIUM      // "MEDIUM"
-PrometheionConstants.SEVERITY_LOW          // "LOW"
+ElaroConstants.SEVERITY_CRITICAL    // "CRITICAL"
+ElaroConstants.SEVERITY_HIGH         // "HIGH"
+ElaroConstants.SEVERITY_MEDIUM      // "MEDIUM"
+ElaroConstants.SEVERITY_LOW          // "LOW"
 ```
 
 ### Rating Constants
 
 ```apex
-PrometheionConstants.RATING_CRITICAL      // "CRITICAL"
-PrometheionConstants.RATING_HIGH          // "HIGH"
-PrometheionConstants.RATING_MEDIUM        // "MEDIUM"
-PrometheionConstants.RATING_LOW           // "LOW"
-PrometheionConstants.RATING_EXCELLENT     // "EXCELLENT"
+ElaroConstants.RATING_CRITICAL      // "CRITICAL"
+ElaroConstants.RATING_HIGH          // "HIGH"
+ElaroConstants.RATING_MEDIUM        // "MEDIUM"
+ElaroConstants.RATING_LOW           // "LOW"
+ElaroConstants.RATING_EXCELLENT     // "EXCELLENT"
 ```
 
 ### Query Limit Constants
 
 ```apex
-PrometheionConstants.LIMIT_AUDIT_RECENT      // 50
-PrometheionConstants.LIMIT_SCORE_CHANGE      // 100
-PrometheionConstants.LIMIT_RISKY_FLOWS       // 20
-PrometheionConstants.LIMIT_VIOLATIONS        // 200
-PrometheionConstants.LIMIT_ELEVATED_USERS    // 100
+ElaroConstants.LIMIT_AUDIT_RECENT      // 50
+ElaroConstants.LIMIT_SCORE_CHANGE      // 100
+ElaroConstants.LIMIT_RISKY_FLOWS       // 20
+ElaroConstants.LIMIT_VIOLATIONS        // 200
+ElaroConstants.LIMIT_ELEVATED_USERS    // 100
 ```
 
 ### Utility Methods
@@ -386,8 +386,8 @@ All methods throw `AuraHandledException` for user-facing errors. Check debug log
 
 ```apex
 try {
-    PrometheionComplianceScorer.ScoreResult result =
-        PrometheionComplianceScorer.calculateReadinessScore();
+    ElaroComplianceScorer.ScoreResult result =
+        ElaroComplianceScorer.calculateReadinessScore();
 } catch (AuraHandledException e) {
     System.debug('Error: ' + e.getMessage());
     // Handle error appropriately
@@ -401,7 +401,7 @@ try {
 1. **Use Cached Methods**: Methods marked `cacheable=true` leverage Platform Cache
 2. **Batch Operations**: Use bulkified methods for multiple records
 3. **Error Handling**: Always wrap calls in try-catch blocks
-4. **Governor Limits**: Be aware of SOQL query limits (see PrometheionConstants)
+4. **Governor Limits**: Be aware of SOQL query limits (see ElaroConstants)
 5. **Sharing Rules**: All classes use `with sharing` - respect org sharing model
 
 ---
@@ -409,4 +409,4 @@ try {
 ## Version
 
 API Version: 64.0  
-Prometheion Version: 1.5.0
+Elaro Version: 1.5.0

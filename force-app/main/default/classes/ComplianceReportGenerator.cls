@@ -5,7 +5,7 @@
  * Used by ComplianceReportScheduler for automated reports and can be called
  * directly for on-demand report generation.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ComplianceReportGenerator {
@@ -17,7 +17,7 @@ public with sharing class ComplianceReportGenerator {
      * Container for all report data
      */
     public class ReportData {
-        @AuraEnabled public PrometheionComplianceScorer.ScoreResult scoreResult;
+        @AuraEnabled public ElaroComplianceScorer.ScoreResult scoreResult;
         @AuraEnabled public List<Compliance_Gap__c> gaps;
         @AuraEnabled public List<TrendPoint> scoreTrend;
         @AuraEnabled public Map<String, Integer> gapsBySeverity;
@@ -57,7 +57,7 @@ public with sharing class ComplianceReportGenerator {
 
         try {
             // Get current compliance score
-            data.scoreResult = PrometheionComplianceScorer.calculateReadinessScore();
+            data.scoreResult = ElaroComplianceScorer.calculateReadinessScore();
 
             // Get compliance gaps
             data.gaps = getComplianceGaps(data.framework);
@@ -73,7 +73,7 @@ public with sharing class ComplianceReportGenerator {
             System.debug(LoggingLevel.ERROR, LOG_PREFIX + 'Error generating report: ' + e.getMessage());
             // Return partial data rather than failing completely
             if (data.scoreResult == null) {
-                data.scoreResult = new PrometheionComplianceScorer.ScoreResult();
+                data.scoreResult = new ElaroComplianceScorer.ScoreResult();
                 data.scoreResult.overallScore = 0;
                 data.scoreResult.rating = 'Error';
             }
@@ -204,7 +204,7 @@ public with sharing class ComplianceReportGenerator {
         summary += '\nFramework Status:\n';
         for (String fw : data.scoreResult.frameworkScores.keySet()) {
             Decimal score = data.scoreResult.frameworkScores.get(fw);
-            String status = PrometheionConstants.getRatingFromScore(score);
+            String status = ElaroConstants.getRatingFromScore(score);
             summary += '• ' + fw + ': ' + score.setScale(0) + '/100 (' + status + ')\n';
         }
 
@@ -248,7 +248,7 @@ public with sharing class ComplianceReportGenerator {
 
         // Risk-based recommendations
         if (data.scoreResult.topRisks != null) {
-            for (PrometheionComplianceScorer.Risk risk : data.scoreResult.topRisks) {
+            for (ElaroComplianceScorer.Risk risk : data.scoreResult.topRisks) {
                 if (risk.remediation != null) {
                     recommendations.add(risk.remediation);
                 }

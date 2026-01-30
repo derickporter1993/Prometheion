@@ -2,7 +2,7 @@
  * @description Orchestrates automated remediation actions for compliance events
  * Supports actions like REVOKE_PERMISSION, LOCK_USER, NOTIFY_MANAGER
  * @group Automation & Alerting
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class RemediationOrchestrator {
     
@@ -47,11 +47,11 @@ public with sharing class RemediationOrchestrator {
         }
         
         // Query event details
-        Prometheion_Evidence_Item__c event;
+        Elaro_Evidence_Item__c event;
         try {
             event = [
                 SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c
-                FROM Prometheion_Evidence_Item__c
+                FROM Elaro_Evidence_Item__c
                 WHERE Id = :eventId
                 LIMIT 1
             ];
@@ -69,7 +69,7 @@ public with sharing class RemediationOrchestrator {
                          'Details: ' + event.Description__c,
             Priority = String.isNotBlank(priority) ? priority : 'High',
             Status = 'New',
-            Origin = 'Prometheion',
+            Origin = 'Elaro',
             Type = 'Compliance',
             OwnerId = UserInfo.getUserId()
         );
@@ -248,7 +248,7 @@ public with sharing class RemediationOrchestrator {
                     'Employee: ' + u.Name + '\n' +
                     'Event: ' + (eventDescription != null ? eventDescription : 'Compliance violation detected') + '\n\n' +
                     'Please review and take appropriate action.\n\n' +
-                    'Prometheion Compliance Platform'
+                    'Elaro Compliance Platform'
                 );
                 email.setSaveAsActivity(false);
                 
@@ -279,7 +279,7 @@ public with sharing class RemediationOrchestrator {
             Description = eventDescription != null ? eventDescription : 'Automated remediation case',
             Priority = priority != null ? priority : 'High',
             Status = 'New',
-            Origin = 'Prometheion',
+            Origin = 'Elaro',
             Type = 'Compliance'
         );
         
@@ -335,7 +335,7 @@ public with sharing class RemediationOrchestrator {
     private static void updateEventWithCase(Id eventId, Id caseId) {
         // Update the event record to link to the case
         try {
-            Prometheion_Evidence_Item__c event = new Prometheion_Evidence_Item__c(
+            Elaro_Evidence_Item__c event = new Elaro_Evidence_Item__c(
                 Id = eventId,
                 Status__c = 'Under Review'
             );

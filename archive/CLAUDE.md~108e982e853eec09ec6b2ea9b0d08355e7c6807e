@@ -1,10 +1,10 @@
-# CLAUDE.md - AI Assistant Guide for Prometheion
+# CLAUDE.md - AI Assistant Guide for Elaro
 
-This document provides guidance for AI assistants working with the Prometheion codebase.
+This document provides guidance for AI assistants working with the Elaro codebase.
 
 ## Project Overview
 
-**Prometheion** is an AI-powered compliance and governance platform for Salesforce (v3.0 Enterprise Edition). It provides:
+**Elaro** is an AI-powered compliance and governance platform for Salesforce (v3.0 Enterprise Edition). It provides:
 
 - Configuration drift detection for Salesforce orgs
 - Audit evidence automation and collection
@@ -30,7 +30,7 @@ This document provides guidance for AI assistants working with the Prometheion c
 ## Directory Structure
 
 ```
-prometheion/
+elaro/
 ├── force-app/main/default/      # Salesforce source code
 │   ├── classes/                 # Apex classes (~78 production + ~66 test)
 │   ├── lwc/                     # Lightning Web Components (30 components)
@@ -111,7 +111,7 @@ sf project deploy start --target-org <org>
 ./scripts/orgInit.sh
 
 # Assign permission set
-sf org assign permset --name Prometheion_Admin --target-org <org>
+sf org assign permset --name Elaro_Admin --target-org <org>
 ```
 
 ### Pre-commit Validation
@@ -126,15 +126,15 @@ The pre-commit hook runs automatically via Husky:
 ### Apex Classes
 
 **Naming Conventions:**
-- Production classes: `PascalCase` (e.g., `ComplianceBaselineScanner`, `PrometheionSecurityUtils`)
+- Production classes: `PascalCase` (e.g., `ComplianceBaselineScanner`, `ElaroSecurityUtils`)
 - Test classes: `<ClassName>Test` (e.g., `ComplianceDashboardControllerTest`)
 - Controller classes: `<Feature>Controller` (e.g., `ComplianceDashboardController`)
 - Service classes: `<Domain>Service` (e.g., `ComplianceFrameworkService`)
-- Queueable classes: `<Feature>Queueable` (e.g., `PrometheionSlackNotifierQueueable`)
+- Queueable classes: `<Feature>Queueable` (e.g., `ElaroSlackNotifierQueueable`)
 
 **Security Requirements (CRITICAL):**
 - Always use `WITH SECURITY_ENFORCED` on SOQL queries
-- Use `PrometheionSecurityUtils` for CRUD/FLS checks
+- Use `ElaroSecurityUtils` for CRUD/FLS checks
 - All classes must use `with sharing` keyword
 - Strip inaccessible fields before returning data to LWC
 
@@ -146,7 +146,7 @@ List<Account> accounts = [
 ];
 
 // Good: Using security utils
-PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
+ElaroSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
 ```
 
 **Documentation Pattern:**
@@ -156,7 +156,7 @@ PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
  *
  * Brief description of the class purpose
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ClassName {
@@ -167,7 +167,7 @@ public with sharing class ClassName {
 ### Lightning Web Components
 
 **Naming:**
-- Component folders: `camelCase` (e.g., `complianceDashboard`, `prometheionCopilot`)
+- Component folders: `camelCase` (e.g., `complianceDashboard`, `elaroCopilot`)
 - Test files: `__tests__/<componentName>.test.js`
 
 **Controller Integration:**
@@ -181,7 +181,7 @@ wiredResult;
 **Key LWC Components:**
 | Component | Purpose |
 |-----------|---------|
-| `prometheionDashboard` | Main compliance dashboard |
+| `elaroDashboard` | Main compliance dashboard |
 | `complianceCopilot` | AI compliance assistant |
 | `complianceScoreCard` | Framework score display |
 | `systemMonitorDashboard` | Governor limits monitoring |
@@ -199,13 +199,13 @@ wiredResult;
 | `Compliance_Evidence__c` | Audit evidence records |
 | `API_Usage_Snapshot__c` | API limit tracking |
 | `Performance_Alert_History__c` | Alert history |
-| `Prometheion_AI_Settings__c` | AI configuration |
-| `Prometheion_Audit_Log__c` | Audit trail |
-| `Prometheion_Compliance_Graph__b` | Big Object for graph data |
+| `Elaro_AI_Settings__c` | AI configuration |
+| `Elaro_Audit_Log__c` | Audit trail |
+| `Elaro_Compliance_Graph__b` | Big Object for graph data |
 
 **Platform Events:**
 - `Performance_Alert__e` - Performance threshold alerts
-- `Prometheion_Alert_Event__e` - General alerts
+- `Elaro_Alert_Event__e` - General alerts
 - `GDPR_Erasure_Event__e` - GDPR data erasure events
 - `PCI_Access_Event__e` - PCI access logging
 
@@ -278,7 +278,7 @@ describe("c-my-component", () => {
 
 ## CI/CD Pipeline
 
-GitHub Actions workflow (`.github/workflows/prometheion-ci.yml`):
+GitHub Actions workflow (`.github/workflows/elaro-ci.yml`):
 
 1. **code-quality** - Format check, linting, security audit
 2. **unit-tests** - LWC Jest tests
@@ -291,10 +291,10 @@ GitHub Actions workflow (`.github/workflows/prometheion-ci.yml`):
 
 | Permission Set | Purpose |
 |----------------|---------|
-| `Prometheion_Admin` | Full admin access |
-| `Prometheion_Auditor` | Read-only audit access |
-| `Prometheion_User` | Standard user access |
-| `Prometheion_API_User` | API integration access |
+| `Elaro_Admin` | Full admin access |
+| `Elaro_Auditor` | Read-only audit access |
+| `Elaro_User` | Standard user access |
+| `Elaro_API_User` | API integration access |
 
 ## Common Tasks
 
@@ -333,7 +333,7 @@ npm run precommit
 ### Security Checklist
 
 - [ ] All SOQL uses `WITH SECURITY_ENFORCED`
-- [ ] CRUD/FLS checks via `PrometheionSecurityUtils`
+- [ ] CRUD/FLS checks via `ElaroSecurityUtils`
 - [ ] Classes use `with sharing` keyword
 - [ ] No hardcoded credentials or secrets
 - [ ] Input validation on all user inputs
@@ -348,7 +348,7 @@ npm run precommit
 
 ### Legacy Note
 
-The project was previously named "Sentinel" - some references may still exist in configuration files. The current branding is **Prometheion**.
+The project was previously named "Sentinel" - some references may still exist in configuration files. The current branding is **Elaro**.
 
 ## Useful Resources
 

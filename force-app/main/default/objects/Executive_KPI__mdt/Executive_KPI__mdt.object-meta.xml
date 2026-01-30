@@ -3,5 +3,5 @@
     <label>Executive KPI</label>
     <pluralLabel>Executive KPIs</pluralLabel>
     <visibility>Public</visibility>
-    <description>Executive KPI metrics configuration for the Prometheion Executive KPI Dashboard</description>
+    <description>Executive KPI metrics configuration for the Elaro Executive KPI Dashboard</description>
 </CustomObject>

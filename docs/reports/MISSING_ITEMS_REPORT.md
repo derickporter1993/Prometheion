@@ -7,8 +7,8 @@
 
 ## Items Completed (Just Fixed)
 
-### ✅ 1. prometheionCopilot Accessibility Fix
-**File:** `force-app/main/default/lwc/prometheionCopilot/prometheionCopilot.html:73-78`
+### ✅ 1. elaroCopilot Accessibility Fix
+**File:** `force-app/main/default/lwc/elaroCopilot/elaroCopilot.html:73-78`
 **Issue:** Missing `type="button"` and `aria-label` attributes on quick action cards
 **Status:** ✅ FIXED
 - Added `type="button"` attribute
@@ -25,8 +25,8 @@
 5. ✅ `complianceTimeline.html` - 2 instances (lines 24-42)
 6. ✅ `complianceGapList.html` - 2 instances (lines 23-42)
 7. ✅ `riskHeatmap.html` - 2 instances (lines 24-40)
-8. ✅ `prometheionReadinessScore.html` - 2 instances (lines 17-79)
-9. ✅ `prometheionAiSettings.html` - 2 instances (lines 17-75)
+8. ✅ `elaroReadinessScore.html` - 2 instances (lines 17-79)
+9. ✅ `elaroAiSettings.html` - 2 instances (lines 17-75)
 10. ✅ `systemMonitorDashboard.html` - 1 instance (line 25)
 
 ---
@@ -34,7 +34,7 @@
 ## Items Still Missing / Not Fixed
 
 ### ❌ 1. LWC1060 formatDate() Template Error (CRITICAL)
-**File:** `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.html`
+**File:** `force-app/main/default/lwc/elaroDashboard/elaroDashboard.html`
 - **Line 245:** `{formatDate(pkg.periodStart)} - {formatDate(pkg.periodEnd)}`
 - **Line 249:** `Created: {formatDate(pkg.createdDate)}`
 
@@ -50,8 +50,8 @@
 
 | File | Instances | Status |
 |------|-----------|--------|
-| `prometheionAuditWizard.html` | 9 | ❌ Not fixed |
-| `prometheionEventExplorer.html` | 6 | ❌ Not fixed |
+| `elaroAuditWizard.html` | 9 | ❌ Not fixed |
+| `elaroEventExplorer.html` | 6 | ❌ Not fixed |
 | `controlMappingMatrix.html` | 6 | ❌ Not fixed |
 | `performanceAlertPanel.html` | 3 | ❌ Not fixed |
 
@@ -63,9 +63,9 @@
 
 | File | Line | Current | Should Be |
 |------|------|---------|-----------|
-| `config/project-scratch-def.json` | 2 | `"orgName": "Sentinel"` | `"orgName": "Prometheion"` |
-| `scripts/orgInit.sh` | 3 | `alias_name="${1:-Sentinel}"` | `alias_name="${1:-prometheion}"` |
-| `scripts/orgInit.sh` | 10 | `Sentinel_Admin` | `Prometheion_Admin` |
+| `config/project-scratch-def.json` | 2 | `"orgName": "Sentinel"` | `"orgName": "Elaro"` |
+| `scripts/orgInit.sh` | 3 | `alias_name="${1:-Sentinel}"` | `alias_name="${1:-elaro}"` |
+| `scripts/orgInit.sh` | 10 | `Sentinel_Admin` | `Elaro_Admin` |
 | `jest.config.js` | 8 | `"<rootDir>/Sentinel-main/"` | Remove or update if dir exists |
 | `scripts/apex/migrate-from-opsguardian.apex` | Multiple | "Sentinel" references | Legacy script (low priority) |
 | `scripts/generate-baseline-report.apex` | Multiple | "Sentinel" references | Legacy script (low priority) |
@@ -85,15 +85,15 @@
 **Status:** Directory does not exist
 **Required for:** AppExchange listing
 **Assets Needed:**
-- Prometheion_Logo.png (200x200px)
-- Prometheion_Logo_Small.png (64x64px)
-- Prometheion_Logo_Large.png (512x512px)
+- Elaro_Logo.png (200x200px)
+- Elaro_Logo_Small.png (64x64px)
+- Elaro_Logo_Large.png (512x512px)
 - App launcher icon (120x120px)
 
 ---
 
 ### ❌ 5. PostInstallHandler Class (MISSING)
-**Location:** `force-app/main/default/classes/PrometheionInstallHandler.cls`
+**Location:** `force-app/main/default/classes/ElaroInstallHandler.cls`
 **Status:** Class does not exist
 **Required for:** AppExchange managed package installation
 **Should implement:** `InstallHandler` interface
@@ -101,7 +101,7 @@
 ---
 
 ### ❌ 6. Setup Wizard LWC Component (MISSING)
-**Location:** `force-app/main/default/lwc/prometheionSetupWizard/`
+**Location:** `force-app/main/default/lwc/elaroSetupWizard/`
 **Status:** Component does not exist
 **Purpose:** Guided configuration for new installations
 **Priority:** P2 (nice to have, not required)
@@ -109,7 +109,7 @@
 ---
 
 ### ❌ 7. Console Statement (ESLint Warning)
-**File:** `force-app/main/default/lwc/prometheionDrillDownViewer/prometheionDrillDownViewer.js:128`
+**File:** `force-app/main/default/lwc/elaroDrillDownViewer/elaroDrillDownViewer.js:128`
 ```javascript
 console.error('Failed to parse contextJson:', e);
 ```
@@ -119,7 +119,7 @@ console.error('Failed to parse contextJson:', e);
 ---
 
 ### ❌ 8. TODO Comment (Low Priority)
-**File:** `force-app/main/default/classes/PrometheionGraphIndexer.cls:129`
+**File:** `force-app/main/default/classes/ElaroGraphIndexer.cls:129`
 ```apex
 // TODO: Implement Einstein Platform callout when available
 ```

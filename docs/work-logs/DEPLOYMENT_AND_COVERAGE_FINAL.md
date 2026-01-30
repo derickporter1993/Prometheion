@@ -13,16 +13,16 @@
    - Object exists in org
    - Fields exist in org but not in local project
    - **Issue**: Field definitions need to be pulled from org or recreated locally
-   - **Impact**: Blocks deployment of `PerformanceAlertPublisher`, `PrometheionGraphIndexer`, `SlackNotifier`
+   - **Impact**: Blocks deployment of `PerformanceAlertPublisher`, `ElaroGraphIndexer`, `SlackNotifier`
 
-2. **Prometheion_Audit_Log__c** - ✅ Success
+2. **Elaro_Audit_Log__c** - ✅ Success
    - Object deployed successfully
    - Fields exist in org but not in local project
    - Classes using this object can compile
 
 3. **Platform Events** - ⚠️ Partial Success
-   - `Prometheion_Raw_Event__e` - ✅ Deployed
-   - `Prometheion_Score_Result__e` - ❌ Parse error (line 38:33)
+   - `Elaro_Raw_Event__e` - ✅ Deployed
+   - `Elaro_Score_Result__e` - ❌ Parse error (line 38:33)
    - **Issue**: Invalid `restrictedPicklist` element in metadata
 
 ### Classes Deployment
@@ -31,7 +31,7 @@
 
 **Blocking Errors**:
 - `Integration_Error__c` type not recognized (fields missing from local project)
-- 3 classes affected: `PerformanceAlertPublisher`, `PrometheionGraphIndexer`, `SlackNotifier`
+- 3 classes affected: `PerformanceAlertPublisher`, `ElaroGraphIndexer`, `SlackNotifier`
 
 ---
 
@@ -97,8 +97,8 @@ sf project retrieve start --metadata CustomObject:Integration_Error__c --target-
 # Pull Integration_Error__c with all fields
 sf project retrieve start --metadata CustomObject:Integration_Error__c
 
-# Pull Prometheion_Audit_Log__c with all fields
-sf project retrieve start --metadata CustomObject:Prometheion_Audit_Log__c
+# Pull Elaro_Audit_Log__c with all fields
+sf project retrieve start --metadata CustomObject:Elaro_Audit_Log__c
 
 # Redeploy classes
 sf project deploy start --source-dir force-app/main/default/classes/
@@ -107,7 +107,7 @@ sf project deploy start --source-dir force-app/main/default/classes/
 **Option B: Comment Out Error Logging** (Faster)
 ```bash
 # Temporarily remove Integration_Error__c references
-# In: PerformanceAlertPublisher.cls, PrometheionGraphIndexer.cls, SlackNotifier.cls
+# In: PerformanceAlertPublisher.cls, ElaroGraphIndexer.cls, SlackNotifier.cls
 # Comment out lines 67-76, 139-148, 322-331 respectively
 
 # Deploy without error logging
@@ -120,7 +120,7 @@ sf apex run test --code-coverage
 ### Short-term (Next 2-4 hours)
 
 1. **Fix Platform Event Parse Error**
-   - Edit `Prometheion_Score_Result__e.object-meta.xml`
+   - Edit `Elaro_Score_Result__e.object-meta.xml`
    - Fix line 38:33 `restrictedPicklist` element
 
 2. **Deploy All Test Classes**

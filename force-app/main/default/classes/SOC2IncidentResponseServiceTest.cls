@@ -3,7 +3,7 @@
  *
  * Test class for SOC2IncidentResponseService
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @isTest

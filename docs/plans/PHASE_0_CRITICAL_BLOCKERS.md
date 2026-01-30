@@ -18,9 +18,9 @@ These 6 issues **prevent the codebase from compiling**. They must be resolved be
 | P0.1 | Merge conflict | `ApiUsageDashboardController.cls` | Won't compile |
 | P0.2 | Merge conflict | `AlertHistoryService.cls` | Won't compile |
 | P0.3 | Method signature mismatch | `PerformanceAlertEventTrigger.trigger` | Won't compile |
-| P0.4 | Return type mismatch | `PrometheionComplianceScorer.cls` | Runtime errors in 8+ classes |
+| P0.4 | Return type mismatch | `ElaroComplianceScorer.cls` | Runtime errors in 8+ classes |
 | P0.5 | Picklist case mismatch | `ComplianceTestDataFactory.cls` | DML failures |
-| P0.6 | Non-deterministic hash | `PrometheionGraphIndexer.cls` | Data integrity corruption |
+| P0.6 | Non-deterministic hash | `ElaroGraphIndexer.cls` | Data integrity corruption |
 
 ---
 
@@ -153,10 +153,10 @@ for(Schema.SObjectField field : eventDescribe.fields.getMap().values()) {
 
 ---
 
-## P0.4: FIX RETURN TYPE - PrometheionComplianceScorer
+## P0.4: FIX RETURN TYPE - ElaroComplianceScorer
 
 ### Location
-- **File:** `force-app/main/default/classes/PrometheionComplianceScorer.cls`
+- **File:** `force-app/main/default/classes/ElaroComplianceScorer.cls`
 - **Line:** 3
 
 ### Current State (Broken)
@@ -173,13 +173,13 @@ public static Decimal calculateReadinessScore() {
 - `frameworkScores` (Map<String, Decimal>)
 
 **Affected Classes:**
-1. `PrometheionGDPRComplianceService.cls` (Line 30)
-2. `PrometheionHIPAAComplianceService.cls` (Line 40)
+1. `ElaroGDPRComplianceService.cls` (Line 30)
+2. `ElaroHIPAAComplianceService.cls` (Line 40)
 3. `TeamsNotifier.cls` (Line 224)
-4. `PrometheionChangeAdvisor.cls` (Lines 21, 34, 36, 38, 40, 43)
-5. `PrometheionCCPAComplianceService.cls` (Line 25)
-6. `PrometheionSOC2ComplianceService.cls` (Line 36)
-7. `PrometheionPCIDSSComplianceService.cls` (Line 30)
+4. `ElaroChangeAdvisor.cls` (Lines 21, 34, 36, 38, 40, 43)
+5. `ElaroCCPAComplianceService.cls` (Line 25)
+6. `ElaroSOC2ComplianceService.cls` (Line 36)
+7. `ElaroPCIDSSComplianceService.cls` (Line 30)
 8. `WeeklyScorecardScheduler.cls` (Lines 133-134)
 
 ### Required Fix
@@ -248,7 +248,7 @@ private static Decimal calculateFrameworkScore(String framework) {
 ```
 
 ### Implementation Steps
-1. Read current `PrometheionComplianceScorer.cls` to understand existing structure
+1. Read current `ElaroComplianceScorer.cls` to understand existing structure
 2. Add `ScoreResult` inner class at top of class
 3. Modify `calculateReadinessScore()` to return `ScoreResult`
 4. Add helper method for framework scores if not exists
@@ -311,10 +311,10 @@ grep -n "CRITICAL\|HIGH\|MEDIUM\|LOW" force-app/main/default/classes/*.cls
 
 ---
 
-## P0.6: FIX NON-DETERMINISTIC HASH - PrometheionGraphIndexer
+## P0.6: FIX NON-DETERMINISTIC HASH - ElaroGraphIndexer
 
 ### Location
-- **File:** `force-app/main/default/classes/PrometheionGraphIndexer.cls`
+- **File:** `force-app/main/default/classes/ElaroGraphIndexer.cls`
 - **Line:** 51
 
 ### Current State (Broken)
@@ -344,7 +344,7 @@ private static String generateDeterministicHash(String entityType, Id entityId, 
 ```
 
 ### Implementation Steps
-1. Open `PrometheionGraphIndexer.cls`
+1. Open `ElaroGraphIndexer.cls`
 2. Find line 51 (the `generateDeterministicHash` method)
 3. Remove `+ '|' + System.now().getTime()` from input string
 4. Verify method still produces consistent output
@@ -352,8 +352,8 @@ private static String generateDeterministicHash(String entityType, Id entityId, 
 ### Verification Test
 ```apex
 // Should return same hash for same inputs
-String hash1 = PrometheionGraphIndexer.generateDeterministicHash('PERMISSION_SET', '0PS000000000001', 'SOC2');
-String hash2 = PrometheionGraphIndexer.generateDeterministicHash('PERMISSION_SET', '0PS000000000001', 'SOC2');
+String hash1 = ElaroGraphIndexer.generateDeterministicHash('PERMISSION_SET', '0PS000000000001', 'SOC2');
+String hash2 = ElaroGraphIndexer.generateDeterministicHash('PERMISSION_SET', '0PS000000000001', 'SOC2');
 System.assertEquals(hash1, hash2, 'Hash should be deterministic');
 ```
 
@@ -401,7 +401,7 @@ grep -r "<<<<<<" force-app/main/default/triggers/
 sfdx force:apex:compile --targetusername <org>
 
 # 3. Run affected test classes
-sfdx force:apex:test:run --tests ApiUsageDashboardControllerTest,AlertHistoryServiceTest,PerformanceAlertEventTriggerTest,PrometheionComplianceScorerTest,ComplianceTestDataFactoryTest,PrometheionGraphIndexerTest --resultformat human
+sfdx force:apex:test:run --tests ApiUsageDashboardControllerTest,AlertHistoryServiceTest,PerformanceAlertEventTriggerTest,ElaroComplianceScorerTest,ComplianceTestDataFactoryTest,ElaroGraphIndexerTest --resultformat human
 
 # 4. Check for runtime errors
 sfdx force:apex:execute -f scripts/apex/verify-phase0.apex
@@ -410,14 +410,14 @@ sfdx force:apex:execute -f scripts/apex/verify-phase0.apex
 ### verify-phase0.apex
 ```apex
 // Test P0.4 - ScoreResult
-PrometheionComplianceScorer.ScoreResult result = PrometheionComplianceScorer.calculateReadinessScore();
+ElaroComplianceScorer.ScoreResult result = ElaroComplianceScorer.calculateReadinessScore();
 System.assertNotEquals(null, result, 'ScoreResult should not be null');
 System.assertNotEquals(null, result.frameworkScores, 'frameworkScores should not be null');
 System.assertNotEquals(null, result.overallScore, 'overallScore should not be null');
 
 // Test P0.6 - Deterministic hash
-String hash1 = PrometheionGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
-String hash2 = PrometheionGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
+String hash1 = ElaroGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
+String hash2 = ElaroGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
 System.assertEquals(hash1, hash2, 'Hash must be deterministic');
 
 System.debug('Phase 0 verification PASSED');

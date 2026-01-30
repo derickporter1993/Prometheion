@@ -2,7 +2,7 @@
  * Interface for data subject rights services (GDPR, CCPA)
  * Provides standardized methods for handling data subject access, rectification, erasure, and portability requests
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public interface IDataSubjectService {

@@ -1,4 +1,4 @@
-# Prometheion
+# Elaro
 
 **The AI Compliance Brain for Salesforce — Configuration drift detection, audit evidence automation, and intelligent compliance analysis for regulated organizations.**
 
@@ -16,13 +16,13 @@ _Current: v3.0 — Unified Enterprise Platform_
 
 ---
 
-## What is Prometheion?
+## What is Elaro?
 
-Prometheion makes your Salesforce org **audit-ready and protected from configuration drift** in 24 hours.
+Elaro makes your Salesforce org **audit-ready and protected from configuration drift** in 24 hours.
 
-**Today (v3.0)**: Prometheion continuously monitors your Salesforce configuration for compliance violations, permission sprawl, and undocumented changes — then generates audit evidence and a baseline compliance report that regulators actually want to see.
+**Today (v3.0)**: Elaro continuously monitors your Salesforce configuration for compliance violations, permission sprawl, and undocumented changes — then generates audit evidence and a baseline compliance report that regulators actually want to see.
 
-**Tomorrow (v1.5+)**: Prometheion evolves into an **AI Compliance Brain** that doesn't just detect drift, but interprets the _intent, impact, and compliance reasoning_ behind every change — answering questions no other tool can answer.
+**Tomorrow (v1.5+)**: Elaro evolves into an **AI Compliance Brain** that doesn't just detect drift, but interprets the _intent, impact, and compliance reasoning_ behind every change — answering questions no other tool can answer.
 
 **Think of it as**: Your AI compliance analyst that works 24/7, understands regulatory frameworks, and speaks both technical and auditor language.
 
@@ -34,7 +34,7 @@ Prometheion makes your Salesforce org **audit-ready and protected from configura
 
 ### Recent Improvements (January 2026)
 
-- ✅ **Security**: Integrated PrometheionSecurityUtils across all classes
+- ✅ **Security**: Integrated ElaroSecurityUtils across all classes
 - ✅ **Deployment**: 207/207 Apex classes deployed (100% - up from 55%)
 - ✅ **Git**: Main branch synced, cleaned up abandoned branches
 - ✅ **Tests**: Added critical test coverage for security utilities
@@ -57,20 +57,20 @@ See [REMEDIATION_SUMMARY.md](REMEDIATION_SUMMARY.md) for detailed changes and [S
 - **Audits fail** because nobody can explain who changed what and why
 - **Regulated orgs** can't afford Salesforce misconfigurations or permission sprawl
 - **Existing tools** are too complex/expensive or not tailored to nonprofits and smaller regulated teams
-- **Prometheion** gives them a simple, opinionated compliance guardrail + evidence engine
+- **Elaro** gives them a simple, opinionated compliance guardrail + evidence engine
 
 ---
 
 ## Who It's For
 
-Prometheion is built for **regulated organizations using Salesforce**:
+Elaro is built for **regulated organizations using Salesforce**:
 
 - 🏥 **Healthcare**: HIPAA compliance, PHI protection, audit trails
 - 🏛️ **Government & Nonprofits**: FedRAMP, FISMA, NIST, grants management, donor privacy
 - 💰 **Financial Services**: SOX, PCI-DSS, GLBA, transaction auditing, privacy notices
 - 🏢 **Any Regulated Org**: SOC 2, GDPR, CCPA, ISO 27001, or compliance frameworks requiring audit evidence
 
-If you're spending weeks preparing for audits, manually reviewing permissions, or can't explain recent configuration changes — Prometheion is for you.
+If you're spending weeks preparing for audits, manually reviewing permissions, or can't explain recent configuration changes — Elaro is for you.
 
 ---
 
@@ -127,30 +127,30 @@ Calculates a compliance score based on:
 
 ## What v3.0 Does NOT Do (Non-Goals)
 
-To keep Prometheion simple and focused, v3.0 intentionally:
+To keep Elaro simple and focused, v3.0 intentionally:
 
 - ❌ **Does not replace SIEM**: Not a generic security information & event management tool
 - ❌ **Does not monitor every SaaS**: Salesforce only (multi-SaaS is v2+)
 - ❌ **Does not do complex AI governance**: AI-powered change explanations are v1.5+
 - ❌ **Does not prevent changes**: It detects and alerts; it doesn't block (approval workflows are future work)
 
-Prometheion is a **compliance drift detector**, not a full GRC platform.
+Elaro is a **compliance drift detector**, not a full GRC platform.
 
 ---
 
 ## The Future: AI Compliance Intelligence
 
-Prometheion is evolving into the world's first **AI Compliance Brain** — a system that doesn't just detect drift, but **interprets the meaning, intent, and compliance impact** of every change.
+Elaro is evolving into the world's first **AI Compliance Brain** — a system that doesn't just detect drift, but **interprets the meaning, intent, and compliance impact** of every change.
 
 **Vision**: Intelligence, not dashboards.
 
-Where competitors show logs, Prometheion will provide judgment, context, and compliance reasoning.
+Where competitors show logs, Elaro will provide judgment, context, and compliance reasoning.
 
 ### Coming in v1.5 (Q2 2025) — AI-Assisted Remediation
 
 #### **Change Intent Analysis** 🧠
 
-The signature feature that sets Prometheion apart — AI that understands the _why_ behind every change:
+The signature feature that sets Elaro apart — AI that understands the _why_ behind every change:
 
 **What competitors show**:
 
@@ -158,7 +158,7 @@ The signature feature that sets Prometheion apart — AI that understands the _w
 Permission Set "Financial_Data_Access" modified by j.smith@acme.org
 ```
 
-**What Prometheion shows**:
+**What Elaro shows**:
 
 ```
 ⚠️ High-Risk Change Detected
@@ -211,13 +211,13 @@ Natural language interface for compliance queries:
 
 ```
 You: "Show me all risky flows touching PII"
-Prometheion: [Displays 12 flows with PII exposure risks, ranked by severity]
+Elaro: [Displays 12 flows with PII exposure risks, ranked by severity]
 
 You: "Generate SOC2 evidence for Q2"
-Prometheion: [Exports audit-ready PDF with all Q2 evidence]
+Elaro: [Exports audit-ready PDF with all Q2 evidence]
 
 You: "Why did our readiness score drop from 87 to 72?"
-Prometheion: "3 high-risk changes detected:
+Elaro: "3 high-risk changes detected:
 1. 23 users granted 'View All Data' without approval
 2. Patient_Records__c sharing changed to Public Read/Write
 3. Shield Platform Encryption disabled on SSN__c field"
@@ -234,7 +234,7 @@ One compliance model across all your CRMs:
 - ServiceNow
 - Custom apps
 
-**The Moat**: Once Prometheion builds this unified compliance graph, competitors cannot catch up without 3-4 years of development.
+**The Moat**: Once Elaro builds this unified compliance graph, competitors cannot catch up without 3-4 years of development.
 
 #### **Predictive Risk Modeling** 📈
 
@@ -252,9 +252,9 @@ Suggested Action: Review Flow permissions before deployment.
 
 ---
 
-### Why This Matters — Prometheion's Uncopyable Differentiators
+### Why This Matters — Elaro's Uncopyable Differentiators
 
-1. **AI Change Intent Analysis** — Competitors show _what_ changed; Prometheion explains _why it matters_
+1. **AI Change Intent Analysis** — Competitors show _what_ changed; Elaro explains _why it matters_
 2. **Automated Compliance Mapping** — Instant mapping to SOC2, HIPAA, NIST, FedRAMP, GDPR
 3. **Evidence Packs** — Auto-generated, auditor-ready documentation
 4. **Cross-CRM Intelligence** — Unified compliance model (impossible to copy quickly)
@@ -280,8 +280,8 @@ Suggested Action: Review Flow permissions before deployment.
 
 ```bash
 # Clone the repo
-git clone https://github.com/derickporter1993/prometheion.git
-cd prometheion
+git clone https://github.com/derickporter1993/elaro.git
+cd elaro
 
 # Authenticate to your Salesforce org
 sf org login web --alias myorg
@@ -290,7 +290,7 @@ sf org login web --alias myorg
 sf project deploy start --target-org myorg
 
 # Assign permissions
-sf org assign permset --name Prometheion_Admin --target-org myorg
+sf org assign permset --name Elaro_Admin --target-org myorg
 
 # Open the org
 sf org open --target-org myorg
@@ -305,15 +305,15 @@ sf org open --target-org myorg
 # This will:
 # - Create a 7-day scratch org
 # - Push source code
-# - Assign Prometheion_Admin permission set
+# - Assign Elaro_Admin permission set
 # - Open the org in your browser
 ```
 
 ### Run Your First Compliance Scan
 
-1. **Navigate to Prometheion** in the App Launcher
+1. **Navigate to Elaro** in the App Launcher
 2. **Click "Run Baseline Scan"** on the dashboard
-3. **Wait 30-60 seconds** while Prometheion analyzes your org
+3. **Wait 30-60 seconds** while Elaro analyzes your org
 4. **View your Audit Readiness Score** and top risks
 5. **Export the report** (Markdown or PDF) for your compliance team
 
@@ -342,7 +342,7 @@ ComplianceReport report = scanner.runScan();
 System.debug('Audit Readiness Score: ' + report.getScore());
 ```
 
-Or use the Lightning Web Component dashboard (navigate to Prometheion app).
+Or use the Lightning Web Component dashboard (navigate to Elaro app).
 
 ---
 
@@ -360,7 +360,7 @@ Or use the Lightning Web Component dashboard (navigate to Prometheion app).
 
 **How it works**:
 
-1. **Platform Events**: Prometheion listens to Salesforce Platform Events for real-time changes
+1. **Platform Events**: Elaro listens to Salesforce Platform Events for real-time changes
 2. **Scheduled Jobs**: Runs hourly to poll Setup Audit Trail API
 3. **Risk Scoring**: Each change is scored based on impact (Critical/High/Medium/Low)
 4. **Alerting**: High-risk changes trigger Slack/email notifications
@@ -368,7 +368,7 @@ Or use the Lightning Web Component dashboard (navigate to Prometheion app).
 **Sample alert**:
 
 ```
-⚠️ Prometheion Drift Alert
+⚠️ Elaro Drift Alert
 
 Change: Permission Set Modified
 Object: Financial_Data_Access
@@ -411,7 +411,7 @@ Action Required: Review and approve or rollback
 sf apex run --file scripts/exportEvidenceReport.apex --target-org myorg
 
 # Or use the LWC dashboard
-# Navigate to Prometheion → Reports → Export Compliance Evidence
+# Navigate to Elaro → Reports → Export Compliance Evidence
 ```
 
 ---
@@ -453,7 +453,7 @@ Final Score: 100 - 63 = 37/100 (🔴 Critical)
 
 ## Dashboard Components
 
-Prometheion includes Lightning Web Components for real-time monitoring:
+Elaro includes Lightning Web Components for real-time monitoring:
 
 ### 1. **System Monitor Dashboard**
 
@@ -491,9 +491,9 @@ Prometheion includes Lightning Web Components for real-time monitoring:
 
 ## Configuration
 
-### Prometheion Settings
+### Elaro Settings
 
-Configure compliance thresholds in **Prometheion Settings** (Custom Settings):
+Configure compliance thresholds in **Elaro Settings** (Custom Settings):
 
 | Setting        | Description                       | Default |
 | -------------- | --------------------------------- | ------- |
@@ -504,11 +504,11 @@ Configure compliance thresholds in **Prometheion Settings** (Custom Settings):
 | `SOQL_Warn__c` | SOQL query warning threshold      | 80      |
 | `SOQL_Crit__c` | SOQL query critical threshold     | 95      |
 
-**Access**: Setup → Custom Settings → Prometheion Settings → Manage
+**Access**: Setup → Custom Settings → Elaro Settings → Manage
 
 ### Alert Integrations
 
-Prometheion supports multiple alert channels:
+Elaro supports multiple alert channels:
 
 #### Slack Integration
 
@@ -518,7 +518,7 @@ Prometheion supports multiple alert channels:
    - URL: Your Slack webhook URL
 3. Test the integration:
    ```apex
-   PrometheionSlackNotifierQueueable.notifyAsync('🚨 Test alert from Prometheion');
+   ElaroSlackNotifierQueueable.notifyAsync('🚨 Test alert from Elaro');
    ```
 
 #### Jira Integration (Future)
@@ -532,24 +532,24 @@ Coming in v1.5 — automatically create Jira tickets for high-risk changes.
 ### Project Structure
 
 ```
-prometheion/
+elaro/
 ├── force-app/main/default/          # Salesforce code
 │   ├── classes/                     # Apex classes
 │   │   ├── ApiUsageSnapshot.cls     # API usage tracking
 │   │   ├── PerformanceRuleEngine.cls # Alert rule evaluation
 │   │   ├── FlowExecutionLogger.cls  # Flow monitoring
-│   │   └── PrometheionSlackNotifierQueueable.cls # Alert notifications
+│   │   └── ElaroSlackNotifierQueueable.cls # Alert notifications
 │   ├── lwc/                         # Lightning Web Components
 │   │   ├── systemMonitorDashboard/  # Real-time monitoring UI
 │   │   ├── apiUsageDashboard/       # API usage dashboard
-│   │   ├── prometheionDashboard/    # Main compliance dashboard
+│   │   ├── elaroDashboard/    # Main compliance dashboard
 │   │   └── complianceCopilot/       # AI compliance assistant
 │   ├── objects/                     # Custom Objects & Settings
-│   │   ├── Prometheion_AI_Settings__c/ # AI configuration
-│   │   ├── Prometheion_Compliance_Graph__b/ # Big Object for graph data
+│   │   ├── Elaro_AI_Settings__c/ # AI configuration
+│   │   ├── Elaro_Compliance_Graph__b/ # Big Object for graph data
 │   │   └── Performance_Alert_History__c/ # Alert history
 │   └── permissionsets/              # Permission sets
-│       └── Prometheion_Admin.permissionset-meta.xml
+│       └── Elaro_Admin.permissionset-meta.xml
 ├── scripts/                         # Automation scripts
 │   ├── orgInit.sh                   # Scratch org initialization
 │   └── scheduleApiSnapshot.sh       # Schedule periodic scans
@@ -630,25 +630,25 @@ npm run lint
 
 ## FAQ
 
-### Q: Does Prometheion prevent users from making non-compliant changes?
+### Q: Does Elaro prevent users from making non-compliant changes?
 
-**A**: Not in v3.0. Prometheion **detects** and **alerts** on drift, but doesn't block changes. Automated remediation and approval workflows are planned for v2+.
+**A**: Not in v3.0. Elaro **detects** and **alerts** on drift, but doesn't block changes. Automated remediation and approval workflows are planned for v2+.
 
-### Q: Does Prometheion require Shield Platform Encryption?
+### Q: Does Elaro require Shield Platform Encryption?
 
 **A**: No, but it will flag missing encryption as a compliance risk in your baseline report. If you need HIPAA or SOX compliance, Shield is strongly recommended.
 
-### Q: Can I use Prometheion in a sandbox?
+### Q: Can I use Elaro in a sandbox?
 
-**A**: Yes! We recommend testing in a sandbox first. Prometheion works in Production, Sandbox, Scratch Orgs, and Developer Orgs.
+**A**: Yes! We recommend testing in a sandbox first. Elaro works in Production, Sandbox, Scratch Orgs, and Developer Orgs.
 
-### Q: Does Prometheion store data outside Salesforce?
+### Q: Does Elaro store data outside Salesforce?
 
-**A**: No. All data stays in your Salesforce org. Prometheion does not send data to external servers (except for Slack/Jira if you configure those integrations).
+**A**: No. All data stays in your Salesforce org. Elaro does not send data to external servers (except for Slack/Jira if you configure those integrations).
 
 ### Q: What about GDPR compliance?
 
-**A**: Prometheion helps with GDPR by tracking access to personal data and providing audit evidence. See the [Compliance section in the full README](docs/compliance-frameworks.md) for details.
+**A**: Elaro helps with GDPR by tracking access to personal data and providing audit evidence. See the [Compliance section in the full README](docs/compliance-frameworks.md) for details.
 
 ### Q: Can I customize the Audit Readiness Score calculation?
 
@@ -658,7 +658,7 @@ npm run lint
 
 ## Contributing
 
-Prometheion is under active development. Contributions welcome!
+Elaro is under active development. Contributions welcome!
 
 **Priority areas for v3.0+**:
 
@@ -689,7 +689,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **🔒 [PagerDuty Security Review](docs/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md)** - Critical security findings and remediation
 - **🛡️ [Scanner Report Bundle](docs/SCANNER_REPORT_BUNDLE.md)** - AppExchange Code Analyzer guide and security scanning
-- **🧪 Test Utilities** - `PrometheionTestUserFactory`, `PrometheionTestDataFactory` for security testing
+- **🧪 Test Utilities** - `ElaroTestUserFactory`, `ElaroTestDataFactory` for security testing
 
 ### Development
 
@@ -711,13 +711,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ### Support
 
-- **🐛 [Report Issues](https://github.com/derickporter1993/prometheion/issues)** - Bug reports and feature requests
-- **💬 [Discussions](https://github.com/derickporter1993/prometheion/discussions)** - Community discussions and Q&A
-- **📧 Email Support**: support@prometheion.io
-- **🔒 Security Issues**: security@prometheion.io
+- **🐛 [Report Issues](https://github.com/derickporter1993/elaro/issues)** - Bug reports and feature requests
+- **💬 [Discussions](https://github.com/derickporter1993/elaro/discussions)** - Community discussions and Q&A
+- **📧 Email Support**: support@elaro.io
+- **🔒 Security Issues**: security@elaro.io
 
 ---
 
 ---
 
-_Prometheion™ — Keep your Salesforce org audit-ready, every day._
+_Elaro™ — Keep your Salesforce org audit-ready, every day._

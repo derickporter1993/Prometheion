@@ -1,12 +1,12 @@
 #!/bin/bash
-# Deployment script for Prometheion Framework Integration
+# Deployment script for Elaro Framework Integration
 # Deploys all 10 compliance frameworks with policies and dashboard updates
 # Usage: ./deploy-framework-integration.sh [org-alias]
 
 ORG_ALIAS=${1:-"default"}
 
 echo "=========================================="
-echo "Prometheion Framework Integration Deployment"
+echo "Elaro Framework Integration Deployment"
 echo "=========================================="
 echo "Target Org: $ORG_ALIAS"
 echo ""
@@ -14,8 +14,8 @@ echo ""
 # Step 1: Deploy Constants and Scorer
 echo "Step 1: Deploying Framework Constants and Scorer..."
 sf project deploy start \
-    --source-dir force-app/main/default/classes/PrometheionConstants.cls \
-    --source-dir force-app/main/default/classes/PrometheionComplianceScorer.cls \
+    --source-dir force-app/main/default/classes/ElaroConstants.cls \
+    --source-dir force-app/main/default/classes/ElaroComplianceScorer.cls \
     --target-org $ORG_ALIAS \
     --wait 10
 
@@ -53,7 +53,7 @@ fi
 echo ""
 echo "Step 4: Deploying Dashboard Component..."
 sf project deploy start \
-    --source-dir force-app/main/default/lwc/prometheionDashboard \
+    --source-dir force-app/main/default/lwc/elaroDashboard \
     --target-org $ORG_ALIAS \
     --wait 10
 
@@ -66,7 +66,7 @@ fi
 echo ""
 echo "Step 5: Deploying Compliance Hub Page..."
 sf project deploy start \
-    --source-dir force-app/main/default/flexipages/Prometheion_Compliance_Hub.flexipage-meta.xml \
+    --source-dir force-app/main/default/flexipages/Elaro_Compliance_Hub.flexipage-meta.xml \
     --target-org $ORG_ALIAS \
     --wait 10
 
@@ -74,7 +74,7 @@ sf project deploy start \
 echo ""
 echo "Step 6: Running Compliance Scorer Tests..."
 sf apex run test \
-    --class-names PrometheionComplianceScorerTest \
+    --class-names ElaroComplianceScorerTest \
     --result-format human \
     --code-coverage \
     --target-org $ORG_ALIAS \
@@ -94,7 +94,7 @@ echo "  ✅ HIPAA, SOC 2, NIST, FedRAMP, GDPR"
 echo "  ✅ SOX, PCI-DSS, CCPA, GLBA, ISO 27001"
 echo ""
 echo "Next Steps:"
-echo "1. Navigate to Prometheion Compliance Hub in your org"
+echo "1. Navigate to Elaro Compliance Hub in your org"
 echo "2. Verify all 10 frameworks appear in the dashboard"
 echo "3. Run a compliance scan to see framework scores"
 echo "4. Review compliance policies in Setup > Custom Metadata Types"

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides instructions for generating Apex test coverage reports and verifying that the Prometheion package meets the AppExchange requirement of ≥75% code coverage.
+This document provides instructions for generating Apex test coverage reports and verifying that the Elaro package meets the AppExchange requirement of ≥75% code coverage.
 
 ## Prerequisites
 
@@ -16,29 +16,29 @@ This document provides instructions for generating Apex test coverage reports an
 
 ```bash
 # Create a fresh scratch org
-sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-coverage -d 7
+sf org create scratch -f config/elaro-scratch-def.json -a elaro-coverage -d 7
 
 # Or use existing org
-sf org display -o prometheion-coverage
+sf org display -o elaro-coverage
 ```
 
 ### Step 2: Deploy All Metadata
 
 ```bash
 # Deploy all source to scratch org
-sf project deploy start -o prometheion-coverage
+sf project deploy start -o elaro-coverage
 
 # Verify deployment succeeded
-sf project deploy report -o prometheion-coverage
+sf project deploy report -o elaro-coverage
 ```
 
 ### Step 3: Assign Permission Sets
 
 ```bash
 # Assign required permission sets
-sf org assign permset --name Prometheion_Admin -o prometheion-coverage
-sf org assign permset --name Prometheion_User -o prometheion-coverage
-sf org assign permset --name Prometheion_Auditor -o prometheion-coverage
+sf org assign permset --name Elaro_Admin -o elaro-coverage
+sf org assign permset --name Elaro_User -o elaro-coverage
+sf org assign permset --name Elaro_Auditor -o elaro-coverage
 ```
 
 ### Step 4: Run All Apex Tests with Coverage
@@ -46,7 +46,7 @@ sf org assign permset --name Prometheion_Auditor -o prometheion-coverage
 ```bash
 # Run all tests and generate coverage report
 sf apex run test \
-  --target-org prometheion-coverage \
+  --target-org elaro-coverage \
   --code-coverage \
   --result-format human \
   --wait 30 \
@@ -54,7 +54,7 @@ sf apex run test \
 
 # Save results to file
 sf apex run test \
-  --target-org prometheion-coverage \
+  --target-org elaro-coverage \
   --code-coverage \
   --result-format human \
   --wait 30 \
@@ -67,7 +67,7 @@ sf apex run test \
 ```bash
 # Generate JSON format for programmatic analysis
 sf apex run test \
-  --target-org prometheion-coverage \
+  --target-org elaro-coverage \
   --code-coverage \
   --result-format json \
   --wait 30 \
@@ -96,10 +96,10 @@ The output will show:
 
 After running tests, verify coverage for key classes:
 
-- `PrometheionSecurityUtils`: 95%+
-- `PrometheionComplianceScorer`: 85%+
+- `ElaroSecurityUtils`: 95%+
+- `ElaroComplianceScorer`: 85%+
 - `ComplianceDashboardController`: 85%+
-- `PrometheionExecutiveKPIController`: 85%+
+- `ElaroExecutiveKPIController`: 85%+
 - All AI service classes: 80%+
 
 ## Troubleshooting
@@ -113,8 +113,8 @@ If any class has <75% coverage:
    ```bash
    # View detailed coverage for specific class
    sf apex run test \
-     --target-org prometheion-coverage \
-     --class-names PrometheionSecurityUtils \
+     --target-org elaro-coverage \
+     --class-names ElaroSecurityUtils \
      --code-coverage \
      --result-format human
    ```
@@ -183,7 +183,7 @@ Before deploying to production:
 
 ```bash
 # Run coverage check script
-./scripts/checkCoverage.sh prometheion-coverage
+./scripts/checkCoverage.sh elaro-coverage
 ```
 
 ### CI/CD Integration
@@ -191,7 +191,7 @@ Before deploying to production:
 Coverage checks should be integrated into CI/CD pipeline:
 
 ```yaml
-# .github/workflows/prometheion-ci.yml
+# .github/workflows/elaro-ci.yml
 - name: Run Apex Tests with Coverage
   run: |
     sf apex run test \

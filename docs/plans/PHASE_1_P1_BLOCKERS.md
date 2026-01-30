@@ -24,9 +24,9 @@ Phase 1 addresses all AppExchange-blocking issues across security, testing, and 
 
 ## 1.1 SECURITY: FLS/CRUD VIOLATIONS (8 hours)
 
-### Task S1: PrometheionQuickActionsService - Add WITH SECURITY_ENFORCED
+### Task S1: ElaroQuickActionsService - Add WITH SECURITY_ENFORCED
 
-**File:** `force-app/main/default/classes/PrometheionQuickActionsService.cls`
+**File:** `force-app/main/default/classes/ElaroQuickActionsService.cls`
 
 | Location | Lines | Current Query |
 |----------|-------|---------------|
@@ -54,9 +54,9 @@ List<User> users = [SELECT Id, Name FROM User WHERE IsActive = true WITH SECURIT
 
 ---
 
-### Task S2: PrometheionQuickActionsService - Add CRUD Validation
+### Task S2: ElaroQuickActionsService - Add CRUD Validation
 
-**File:** `force-app/main/default/classes/PrometheionQuickActionsService.cls`
+**File:** `force-app/main/default/classes/ElaroQuickActionsService.cls`
 
 | Location | Line | Operation |
 |----------|------|-----------|
@@ -151,9 +151,9 @@ if (Schema.sObjectType.Performance_Alert_History__c.isCreateable()) {
 
 ## 1.2 SECURITY: AUTHENTICATION & INJECTION (6 hours)
 
-### Task S6: PrometheionScoreCallback - Add Authentication
+### Task S6: ElaroScoreCallback - Add Authentication
 
-**File:** `force-app/main/default/classes/PrometheionScoreCallback.cls`
+**File:** `force-app/main/default/classes/ElaroScoreCallback.cls`
 **Lines:** 14-15
 
 **Current State (Vulnerable):**
@@ -191,21 +191,21 @@ private static Boolean validateApiKey(String apiKey) {
         return false;
     }
     // Retrieve expected key from Custom Metadata or Protected Custom Setting
-    Prometheion_API_Config__mdt config = Prometheion_API_Config__mdt.getInstance('ScoreCallback');
+    Elaro_API_Config__mdt config = Elaro_API_Config__mdt.getInstance('ScoreCallback');
     return config != null && apiKey == config.API_Key__c;
 }
 ```
 
 **Additional Setup Required:**
-1. Create Custom Metadata Type: `Prometheion_API_Config__mdt`
+1. Create Custom Metadata Type: `Elaro_API_Config__mdt`
 2. Add field: `API_Key__c` (Text, Encrypted)
 3. Create record: `ScoreCallback` with secure API key
 
 ---
 
-### Task S7: PrometheionScoreCallback - Remove Stack Trace Exposure
+### Task S7: ElaroScoreCallback - Remove Stack Trace Exposure
 
-**File:** `force-app/main/default/classes/PrometheionScoreCallback.cls`
+**File:** `force-app/main/default/classes/ElaroScoreCallback.cls`
 **Lines:** 102-109
 
 **Current State (Vulnerable):**
@@ -240,12 +240,12 @@ res.responseBody = Blob.valueOf(JSON.serialize(new Map<String, Object>{
 
 **Current State (Vulnerable):**
 ```apex
-'url' => orgUrl + '/apex/PrometheionApprove?id=' + result.remediationId
+'url' => orgUrl + '/apex/ElaroApprove?id=' + result.remediationId
 ```
 
 **Required Fix:**
 ```apex
-'url' => orgUrl + '/apex/PrometheionApprove?id=' + EncodingUtil.urlEncode(result.remediationId, 'UTF-8')
+'url' => orgUrl + '/apex/ElaroApprove?id=' + EncodingUtil.urlEncode(result.remediationId, 'UTF-8')
 ```
 
 Apply same fix to line 209.
@@ -284,7 +284,7 @@ req.setBody(jsonPayload);
 
 **File:** `force-app/main/default/classes/TeamsNotifier.cls`
 
-Add retry mechanism similar to `PrometheionSlackNotifierQueueable`:
+Add retry mechanism similar to `ElaroSlackNotifierQueueable`:
 
 ```apex
 private static final Integer MAX_RETRIES = 3;
@@ -338,14 +338,14 @@ HttpResponse res = new Http().send(req);
 
 ## 1.4 TEST CLASS CREATION (20 hours)
 
-### Task T1: PrometheionQuickActionsServiceTest
+### Task T1: ElaroQuickActionsServiceTest
 
-**File to Create:** `force-app/main/default/classes/PrometheionQuickActionsServiceTest.cls`
+**File to Create:** `force-app/main/default/classes/ElaroQuickActionsServiceTest.cls`
 
 **Test Methods Required:**
 ```apex
 @IsTest
-private class PrometheionQuickActionsServiceTest {
+private class ElaroQuickActionsServiceTest {
 
     @TestSetup
     static void setupTestData() {
@@ -388,20 +388,20 @@ private class PrometheionQuickActionsServiceTest {
 
 ---
 
-### Task T2: PrometheionGraphIndexerTest
+### Task T2: ElaroGraphIndexerTest
 
-**File to Create:** `force-app/main/default/classes/PrometheionGraphIndexerTest.cls`
+**File to Create:** `force-app/main/default/classes/ElaroGraphIndexerTest.cls`
 
 **Test Methods Required:**
 ```apex
 @IsTest
-private class PrometheionGraphIndexerTest {
+private class ElaroGraphIndexerTest {
 
     @IsTest
     static void testGenerateDeterministicHash() {
         // Verify same inputs produce same hash
-        String hash1 = PrometheionGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
-        String hash2 = PrometheionGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
+        String hash1 = ElaroGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
+        String hash2 = ElaroGraphIndexer.generateDeterministicHash('TEST', '001000000000001', 'SOC2');
         System.assertEquals(hash1, hash2, 'Hash must be deterministic');
     }
 
@@ -427,8 +427,8 @@ private class PrometheionGraphIndexerTest {
 ### Task T3-T5: Additional Test Classes
 
 Create test classes for:
-- `PrometheionGDPRDataErasureServiceTest.cls`
-- `PrometheionScoreCallbackTest.cls`
+- `ElaroGDPRDataErasureServiceTest.cls`
+- `ElaroScoreCallbackTest.cls`
 - `ISO27001QuarterlyReviewSchedulerTest.cls`
 
 Each should have >75% coverage with positive, negative, and bulk tests.
@@ -437,9 +437,9 @@ Each should have >75% coverage with positive, negative, and bulk tests.
 
 ## 1.5 FIX EXISTING TEST ISSUES (4 hours)
 
-### Task TF1: Fix PrometheionEventPublisherTest
+### Task TF1: Fix ElaroEventPublisherTest
 
-**File:** `force-app/main/default/classes/PrometheionEventPublisherTest.cls`
+**File:** `force-app/main/default/classes/ElaroEventPublisherTest.cls`
 
 **Replace meaningless assertions:**
 
@@ -449,7 +449,7 @@ System.assert(true, 'Event published successfully');
 
 // AFTER
 Test.startTest();
-PrometheionEventPublisher.publishEvent(testEvent);
+ElaroEventPublisher.publishEvent(testEvent);
 Test.stopTest();
 
 // Query for published events or verify side effects
@@ -599,14 +599,14 @@ public class TriggerRecursionGuard {
 **Apply to all triggers:**
 
 ```apex
-trigger PrometheionAlertTrigger on Alert__c (after insert) {
-    if (!TriggerRecursionGuard.isFirstRun('PrometheionAlertTrigger')) {
+trigger ElaroAlertTrigger on Alert__c (after insert) {
+    if (!TriggerRecursionGuard.isFirstRun('ElaroAlertTrigger')) {
         return;
     }
     try {
         // Existing logic
     } finally {
-        TriggerRecursionGuard.reset('PrometheionAlertTrigger');
+        TriggerRecursionGuard.reset('ElaroAlertTrigger');
     }
 }
 ```
@@ -617,7 +617,7 @@ trigger PrometheionAlertTrigger on Alert__c (after insert) {
 
 **Pattern for each trigger:**
 
-1. Create handler class: `PrometheionAlertTriggerHandler.cls`
+1. Create handler class: `ElaroAlertTriggerHandler.cls`
 2. Move all business logic from trigger to handler
 3. Trigger only calls handler methods
 
@@ -625,24 +625,24 @@ trigger PrometheionAlertTrigger on Alert__c (after insert) {
 
 ```apex
 // Trigger (minimal)
-trigger PrometheionAlertTrigger on Alert__c (after insert) {
-    if (!TriggerRecursionGuard.isFirstRun('PrometheionAlertTrigger')) {
+trigger ElaroAlertTrigger on Alert__c (after insert) {
+    if (!TriggerRecursionGuard.isFirstRun('ElaroAlertTrigger')) {
         return;
     }
     try {
-        PrometheionAlertTriggerHandler.handleAfterInsert(Trigger.new);
+        ElaroAlertTriggerHandler.handleAfterInsert(Trigger.new);
     } finally {
-        TriggerRecursionGuard.reset('PrometheionAlertTrigger');
+        TriggerRecursionGuard.reset('ElaroAlertTrigger');
     }
 }
 
 // Handler (all logic)
-public with sharing class PrometheionAlertTriggerHandler {
+public with sharing class ElaroAlertTriggerHandler {
     public static void handleAfterInsert(List<Alert__c> newAlerts) {
-        List<Prometheion_Alert_Event__e> events = new List<Prometheion_Alert_Event__e>();
+        List<Elaro_Alert_Event__e> events = new List<Elaro_Alert_Event__e>();
         for (Alert__c alert : newAlerts) {
             if (alert.Severity__c == 'CRITICAL' || alert.Severity__c == 'HIGH') {
-                events.add(new Prometheion_Alert_Event__e(
+                events.add(new Elaro_Alert_Event__e(
                     Alert_Id__c = alert.Id,
                     Alert_Type__c = alert.Alert_Type__c,
                     Severity__c = alert.Severity__c,
@@ -684,9 +684,9 @@ public with sharing class PrometheionAlertTriggerHandler {
 
 ---
 
-### Task E2: prometheionAiSettings.html
+### Task E2: elaroAiSettings.html
 
-**File:** `force-app/main/default/lwc/prometheionAiSettings/prometheionAiSettings.html`
+**File:** `force-app/main/default/lwc/elaroAiSettings/elaroAiSettings.html`
 
 Fix ALL malformed handlers:
 - Lines 8-12: `onchange="{handleToggleAI;}"` → `onchange={handleToggleAI}`
@@ -698,9 +698,9 @@ Fix ALL malformed handlers:
 
 ---
 
-### Task E3: prometheionReadinessScore.html
+### Task E3: elaroReadinessScore.html
 
-**File:** `force-app/main/default/lwc/prometheionReadinessScore/prometheionReadinessScore.html`
+**File:** `force-app/main/default/lwc/elaroReadinessScore/elaroReadinessScore.html`
 
 - Lines 54-58: `onclick="{handleGenerateSoc2;}"` → `onclick={handleGenerateSoc2}`
 - Lines 65-69: Same pattern
@@ -722,7 +722,7 @@ Fix ALL malformed handlers:
 ```
 
 **Files to update:**
-- `prometheionCopilot.html` (Lines 8-12, 21-23, 49-85, 106-108, 117-121, 130-133, 167-170)
+- `elaroCopilot.html` (Lines 8-12, 21-23, 49-85, 106-108, 117-121, 130-133, 167-170)
 - All other components with SVG icons
 
 ---
@@ -746,9 +746,9 @@ Fix ALL malformed handlers:
 
 ---
 
-### Task A3: prometheionROICalculator.html - Fix Labels
+### Task A3: elaroROICalculator.html - Fix Labels
 
-**File:** `force-app/main/default/lwc/prometheionROICalculator/prometheionROICalculator.html`
+**File:** `force-app/main/default/lwc/elaroROICalculator/elaroROICalculator.html`
 
 ```html
 <!-- BEFORE -->
@@ -854,7 +854,7 @@ Apply to all form inputs in the component.
 
 ### Task J2: Wrap JSON.parse in Try-Catch
 
-**File:** `prometheionDrillDownViewer.js`
+**File:** `elaroDrillDownViewer.js`
 **Lines:** 29, 69, 86
 
 ```javascript
@@ -969,9 +969,9 @@ describe('c-component-name', () => {
 - systemMonitorDashboard
 - flowExecutionMonitor
 - performanceAlertPanel
-- prometheionAiSettings
-- prometheionROICalculator
-- prometheionTrendAnalyzer
+- elaroAiSettings
+- elaroROICalculator
+- elaroTrendAnalyzer
 - riskHeatmap
 - complianceScoreCard
 

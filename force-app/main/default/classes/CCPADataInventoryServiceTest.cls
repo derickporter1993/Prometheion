@@ -2,7 +2,7 @@
  * Test class for CCPADataInventoryService
  * Tests data categorization, data sales identification, third-party sharing
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

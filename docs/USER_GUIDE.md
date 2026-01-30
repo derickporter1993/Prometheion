@@ -1,6 +1,6 @@
-# Prometheion Compliance Hub - User Guide
+# Elaro Compliance Hub - User Guide
 
-Welcome to Prometheion Compliance Hub, your comprehensive solution for managing multi-framework compliance in Salesforce. This guide will help you navigate the platform, understand its features, and maximize your compliance management efficiency.
+Welcome to Elaro Compliance Hub, your comprehensive solution for managing multi-framework compliance in Salesforce. This guide will help you navigate the platform, understand its features, and maximize your compliance management efficiency.
 
 ---
 
@@ -17,19 +17,19 @@ Welcome to Prometheion Compliance Hub, your comprehensive solution for managing 
 
 ## 1. Getting Started
 
-### Accessing Prometheion
+### Accessing Elaro
 
-After installation, access Prometheion through the Salesforce App Launcher:
+After installation, access Elaro through the Salesforce App Launcher:
 
 1. Click the **App Launcher** icon (9 dots) in the top navigation
-2. Search for **"Prometheion"** or **"Compliance Hub"**
-3. Click the Prometheion app tile to launch
+2. Search for **"Elaro"** or **"Compliance Hub"**
+3. Click the Elaro app tile to launch
 
-Alternatively, navigate directly to the Prometheion Dashboard tab if it's been added to your navigation menu.
+Alternatively, navigate directly to the Elaro Dashboard tab if it's been added to your navigation menu.
 
 ### Navigation Overview
 
-The Prometheion interface consists of several key areas:
+The Elaro interface consists of several key areas:
 
 - **Main Dashboard**: Central hub displaying compliance scores, alerts, and key metrics
 - **Framework Selector**: Choose which compliance framework to view (HIPAA, SOC2, GDPR, etc.)
@@ -39,9 +39,9 @@ The Prometheion interface consists of several key areas:
 
 ### Quick Start Checklist
 
-To get started with Prometheion:
+To get started with Elaro:
 
-- [ ] Access the Prometheion Dashboard
+- [ ] Access the Elaro Dashboard
 - [ ] Review your current compliance scores across all frameworks
 - [ ] Explore the AI Copilot with a sample query
 - [ ] Run your first compliance assessment
@@ -52,7 +52,7 @@ To get started with Prometheion:
 
 ## 2. Dashboard Overview
 
-The Prometheion Dashboard provides a unified view of your organization's compliance posture across all supported frameworks.
+The Elaro Dashboard provides a unified view of your organization's compliance posture across all supported frameworks.
 
 ![Dashboard Overview](images/dashboard-overview.png)
 
@@ -109,7 +109,7 @@ Each framework's score is calculated based on:
 
 ## 3. Supported Compliance Frameworks
 
-Prometheion supports multiple compliance frameworks simultaneously, allowing you to manage all your compliance requirements from a single platform.
+Elaro supports multiple compliance frameworks simultaneously, allowing you to manage all your compliance requirements from a single platform.
 
 ![Framework Selector](images/framework-selector.png)
 
@@ -209,7 +209,7 @@ Prometheion supports multiple compliance frameworks simultaneously, allowing you
 ### Running a Compliance Assessment
 
 1. **Navigate to Dashboard**
-   - Open the Prometheion Dashboard
+   - Open the Elaro Dashboard
    - Select the framework you want to assess from the framework selector
 
 2. **Initiate Assessment**
@@ -310,7 +310,7 @@ Prometheion supports multiple compliance frameworks simultaneously, allowing you
 
 ## 5. AI Copilot Usage Guide
 
-The Prometheion AI Copilot provides intelligent, context-aware assistance for compliance management tasks.
+The Elaro AI Copilot provides intelligent, context-aware assistance for compliance management tasks.
 
 ![AI Copilot](images/ai-copilot.png)
 
@@ -433,7 +433,7 @@ All reports can be generated as PDF documents:
 5. **Download**: Save the PDF to your local system or Salesforce Files
 
 **PDF Features**:
-- Professional formatting with Prometheion branding
+- Professional formatting with Elaro branding
 - Table of contents and page numbering
 - Charts and visualizations
 - Appendices with detailed evidence
@@ -480,7 +480,7 @@ Set up automated report generation:
 
 - **Admin Guide**: See [ADMIN_GUIDE.md](ADMIN_GUIDE.md) for configuration and administration
 - **Setup Guide**: See [SETUP_GUIDE.md](SETUP_GUIDE.md) for installation instructions
-- **Support**: Contact your system administrator or Prometheion support team
+- **Support**: Contact your system administrator or Elaro support team
 
 ---
 

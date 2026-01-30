@@ -1,0 +1,39 @@
+<template>
+  <lightning-card title="Elaro Event Monitor" icon-name="standard:event">
+    <div class="slds-var-p-around_medium">
+      <template lwc:if={hasEvents}>
+        <table
+          class="slds-table slds-table_cell-buffer slds-table_bordered"
+          role="table"
+          aria-label="Elaro event monitor table"
+        >
+          <thead>
+            <tr>
+              <th scope="col">Event Type</th>
+              <th scope="col">Entity Type</th>
+              <th scope="col">Entity ID</th>
+              <th scope="col">Framework</th>
+              <th scope="col">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template for:each={events} for:item="event">
+              <tr key={event.id}>
+                <td>{event.eventType}</td>
+                <td>{event.entityType}</td>
+                <td>{event.entityId}</td>
+                <td>{event.framework}</td>
+                <td>{event.timestamp}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <template lwc:if={noEvents}>
+        <p class="slds-text-align_center slds-var-p-around_medium">
+          No events received yet. Waiting for events...
+        </p>
+      </template>
+    </div>
+  </lightning-card>
+</template>

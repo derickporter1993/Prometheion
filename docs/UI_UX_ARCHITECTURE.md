@@ -15,7 +15,7 @@
 
 ### Overview
 
-Prometheion provides a comprehensive, AI-powered compliance and governance platform for Salesforce organizations. The UI/UX architecture leverages Lightning Web Components (LWC) and the Salesforce Lightning Design System (SLDS) to deliver an intuitive, accessible, and performant user experience.
+Elaro provides a comprehensive, AI-powered compliance and governance platform for Salesforce organizations. The UI/UX architecture leverages Lightning Web Components (LWC) and the Salesforce Lightning Design System (SLDS) to deliver an intuitive, accessible, and performant user experience.
 
 ### Design Principles
 
@@ -40,11 +40,11 @@ Prometheion provides a comprehensive, AI-powered compliance and governance platf
 
 ### Lightning Application Structure
 
-**File**: `force-app/main/default/applications/Prometheion.app-meta.xml`
+**File**: `force-app/main/default/applications/Elaro.app-meta.xml`
 
 **Configuration**:
 
-- **App Label**: Prometheion
+- **App Label**: Elaro
 - **Description**: AI-Powered Compliance & Governance Platform for Salesforce
 - **Navigation Type**: Standard
 - **UI Type**: Lightning only (`Lightning`)
@@ -60,9 +60,9 @@ Prometheion provides a comprehensive, AI-powered compliance and governance platf
 **Tabs** (17 total):
 
 1. `standard-home` - Standard Home tab
-2. `Prometheion_All_Components` - Component showcase page
-3. `Prometheion_Compliance_Hub` - Main compliance hub
-4. `Prometheion_Dashboard` - Main dashboard
+2. `Elaro_All_Components` - Component showcase page
+3. `Elaro_Compliance_Hub` - Main compliance hub
+4. `Elaro_Dashboard` - Main dashboard
 5. `Compliance_Evidence__c` - Evidence object tab
 6. `Compliance_Gap__c` - Gap object tab
 7. `Compliance_Score__c` - Score object tab
@@ -85,29 +85,29 @@ Components are organized by functional category:
 
 | Component                          | File Path                                                      | Targets                                  | Description                                                     |
 | ---------------------------------- | -------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------- |
-| `prometheionDashboard`             | `force-app/main/default/lwc/prometheionDashboard/`             | AppPage, HomePage, RecordPage, Community | Comprehensive compliance dashboard with multi-framework scoring |
+| `elaroDashboard`             | `force-app/main/default/lwc/elaroDashboard/`             | AppPage, HomePage, RecordPage, Community | Comprehensive compliance dashboard with multi-framework scoring |
 | `complianceDashboard`              | `force-app/main/default/lwc/complianceDashboard/`              | AppPage, RecordPage, HomePage            | Framework-specific compliance overview                          |
 | `systemMonitorDashboard`           | `force-app/main/default/lwc/systemMonitorDashboard/`           | AppPage, HomePage, RecordPage            | System health and governor limit monitoring                     |
 | `apiUsageDashboard`                | `force-app/main/default/lwc/apiUsageDashboard/`                | AppPage, HomePage                        | API usage tracking and limits                                   |
 | `executiveKpiDashboard`            | `force-app/main/default/lwc/executiveKpiDashboard/`            | AppPage, HomePage                        | Executive-level KPI visualization                               |
-| `prometheionExecutiveKPIDashboard` | `force-app/main/default/lwc/prometheionExecutiveKPIDashboard/` | AppPage, RecordPage, HomePage            | Enhanced executive dashboard                                    |
+| `elaroExecutiveKPIDashboard` | `force-app/main/default/lwc/elaroExecutiveKPIDashboard/` | AppPage, RecordPage, HomePage            | Enhanced executive dashboard                                    |
 
 #### AI/Copilot (3 components)
 
 | Component               | File Path                                           | Targets                                  | Description                                                     |
 | ----------------------- | --------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------- |
-| `prometheionCopilot`    | `force-app/main/default/lwc/prometheionCopilot/`    | AppPage, HomePage, RecordPage, Community | AI-powered compliance assistant with natural language interface |
+| `elaroCopilot`    | `force-app/main/default/lwc/elaroCopilot/`    | AppPage, HomePage, RecordPage, Community | AI-powered compliance assistant with natural language interface |
 | `complianceCopilot`     | `force-app/main/default/lwc/complianceCopilot/`     | AppPage, RecordPage, HomePage            | Framework-specific compliance assistant                         |
-| `prometheionAiSettings` | `force-app/main/default/lwc/prometheionAiSettings/` | AppPage, HomePage, RecordPage            | AI governance and configuration settings                        |
+| `elaroAiSettings` | `force-app/main/default/lwc/elaroAiSettings/` | AppPage, HomePage, RecordPage            | AI governance and configuration settings                        |
 
 #### Analytics (4 components)
 
 | Component                         | File Path                                                     | Targets                       | Description                                    |
 | --------------------------------- | ------------------------------------------------------------- | ----------------------------- | ---------------------------------------------- |
-| `prometheionTrendAnalyzer`        | `force-app/main/default/lwc/prometheionTrendAnalyzer/`        | AppPage, RecordPage, HomePage | Trend analysis and forecasting                 |
-| `prometheionComparativeAnalytics` | `force-app/main/default/lwc/prometheionComparativeAnalytics/` | AppPage, RecordPage, HomePage | Comparative analysis across frameworks/periods |
-| `prometheionDynamicReportBuilder` | `force-app/main/default/lwc/prometheionDynamicReportBuilder/` | AppPage, RecordPage, HomePage | Dynamic report generation                      |
-| `prometheionDrillDownViewer`      | `force-app/main/default/lwc/prometheionDrillDownViewer/`      | AppPage, RecordPage, HomePage | Interactive drill-down exploration             |
+| `elaroTrendAnalyzer`        | `force-app/main/default/lwc/elaroTrendAnalyzer/`        | AppPage, RecordPage, HomePage | Trend analysis and forecasting                 |
+| `elaroComparativeAnalytics` | `force-app/main/default/lwc/elaroComparativeAnalytics/` | AppPage, RecordPage, HomePage | Comparative analysis across frameworks/periods |
+| `elaroDynamicReportBuilder` | `force-app/main/default/lwc/elaroDynamicReportBuilder/` | AppPage, RecordPage, HomePage | Dynamic report generation                      |
+| `elaroDrillDownViewer`      | `force-app/main/default/lwc/elaroDrillDownViewer/`      | AppPage, RecordPage, HomePage | Interactive drill-down exploration             |
 
 #### Visualization (4 components)
 
@@ -125,17 +125,17 @@ Components are organized by functional category:
 | `performanceAlertPanel`      | `force-app/main/default/lwc/performanceAlertPanel/`      | AppPage, HomePage                  | Real-time performance alerts          |
 | `flowExecutionMonitor`       | `force-app/main/default/lwc/flowExecutionMonitor/`       | AppPage, HomePage                  | Flow execution tracking               |
 | `deploymentMonitorDashboard` | `force-app/main/default/lwc/deploymentMonitorDashboard/` | AppPage, HomePage                  | Deployment job monitoring             |
-| `prometheionEventMonitor`    | `force-app/main/default/lwc/prometheionEventMonitor/`    | AppPage, HomePage                  | Platform event monitoring             |
-| `prometheionEventExplorer`   | `force-app/main/default/lwc/prometheionEventExplorer/`   | AppPage, RecordPage, HomePage, Tab | Real-time event stream with filtering |
+| `elaroEventMonitor`    | `force-app/main/default/lwc/elaroEventMonitor/`    | AppPage, HomePage                  | Platform event monitoring             |
+| `elaroEventExplorer`   | `force-app/main/default/lwc/elaroEventExplorer/`   | AppPage, RecordPage, HomePage, Tab | Real-time event stream with filtering |
 
 #### Tools (4 components)
 
 | Component                        | File Path                                                    | Targets                            | Description                          |
 | -------------------------------- | ------------------------------------------------------------ | ---------------------------------- | ------------------------------------ |
-| `prometheionAuditWizard`         | `force-app/main/default/lwc/prometheionAuditWizard/`         | AppPage, RecordPage, HomePage, Tab | 5-step guided audit package workflow |
-| `prometheionAuditPackageBuilder` | `force-app/main/default/lwc/prometheionAuditPackageBuilder/` | AppPage, RecordPage, HomePage      | Audit package builder                |
+| `elaroAuditWizard`         | `force-app/main/default/lwc/elaroAuditWizard/`         | AppPage, RecordPage, HomePage, Tab | 5-step guided audit package workflow |
+| `elaroAuditPackageBuilder` | `force-app/main/default/lwc/elaroAuditPackageBuilder/` | AppPage, RecordPage, HomePage      | Audit package builder                |
 | `auditReportGenerator`           | `force-app/main/default/lwc/auditReportGenerator/`           | AppPage, RecordPage                | Audit report generation              |
-| `prometheionROICalculator`       | `force-app/main/default/lwc/prometheionROICalculator/`       | AppPage, RecordPage, HomePage      | ROI calculation tool                 |
+| `elaroROICalculator`       | `force-app/main/default/lwc/elaroROICalculator/`       | AppPage, RecordPage, HomePage      | ROI calculation tool                 |
 
 #### Utilities (4 components)
 
@@ -143,7 +143,7 @@ Components are organized by functional category:
 | --------------------------- | ------------------------------------------------------- | ---------------------------------- | ----------------------------- |
 | `frameworkSelector`         | `force-app/main/default/lwc/frameworkSelector/`         | AppPage, RecordPage, HomePage      | Framework selection component |
 | `complianceGapList`         | `force-app/main/default/lwc/complianceGapList/`         | AppPage, RecordPage, HomePage      | Gap listing and filtering     |
-| `prometheionReadinessScore` | `force-app/main/default/lwc/prometheionReadinessScore/` | AppPage, HomePage, RecordPage      | Readiness score calculator    |
+| `elaroReadinessScore` | `force-app/main/default/lwc/elaroReadinessScore/` | AppPage, HomePage, RecordPage      | Readiness score calculator    |
 | `controlMappingMatrix`      | `force-app/main/default/lwc/controlMappingMatrix/`      | AppPage, RecordPage, HomePage, Tab | Control mapping visualization |
 
 #### Utilities (Additional)
@@ -157,16 +157,16 @@ Components are organized by functional category:
 - **AppPage**: 31 components (100%)
 - **HomePage**: 21 components (68%)
 - **RecordPage**: 24 components (77%)
-- **Community**: 2 components (6% - `prometheionDashboard`, `prometheionCopilot`)
-- **Tab**: 4 components (13% - `prometheionAuditWizard`, `prometheionEventExplorer`, `controlMappingMatrix`)
+- **Community**: 2 components (6% - `elaroDashboard`, `elaroCopilot`)
+- **Tab**: 4 components (13% - `elaroAuditWizard`, `elaroEventExplorer`, `controlMappingMatrix`)
 
 ### FlexiPage Structure
 
 #### App Pages (3 pages)
 
-**1. Prometheion Compliance Hub**
+**1. Elaro Compliance Hub**
 
-- **File**: `force-app/main/default/flexipages/Prometheion_Compliance_Hub.flexipage-meta.xml`
+- **File**: `force-app/main/default/flexipages/Elaro_Compliance_Hub.flexipage-meta.xml`
 - **Template**: `flexipage:defaultAppHomeTemplate`
 - **Description**: Central dashboard for compliance monitoring, AI copilot, and audit readiness
 - **Components**: 20+ components organized in main region:
@@ -175,16 +175,16 @@ Components are organized by functional category:
   - Analytics & Reporting section (5 components)
   - System Monitoring section (5 components)
 
-**2. Prometheion Compliance Hub Minimal**
+**2. Elaro Compliance Hub Minimal**
 
-- **File**: `force-app/main/default/flexipages/Prometheion_Compliance_Hub_Minimal.flexipage-meta.xml`
+- **File**: `force-app/main/default/flexipages/Elaro_Compliance_Hub_Minimal.flexipage-meta.xml`
 - **Template**: `flexipage:defaultAppHomeTemplate`
 - **Description**: Simplified version with core components
 - **Components**: Reduced set for performance/visibility
 
-**3. Prometheion All Components**
+**3. Elaro All Components**
 
-- **File**: `force-app/main/default/flexipages/Prometheion_All_Components.flexipage-meta.xml`
+- **File**: `force-app/main/default/flexipages/Elaro_All_Components.flexipage-meta.xml`
 - **Template**: `flexipage:defaultAppHomeTemplate`
 - **Description**: Comprehensive showcase with all components organized in structured sections
 - **Components**: All 31+ components organized by functional category
@@ -232,12 +232,12 @@ All record pages use the standard template `flexipage:recordHomeTemplateDesktop`
 
 **NavigationMixin Usage**: 7 components use `NavigationMixin` for programmatic navigation:
 
-1. `prometheionDashboard.js` - Record and app page navigation
+1. `elaroDashboard.js` - Record and app page navigation
 2. `complianceScoreCard.js` - Record navigation for framework details
-3. `prometheionDrillDownViewer.js` - Navigation to detailed views
-4. `prometheionAuditWizard.js` - Multi-step workflow navigation
-5. `prometheionAuditPackageBuilder.js` - Navigation to generated packages
-6. `prometheionReadinessScore.js` - Navigation to evidence packs
+3. `elaroDrillDownViewer.js` - Navigation to detailed views
+4. `elaroAuditWizard.js` - Multi-step workflow navigation
+5. `elaroAuditPackageBuilder.js` - Navigation to generated packages
+6. `elaroReadinessScore.js` - Navigation to evidence packs
 
 **Navigation Patterns**:
 
@@ -255,7 +255,7 @@ this[NavigationMixin.Navigate]({
 this[NavigationMixin.Navigate]({
   type: "standard__namedPage",
   attributes: {
-    pageName: "Prometheion_Compliance_Hub",
+    pageName: "Elaro_Compliance_Hub",
   },
 });
 
@@ -295,31 +295,31 @@ this[NavigationMixin.Navigate]({
 
 **11 components** include custom CSS files for specialized styling:
 
-1. `prometheionDashboard.css` - Modern dark theme with gradient backgrounds
+1. `elaroDashboard.css` - Modern dark theme with gradient backgrounds
 2. `complianceDashboard.css` - Mobile-first responsive grid layout
-3. `prometheionCopilot.css` - Chat interface styling
+3. `elaroCopilot.css` - Chat interface styling
 4. `performanceAlertPanel.css` - Alert panel styling
-5. `prometheionROICalculator.css` - Calculator-specific styling
+5. `elaroROICalculator.css` - Calculator-specific styling
 6. `controlMappingMatrix.css` - Matrix visualization styling
 7. `deploymentMonitorDashboard.css` - Deployment dashboard styling
 8. `flowExecutionMonitor.css` - Flow monitoring styling
 9. `apiUsageDashboard.css` - API dashboard card styling
-10. `prometheionEventExplorer.css` - Event explorer styling
-11. `prometheionAuditWizard.css` - Wizard step styling
+10. `elaroEventExplorer.css` - Event explorer styling
+11. `elaroAuditWizard.css` - Wizard step styling
 
 **Color Schemes**:
 
-**Prometheion Dashboard Theme** (`prometheionDashboard.css`):
+**Elaro Dashboard Theme** (`elaroDashboard.css`):
 
 ```css
---prometheion-primary: #6366f1;
---prometheion-primary-light: #818cf8;
---prometheion-accent: #22d3ee;
---prometheion-success: #10b981;
---prometheion-warning: #f59e0b;
---prometheion-danger: #ef4444;
---prometheion-bg: #0f172a;
---prometheion-text: #f1f5f9;
+--elaro-primary: #6366f1;
+--elaro-primary-light: #818cf8;
+--elaro-accent: #22d3ee;
+--elaro-success: #10b981;
+--elaro-warning: #f59e0b;
+--elaro-danger: #ef4444;
+--elaro-bg: #0f172a;
+--elaro-text: #f1f5f9;
 ```
 
 **Responsive Design Patterns**:
@@ -345,7 +345,7 @@ this[NavigationMixin.Navigate]({
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        APP[Prometheion App]
+        APP[Elaro App]
         APP --> HUB[Compliance Hub Page]
         APP --> DASH[Dashboard Page]
         APP --> ALL[All Components Page]
@@ -396,27 +396,27 @@ graph TB
 
 **Components Supporting HomePage Target** (21 components):
 
-1. `prometheionDashboard` - Full dashboard on home
+1. `elaroDashboard` - Full dashboard on home
 2. `complianceDashboard` - Compliance overview
 3. `systemMonitorDashboard` - System monitoring
 4. `apiUsageDashboard` - API usage tracking
 5. `executiveKpiDashboard` - Executive KPIs
-6. `prometheionExecutiveKPIDashboard` - Enhanced executive view
+6. `elaroExecutiveKPIDashboard` - Enhanced executive view
 7. `complianceCopilot` - AI assistant
-8. `prometheionCopilot` - Full copilot interface
-9. `prometheionAiSettings` - AI settings
-10. `prometheionReadinessScore` - Readiness score
+8. `elaroCopilot` - Full copilot interface
+9. `elaroAiSettings` - AI settings
+10. `elaroReadinessScore` - Readiness score
 11. `controlMappingMatrix` - Control mapping
-12. `prometheionAuditPackageBuilder` - Audit package builder
-13. `prometheionComparativeAnalytics` - Comparative analytics
-14. `prometheionTrendAnalyzer` - Trend analysis
-15. `prometheionDynamicReportBuilder` - Report builder
-16. `prometheionDrillDownViewer` - Drill-down viewer
-17. `prometheionROICalculator` - ROI calculator
+12. `elaroAuditPackageBuilder` - Audit package builder
+13. `elaroComparativeAnalytics` - Comparative analytics
+14. `elaroTrendAnalyzer` - Trend analysis
+15. `elaroDynamicReportBuilder` - Report builder
+16. `elaroDrillDownViewer` - Drill-down viewer
+17. `elaroROICalculator` - ROI calculator
 18. `flowExecutionMonitor` - Flow monitoring
 19. `deploymentMonitorDashboard` - Deployment monitoring
 20. `performanceAlertPanel` - Performance alerts
-21. `prometheionEventExplorer` - Event explorer
+21. `elaroEventExplorer` - Event explorer
 
 **Current Capabilities**:
 
@@ -582,9 +582,9 @@ All record pages use standard Salesforce components:
 
 **Implementation Files**:
 
-- `force-app/main/default/lwc/prometheionUtilityBar/prometheionUtilityBar.js`
-- `force-app/main/default/lwc/prometheionUtilityBar/prometheionUtilityBar.html`
-- `force-app/main/default/lwc/prometheionUtilityBar/prometheionUtilityBar.js-meta.xml`
+- `force-app/main/default/lwc/elaroUtilityBar/elaroUtilityBar.js`
+- `force-app/main/default/lwc/elaroUtilityBar/elaroUtilityBar.html`
+- `force-app/main/default/lwc/elaroUtilityBar/elaroUtilityBar.js-meta.xml`
 
 **Metadata Configuration**:
 
@@ -771,7 +771,7 @@ graph TB
    - All interactive elements have ARIA labels
    - Semantic HTML structure
    - Role attributes where needed
-   - Example: `role="region" aria-label="Prometheion Compliance Copilot"`
+   - Example: `role="region" aria-label="Elaro Compliance Copilot"`
 
 2. **Keyboard Navigation**:
    - All interactive elements keyboard accessible
@@ -865,7 +865,7 @@ export const AXE_CONFIG = {
 
 **Tasks**:
 
-1. Create `prometheionUtilityBar` component
+1. Create `elaroUtilityBar` component
    - Implement utility bar target configuration
    - Integrate with existing Copilot functionality
    - Add context-aware features
@@ -961,13 +961,13 @@ export const AXE_CONFIG = {
 
 **Application Configuration**:
 
-- `force-app/main/default/applications/Prometheion.app-meta.xml`
+- `force-app/main/default/applications/Elaro.app-meta.xml`
 
 **FlexiPages**:
 
-- `force-app/main/default/flexipages/Prometheion_Compliance_Hub.flexipage-meta.xml`
-- `force-app/main/default/flexipages/Prometheion_Compliance_Hub_Minimal.flexipage-meta.xml`
-- `force-app/main/default/flexipages/Prometheion_All_Components.flexipage-meta.xml`
+- `force-app/main/default/flexipages/Elaro_Compliance_Hub.flexipage-meta.xml`
+- `force-app/main/default/flexipages/Elaro_Compliance_Hub_Minimal.flexipage-meta.xml`
+- `force-app/main/default/flexipages/Elaro_All_Components.flexipage-meta.xml`
 - `force-app/main/default/flexipages/Compliance_Score__c_Record_Page.flexipage-meta.xml`
 - `force-app/main/default/flexipages/Compliance_Gap__c_Record_Page.flexipage-meta.xml`
 - `force-app/main/default/flexipages/Compliance_Evidence__c_Record_Page.flexipage-meta.xml`
@@ -978,9 +978,9 @@ export const AXE_CONFIG = {
 
 **Key Components** (Example paths):
 
-- `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.js-meta.xml`
+- `force-app/main/default/lwc/elaroDashboard/elaroDashboard.js-meta.xml`
 - `force-app/main/default/lwc/complianceScoreCard/complianceScoreCard.js`
-- `force-app/main/default/lwc/prometheionCopilot/prometheionCopilot.html`
+- `force-app/main/default/lwc/elaroCopilot/elaroCopilot.html`
 
 **Accessibility Testing**:
 
@@ -997,4 +997,4 @@ export const AXE_CONFIG = {
 
 **Document Version**: 1.0  
 **Last Updated**: 2025-01-09  
-**Author**: Prometheion Development Team
+**Author**: Elaro Development Team

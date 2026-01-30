@@ -1,11 +1,11 @@
 {
   "$schema": "https://code.claude.ai/schemas/settings.json",
-  "customInstructions": "You are working on Prometheion, an enterprise Salesforce compliance platform. Always prioritize security (use PrometheionSecurityUtils), follow Salesforce best practices, and maintain test coverage above 75%. When making changes to Apex classes, ensure all SOQL queries include WITH SECURITY_ENFORCED. Use SF CLI v2 syntax (sf not sfdx). Before deploying, always run tests and preview changes. Read claude.me for full project context.",
+  "customInstructions": "You are working on Elaro, an enterprise Salesforce compliance platform. Always prioritize security (use ElaroSecurityUtils), follow Salesforce best practices, and maintain test coverage above 75%. When making changes to Apex classes, ensure all SOQL queries include WITH SECURITY_ENFORCED. Use SF CLI v2 syntax (sf not sfdx). Before deploying, always run tests and preview changes. Read claude.me for full project context.",
 
   "rules": [
     {
       "name": "Security-First Development",
-      "description": "All Apex code must use PrometheionSecurityUtils for CRUD/FLS checks and include WITH SECURITY_ENFORCED in SOQL queries",
+      "description": "All Apex code must use ElaroSecurityUtils for CRUD/FLS checks and include WITH SECURITY_ENFORCED in SOQL queries",
       "pattern": "**/*.cls",
       "enabled": true
     },
@@ -76,20 +76,20 @@
       "Bash(git commit*)",
       "Bash(git push*)",
       "Bash(git pull*)",
-      "Write(/sessions/*/mnt/Prometheion/*)",
-      "Write(/sessions/*/mnt/Prometheion/force-app/*)",
-      "Write(/sessions/*/mnt/Prometheion/.claude/*)",
-      "Write(/sessions/*/mnt/Prometheion/docs/*)",
-      "Write(/sessions/*/mnt/Prometheion/scripts/*)",
-      "Write(/sessions/*/mnt/Prometheion/config/*)",
-      "Write(/sessions/*/mnt/Prometheion/platform/*)",
-      "Write(/sessions/*/mnt/Prometheion/tests/*)"
+      "Write(/sessions/*/mnt/Elaro/*)",
+      "Write(/sessions/*/mnt/Elaro/force-app/*)",
+      "Write(/sessions/*/mnt/Elaro/.claude/*)",
+      "Write(/sessions/*/mnt/Elaro/docs/*)",
+      "Write(/sessions/*/mnt/Elaro/scripts/*)",
+      "Write(/sessions/*/mnt/Elaro/config/*)",
+      "Write(/sessions/*/mnt/Elaro/platform/*)",
+      "Write(/sessions/*/mnt/Elaro/tests/*)"
     ],
     "deny": [
-      "Bash(sf org delete scratch -o prometheion-prod*)",
+      "Bash(sf org delete scratch -o elaro-prod*)",
       "Bash(sf org delete scratch -o prod-org*)",
       "Bash(sf project deploy start --target-org prod-org*)",
-      "Bash(sf project deploy start --target-org prometheion-prod*)",
+      "Bash(sf project deploy start --target-org elaro-prod*)",
       "Bash(rm -rf force-app*)",
       "Bash(rm -rf node_modules*)",
       "Bash(rm -rf .git*)",
@@ -100,7 +100,7 @@
   },
 
   "env": {
-    "SF_ORG_ALIAS": "prometheion-dev",
+    "SF_ORG_ALIAS": "elaro-dev",
     "SF_DEFAULT_DEV_HUB": "prod-org",
     "SF_LOG_LEVEL": "warn",
     "SFDX_USE_PROGRESS_BAR": "false",

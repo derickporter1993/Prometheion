@@ -2,12 +2,12 @@
  * SchedulerErrorHandler - Utility class for scheduler error handling and configuration
  *
  * Provides centralized error logging, success logging, and configuration
- * retrieval from Custom Metadata for all Prometheion schedulers.
+ * retrieval from Custom Metadata for all Elaro schedulers.
  *
  * Security: Uses 'without sharing' to ensure error logging always works
  * regardless of user permissions. This is intentional for system-level logging.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public without sharing class SchedulerErrorHandler {
@@ -72,7 +72,7 @@ public without sharing class SchedulerErrorHandler {
      */
     public static String getCronExpression(String schedulerName, String defaultCron) {
         try {
-            Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+            Elaro_Scheduler_Config__mdt config = Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
             if (config != null && String.isNotBlank(config.CRON_Expression__c)) {
                 return config.CRON_Expression__c;
             }
@@ -92,7 +92,7 @@ public without sharing class SchedulerErrorHandler {
      */
     public static Integer getBatchSize(String schedulerName, Integer defaultSize) {
         try {
-            Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+            Elaro_Scheduler_Config__mdt config = Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
             if (config != null && config.Batch_Size__c != null) {
                 return config.Batch_Size__c.intValue();
             }
@@ -111,7 +111,7 @@ public without sharing class SchedulerErrorHandler {
      */
     public static Boolean isSchedulerActive(String schedulerName) {
         try {
-            Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+            Elaro_Scheduler_Config__mdt config = Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
             if (config != null) {
                 return config.Is_Active__c;
             }

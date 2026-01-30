@@ -1,6 +1,6 @@
 // Execute via: sf apex run -f scripts/generate-baseline-report.apex -o target-org
 
-System.debug('📊 Generating Prometheion Baseline Compliance Report...');
+System.debug('📊 Generating Elaro Baseline Compliance Report...');
 
 // Generate baseline entries for all permission sets
 List<PermissionSet> permSets = [
@@ -13,7 +13,7 @@ List<PermissionSet> permSets = [
 Integer indexed = 0;
 for (PermissionSet ps : permSets) {
     try {
-        String nodeHash = PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
+        String nodeHash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
         indexed++;
         System.debug('✅ Indexed permission set: ' + ps.Label + ' (' + nodeHash + ')');
     } catch (Exception e) {
@@ -31,7 +31,7 @@ List<FlowDefinitionView> flows = [
 
 for (FlowDefinitionView flow : flows) {
     try {
-        String nodeHash = PrometheionGraphIndexer.indexChange('FLOW', flow.DurableId, null, 'SOC2');
+        String nodeHash = ElaroGraphIndexer.indexChange('FLOW', flow.DurableId, null, 'SOC2');
         indexed++;
         System.debug('✅ Indexed flow: ' + flow.Label + ' (' + nodeHash + ')');
     } catch (Exception e) {

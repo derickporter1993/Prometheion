@@ -1,23 +1,23 @@
 import { LightningElement, track, wire } from "lwc";
-import askCopilot from "@salesforce/apex/PrometheionComplianceCopilot.askCopilot";
-import getQuickCommands from "@salesforce/apex/PrometheionComplianceCopilot.getQuickCommands";
+import askCopilot from "@salesforce/apex/ElaroComplianceCopilot.askCopilot";
+import getQuickCommands from "@salesforce/apex/ElaroComplianceCopilot.getQuickCommands";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
 // Custom Labels
 import WELCOME from "@salesforce/label/c.Copilot_Welcome";
 import WELCOME_SUBTITLE from "@salesforce/label/c.Copilot_Welcome_Subtitle";
-import QUICK_COMMANDS from "@salesforce/label/c.Prometheion_Quick_Commands";
-import ASK_QUESTION from "@salesforce/label/c.Prometheion_Ask_Question";
-import INPUT_PLACEHOLDER from "@salesforce/label/c.Prometheion_Input_Placeholder";
-import SEND from "@salesforce/label/c.Prometheion_Send";
-import CLEAR_CHAT from "@salesforce/label/c.Prometheion_Clear_Chat";
-import EVIDENCE from "@salesforce/label/c.Prometheion_Evidence";
-import RISK_SCORE from "@salesforce/label/c.Prometheion_Risk_Score";
-import ERROR_TITLE from "@salesforce/label/c.Prometheion_Error_Title";
-import INFO_TITLE from "@salesforce/label/c.Prometheion_Info_Title";
-import AUTO_FIX_COMING from "@salesforce/label/c.Prometheion_Auto_Fix_Coming";
-import EXPORT_COMING from "@salesforce/label/c.Prometheion_Export_Coming";
-import PROCESSING_ERROR from "@salesforce/label/c.Prometheion_Processing_Error";
+import QUICK_COMMANDS from "@salesforce/label/c.Elaro_Quick_Commands";
+import ASK_QUESTION from "@salesforce/label/c.Elaro_Ask_Question";
+import INPUT_PLACEHOLDER from "@salesforce/label/c.Elaro_Input_Placeholder";
+import SEND from "@salesforce/label/c.Elaro_Send";
+import CLEAR_CHAT from "@salesforce/label/c.Elaro_Clear_Chat";
+import EVIDENCE from "@salesforce/label/c.Elaro_Evidence";
+import RISK_SCORE from "@salesforce/label/c.Elaro_Risk_Score";
+import ERROR_TITLE from "@salesforce/label/c.Elaro_Error_Title";
+import INFO_TITLE from "@salesforce/label/c.Elaro_Info_Title";
+import AUTO_FIX_COMING from "@salesforce/label/c.Elaro_Auto_Fix_Coming";
+import EXPORT_COMING from "@salesforce/label/c.Elaro_Export_Coming";
+import PROCESSING_ERROR from "@salesforce/label/c.Elaro_Processing_Error";
 
 // Debounce delay in milliseconds
 const DEBOUNCE_DELAY = 300;

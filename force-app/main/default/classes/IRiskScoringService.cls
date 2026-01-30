@@ -2,7 +2,7 @@
  * Interface for framework-specific risk scoring services
  * Each compliance framework implements this interface to provide framework-specific scoring logic
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public interface IRiskScoringService {

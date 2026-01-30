@@ -10,7 +10,7 @@
 
 ### Initialize first task:
 ```bash
-cd ~/path/to/prometheion
+cd ~/path/to/elaro
 .ai-workflow/sync.sh next
 ```
 
@@ -144,7 +144,7 @@ git log --grep="feat(" --oneline
 
 ### Shell alias for quick status:
 ```bash
-alias ws='cd ~/path/to/prometheion && .ai-workflow/sync.sh status'
+alias ws='cd ~/path/to/elaro && .ai-workflow/sync.sh status'
 ```
 
 ### Pre-commit hook:

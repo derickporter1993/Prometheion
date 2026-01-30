@@ -2,7 +2,7 @@
  * Test class for GDPRDataSubjectService
  * Tests data subject rights: Access, Rectification, Erasure, Portability
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

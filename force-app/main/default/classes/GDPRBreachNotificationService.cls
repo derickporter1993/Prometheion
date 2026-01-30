@@ -6,7 +6,7 @@
  * - Article 33: Notification of a personal data breach to the supervisory authority (72 hours)
  * - Article 34: Communication of a personal data breach to the data subject
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class GDPRBreachNotificationService extends ComplianceServiceBase {

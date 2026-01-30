@@ -3,7 +3,7 @@
  *
  * Test class for HIPAABreachNotificationService
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @isTest

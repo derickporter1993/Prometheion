@@ -2,7 +2,7 @@
  * Interface for evidence collection services across compliance frameworks
  * Provides standardized methods for gathering, classifying, and documenting compliance evidence
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public interface IEvidenceCollectionService {

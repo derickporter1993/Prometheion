@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Elaro On-Call Schedule</label>
+    <pluralLabel>Elaro On-Call Schedules</pluralLabel>
+    <nameField>
+        <label>Schedule Name</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <description>Manages on-call rotation schedules for compliance alert notifications</description>
+    <fields>
+        <fullName>User__c</fullName>
+        <label>On-Call User</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipName>OnCallSchedules</relationshipName>
+        <required>true</required>
+        <description>The user who is on-call during this schedule</description>
+    </fields>
+    <fields>
+        <fullName>Start_Time__c</fullName>
+        <label>Start Time</label>
+        <type>DateTime</type>
+        <required>true</required>
+        <description>When this on-call shift starts</description>
+    </fields>
+    <fields>
+        <fullName>End_Time__c</fullName>
+        <label>End Time</label>
+        <type>DateTime</type>
+        <required>true</required>
+        <description>When this on-call shift ends</description>
+    </fields>
+    <fields>
+        <fullName>Active__c</fullName>
+        <label>Active</label>
+        <type>Checkbox</type>
+        <defaultValue>true</defaultValue>
+        <description>Whether this schedule entry is active</description>
+    </fields>
+    <fields>
+        <fullName>Rotation_Name__c</fullName>
+        <label>Rotation Name</label>
+        <type>Text</type>
+        <length>100</length>
+        <description>Name of the rotation (e.g., "Primary", "Secondary", "Weekend")</description>
+    </fields>
+    <fields>
+        <fullName>Timezone__c</fullName>
+        <label>Timezone</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>America/New_York</fullName>
+                    <default>true</default>
+                    <label>America/New_York (EST/EDT)</label>
+                </value>
+                <value>
+                    <fullName>America/Chicago</fullName>
+                    <default>false</default>
+                    <label>America/Chicago (CST/CDT)</label>
+                </value>
+                <value>
+                    <fullName>America/Denver</fullName>
+                    <default>false</default>
+                    <label>America/Denver (MST/MDT)</label>
+                </value>
+                <value>
+                    <fullName>America/Los_Angeles</fullName>
+                    <default>false</default>
+                    <label>America/Los_Angeles (PST/PDT)</label>
+                </value>
+                <value>
+                    <fullName>Europe/London</fullName>
+                    <default>false</default>
+                    <label>Europe/London (GMT/BST)</label>
+                </value>
+                <value>
+                    <fullName>UTC</fullName>
+                    <default>false</default>
+                    <label>UTC</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Notification_Methods__c</fullName>
+        <label>Notification Methods</label>
+        <type>MultiselectPicklist</type>
+        <visibleLines>3</visibleLines>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Mobile</fullName>
+                    <default>true</default>
+                    <label>Mobile Push</label>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>true</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Slack</fullName>
+                    <default>false</default>
+                    <label>Slack</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <description>How this user should be notified</description>
+    </fields>
+</CustomObject>

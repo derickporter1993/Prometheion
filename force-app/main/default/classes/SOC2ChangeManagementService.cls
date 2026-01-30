@@ -5,7 +5,7 @@
  * Monitors configuration changes, validates change control processes,
  * and generates change management evidence.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class SOC2ChangeManagementService extends ComplianceServiceBase {
@@ -228,7 +228,7 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
             VersionData = Blob.valueOf(reportContent),
             Origin = 'H'
         );
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId

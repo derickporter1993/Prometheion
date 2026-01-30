@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# Prometheion AppExchange Documentation Package Assembly Script
+# Elaro AppExchange Documentation Package Assembly Script
 # Version: 3.0.0
 # Date: 2026-01-11
 #
 
 set -e  # Exit on error
 
-echo "🚀 Prometheion AppExchange Package Assembly"
+echo "🚀 Elaro AppExchange Package Assembly"
 echo "==========================================="
 echo ""
 
@@ -54,11 +54,11 @@ fi
 # Create package manifest
 echo "📝 Generating package manifest..."
 cat > appexchange-submission-package/MANIFEST.md << 'EOF'
-# Prometheion AppExchange Submission Package
+# Elaro AppExchange Submission Package
 
 **Package Version:** 3.0.0
 **Submission Date:** 2026-01-11
-**Organization:** Prometheion Engineering Team
+**Organization:** Elaro Engineering Team
 
 ---
 
@@ -123,8 +123,8 @@ cat > appexchange-submission-package/MANIFEST.md << 'EOF'
 - **Apex Classes:** 122 production + 85 test = 207 total
 - **LWC Components:** 33 components
 - **Custom Objects:** 46 objects
-- **Permission Sets:** 5 sets (Prometheion_Admin, Prometheion_Auditor, Prometheion_User, Prometheion_AI_User, Prometheion_API_User)
-- **Lightning Apps:** 2 apps (Prometheion, TechDebtManager)
+- **Permission Sets:** 5 sets (Elaro_Admin, Elaro_Auditor, Elaro_User, Elaro_AI_User, Elaro_API_User)
+- **Lightning Apps:** 2 apps (Elaro, TechDebtManager)
 - **Flexipages:** 10 pages (3 app pages, 7 record pages)
 - **Platform Events:** 3 events
 - **Named Credentials:** 6 external integrations
@@ -162,7 +162,7 @@ cat > appexchange-submission-package/MANIFEST.md << 'EOF'
 
 **Generated:** $(date)
 **Package Version:** 3.0.0
-**Maintainers:** Prometheion Engineering Team
+**Maintainers:** Elaro Engineering Team
 EOF
 
 # Create README in screenshots directory
@@ -182,7 +182,7 @@ Place AppExchange listing screenshots here (5-10 images recommended).
 
 1. **Compliance Dashboard** - Main dashboard showing compliance scores
 2. **Executive KPI Dashboard** - Executive-level metrics and KPIs
-3. **AI Copilot Interface** - Prometheion Copilot in action
+3. **AI Copilot Interface** - Elaro Copilot in action
 4. **System Monitor Dashboard** - Governor limits and system health
 5. **API Usage Dashboard** - API usage tracking
 6. **Compliance Gap Detail** - Gap analysis and remediation
@@ -191,7 +191,7 @@ Place AppExchange listing screenshots here (5-10 images recommended).
 
 ## Naming Convention
 
-- Use descriptive names: `prometheion-compliance-dashboard.png`
+- Use descriptive names: `elaro-compliance-dashboard.png`
 - Include sequence numbers: `01-compliance-dashboard.png`, `02-executive-kpi.png`
 - Avoid spaces in filenames (use hyphens)
 
@@ -212,7 +212,7 @@ EOF
 echo ""
 echo "📦 Creating ZIP archive..."
 cd appexchange-submission-package
-zip -r ../prometheion-appexchange-v3.0-docs.zip . -q
+zip -r ../elaro-appexchange-v3.0-docs.zip . -q
 cd ..
 
 # Generate summary
@@ -223,15 +223,15 @@ echo "📦 Package Summary:"
 echo "  • Documentation files: $(find appexchange-submission-package/documentation -type f | wc -l) files"
 echo "  • Scanner reports: $(find appexchange-submission-package/scanner-reports -type f 2>/dev/null | wc -l) files"
 echo "  • Total size: $(du -sh appexchange-submission-package | cut -f1)"
-echo "  • ZIP archive: prometheion-appexchange-v3.0-docs.zip ($(ls -lh prometheion-appexchange-v3.0-docs.zip 2>/dev/null | awk '{print $5}' || echo 'not created'))"
+echo "  • ZIP archive: elaro-appexchange-v3.0-docs.zip ($(ls -lh elaro-appexchange-v3.0-docs.zip 2>/dev/null | awk '{print $5}' || echo 'not created'))"
 echo ""
 echo "📁 Package location: appexchange-submission-package/"
-echo "📦 ZIP archive: prometheion-appexchange-v3.0-docs.zip"
+echo "📦 ZIP archive: elaro-appexchange-v3.0-docs.zip"
 echo ""
 echo "🔍 Next steps:"
 echo "  1. Review scanner reports (if generated)"
 echo "  2. Add screenshots to appexchange-submission-package/screenshots/"
 echo "  3. Review MANIFEST.md for completeness"
-echo "  4. Upload prometheion-appexchange-v3.0-docs.zip to AppExchange Partner Portal"
+echo "  4. Upload elaro-appexchange-v3.0-docs.zip to AppExchange Partner Portal"
 echo ""
 echo "✨ Done!"

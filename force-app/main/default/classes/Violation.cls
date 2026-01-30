@@ -2,7 +2,7 @@
  * Violation data structure for compliance framework violations
  * Used by IRiskScoringService implementations
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class Violation {

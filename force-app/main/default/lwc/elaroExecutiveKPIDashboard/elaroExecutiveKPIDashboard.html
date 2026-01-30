@@ -1,0 +1,51 @@
+<template>
+  <lightning-card title="Elaro Executive KPI Dashboard" icon-name="custom:custom14">
+    <div class="slds-var-p-around_medium">
+      <div class="slds-grid slds-wrap slds-gutters" role="list" aria-label="Executive KPI metrics">
+        <template for:each={kpiMetrics} for:item="metric">
+          <div
+            key={metric.kpiName}
+            class="slds-col slds-size_1-of-3 slds-medium-size_1-of-2 slds-large-size_1-of-3"
+            role="listitem"
+          >
+            <div class="slds-card slds-var-m-bottom_small" aria-label="KPI: {metric.label}">
+              <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-text-heading_small slds-var-m-bottom_x-small">{metric.label}</div>
+                <template lwc:if={metric.hasError}>
+                  <div class="slds-text-color_error" role="alert" aria-live="assertive">
+                    {metric.errorMessage}
+                  </div>
+                </template>
+                <template lwc:if={metric.noError}>
+                  <div class="slds-text-heading_large slds-var-m-vertical_small">
+                    {metric.formattedValue}
+                  </div>
+                  <template lwc:if={metric.targetValue}>
+                    <div class="slds-text-body_small">
+                      Target: {metric.formattedTarget}
+                      <template lwc:if={metric.percentOfTarget}>
+                        ({metric.percentOfTarget}%)
+                      </template>
+                    </div>
+                  </template>
+                  <div class="slds-var-m-top_small">
+                    <lightning-badge label={metric.status} variant={metric.statusBadgeVariant}>
+                    </lightning-badge>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <template lwc:if={isLoading}>
+        <lightning-spinner alternative-text="Loading KPIs" size="medium"></lightning-spinner>
+      </template>
+
+      <template lwc:if={hasError}>
+        <lightning-alert variant="error" message={errorMessage}></lightning-alert>
+      </template>
+    </div>
+  </lightning-card>
+</template>

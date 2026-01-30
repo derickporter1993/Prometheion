@@ -2,7 +2,7 @@
  * Test class for PCILoggingService
  * Tests security event logging, log integrity monitoring, anomaly alerts, log archiving
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest
@@ -14,9 +14,9 @@ private class PCILoggingServiceTest {
         User testUser = [SELECT Id FROM User WHERE IsActive = true LIMIT 1];
         
         // Create audit logs
-        List<Prometheion_Audit_Log__c> logs = new List<Prometheion_Audit_Log__c>();
+        List<Elaro_Audit_Log__c> logs = new List<Elaro_Audit_Log__c>();
         for (Integer i = 0; i < 200; i++) {
-            logs.add(new Prometheion_Audit_Log__c(
+            logs.add(new Elaro_Audit_Log__c(
                 Action__c = 'PCI_ACCESS_READ',
                 Entity_Type__c = 'CardholderData',
                 Entity_Id__c = String.valueOf(testUser.Id),

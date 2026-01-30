@@ -1,12 +1,12 @@
 # Create New Apex Class
 
-Generate a new Apex class following Prometheion coding standards and best practices.
+Generate a new Apex class following Elaro coding standards and best practices.
 
 ## Usage
 
 When creating a new Apex class, gather these details:
 
-1. **Class Name** - Must start with "Prometheion" prefix (e.g., PrometheionMyFeature)
+1. **Class Name** - Must start with "Elaro" prefix (e.g., ElaroMyFeature)
 2. **Purpose** - Brief description of functionality
 3. **Type** - Choose one:
    - Controller (LWC backend logic)
@@ -33,26 +33,26 @@ Every new Apex class should include:
 
 ### 2. Class Declaration with Sharing
 ```apex
-public with sharing class PrometheionMyClass {
+public with sharing class ElaroMyClass {
     // Use 'with sharing' for security enforcement
     // Use 'without sharing' ONLY if justified and documented
 ```
 
 ### 3. Security Checks
-Import and use PrometheionSecurityUtils:
+Import and use ElaroSecurityUtils:
 ```apex
     /**
      * @description Query records with security checks
      * @param recordIds List of record IDs to query
      * @return List of records
-     * @throws PrometheionSecurityException if user lacks permissions
+     * @throws ElaroSecurityException if user lacks permissions
      */
     public static List<MyObject__c> getRecords(List<Id> recordIds) {
         // Check CRUD permissions
-        PrometheionSecurityUtils.checkReadPermission('MyObject__c');
+        ElaroSecurityUtils.checkReadPermission('MyObject__c');
 
         // Check FLS for fields
-        PrometheionSecurityUtils.checkFieldReadPermission('MyObject__c',
+        ElaroSecurityUtils.checkFieldReadPermission('MyObject__c',
             new Set<String>{'Name', 'Status__c', 'ComplianceRule__c'});
 
         // SOQL with security enforced
@@ -69,7 +69,7 @@ Import and use PrometheionSecurityUtils:
 ```apex
     public static void processData(List<MyObject__c> records) {
         try {
-            PrometheionSecurityUtils.checkUpdatePermission('MyObject__c');
+            ElaroSecurityUtils.checkUpdatePermission('MyObject__c');
 
             // Business logic here
             update records;
@@ -77,7 +77,7 @@ Import and use PrometheionSecurityUtils:
         } catch (DmlException e) {
             // Log and handle DML errors
             System.debug(LoggingLevel.ERROR, 'DML Error: ' + e.getMessage());
-            throw new PrometheionException('Failed to update records: ' + e.getMessage());
+            throw new ElaroException('Failed to update records: ' + e.getMessage());
         }
     }
 ```
@@ -90,7 +90,7 @@ Import and use PrometheionSecurityUtils:
      * @return [Return value description]
      * @throws ExceptionType [When exception is thrown]
      * @example
-     * PrometheionMyClass.myMethod('example');
+     * ElaroMyClass.myMethod('example');
      */
 ```
 
@@ -98,8 +98,8 @@ Import and use PrometheionSecurityUtils:
 
 Place the new class in:
 ```
-force-app/main/default/classes/PrometheionMyClass.cls
-force-app/main/default/classes/PrometheionMyClass.cls-meta.xml
+force-app/main/default/classes/ElaroMyClass.cls
+force-app/main/default/classes/ElaroMyClass.cls-meta.xml
 ```
 
 ## Metadata File
@@ -116,7 +116,7 @@ Create accompanying `-meta.xml`:
 
 For every new class, create a test class:
 ```
-force-app/main/default/classes/PrometheionMyClassTest.cls
+force-app/main/default/classes/ElaroMyClassTest.cls
 ```
 
 Test class requirements:
@@ -131,7 +131,7 @@ Test class requirements:
 ## Example Test Structure
 ```apex
 @isTest
-private class PrometheionMyClassTest {
+private class ElaroMyClassTest {
 
     @TestSetup
     static void setup() {
@@ -152,9 +152,9 @@ private class PrometheionMyClassTest {
         System.runAs(testUser) {
             Test.startTest();
             try {
-                PrometheionMyClass.myMethod();
+                ElaroMyClass.myMethod();
                 System.assert(false, 'Expected security exception');
-            } catch (PrometheionSecurityException e) {
+            } catch (ElaroSecurityException e) {
                 System.assert(true);
             }
             Test.stopTest();
@@ -170,7 +170,7 @@ private class PrometheionMyClassTest {
         insert records;
 
         Test.startTest();
-        PrometheionMyClass.processBulk(records);
+        ElaroMyClass.processBulk(records);
         Test.stopTest();
 
         // Assert bulk processing succeeded
@@ -182,12 +182,12 @@ private class PrometheionMyClassTest {
 
 1. **Verify Syntax**
    ```bash
-   sf project deploy validate --source-dir force-app/main/default/classes/PrometheionMyClass.cls
+   sf project deploy validate --source-dir force-app/main/default/classes/ElaroMyClass.cls
    ```
 
 2. **Run Tests**
    ```bash
-   sf apex run test --tests PrometheionMyClassTest --result-format human --code-coverage
+   sf apex run test --tests ElaroMyClassTest --result-format human --code-coverage
    ```
 
 3. **Check Coverage**
@@ -195,23 +195,23 @@ private class PrometheionMyClassTest {
 
 4. **Deploy**
    ```bash
-   sf project deploy start --source-dir force-app/main/default/classes/PrometheionMyClass.cls --target-org prometheion-dev
+   sf project deploy start --source-dir force-app/main/default/classes/ElaroMyClass.cls --target-org elaro-dev
    ```
 
 ## Common Patterns
 
 ### LWC Controller Pattern
 ```apex
-public with sharing class PrometheionMyComponentController {
+public with sharing class ElaroMyComponentController {
     @AuraEnabled(cacheable=true)
     public static List<MyObject__c> getRecords() {
-        PrometheionSecurityUtils.checkReadPermission('MyObject__c');
+        ElaroSecurityUtils.checkReadPermission('MyObject__c');
         return [SELECT Id, Name FROM MyObject__c WITH SECURITY_ENFORCED LIMIT 50];
     }
 
     @AuraEnabled
     public static void updateRecord(Id recordId, String newValue) {
-        PrometheionSecurityUtils.checkUpdatePermission('MyObject__c');
+        ElaroSecurityUtils.checkUpdatePermission('MyObject__c');
         MyObject__c record = [SELECT Id FROM MyObject__c WHERE Id = :recordId WITH SECURITY_ENFORCED];
         record.Name = newValue;
         update record;
@@ -221,7 +221,7 @@ public with sharing class PrometheionMyComponentController {
 
 ### Batch Processing Pattern
 ```apex
-public class PrometheionMyBatch implements Database.Batchable<SObject> {
+public class ElaroMyBatch implements Database.Batchable<SObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator([
@@ -246,10 +246,10 @@ public class PrometheionMyBatch implements Database.Batchable<SObject> {
 ## Checklist
 
 Before considering the class complete:
-- [ ] Class name starts with "Prometheion"
+- [ ] Class name starts with "Elaro"
 - [ ] Uses `with sharing` (unless documented exception)
 - [ ] All SOQL includes `WITH SECURITY_ENFORCED`
-- [ ] Uses PrometheionSecurityUtils for CRUD/FLS
+- [ ] Uses ElaroSecurityUtils for CRUD/FLS
 - [ ] JSDoc comments on all public methods
 - [ ] Test class created with 75%+ coverage
 - [ ] Tests include positive, negative, and bulk scenarios

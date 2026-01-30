@@ -1,6 +1,6 @@
 # Scratch Org Management
 
-Create, manage, and work with Salesforce scratch orgs for Prometheion development.
+Create, manage, and work with Salesforce scratch orgs for Elaro development.
 
 ## Quick Commands
 
@@ -31,7 +31,7 @@ sf org delete scratch --target-org my-feature-scratch --no-prompt
 # Create 30-day scratch org
 sf org create scratch \
   --definition-file config/project-scratch-def.json \
-  --alias prometheion-feature-permissionintel \
+  --alias elaro-feature-permissionintel \
   --duration-days 30 \
   --set-default
 
@@ -41,12 +41,12 @@ sf org create scratch \
 ### 2. Deploy Code to Scratch Org
 ```bash
 # Deploy all metadata
-sf project deploy start --target-org prometheion-feature-permissionintel
+sf project deploy start --target-org elaro-feature-permissionintel
 
 # Or deploy specific components
 sf project deploy start \
   --source-dir force-app/main/default/classes \
-  --target-org prometheion-feature-permissionintel
+  --target-org elaro-feature-permissionintel
 ```
 
 ### 3. Import Test Data
@@ -54,13 +54,13 @@ sf project deploy start \
 # Import sample compliance data
 sf data import tree \
   --plan scripts/apex/sample-data/data-plan.json \
-  --target-org prometheion-feature-permissionintel
+  --target-org elaro-feature-permissionintel
 ```
 
 ### 4. Open and Configure
 ```bash
 # Open scratch org in browser
-sf org open --target-org prometheion-feature-permissionintel
+sf org open --target-org elaro-feature-permissionintel
 
 # Manually configure:
 # - Assign permission sets
@@ -74,18 +74,18 @@ Develop and test your feature. Retrieve changes when ready:
 ```bash
 # Retrieve specific metadata
 sf project retrieve start \
-  --metadata ApexClass:PrometheionNewClass \
-  --target-org prometheion-feature-permissionintel
+  --metadata ApexClass:ElaroNewClass \
+  --target-org elaro-feature-permissionintel
 
 # Or retrieve all
 sf project retrieve start \
-  --target-org prometheion-feature-permissionintel
+  --target-org elaro-feature-permissionintel
 ```
 
 ### 6. Clean Up
 ```bash
 # When done, delete the scratch org
-sf org delete scratch --target-org prometheion-feature-permissionintel --no-prompt
+sf org delete scratch --target-org elaro-feature-permissionintel --no-prompt
 ```
 
 ## Scratch Org Configuration
@@ -94,7 +94,7 @@ Default config location: `config/project-scratch-def.json`
 
 ```json
 {
-  "orgName": "Prometheion Dev Org",
+  "orgName": "Elaro Dev Org",
   "edition": "Developer",
   "features": ["API", "AuthorApex", "MultiCurrency"],
   "settings": {
@@ -122,7 +122,7 @@ Default config location: `config/project-scratch-def.json`
 
 Check org details:
 ```bash
-sf org display --target-org prometheion-feature-permissionintel
+sf org display --target-org elaro-feature-permissionintel
 ```
 
 Output includes:
@@ -137,7 +137,7 @@ Output includes:
 
 ### Set Default Org
 ```bash
-sf config set target-org=prometheion-feature-permissionintel
+sf config set target-org=elaro-feature-permissionintel
 ```
 
 ### Check Current Default
@@ -154,14 +154,14 @@ sf project deploy start --target-org specific-org-alias
 
 Use descriptive aliases:
 ```
-prometheion-[purpose]-[feature/name]
+elaro-[purpose]-[feature/name]
 
 Examples:
-- prometheion-dev-main          # Primary dev org
-- prometheion-feature-permint   # Feature: Permission Intelligence
-- prometheion-bugfix-soql       # Bug fix: SOQL issue
-- prometheion-test-integration  # Integration testing
-- prometheion-demo-appexchange  # Demo for AppExchange
+- elaro-dev-main          # Primary dev org
+- elaro-feature-permint   # Feature: Permission Intelligence
+- elaro-bugfix-soql       # Bug fix: SOQL issue
+- elaro-test-integration  # Integration testing
+- elaro-demo-appexchange  # Demo for AppExchange
 ```
 
 ## Extending Scratch Org Lifetime
@@ -184,7 +184,7 @@ For consistent testing environments, use org snapshots:
 sf org create snapshot --source-org [source-org] --name MySnapshot --description "Baseline config"
 
 # Create org from snapshot
-sf org create scratch --snapshot MySnapshot --alias prometheion-from-snapshot
+sf org create scratch --snapshot MySnapshot --alias elaro-from-snapshot
 ```
 
 ## Troubleshooting

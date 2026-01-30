@@ -1,4 +1,4 @@
-# Prometheion Implementation Design Document
+# Elaro Implementation Design Document
 
 **Version:** 1.0
 **Date:** January 6, 2026
@@ -234,7 +234,7 @@ private class PerformanceRuleEngineTest {
 
 ---
 
-### 1.2 PrometheionComplianceScorerTest Expansion
+### 1.2 ElaroComplianceScorerTest Expansion
 
 **Current State:** 2 test methods
 **Target State:** 8 test methods
@@ -243,7 +243,7 @@ private class PerformanceRuleEngineTest {
 
 ```apex
 @IsTest
-private class PrometheionComplianceScorerTest {
+private class ElaroComplianceScorerTest {
 
     // ═══════════════════════════════════════════════════════════════
     // EXISTING TESTS (keep)
@@ -272,7 +272,7 @@ private class PrometheionComplianceScorerTest {
         delete [SELECT Id FROM PermissionSet WHERE Name LIKE 'TestPS%'];
 
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        Decimal score = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         // With no custom permission sets, access governance returns 50
@@ -302,7 +302,7 @@ private class PrometheionComplianceScorerTest {
         insert documented;
 
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        Decimal score = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         // With 100% documented, access governance should be 100
@@ -330,7 +330,7 @@ private class PrometheionComplianceScorerTest {
         insert undocumented;
 
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        Decimal score = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         // Score should still be calculable (other factors contribute)
@@ -364,7 +364,7 @@ private class PrometheionComplianceScorerTest {
         insert permSets;
 
         Test.startTest();
-        Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+        Decimal score = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         System.assertNotEquals(null, score);
@@ -382,7 +382,7 @@ private class PrometheionComplianceScorerTest {
         Test.startTest();
         try {
             // Normal call should not throw
-            Decimal score = PrometheionComplianceScorer.calculateReadinessScore();
+            Decimal score = ElaroComplianceScorer.calculateReadinessScore();
             System.assertNotEquals(null, score);
         } catch (AuraHandledException e) {
             // If it throws, verify message format
@@ -399,8 +399,8 @@ private class PrometheionComplianceScorerTest {
     static void testCalculateReadinessScore_Cacheable() {
         Test.startTest();
         // Call twice - should work with caching
-        Decimal score1 = PrometheionComplianceScorer.calculateReadinessScore();
-        Decimal score2 = PrometheionComplianceScorer.calculateReadinessScore();
+        Decimal score1 = ElaroComplianceScorer.calculateReadinessScore();
+        Decimal score2 = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
         // Both calls should succeed
@@ -596,7 +596,7 @@ private class SlackNotifierTest {
 
 ---
 
-### 1.4 PrometheionGraphIndexerTest Expansion
+### 1.4 ElaroGraphIndexerTest Expansion
 
 **Current State:** 3 tests (only PERMISSION_SET entity)
 **Target State:** 8 tests
@@ -605,7 +605,7 @@ private class SlackNotifierTest {
 
 ```apex
 @IsTest
-private class PrometheionGraphIndexerTest {
+private class ElaroGraphIndexerTest {
 
     // ═══════════════════════════════════════════════════════════════
     // EXISTING TESTS (keep)
@@ -634,7 +634,7 @@ private class PrometheionGraphIndexerTest {
         Test.startTest();
         try {
             // This may fail in test context without deployed flows
-            String nodeHash = PrometheionGraphIndexer.indexChange(
+            String nodeHash = ElaroGraphIndexer.indexChange(
                 'FLOW',
                 'TestFlowId',
                 null,
@@ -642,7 +642,7 @@ private class PrometheionGraphIndexerTest {
             );
             // If it succeeds, verify hash
             System.assertNotEquals(null, nodeHash);
-        } catch (PrometheionGraphIndexer.PrometheionException e) {
+        } catch (ElaroGraphIndexer.ElaroException e) {
             // Expected if no flow exists - verify exception handling
             System.assert(e.getMessage().contains('Graph indexing failed'));
         }
@@ -660,7 +660,7 @@ private class PrometheionGraphIndexerTest {
         // Need to verify the drift category after insert
         // Since calculateRiskScore is private, we test through indexChange
         Test.startTest();
-        String nodeHash = PrometheionGraphIndexer.indexChange(
+        String nodeHash = ElaroGraphIndexer.indexChange(
             'PERMISSION_SET',
             ps.Id,
             null,
@@ -668,9 +668,9 @@ private class PrometheionGraphIndexerTest {
         );
         Test.stopTest();
 
-        List<Prometheion_Compliance_Graph__b> nodes = [
+        List<Elaro_Compliance_Graph__b> nodes = [
             SELECT Drift_Category__c, Risk_Score__c
-            FROM Prometheion_Compliance_Graph__b
+            FROM Elaro_Compliance_Graph__b
             WHERE Graph_Node_Id__c = :nodeHash
         ];
 
@@ -697,7 +697,7 @@ private class PrometheionGraphIndexerTest {
 
         Test.startTest();
         // Create parent node
-        String parentHash = PrometheionGraphIndexer.indexChange(
+        String parentHash = ElaroGraphIndexer.indexChange(
             'PERMISSION_SET',
             ps.Id,
             null,  // No parent
@@ -705,7 +705,7 @@ private class PrometheionGraphIndexerTest {
         );
 
         // Create child node with parent reference
-        String childHash = PrometheionGraphIndexer.indexChange(
+        String childHash = ElaroGraphIndexer.indexChange(
             'PERMISSION_SET',
             ps.Id,
             parentHash,  // Reference parent
@@ -714,9 +714,9 @@ private class PrometheionGraphIndexerTest {
         Test.stopTest();
 
         // Verify parent-child relationship
-        List<Prometheion_Compliance_Graph__b> childNodes = [
+        List<Elaro_Compliance_Graph__b> childNodes = [
             SELECT Parent_Node_Id__c
-            FROM Prometheion_Compliance_Graph__b
+            FROM Elaro_Compliance_Graph__b
             WHERE Graph_Node_Id__c = :childHash
         ];
 
@@ -733,9 +733,9 @@ private class PrometheionGraphIndexerTest {
         PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'TestPS' LIMIT 1];
 
         Test.startTest();
-        String soc2Hash = PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
-        String hipaaHash = PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'HIPAA');
-        String gdprHash = PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'GDPR');
+        String soc2Hash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
+        String hipaaHash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'HIPAA');
+        String gdprHash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'GDPR');
         Test.stopTest();
 
         // All hashes should be unique
@@ -753,12 +753,12 @@ private class PrometheionGraphIndexerTest {
         PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'TestPS' LIMIT 1];
 
         Test.startTest();
-        String nodeHash = PrometheionGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
+        String nodeHash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
         Test.stopTest();
 
-        List<Prometheion_Compliance_Graph__b> nodes = [
+        List<Elaro_Compliance_Graph__b> nodes = [
             SELECT Graph_Version__c
-            FROM Prometheion_Compliance_Graph__b
+            FROM Elaro_Compliance_Graph__b
             WHERE Graph_Node_Id__c = :nodeHash
         ];
 
@@ -770,7 +770,7 @@ private class PrometheionGraphIndexerTest {
 
 ---
 
-### 1.5 PrometheionReasoningEngineTest Expansion
+### 1.5 ElaroReasoningEngineTest Expansion
 
 **Current State:** 15 tests focused on inner classes
 **Target State:** 18 tests including core logic
@@ -779,7 +779,7 @@ private class PrometheionGraphIndexerTest {
 
 ```apex
 @IsTest
-private class PrometheionReasoningEngineTest {
+private class ElaroReasoningEngineTest {
 
     // ═══════════════════════════════════════════════════════════════
     // EXISTING TESTS (keep all 15)
@@ -798,7 +798,7 @@ private class PrometheionReasoningEngineTest {
     @IsTest
     static void testExplainViolation_FallbackWhenAIDisabled() {
         // Setup: Create AI settings with AI disabled
-        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
+        Elaro_AI_Settings__c settings = new Elaro_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = false,
             Confidence_Threshold__c = 0.85
@@ -813,7 +813,7 @@ private class PrometheionReasoningEngineTest {
         insert ps;
 
         // Index the permission set to create a graph node
-        String nodeHash = PrometheionGraphIndexer.indexChange(
+        String nodeHash = ElaroGraphIndexer.indexChange(
             'PERMISSION_SET',
             ps.Id,
             null,
@@ -821,8 +821,8 @@ private class PrometheionReasoningEngineTest {
         );
 
         Test.startTest();
-        PrometheionReasoningEngine.ReasoningResult result =
-            PrometheionReasoningEngine.explainViolation(nodeHash, 'SOC2');
+        ElaroReasoningEngine.ReasoningResult result =
+            ElaroReasoningEngine.explainViolation(nodeHash, 'SOC2');
         Test.stopTest();
 
         // Verify fallback reasoning was used
@@ -840,7 +840,7 @@ private class PrometheionReasoningEngineTest {
     @IsTest
     static void testExplainViolation_HighRiskFallback() {
         // Setup AI disabled
-        Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
+        Elaro_AI_Settings__c settings = new Elaro_AI_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Enable_AI_Reasoning__c = false
         );
@@ -853,7 +853,7 @@ private class PrometheionReasoningEngineTest {
         );
         insert ps;
 
-        String nodeHash = PrometheionGraphIndexer.indexChange(
+        String nodeHash = ElaroGraphIndexer.indexChange(
             'PERMISSION_SET',
             ps.Id,
             null,
@@ -861,8 +861,8 @@ private class PrometheionReasoningEngineTest {
         );
 
         Test.startTest();
-        PrometheionReasoningEngine.ReasoningResult result =
-            PrometheionReasoningEngine.explainViolation(nodeHash, 'SOC2');
+        ElaroReasoningEngine.ReasoningResult result =
+            ElaroReasoningEngine.explainViolation(nodeHash, 'SOC2');
         Test.stopTest();
 
         // Note: isViolation depends on risk score from indexer
@@ -877,19 +877,19 @@ private class PrometheionReasoningEngineTest {
     @IsTest
     static void testGetConfidenceThreshold_AffectsHumanReview() {
         // Test with custom threshold
-        Prometheion_AI_Settings__c strictSettings = new Prometheion_AI_Settings__c(
+        Elaro_AI_Settings__c strictSettings = new Elaro_AI_Settings__c(
             Confidence_Threshold__c = 0.99  // Very strict
         );
 
-        Decimal strictThreshold = PrometheionReasoningEngine.getConfidenceThreshold(strictSettings);
+        Decimal strictThreshold = ElaroReasoningEngine.getConfidenceThreshold(strictSettings);
         System.assertEquals(0.99, strictThreshold);
 
         // Test with lenient threshold
-        Prometheion_AI_Settings__c lenientSettings = new Prometheion_AI_Settings__c(
+        Elaro_AI_Settings__c lenientSettings = new Elaro_AI_Settings__c(
             Confidence_Threshold__c = 0.50  // Very lenient
         );
 
-        Decimal lenientThreshold = PrometheionReasoningEngine.getConfidenceThreshold(lenientSettings);
+        Decimal lenientThreshold = ElaroReasoningEngine.getConfidenceThreshold(lenientSettings);
         System.assertEquals(0.50, lenientThreshold);
     }
 }
@@ -1709,29 +1709,29 @@ describe('c-polling-manager', () => {
 
 ---
 
-### 4.3 prometheionAiSettings Tests
+### 4.3 elaroAiSettings Tests
 
-**File:** `force-app/main/default/lwc/prometheionAiSettings/__tests__/prometheionAiSettings.test.js`
+**File:** `force-app/main/default/lwc/elaroAiSettings/__tests__/elaroAiSettings.test.js`
 
 ```javascript
 import { createElement } from 'lwc';
-import PrometheionAiSettings from 'c/prometheionAiSettings';
-import getSettings from '@salesforce/apex/PrometheionAISettingsController.getSettings';
-import saveSettings from '@salesforce/apex/PrometheionAISettingsController.saveSettings';
+import ElaroAiSettings from 'c/elaroAiSettings';
+import getSettings from '@salesforce/apex/ElaroAISettingsController.getSettings';
+import saveSettings from '@salesforce/apex/ElaroAISettingsController.saveSettings';
 
 // Mock Apex methods
 jest.mock(
-    '@salesforce/apex/PrometheionAISettingsController.getSettings',
+    '@salesforce/apex/ElaroAISettingsController.getSettings',
     () => ({ default: jest.fn() }),
     { virtual: true }
 );
 jest.mock(
-    '@salesforce/apex/PrometheionAISettingsController.saveSettings',
+    '@salesforce/apex/ElaroAISettingsController.saveSettings',
     () => ({ default: jest.fn() }),
     { virtual: true }
 );
 
-describe('c-prometheion-ai-settings', () => {
+describe('c-elaro-ai-settings', () => {
 
     const MOCK_SETTINGS = {
         Enable_AI_Reasoning__c: true,
@@ -1760,8 +1760,8 @@ describe('c-prometheion-ai-settings', () => {
     it('should load settings on initialization', async () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1774,8 +1774,8 @@ describe('c-prometheion-ai-settings', () => {
     it('should display settings values after load', async () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1793,8 +1793,8 @@ describe('c-prometheion-ai-settings', () => {
     it('should handle settings load error gracefully', async () => {
         getSettings.mockRejectedValue(new Error('Load failed'));
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1812,8 +1812,8 @@ describe('c-prometheion-ai-settings', () => {
     it('should enable save button when form is modified', async () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1840,8 +1840,8 @@ describe('c-prometheion-ai-settings', () => {
     it('should validate confidence threshold range', async () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1869,8 +1869,8 @@ describe('c-prometheion-ai-settings', () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
         saveSettings.mockResolvedValue({ success: true });
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -1893,8 +1893,8 @@ describe('c-prometheion-ai-settings', () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
         saveSettings.mockResolvedValue({ success: true });
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
 
         // Listen for toast event
@@ -1913,8 +1913,8 @@ describe('c-prometheion-ai-settings', () => {
         getSettings.mockResolvedValue(MOCK_SETTINGS);
         saveSettings.mockRejectedValue(new Error('Save failed'));
 
-        const element = createElement('c-prometheion-ai-settings', {
-            is: PrometheionAiSettings
+        const element = createElement('c-elaro-ai-settings', {
+            is: ElaroAiSettings
         });
         document.body.appendChild(element);
 
@@ -2195,7 +2195,7 @@ public class EinsteinPredictionMock {
 
 ### 5.2 CCX_Settings Test Utilities
 
-**Addition to:** `force-app/main/default/classes/PrometheionTestDataFactory.cls`
+**Addition to:** `force-app/main/default/classes/ElaroTestDataFactory.cls`
 
 ```apex
 // ============================================
@@ -2368,7 +2368,7 @@ public static LimitMetrics.GovernorStats createCriticalStats() {
 
 ### 5.3 Updated Constants for TestDataFactory
 
-**Addition to:** `force-app/main/default/classes/PrometheionTestDataFactory.cls`
+**Addition to:** `force-app/main/default/classes/ElaroTestDataFactory.cls`
 
 ```apex
 // ============================================
@@ -2424,7 +2424,7 @@ public static Boolean isValidFramework(String framework) {
 | `EinsteinPredictionMock.cls` | Apex Test Utility | Medium |
 | `jest.config.js` | Jest Config | Medium |
 | `pollingManager.test.js` | LWC Test | Medium |
-| `prometheionAiSettings.test.js` | LWC Test | Medium |
+| `elaroAiSettings.test.js` | LWC Test | Medium |
 | `flowExecutionMonitor.test.js` | LWC Test | Medium |
 
 ### Files to Modify
@@ -2432,11 +2432,11 @@ public static Boolean isValidFramework(String framework) {
 | File | Changes | Priority |
 |------|---------|----------|
 | `PerformanceRuleEngineTest.cls` | Add 7 test methods | High |
-| `PrometheionComplianceScorerTest.cls` | Add 6 test methods | High |
+| `ElaroComplianceScorerTest.cls` | Add 6 test methods | High |
 | `SlackNotifierTest.cls` | Add 4 test methods | High |
-| `PrometheionGraphIndexerTest.cls` | Add 5 test methods | Medium |
-| `PrometheionReasoningEngineTest.cls` | Add 3 test methods | Medium |
-| `PrometheionTestDataFactory.cls` | Add CCX_Settings utilities | Medium |
+| `ElaroGraphIndexerTest.cls` | Add 5 test methods | Medium |
+| `ElaroReasoningEngineTest.cls` | Add 3 test methods | Medium |
+| `ElaroTestDataFactory.cls` | Add CCX_Settings utilities | Medium |
 | `package.json` | Add Jest dependencies | Medium |
 
 ### Estimated Lines of Code

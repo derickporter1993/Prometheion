@@ -1,6 +1,6 @@
 ---
 name: Merge Solentra into Sentinel
-overview: Merge the Solentra repository into Sentinel to create a unified "Prometheion" compliance platform, combining Solentra's AI-powered compliance features (Copilot, Teams integration, threat detection) with Sentinel's advanced analytics components (KPI Dashboard, Matrix Analytics, Trend Analyzer).
+overview: Merge the Solentra repository into Sentinel to create a unified "Elaro" compliance platform, combining Solentra's AI-powered compliance features (Copilot, Teams integration, threat detection) with Sentinel's advanced analytics components (KPI Dashboard, Matrix Analytics, Trend Analyzer).
 todos:
   - id: backup-branch
     content: Create backup branch in Sentinel repo before merge
@@ -25,7 +25,7 @@ todos:
     dependencies:
       - resolve-lwc-conflicts
   - id: rename-branding
-    content: Rename Sentinel_/Solentra_ prefixes to Prometheion_
+    content: Rename Sentinel_/Solentra_ prefixes to Elaro_
     status: completed
     dependencies:
       - resolve-object-conflicts
@@ -66,7 +66,7 @@ todos:
       - code-quality-review
 ---
 
-# Merge Solentra + Sentinel into Unified Prometheion Platform
+# Merge Solentra + Sentinel into Unified Elaro Platform
 
 ## Analysis Summary
 
@@ -78,7 +78,7 @@ todos:
 
 | **GitHub Remote** | `derickporter1993/Sentinel` | `derickporter1993/Solentra` |
 
-| **Package Name** | prometheion v3.0 | solentra v1.0 |
+| **Package Name** | elaro v3.0 | solentra v1.0 |
 
 | **API Version** | 65.0 | 64.0 |
 
@@ -113,17 +113,17 @@ These exist in BOTH repositories and will need conflict resolution:
 
 **Apex Classes (29 unique):**
 
-- AI Copilot: `SolentraComplianceCopilot`, `PrometheionChangeAdvisor`, `PrometheionRemediationEngine`
-- Threat Detection: `PrometheionSalesforceThreatDetector`, `PrometheionAuditTrailPoller`
+- AI Copilot: `SolentraComplianceCopilot`, `ElaroChangeAdvisor`, `ElaroRemediationEngine`
+- Threat Detection: `ElaroSalesforceThreatDetector`, `ElaroAuditTrailPoller`
 - Notifications: `TeamsNotifier`, `WeeklyScorecardScheduler`
-- Event Processing: `PrometheionEventPublisher`, `PrometheionScoreCallback`
+- Event Processing: `ElaroEventPublisher`, `ElaroScoreCallback`
 - Constants: `SolentraConstants`
 - Legacy Sentinel: `SentinelGraphIndexer`, `SentinelReasoningEngine`, `SentinelLegalDocumentGenerator`
 
 **LWC Components (7 unique):**
 
 - `complianceCopilot`, `solentraCopilot`, `solentraDashboard`
-- `prometheionROICalculator`, `prometheionScoreListener`
+- `elaroROICalculator`, `elaroScoreListener`
 - `sentinelAiSettings`, `sentinelReadinessScore`
 
 **Custom Objects (7 unique):**
@@ -136,22 +136,22 @@ These exist in BOTH repositories and will need conflict resolution:
 
 **Apex Classes (20 unique):**
 
-- Analytics Controllers: `PrometheionDynamicReportController`, `PrometheionExecutiveKPIController`
-- Matrix/Drill-down: `PrometheionMatrixController`, `PrometheionDrillDownController`
-- Trends: `PrometheionTrendController`
-- AI: `PrometheionReasoningEngine`, `PrometheionGraphIndexer`
+- Analytics Controllers: `ElaroDynamicReportController`, `ElaroExecutiveKPIController`
+- Matrix/Drill-down: `ElaroMatrixController`, `ElaroDrillDownController`
+- Trends: `ElaroTrendController`
+- AI: `ElaroReasoningEngine`, `ElaroGraphIndexer`
 - Plus their test classes
 
 **LWC Components (7 unique):**
 
-- `prometheionAiSettings`, `prometheionComparativeAnalytics`, `prometheionDrillDownViewer`
-- `prometheionDynamicReportBuilder`, `prometheionExecutiveKPIDashboard`
-- `prometheionReadinessScore`, `prometheionTrendAnalyzer`
+- `elaroAiSettings`, `elaroComparativeAnalytics`, `elaroDrillDownViewer`
+- `elaroDynamicReportBuilder`, `elaroExecutiveKPIDashboard`
+- `elaroReadinessScore`, `elaroTrendAnalyzer`
 
 **Custom Objects (4 unique):**
 
-- `Executive_KPI__mdt`, `Prometheion_AI_Settings__c`
-- `Prometheion_Alert_Event__e`, `Prometheion_Compliance_Graph__b`
+- `Executive_KPI__mdt`, `Elaro_AI_Settings__c`
+- `Elaro_Alert_Event__e`, `Elaro_Compliance_Graph__b`
 
 ---
 
@@ -187,7 +187,7 @@ All merged code must meet these standards as of January 3, 2026:
 
 ### Developer Best Practices
 
-- Consistent naming conventions (Prometheion prefix)
+- Consistent naming conventions (Elaro prefix)
 - DRY principle (Don't Repeat Yourself)
 - Single Responsibility Principle
 - Proper separation of concerns
@@ -201,7 +201,7 @@ All merged code must meet these standards as of January 3, 2026:
 
 1. Sentinel uses API v65.0 (newer) vs Solentra's v64.0
 2. Sentinel has more developed analytics (KPI, Matrix, Trends)
-3. Sentinel already has "Prometheion" branding throughout
+3. Sentinel already has "Elaro" branding throughout
 4. Sentinel is more actively developed (more branches, recent changes)
 
 ---
@@ -211,8 +211,8 @@ All merged code must meet these standards as of January 3, 2026:
 ### Phase 1: Pre-Merge Preparation
 
 1. Create backup branch in Sentinel
-2. Standardize naming to "Prometheion" brand
-3. Resolve naming conflicts (Sentinel/Solentra prefixes -> Prometheion)
+2. Standardize naming to "Elaro" brand
+3. Resolve naming conflicts (Sentinel/Solentra prefixes -> Elaro)
 
 ### Phase 2: Merge Execution
 
@@ -224,7 +224,7 @@ All merged code must meet these standards as of January 3, 2026:
 
 ### Phase 3: Post-Merge Cleanup
 
-1. Rename all "Sentinel*" and "Solentra*" prefixes to "Prometheion\_"
+1. Rename all "Sentinel*" and "Solentra*" prefixes to "Elaro\_"
 2. Update all references in code
 3. Consolidate duplicate functionality
 4. Update API version to 65.0
@@ -245,7 +245,7 @@ All merged code must meet these standards as of January 3, 2026:
    - Review FLS/CRUD enforcement
 
 3. **Code Quality Review**
-   - Check naming conventions (Prometheion prefix)
+   - Check naming conventions (Elaro prefix)
    - Verify bulkification (no SOQL in loops)
    - Review error handling
    - Validate documentation
@@ -276,7 +276,7 @@ Key files to compare:
 ## Post-Merge Unified Structure
 
 ```
-prometheion/
+elaro/
   force-app/main/default/
     classes/
       # Core Monitoring (from both)
@@ -286,16 +286,16 @@ prometheion/
       PerformanceRuleEngine.cls
 
       # AI & Compliance (from Solentra)
-      PrometheionComplianceCopilot.cls
-      PrometheionChangeAdvisor.cls
-      PrometheionRemediationEngine.cls
-      PrometheionSalesforceThreatDetector.cls
+      ElaroComplianceCopilot.cls
+      ElaroChangeAdvisor.cls
+      ElaroRemediationEngine.cls
+      ElaroSalesforceThreatDetector.cls
 
       # Analytics (from Sentinel)
-      PrometheionDynamicReportController.cls
-      PrometheionExecutiveKPIController.cls
-      PrometheionMatrixController.cls
-      PrometheionTrendController.cls
+      ElaroDynamicReportController.cls
+      ElaroExecutiveKPIController.cls
+      ElaroMatrixController.cls
+      ElaroTrendController.cls
 
       # Notifications (merged)
       SlackNotifier.cls
@@ -307,17 +307,17 @@ prometheion/
       systemMonitorDashboard/
 
       # AI Copilot (from Solentra)
-      prometheionCopilot/  # renamed from solentraCopilot
+      elaroCopilot/  # renamed from solentraCopilot
 
       # Analytics (from Sentinel)
-      prometheionExecutiveKPIDashboard/
-      prometheionDynamicReportBuilder/
-      prometheionTrendAnalyzer/
+      elaroExecutiveKPIDashboard/
+      elaroDynamicReportBuilder/
+      elaroTrendAnalyzer/
 
     objects/
-      # Unified Prometheion objects
-      Prometheion_AI_Settings__c/
-      Prometheion_Compliance_Graph__b/
+      # Unified Elaro objects
+      Elaro_AI_Settings__c/
+      Elaro_Compliance_Graph__b/
       Compliance_Policy__mdt/
       Compliance_Score__c/
       Executive_KPI__mdt/
@@ -345,7 +345,7 @@ To proceed, switch to **Agent mode** and I will:
    - Bulkify all code
 
 4. **Branding & Cleanup**
-   - Rename to Prometheion branding
+   - Rename to Elaro branding
    - Consolidate dependencies
    - Update to API v65.0
 

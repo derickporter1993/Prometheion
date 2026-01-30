@@ -2,7 +2,7 @@
  * @description Natural language to SOQL conversion service
  * Uses AI to convert natural language queries to SOQL and execute them
  * @group AI Integration
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class NaturalLanguageQueryService {
     
@@ -10,14 +10,14 @@ public with sharing class NaturalLanguageQueryService {
     // CONSTANTS
     // ═══════════════════════════════════════════════════════════════
     
-    private static final String CACHE_PARTITION = 'local.PrometheionCache';
+    private static final String CACHE_PARTITION = 'local.ElaroCache';
     private static final Integer CACHE_TTL_SECONDS = 1800; // 30 min for queries
     
     // Allowed objects for querying (security)
     private static final Set&lt;String&gt; ALLOWED_OBJECTS = new Set&lt;String&gt;{
-        'Prometheion_Audit_Package__c',
-        'Prometheion_Evidence_Item__c',
-        'Prometheion_Framework_Mapping__c',
+        'Elaro_Audit_Package__c',
+        'Elaro_Evidence_Item__c',
+        'Elaro_Framework_Mapping__c',
         'User'
     };
     
@@ -70,7 +70,7 @@ public with sharing class NaturalLanguageQueryService {
             List&lt;SObject&gt; rawResults = Database.query(secureSOQL);
             
             // Strip inaccessible fields before returning to UI
-            result.results = PrometheionSecurityUtils.stripInaccessibleFields(
+            result.results = ElaroSecurityUtils.stripInaccessibleFields(
                 AccessType.READABLE,
                 rawResults
             );
@@ -207,7 +207,7 @@ public with sharing class NaturalLanguageQueryService {
         String prompt = buildSOQLPrompt(query);
         
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Prometheion_Claude_API');
+        req.setEndpoint('callout:Elaro_Claude_API');
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('anthropic-version', '2023-06-01');
@@ -242,9 +242,9 @@ public with sharing class NaturalLanguageQueryService {
     private static String buildSOQLPrompt(String query) {
         return 'Convert the following natural language query to Salesforce SOQL.\n\n' +
                'Available objects:\n' +
-               '- Prometheion_Audit_Package__c (fields: Package_Name__c, Framework__c, Status__c, Audit_Period_Start__c, Audit_Period_End__c)\n' +
-               '- Prometheion_Evidence_Item__c (fields: Evidence_Type__c, Evidence_Date__c, Description__c, Status__c, Audit_Package__c)\n' +
-               '- Prometheion_Framework_Mapping__c (fields: Framework__c, Requirement_Code__c, Requirement_Description__c)\n\n' +
+               '- Elaro_Audit_Package__c (fields: Package_Name__c, Framework__c, Status__c, Audit_Period_Start__c, Audit_Period_End__c)\n' +
+               '- Elaro_Evidence_Item__c (fields: Evidence_Type__c, Evidence_Date__c, Description__c, Status__c, Audit_Package__c)\n' +
+               '- Elaro_Framework_Mapping__c (fields: Framework__c, Requirement_Code__c, Requirement_Description__c)\n\n' +
                'Query: ' + query + '\n\n' +
                'Respond with ONLY the SOQL query, no explanation. Include LIMIT 1000 at the end.';
     }
@@ -408,15 +408,15 @@ public with sharing class NaturalLanguageQueryService {
         String lower = query.toLowerCase();
         
         if (lower.contains('evidence') || lower.contains('event')) {
-            return 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c FROM Prometheion_Evidence_Item__c ORDER BY Evidence_Date__c DESC LIMIT 100';
+            return 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c FROM Elaro_Evidence_Item__c ORDER BY Evidence_Date__c DESC LIMIT 100';
         }
         
         if (lower.contains('package') || lower.contains('audit')) {
-            return 'SELECT Id, Name, Package_Name__c, Framework__c, Status__c FROM Prometheion_Audit_Package__c ORDER BY CreatedDate DESC LIMIT 100';
+            return 'SELECT Id, Name, Package_Name__c, Framework__c, Status__c FROM Elaro_Audit_Package__c ORDER BY CreatedDate DESC LIMIT 100';
         }
         
         // Default query
-        return 'SELECT Id, Name FROM Prometheion_Audit_Package__c LIMIT 10';
+        return 'SELECT Id, Name FROM Elaro_Audit_Package__c LIMIT 10';
     }
     
     // ═══════════════════════════════════════════════════════════════

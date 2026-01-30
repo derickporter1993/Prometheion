@@ -1,4 +1,4 @@
-# Prometheion External Services Documentation
+# Elaro External Services Documentation
 
 **Version:** 3.0
 **Last Updated:** 2026-01-11
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Prometheion integrates with external services for AI-powered compliance analysis, alerting, incident management, and evidence sharing. All integrations use **Named Credentials** for secure authentication and follow Salesforce best practices.
+Elaro integrates with external services for AI-powered compliance analysis, alerting, incident management, and evidence sharing. All integrations use **Named Credentials** for secure authentication and follow Salesforce best practices.
 
 ---
 
@@ -19,7 +19,7 @@ AI-powered compliance analysis, event pattern recognition, audit summaries, and 
 
 ### Authentication
 - **Method:** Named Credential with API Key authentication
-- **Named Credential:** `callout:Prometheion_Claude_API`
+- **Named Credential:** `callout:Elaro_Claude_API`
 - **Endpoint:** `https://api.anthropic.com/v1/messages`
 - **Protocol:** HTTPS (TLS 1.2+)
 
@@ -32,20 +32,20 @@ AI-powered compliance analysis, event pattern recognition, audit summaries, and 
 - API Version Header: `anthropic-version: 2023-06-01`
 
 **Custom Metadata:**
-- Store model selection in `Prometheion_AI_Settings__c`
+- Store model selection in `Elaro_AI_Settings__c`
 - Current model: `claude-sonnet-4-20250514`
 
 ### API Usage
 
 **Classes Using Claude API:**
-- `PrometheionComplianceCopilotService.cls` - Main AI service
+- `ElaroComplianceCopilotService.cls` - Main AI service
 - `NaturalLanguageQueryService.cls` - Natural language SOQL
 - `RootCauseAnalysisEngine.cls` - Root cause analysis
 
 **Request Pattern:**
 ```apex
 Http req = new HttpRequest();
-req.setEndpoint('callout:Prometheion_Claude_API');
+req.setEndpoint('callout:Elaro_Claude_API');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json');
 req.setHeader('anthropic-version', '2023-06-01');
@@ -69,7 +69,7 @@ HttpResponse res = http.send(req);
 - **Circuit Breaker:** Platform Cache prevents excessive retries
 
 ### Required Permissions
-Users must have `Prometheion_AI_User` permission set to use AI features.
+Users must have `Elaro_AI_User` permission set to use AI features.
 
 ### Security Considerations
 - ✅ No hardcoded API keys (stored in Named Credential)
@@ -101,8 +101,8 @@ Real-time compliance alerts, audit package notifications, and daily compliance d
 
 **Classes Using Slack API:**
 - `SlackIntegration.cls` - Primary integration service
-- `PrometheionSlackNotifierQueueable.cls` - Asynchronous alerts
-- `PrometheionDailyDigest.cls` - Daily digest delivery
+- `ElaroSlackNotifierQueueable.cls` - Asynchronous alerts
+- `ElaroDailyDigest.cls` - Daily digest delivery
 - `SlackNotifier.cls` - Legacy notifier
 
 **Message Types:**
@@ -135,8 +135,8 @@ HttpResponse res = http.send(req);
 - **Queue Management:** Queueable for batch notifications
 
 ### Required Permissions
-- Users must have `Prometheion_Admin` or `Prometheion_Auditor` permission set
-- Slack workspace must have Prometheion app installed
+- Users must have `Elaro_Admin` or `Elaro_Auditor` permission set
+- Slack workspace must have Elaro app installed
 
 ### Security Considerations
 - ✅ Webhook URL stored in Named Credential (not hardcoded)
@@ -166,7 +166,7 @@ Compliance alerts and notifications for Teams-based organizations.
 ### API Usage
 
 **Classes Using Teams API:**
-- `PrometheionTeamsNotifierQueueable.cls` - Asynchronous Teams notifications
+- `ElaroTeamsNotifierQueueable.cls` - Asynchronous Teams notifications
 
 **Request Pattern:**
 ```apex
@@ -207,7 +207,7 @@ Incident triggering, acknowledgment, and resolution for critical compliance aler
 
 ### Authentication
 - **Method:** Routing Key (Integration Key)
-- **Storage:** Protected Custom Metadata (`Prometheion_API_Config__mdt`)
+- **Storage:** Protected Custom Metadata (`Elaro_API_Config__mdt`)
 - **Endpoint:** `https://events.pagerduty.com/v2/enqueue`
 - **Protocol:** HTTPS (TLS 1.2+)
 
@@ -232,8 +232,8 @@ private static String getRoutingKey() {
 
 **Fix Required (Cursor AI Task):**
 - Replace hardcoded placeholder with Custom Metadata query
-- Use existing `Prometheion_API_Config__mdt` metadata type
-- Create metadata record: `Prometheion_API_Config.PagerDuty`
+- Use existing `Elaro_API_Config__mdt` metadata type
+- Create metadata record: `Elaro_API_Config.PagerDuty`
 
 **See:** [PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md](PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md) for complete fix implementation.
 
@@ -241,7 +241,7 @@ private static String getRoutingKey() {
 
 **Custom Metadata Record:**
 ```xml
-<!-- File: force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-meta.xml -->
+<!-- File: force-app/main/default/customMetadata/Elaro_API_Config.PagerDuty.md-meta.xml -->
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>PagerDuty</label>
     <protected>true</protected>
@@ -271,16 +271,16 @@ private static String getRoutingKey() {
 **Request Pattern (AFTER FIX):**
 ```apex
 // Routing key retrieved from Protected Custom Metadata
-String routingKey = getRoutingKey(); // Queries Prometheion_API_Config__mdt
+String routingKey = getRoutingKey(); // Queries Elaro_API_Config__mdt
 
 Map<String, Object> event = new Map<String, Object>{
     'routing_key' => routingKey,
     'event_action' => 'trigger',
-    'dedup_key' => 'prometheion-' + alertId,
+    'dedup_key' => 'elaro-' + alertId,
     'payload' => new Map<String, Object>{
-        'summary' => 'Prometheion Compliance Alert',
+        'summary' => 'Elaro Compliance Alert',
         'severity' => 'critical',
-        'source' => 'Prometheion Compliance Platform'
+        'source' => 'Elaro Compliance Platform'
     }
 };
 
@@ -298,7 +298,7 @@ HttpResponse res = http.send(req);
 ### Error Handling
 - **Timeout:** 30 seconds
 - **Retry Logic:** None (idempotent with dedup_key)
-- **Dedup Key:** `prometheion-{alertId}` prevents duplicates
+- **Dedup Key:** `elaro-{alertId}` prevents duplicates
 - **Fallback:** Logs error, alert remains in Salesforce
 - **Validation:** Returns early if routing key is placeholder or null
 
@@ -317,13 +317,13 @@ HttpResponse res = http.send(req);
 - ✅ Integration toggle via `Is_Active__c` checkbox
 
 ### Required Permissions
-- **Admin:** `Prometheion_Admin` permission set required to configure routing key
+- **Admin:** `Elaro_Admin` permission set required to configure routing key
 - **Users:** No direct access to Protected Custom Metadata (encrypted at rest)
 
 ### Installation Steps (POST-FIX)
 
 1. **Post-Package Installation:**
-   - Navigate to: Setup → Custom Metadata Types → Prometheion API Config → Manage Records
+   - Navigate to: Setup → Custom Metadata Types → Elaro API Config → Manage Records
    - Edit "PagerDuty" record
    - Update "API Key" field with PagerDuty routing key from PagerDuty Events API v2 integration
    - Check "Is Active" to enable integration
@@ -454,7 +454,7 @@ HttpResponse res = http.send(req);
 
 | Named Credential | Service | Auth Method | Required |
 |------------------|---------|-------------|----------|
-| `Prometheion_Claude_API` | Claude AI | API Key (Header) | No (fallback available) |
+| `Elaro_Claude_API` | Claude AI | API Key (Header) | No (fallback available) |
 | `Slack_Webhook` | Slack | Webhook URL | No (optional integration) |
 | `Teams_Webhook` | Microsoft Teams | Webhook URL | No (optional integration) |
 | `ServiceNow_API` | ServiceNow GRC | Basic Auth | No (optional integration) |
@@ -466,16 +466,16 @@ HttpResponse res = http.send(req);
 
 ## Permission Set Access
 
-### Prometheion_Admin
+### Elaro_Admin
 - Full access to all integration configurations
 - Can configure Named Credentials
 - Can enable/disable integrations
 
-### Prometheion_AI_User
+### Elaro_AI_User
 - Can use AI-powered features (Claude API)
 - Cannot configure integrations
 
-### Prometheion_Auditor
+### Elaro_Auditor
 - Read-only access to integration logs
 - Cannot trigger manual integrations
 
@@ -546,7 +546,7 @@ Administrators must create Named Credentials after package installation:
 
 1. **Claude AI** (Required for AI features)
    - Setup → Named Credentials → New Legacy
-   - Name: `Prometheion_Claude_API`
+   - Name: `Elaro_Claude_API`
    - URL: `https://api.anthropic.com`
    - Identity Type: Named Principal
    - Authentication: Password Authentication
@@ -585,7 +585,7 @@ Administrators must create Named Credentials after package installation:
 
 If using PagerDuty:
 
-1. Setup → Custom Metadata Types → Manage Records → Prometheion Integration Settings
+1. Setup → Custom Metadata Types → Manage Records → Elaro Integration Settings
 2. Click "New"
 3. Label: `PagerDuty`
 4. Developer Name: `PagerDuty`
@@ -596,8 +596,8 @@ If using PagerDuty:
 ### Step 3: Test Integrations
 
 Use the built-in test classes:
-- `PrometheionComplianceCopilotServiceTest` - Tests Claude AI
-- `PrometheionSlackNotifierQueueableTest` - Tests Slack
+- `ElaroComplianceCopilotServiceTest` - Tests Claude AI
+- `ElaroSlackNotifierQueueableTest` - Tests Slack
 - `PagerDutyIntegrationTest` - Tests PagerDuty (if exists)
 
 ---
@@ -605,7 +605,7 @@ Use the built-in test classes:
 ## Troubleshooting
 
 ### Claude AI Not Responding
-1. Verify Named Credential `Prometheion_Claude_API` exists
+1. Verify Named Credential `Elaro_Claude_API` exists
 2. Check API key is valid (test at api.anthropic.com)
 3. Review Debug Logs for callout errors
 4. Check Anthropic API status page
@@ -628,12 +628,12 @@ Use the built-in test classes:
 
 ### Data Residency
 - All integrations use customer-controlled endpoints
-- No Prometheion-controlled data storage
+- No Elaro-controlled data storage
 - Customer responsible for external service compliance
 
 ### Audit Trail
 - All external callouts logged in Event Monitoring
-- Audit reports available in Prometheion dashboard
+- Audit reports available in Elaro dashboard
 - 6-month retention for callout logs
 
 ### Data Processing Agreement
@@ -656,7 +656,7 @@ This document demonstrates:
 - ✅ Permission set-based access control
 - ✅ Customer-controlled configuration
 
-**Questions?** Contact support@prometheion.io
+**Questions?** Contact support@elaro.io
 
 ---
 

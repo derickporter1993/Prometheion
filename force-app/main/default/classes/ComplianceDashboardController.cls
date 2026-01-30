@@ -3,7 +3,7 @@
  * 
  * Dashboard backend for compliance metrics and visualization
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ComplianceDashboardController {

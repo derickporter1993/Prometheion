@@ -5,7 +5,7 @@
 ---
 
 ## Issue Title
-Implement Einstein Platform callout in PrometheionGraphIndexer
+Implement Einstein Platform callout in ElaroGraphIndexer
 
 ## Labels
 - `enhancement`
@@ -22,7 +22,7 @@ v3.1.0
 
 ## Issue Body
 
-**Location:** `force-app/main/default/classes/PrometheionGraphIndexer.cls:129`
+**Location:** `force-app/main/default/classes/ElaroGraphIndexer.cls:129`
 
 **Current Status:** Placeholder TODO comment with fallback implementation
 
@@ -44,7 +44,7 @@ private static Decimal callEinsteinPrediction(Map<String, Object> metadata, Stri
         // Log Einstein prediction failure
         String correlationId = generateCorrelationId('EINSTEIN', framework);
         System.debug(LoggingLevel.ERROR,
-            '[PrometheionGraphIndexer] Einstein prediction failed - CorrelationId: ' + correlationId +
+            '[ElaroGraphIndexer] Einstein prediction failed - CorrelationId: ' + correlationId +
             ', Framework: ' + framework +
             ', Error: ' + e.getMessage() +
             ', StackTrace: ' + e.getStackTraceString());
@@ -134,14 +134,14 @@ private static Decimal callEinsteinPrediction(Map<String, Object> metadata, Stri
 ### Option 1: GitHub CLI (if installed)
 ```bash
 gh issue create \
-  --title "Implement Einstein Platform callout in PrometheionGraphIndexer" \
+  --title "Implement Einstein Platform callout in ElaroGraphIndexer" \
   --body "$(cat docs/GITHUB_ISSUE_TODO_EINSTEIN_PLATFORM.md)" \
   --label "enhancement,ai-integration,einstein-platform" \
   --milestone "v3.1.0"
 ```
 
 ### Option 2: GitHub Web Interface
-1. Go to https://github.com/derickporter1993/Prometheion/issues/new
+1. Go to https://github.com/derickporter1993/Elaro/issues/new
 2. Copy the "Issue Title" as the title
 3. Copy the "Issue Body" section as the body
 4. Add labels: `enhancement`, `ai-integration`, `einstein-platform`
@@ -151,11 +151,11 @@ gh issue create \
 ### Option 3: GitHub API
 ```bash
 curl -X POST \
-  https://api.github.com/repos/derickporter1993/Prometheion/issues \
+  https://api.github.com/repos/derickporter1993/Elaro/issues \
   -H "Authorization: token YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Implement Einstein Platform callout in PrometheionGraphIndexer",
+    "title": "Implement Einstein Platform callout in ElaroGraphIndexer",
     "body": "...",
     "labels": ["enhancement", "ai-integration", "einstein-platform"],
     "milestone": "v3.1.0"

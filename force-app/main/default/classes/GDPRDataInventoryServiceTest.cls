@@ -2,7 +2,7 @@
  * Test class for GDPRDataInventoryService
  * Tests data inventory, classification, ROPA generation
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

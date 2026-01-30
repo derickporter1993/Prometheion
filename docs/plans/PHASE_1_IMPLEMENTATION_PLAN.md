@@ -23,7 +23,7 @@ These must be completed first as they are AppExchange blockers.
 
 #### 1.1 SOQL Security - Add WITH SECURITY_ENFORCED
 
-**File:** `force-app/main/default/classes/PrometheionQuickActionsService.cls`
+**File:** `force-app/main/default/classes/ElaroQuickActionsService.cls`
 
 | Task | Lines | Query Description |
 |------|-------|-------------------|
@@ -44,7 +44,7 @@ WITH SECURITY_ENFORCED
 
 #### 1.2 DML Security - Add CRUD Validation
 
-**File:** `force-app/main/default/classes/PrometheionQuickActionsService.cls`
+**File:** `force-app/main/default/classes/ElaroQuickActionsService.cls`
 
 | Task | Line | Operation | Object |
 |------|------|-----------|--------|
@@ -83,14 +83,14 @@ if (Schema.sObjectType.ObjectName.isUpdateable()) {
 
 #### 1.4 REST Endpoint Authentication
 
-**File:** `force-app/main/default/classes/PrometheionScoreCallback.cls`
+**File:** `force-app/main/default/classes/ElaroScoreCallback.cls`
 
 **Tasks:**
 - S6: Add API key validation at entry point (lines 14-15)
 - S7: Remove stack trace from error responses (lines 102-109)
 
 **Prerequisites:**
-1. Create Custom Metadata Type: `Prometheion_API_Config__mdt`
+1. Create Custom Metadata Type: `Elaro_API_Config__mdt`
 2. Add field: `API_Key__c` (Text, 255)
 3. Create record: `ScoreCallback`
 
@@ -113,7 +113,7 @@ global static void handleScoreCallback() {
 
 private static Boolean validateApiKey(String apiKey) {
     if (String.isBlank(apiKey)) return false;
-    Prometheion_API_Config__mdt config = Prometheion_API_Config__mdt.getInstance('ScoreCallback');
+    Elaro_API_Config__mdt config = Elaro_API_Config__mdt.getInstance('ScoreCallback');
     return config != null && apiKey == config.API_Key__c;
 }
 ```
@@ -130,9 +130,9 @@ private static Boolean validateApiKey(String apiKey) {
 **Implementation:**
 ```apex
 // Replace:
-'url' => orgUrl + '/apex/PrometheionApprove?id=' + result.remediationId
+'url' => orgUrl + '/apex/ElaroApprove?id=' + result.remediationId
 // With:
-'url' => orgUrl + '/apex/PrometheionApprove?id=' + EncodingUtil.urlEncode(result.remediationId, 'UTF-8')
+'url' => orgUrl + '/apex/ElaroApprove?id=' + EncodingUtil.urlEncode(result.remediationId, 'UTF-8')
 ```
 
 ---
@@ -222,9 +222,9 @@ public class TriggerRecursionGuard {
 
 For each trigger, create a handler class following this pattern:
 
-**Handler:** `PrometheionAlertTriggerHandler.cls`
+**Handler:** `ElaroAlertTriggerHandler.cls`
 ```apex
-public with sharing class PrometheionAlertTriggerHandler {
+public with sharing class ElaroAlertTriggerHandler {
     public static void handleAfterInsert(List<Alert__c> newAlerts) {
         // Move business logic from trigger here
     }
@@ -233,14 +233,14 @@ public with sharing class PrometheionAlertTriggerHandler {
 
 **Updated Trigger:**
 ```apex
-trigger PrometheionAlertTrigger on Alert__c (after insert) {
-    if (!TriggerRecursionGuard.isFirstRun('PrometheionAlertTrigger')) {
+trigger ElaroAlertTrigger on Alert__c (after insert) {
+    if (!TriggerRecursionGuard.isFirstRun('ElaroAlertTrigger')) {
         return;
     }
     try {
-        PrometheionAlertTriggerHandler.handleAfterInsert(Trigger.new);
+        ElaroAlertTriggerHandler.handleAfterInsert(Trigger.new);
     } finally {
-        TriggerRecursionGuard.reset('PrometheionAlertTrigger');
+        TriggerRecursionGuard.reset('ElaroAlertTrigger');
     }
 }
 ```
@@ -253,10 +253,10 @@ trigger PrometheionAlertTrigger on Alert__c (after insert) {
 
 | Task | File | Coverage Target |
 |------|------|-----------------|
-| T1 | PrometheionQuickActionsServiceTest.cls | 75%+ |
-| T2 | PrometheionGraphIndexerTest.cls | 75%+ |
-| T3 | PrometheionGDPRDataErasureServiceTest.cls | 75%+ |
-| T4 | PrometheionScoreCallbackTest.cls | 75%+ |
+| T1 | ElaroQuickActionsServiceTest.cls | 75%+ |
+| T2 | ElaroGraphIndexerTest.cls | 75%+ |
+| T3 | ElaroGDPRDataErasureServiceTest.cls | 75%+ |
+| T4 | ElaroScoreCallbackTest.cls | 75%+ |
 | T5 | ISO27001QuarterlyReviewSchedulerTest.cls | 75%+ |
 
 **Test Class Template:**
@@ -298,7 +298,7 @@ private class ClassNameTest {
 
 | Task | File | Issue | Fix |
 |------|------|-------|-----|
-| TF1 | PrometheionEventPublisherTest.cls | Meaningless assertions | Replace System.assert(true) with actual verification |
+| TF1 | ElaroEventPublisherTest.cls | Meaningless assertions | Replace System.assert(true) with actual verification |
 | TF2 | SlackNotifierTest.cls | Meaningless assertions | Same |
 | TF3 | DeploymentMetricsTest.cls | Only 1 test method | Expand to 5+ tests |
 | TF4 | LimitMetricsTest.cls | Depends on org data | Create test data in @TestSetup |
@@ -312,8 +312,8 @@ private class ClassNameTest {
 | Task | File | Issue |
 |------|------|-------|
 | E1 | systemMonitorDashboard.html | `onclick="{refresh;}"` → `onclick={refresh}` |
-| E2 | prometheionAiSettings.html | 6 malformed handlers |
-| E3 | prometheionReadinessScore.html | 2 malformed handlers |
+| E2 | elaroAiSettings.html | 6 malformed handlers |
+| E3 | elaroReadinessScore.html | 2 malformed handlers |
 
 ### Block 6: Accessibility (Priority: HIGH)
 
@@ -321,7 +321,7 @@ private class ClassNameTest {
 |------|-------------|
 | A1 | Add `aria-hidden="true"` to decorative SVG icons |
 | A2 | Add text labels to riskHeatmap cells |
-| A3 | Fix form input labels in prometheionROICalculator |
+| A3 | Fix form input labels in elaroROICalculator |
 
 ### Block 7: Null Safety (Priority: MEDIUM)
 
@@ -381,43 +381,43 @@ Create Jest tests for 10 LWC components with 75%+ coverage.
 ## Files to Modify Summary
 
 ### Apex Classes (Modify)
-1. PrometheionQuickActionsService.cls
+1. ElaroQuickActionsService.cls
 2. ApiUsageSnapshot.cls
 3. MetadataChangeTracker.cls
 4. PerformanceRuleEngine.cls
-5. PrometheionScoreCallback.cls
+5. ElaroScoreCallback.cls
 6. TeamsNotifier.cls
 
 ### Apex Classes (Create)
 1. TriggerRecursionGuard.cls
 2. TriggerRecursionGuardTest.cls
-3. PrometheionQuickActionsServiceTest.cls
-4. PrometheionGraphIndexerTest.cls
-5. PrometheionGDPRDataErasureServiceTest.cls
-6. PrometheionScoreCallbackTest.cls
+3. ElaroQuickActionsServiceTest.cls
+4. ElaroGraphIndexerTest.cls
+5. ElaroGDPRDataErasureServiceTest.cls
+6. ElaroScoreCallbackTest.cls
 7. ISO27001QuarterlyReviewSchedulerTest.cls
-8. PrometheionAlertTriggerHandler.cls (and other handlers)
+8. ElaroAlertTriggerHandler.cls (and other handlers)
 
 ### Apex Test Classes (Modify)
-1. PrometheionEventPublisherTest.cls
+1. ElaroEventPublisherTest.cls
 2. SlackNotifierTest.cls
 3. DeploymentMetricsTest.cls
 4. LimitMetricsTest.cls
 
 ### Metadata (Create)
-1. Prometheion_API_Config__mdt (Custom Metadata Type)
+1. Elaro_API_Config__mdt (Custom Metadata Type)
 
 ### LWC Components (Modify)
 1. systemMonitorDashboard
-2. prometheionAiSettings
-3. prometheionReadinessScore
-4. prometheionCopilot
+2. elaroAiSettings
+3. elaroReadinessScore
+4. elaroCopilot
 5. riskHeatmap
-6. prometheionROICalculator
+6. elaroROICalculator
 7. complianceScoreCard
 8. complianceDashboard
 9. executiveKpiDashboard
-10. prometheionDrillDownViewer
+10. elaroDrillDownViewer
 
 ---
 

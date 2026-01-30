@@ -2,7 +2,7 @@
  * @description Data residency service for regional compliance
  * Supports US, EU, APAC data location validation
  * @group Enterprise Features
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class DataResidencyService {
     
@@ -100,20 +100,20 @@ public with sharing class DataResidencyService {
         summary.primaryRegion = String.valueOf(config.primaryRegion);
         
         // Count records by object
-        summary.totalRecords = [SELECT COUNT() FROM Prometheion_Evidence_Item__c WITH USER_MODE];
+        summary.totalRecords = [SELECT COUNT() FROM Elaro_Evidence_Item__c WITH USER_MODE];
         
         // In production, this would analyze actual data distribution
         summary.recordsByRegion.put(summary.primaryRegion, summary.totalRecords);
         
         // Check for any cross-border indicators
-        List<Prometheion_Evidence_Item__c> foreignEvents = [
+        List<Elaro_Evidence_Item__c> foreignEvents = [
             SELECT Id, Evidence_Type__c, Description__c
-            FROM Prometheion_Evidence_Item__c
+            FROM Elaro_Evidence_Item__c
             WHERE Description__c LIKE '%international%' OR Description__c LIKE '%cross-border%'
             LIMIT 100
         ];
         
-        for (Prometheion_Evidence_Item__c event : foreignEvents) {
+        for (Elaro_Evidence_Item__c event : foreignEvents) {
             CrossBorderTransfer transfer = new CrossBorderTransfer();
             transfer.recordId = event.Id;
             transfer.sourceRegion = summary.primaryRegion;

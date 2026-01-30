@@ -3,8 +3,8 @@
 ## ✅ Completed Components
 
 ### 1. Platform Events (2)
-- ✅ `Prometheion_Raw_Event__e` - Publishes configuration changes to AWS
-- ✅ `Prometheion_Score_Result__e` - Receives score results from AWS for real-time UI updates
+- ✅ `Elaro_Raw_Event__e` - Publishes configuration changes to AWS
+- ✅ `Elaro_Score_Result__e` - Receives score results from AWS for real-time UI updates
 
 ### 2. Custom Objects (1)
 - ✅ `Compliance_Score__c` - Stores compliance risk scores calculated by AWS Lambda
@@ -12,27 +12,27 @@
   - Fields: Risk score, framework scores (JSON), findings (JSON), timestamps, S3 key
 
 ### 3. Apex Classes (3)
-- ✅ `PrometheionEventPublisher.cls` - Lightweight event publisher (zero CPU cost)
+- ✅ `ElaroEventPublisher.cls` - Lightweight event publisher (zero CPU cost)
   - Methods: `publishConfigChange()`, `publishAuditTrailChange()`, `publishPermissionChange()`, `publishBatch()`
-- ✅ `PrometheionAuditTrailPoller.cls` - Scheduled job to poll Setup Audit Trail every 5 minutes
+- ✅ `ElaroAuditTrailPoller.cls` - Scheduled job to poll Setup Audit Trail every 5 minutes
   - Methods: `execute()`, `schedule()`, `unschedule()`
-- ✅ `PrometheionScoreCallback.cls` - REST endpoint for AWS Lambda callbacks
-  - Endpoint: `/services/apexrest/prometheion/score/callback`
+- ✅ `ElaroScoreCallback.cls` - REST endpoint for AWS Lambda callbacks
+  - Endpoint: `/services/apexrest/elaro/score/callback`
   - Handles: Score updates, Platform Event publishing for UI
 
 ### 4. Triggers (1)
 - ✅ `PermissionSetAssignmentTrigger.trigger` - Publishes events when permission sets are assigned/removed
 
 ### 5. Lightning Web Components (2)
-- ✅ `prometheionScoreListener` - Subscribes to Platform Events for real-time score updates
+- ✅ `elaroScoreListener` - Subscribes to Platform Events for real-time score updates
   - Features: Toast notifications, custom event dispatching, error handling
-- ✅ `prometheionDashboard` - Updated to integrate with score listener
+- ✅ `elaroDashboard` - Updated to integrate with score listener
   - Features: Real-time score updates, refresh on events, subscription status
 
 ### 6. Test Classes (3)
-- ✅ `PrometheionEventPublisherTest.cls` - Tests event publishing
-- ✅ `PrometheionAuditTrailPollerTest.cls` - Tests scheduled job
-- ✅ `PrometheionScoreCallbackTest.cls` - Tests REST callback endpoint
+- ✅ `ElaroEventPublisherTest.cls` - Tests event publishing
+- ✅ `ElaroAuditTrailPollerTest.cls` - Tests scheduled job
+- ✅ `ElaroScoreCallbackTest.cls` - Tests REST callback endpoint
 
 ### 7. Documentation (2)
 - ✅ `PHASE1_SETUP_GUIDE.md` - Step-by-step setup instructions
@@ -48,9 +48,9 @@ Salesforce (Spoke)                    AWS (Hub)
    ↓                                 
 2. PermissionSetAssignmentTrigger    
    ↓                                 
-3. PrometheionEventPublisher         
+3. ElaroEventPublisher         
    ↓                                 
-4. Prometheion_Raw_Event__e          
+4. Elaro_Raw_Event__e          
    ↓                                 
 5. Event Relay → EventBridge         
                                       6. Kinesis Firehose
@@ -59,15 +59,15 @@ Salesforce (Spoke)                    AWS (Hub)
                                       9. Lambda: Compliance Scorer
                                       10. DynamoDB (scores)
                                       11. REST API Callback
-12. PrometheionScoreCallback          ↓
+12. ElaroScoreCallback          ↓
    ↓                                 
 13. Compliance_Score__c (upsert)     
    ↓                                 
-14. Prometheion_Score_Result__e      
+14. Elaro_Score_Result__e      
    ↓                                 
-15. prometheionScoreListener         
+15. elaroScoreListener         
    ↓                                 
-16. prometheionDashboard (UI update)  
+16. elaroDashboard (UI update)  
 ```
 
 ## Key Features
@@ -124,37 +124,37 @@ Salesforce (Spoke)                    AWS (Hub)
 ## Files Created
 
 ### Platform Events
-- `force-app/main/default/objects/Prometheion_Raw_Event__e/Prometheion_Raw_Event__e.object-meta.xml`
-- `force-app/main/default/objects/Prometheion_Score_Result__e/Prometheion_Score_Result__e.object-meta.xml`
+- `force-app/main/default/objects/Elaro_Raw_Event__e/Elaro_Raw_Event__e.object-meta.xml`
+- `force-app/main/default/objects/Elaro_Score_Result__e/Elaro_Score_Result__e.object-meta.xml`
 
 ### Custom Objects
 - `force-app/main/default/objects/Compliance_Score__c/Compliance_Score__c.object-meta.xml`
 
 ### Apex Classes
-- `force-app/main/default/classes/PrometheionEventPublisher.cls`
-- `force-app/main/default/classes/PrometheionEventPublisher.cls-meta.xml`
-- `force-app/main/default/classes/PrometheionAuditTrailPoller.cls`
-- `force-app/main/default/classes/PrometheionAuditTrailPoller.cls-meta.xml`
-- `force-app/main/default/classes/PrometheionScoreCallback.cls`
-- `force-app/main/default/classes/PrometheionScoreCallback.cls-meta.xml`
+- `force-app/main/default/classes/ElaroEventPublisher.cls`
+- `force-app/main/default/classes/ElaroEventPublisher.cls-meta.xml`
+- `force-app/main/default/classes/ElaroAuditTrailPoller.cls`
+- `force-app/main/default/classes/ElaroAuditTrailPoller.cls-meta.xml`
+- `force-app/main/default/classes/ElaroScoreCallback.cls`
+- `force-app/main/default/classes/ElaroScoreCallback.cls-meta.xml`
 
 ### Test Classes
-- `force-app/main/default/classes/PrometheionEventPublisherTest.cls`
-- `force-app/main/default/classes/PrometheionEventPublisherTest.cls-meta.xml`
-- `force-app/main/default/classes/PrometheionAuditTrailPollerTest.cls`
-- `force-app/main/default/classes/PrometheionAuditTrailPollerTest.cls-meta.xml`
-- `force-app/main/default/classes/PrometheionScoreCallbackTest.cls`
-- `force-app/main/default/classes/PrometheionScoreCallbackTest.cls-meta.xml`
+- `force-app/main/default/classes/ElaroEventPublisherTest.cls`
+- `force-app/main/default/classes/ElaroEventPublisherTest.cls-meta.xml`
+- `force-app/main/default/classes/ElaroAuditTrailPollerTest.cls`
+- `force-app/main/default/classes/ElaroAuditTrailPollerTest.cls-meta.xml`
+- `force-app/main/default/classes/ElaroScoreCallbackTest.cls`
+- `force-app/main/default/classes/ElaroScoreCallbackTest.cls-meta.xml`
 
 ### Triggers
 - `force-app/main/default/triggers/PermissionSetAssignmentTrigger.trigger`
 - `force-app/main/default/triggers/PermissionSetAssignmentTrigger.trigger-meta.xml`
 
 ### Lightning Web Components
-- `force-app/main/default/lwc/prometheionScoreListener/prometheionScoreListener.js`
-- `force-app/main/default/lwc/prometheionScoreListener/prometheionScoreListener.js-meta.xml`
-- `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.js` (updated)
-- `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.html` (updated)
+- `force-app/main/default/lwc/elaroScoreListener/elaroScoreListener.js`
+- `force-app/main/default/lwc/elaroScoreListener/elaroScoreListener.js-meta.xml`
+- `force-app/main/default/lwc/elaroDashboard/elaroDashboard.js` (updated)
+- `force-app/main/default/lwc/elaroDashboard/elaroDashboard.html` (updated)
 
 ### Documentation
 - `PHASE1_SETUP_GUIDE.md`

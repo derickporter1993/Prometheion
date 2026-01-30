@@ -1,0 +1,29 @@
+{
+  "orgName": "Elaro Enterprise Scratch Org",
+  "edition": "Developer",
+  "features": ["EinsteinGPT", "MultiCurrency", "Communities", "PlatformCache"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "securitySettings": {
+      "sessionSettings": {
+        "enforceIpRangesEveryRequest": false
+      }
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "platformCacheSettings": {
+      "cachePartitions": [
+        {
+          "description": "Elaro Compliance cache partition for storing compliance scores",
+          "isDefaultPartition": false,
+          "masterLabel": "ElaroCompliance",
+          "platformCacheType": "Org"
+        }
+      ]
+    }
+  }
+}
+

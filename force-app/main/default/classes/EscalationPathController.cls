@@ -1,8 +1,8 @@
 /**
  * @description Controller for Escalation Path LWC component
- * Provides CRUD operations for Prometheion_Escalation_Path__c records
+ * Provides CRUD operations for Elaro_Escalation_Path__c records
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class EscalationPathController {
@@ -12,12 +12,12 @@ public with sharing class EscalationPathController {
      * @return List of path records with related user info
      */
     @AuraEnabled(cacheable=true)
-    public static List<Prometheion_Escalation_Path__c> getPaths() {
+    public static List<Elaro_Escalation_Path__c> getPaths() {
         return [
             SELECT Id, Name, User__c, User__r.Name, User__r.Email,
                    Level__c, Role__c, Notification_Method__c,
                    Escalation_Delay_Minutes__c, Active__c
-            FROM Prometheion_Escalation_Path__c
+            FROM Elaro_Escalation_Path__c
             WITH USER_MODE
             ORDER BY Level__c ASC, Role__c ASC
             LIMIT 100
@@ -30,10 +30,10 @@ public with sharing class EscalationPathController {
      * @return The created path ID
      */
     @AuraEnabled
-    public static Id createPath(Prometheion_Escalation_Path__c path) {
+    public static Id createPath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Prometheion_Escalation_Path__c.isCreateable()) {
+        if (Schema.sObjectType.Elaro_Escalation_Path__c.isCreateable()) {
             insert path;
             return path.Id;
         } else {
@@ -46,10 +46,10 @@ public with sharing class EscalationPathController {
      * @param path The path record to update
      */
     @AuraEnabled
-    public static void updatePath(Prometheion_Escalation_Path__c path) {
+    public static void updatePath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Prometheion_Escalation_Path__c.isUpdateable()) {
+        if (Schema.sObjectType.Elaro_Escalation_Path__c.isUpdateable()) {
             update path;
         } else {
             throw new AuraHandledException('Insufficient permissions to update escalation paths');
@@ -62,8 +62,8 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled
     public static void deletePath(Id pathId) {
-        if (Schema.sObjectType.Prometheion_Escalation_Path__c.isDeletable()) {
-            delete [SELECT Id FROM Prometheion_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
+        if (Schema.sObjectType.Elaro_Escalation_Path__c.isDeletable()) {
+            delete [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
         } else {
             throw new AuraHandledException('Insufficient permissions to delete escalation paths');
         }
@@ -73,7 +73,7 @@ public with sharing class EscalationPathController {
      * @description Validates path data before save
      * @param path The path to validate
      */
-    private static void validatePath(Prometheion_Escalation_Path__c path) {
+    private static void validatePath(Elaro_Escalation_Path__c path) {
         if (path.User__c == null) {
             throw new AuraHandledException('User is required');
         }

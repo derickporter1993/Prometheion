@@ -7,13 +7,13 @@
  * Schedule: Monthly (recommended)
  * Example: System.schedule('Monthly Access Review', '0 0 6 1 * ?', new AccessReviewScheduler());
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class AccessReviewScheduler implements Schedulable {
 
     private static final Integer DEFAULT_REVIEW_CYCLE_DAYS = 90;
-    private static final String JOB_NAME = 'Prometheion Access Review';
+    private static final String JOB_NAME = 'Elaro Access Review';
 
     /**
      * Schedulable execute method
@@ -50,7 +50,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
 
             // Insert review records
             if (!reviews.isEmpty()) {
-                PrometheionSecurityUtils.validateCRUDAccess('Access_Review__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+                ElaroSecurityUtils.validateCRUDAccess('Access_Review__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
                 insert reviews;
             }
 
@@ -181,7 +181,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             gap.Remediation_Steps__c = 'Review all permission set assignments and remove unnecessary access.';
             gap.Due_Date__c = Date.today().addDays(30);
 
-            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert gap;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to create compliance gap: ' + e.getMessage());
@@ -193,12 +193,12 @@ public with sharing class AccessReviewScheduler implements Schedulable {
      */
     private void logExecution(String message, Integer recordsProcessed) {
         try {
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Access Review Scheduled Job';
             log.Status__c = 'Success';
             log.Details__c = message + '. Records processed: ' + recordsProcessed;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log execution: ' + e.getMessage());
@@ -210,12 +210,12 @@ public with sharing class AccessReviewScheduler implements Schedulable {
      */
     private void logError(String message) {
         try {
-            Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c();
+            Elaro_Audit_Log__c log = new Elaro_Audit_Log__c();
             log.Action__c = 'Access Review Scheduled Job';
             log.Status__c = 'Error';
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
-            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log error: ' + e.getMessage());

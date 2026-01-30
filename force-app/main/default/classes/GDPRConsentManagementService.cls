@@ -7,7 +7,7 @@
  * - Article 7: Conditions for consent
  * - Article 13/14: Information to be provided when collecting data
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class GDPRConsentManagementService extends ComplianceServiceBase {

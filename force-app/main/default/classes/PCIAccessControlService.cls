@@ -7,7 +7,7 @@
  * - Requirement 8: Identify and authenticate access to system components
  * - Requirement 9: Restrict physical access to cardholder data
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class PCIAccessControlService extends ComplianceServiceBase {

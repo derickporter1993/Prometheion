@@ -366,8 +366,8 @@ static void testGovernorLimits() {
 ### End-to-End Test Scenarios
 
 #### Scenario 1: New User Onboarding
-1. Assign Prometheion_User permission set
-2. Access Prometheion app
+1. Assign Elaro_User permission set
+2. Access Elaro app
 3. View dashboard
 4. Select HIPAA framework
 5. View gaps
@@ -449,14 +449,14 @@ static void testGovernorLimits() {
 ```bash
 # Create new package version
 sfdx force:package:version:create \
-  --package "Prometheion" \
+  --package "Elaro" \
   --installationkey <key> \
   --wait 30 \
   --codecoverage
 
 # Promote to released
 sfdx force:package:version:promote \
-  --package "Prometheion@3.0.0-1"
+  --package "Elaro@3.0.0-1"
 ```
 
 ### Step 2: Security Review
@@ -544,7 +544,7 @@ sfdx force:package:version:promote \
 
 ## CONGRATULATIONS!
 
-When all items are checked, Prometheion is ready for AppExchange!
+When all items are checked, Elaro is ready for AppExchange!
 
 🎉 **Next Steps:**
 1. Monitor security review progress

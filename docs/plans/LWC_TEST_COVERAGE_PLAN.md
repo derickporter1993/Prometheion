@@ -20,10 +20,10 @@
 
 ### Components with Tests (6/34)
 
-✅ `prometheionDashboard` - Tests exist, passing  
-✅ `prometheionAuditWizard` - Tests exist, passing  
-✅ `prometheionEventExplorer` - Tests exist, passing  
-✅ `prometheionCopilot` - Tests exist, passing  
+✅ `elaroDashboard` - Tests exist, passing  
+✅ `elaroAuditWizard` - Tests exist, passing  
+✅ `elaroEventExplorer` - Tests exist, passing  
+✅ `elaroCopilot` - Tests exist, passing  
 ✅ `complianceCopilot` - Tests exist, passing  
 ✅ `controlMappingMatrix` - Tests exist, passing  
 
@@ -45,19 +45,19 @@
 - `deploymentMonitorDashboard` (39 lines)
 - `executiveKpiDashboard` (52 lines)
 - `frameworkSelector` (41 lines)
-- `prometheionAiSettings` (74 lines)
-- `prometheionAuditPackageBuilder` (80 lines)
-- `prometheionReadinessScore` (183 lines)
-- `prometheionROICalculator` (153 lines)
+- `elaroAiSettings` (74 lines)
+- `elaroAuditPackageBuilder` (80 lines)
+- `elaroReadinessScore` (183 lines)
+- `elaroROICalculator` (153 lines)
 
 🟢 **Lower Priority (Auxiliary Components):**
-- `prometheionComparativeAnalytics` (164 lines)
-- `prometheionDrillDownViewer` (147 lines)
-- `prometheionDynamicReportBuilder` (288 lines)
-- `prometheionEventMonitor` (68 lines)
-- `prometheionExecutiveKPIDashboard` (82 lines)
-- `prometheionScoreListener` (102 lines)
-- `prometheionTrendAnalyzer` (168 lines)
+- `elaroComparativeAnalytics` (164 lines)
+- `elaroDrillDownViewer` (147 lines)
+- `elaroDynamicReportBuilder` (288 lines)
+- `elaroEventMonitor` (68 lines)
+- `elaroExecutiveKPIDashboard` (82 lines)
+- `elaroScoreListener` (102 lines)
+- `elaroTrendAnalyzer` (168 lines)
 - `riskHeatmap` (31 lines)
 
 ---
@@ -69,7 +69,7 @@
 **Goal:** Create a comprehensive test template based on existing successful tests
 
 **Actions:**
-1. Analyze existing test patterns from `prometheionDashboard.test.js`
+1. Analyze existing test patterns from `elaroDashboard.test.js`
 2. Document wire adapter mocking strategy
 3. Create reusable test utilities if needed
 4. Identify common test patterns (wire adapters, navigation, toast events)
@@ -108,8 +108,8 @@
 **Components (8):**
 - `complianceTimeline`, `complianceTrendChart`
 - `deploymentMonitorDashboard`, `executiveKpiDashboard`
-- `frameworkSelector`, `prometheionAiSettings`
-- `prometheionAuditPackageBuilder`, `prometheionReadinessScore`
+- `frameworkSelector`, `elaroAiSettings`
+- `elaroAuditPackageBuilder`, `elaroReadinessScore`
 
 **Focus:** Essential functionality and critical paths only
 
@@ -149,7 +149,7 @@ describe('Bulk Operations', () => {
 **Components Requiring Bulk Tests:**
 - `complianceGapList` - Multiple gaps
 - `complianceDashboard` - Multiple frameworks
-- `prometheionEventExplorer` - Multiple events
+- `elaroEventExplorer` - Multiple events
 - `apiUsageDashboard` - Multiple API calls
 - `auditReportGenerator` - Multiple reports
 
@@ -157,7 +157,7 @@ describe('Bulk Operations', () => {
 
 ## Test Template Pattern
 
-Based on `prometheionDashboard.test.js`, the standard test structure:
+Based on `elaroDashboard.test.js`, the standard test structure:
 
 ```javascript
 /**

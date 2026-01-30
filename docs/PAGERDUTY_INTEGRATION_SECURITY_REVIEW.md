@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-The PagerDuty integration in Prometheion v3.0 currently contains a **critical security vulnerability**: the routing key (authentication credential) is stored as a hardcoded placeholder string instead of being retrieved from secure Protected Custom Metadata.
+The PagerDuty integration in Elaro v3.0 currently contains a **critical security vulnerability**: the routing key (authentication credential) is stored as a hardcoded placeholder string instead of being retrieved from secure Protected Custom Metadata.
 
 **Impact:**
 - ❌ **Fails AppExchange Security Review** (Section 4.4: "No hardcoded credentials")
@@ -65,15 +65,15 @@ private static String getRoutingKey() {
 
 ### Option 1: Protected Custom Metadata Type (RECOMMENDED)
 
-**Existing Metadata Type:** `Prometheion_API_Config__mdt`
+**Existing Metadata Type:** `Elaro_API_Config__mdt`
 
-**Definition:** `force-app/main/default/objects/Prometheion_API_Config__mdt/Prometheion_API_Config__mdt.object-meta.xml`
+**Definition:** `force-app/main/default/objects/Elaro_API_Config__mdt/Elaro_API_Config__mdt.object-meta.xml`
 
 ```xml
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Stores API configuration for Prometheion external integrations including API keys and HMAC secrets.</description>
-    <label>Prometheion API Config</label>
-    <pluralLabel>Prometheion API Configs</pluralLabel>
+    <description>Stores API configuration for Elaro external integrations including API keys and HMAC secrets.</description>
+    <label>Elaro API Config</label>
+    <pluralLabel>Elaro API Configs</pluralLabel>
     <visibility>Protected</visibility>
 </CustomObject>
 ```
@@ -96,7 +96,7 @@ private static String getRoutingKey() {
 
 **Recommendation:**
 - **Short-term:** Use `API_Key__c` to store routing key (works, semantically imperfect)
-- **Long-term:** Create dedicated `Prometheion_Integration_Settings__mdt` with `Routing_Key__c` field
+- **Long-term:** Create dedicated `Elaro_Integration_Settings__mdt` with `Routing_Key__c` field
 
 ---
 
@@ -136,7 +136,7 @@ req.setMethod('POST');
 
 ### Step 1: Create Custom Metadata Record
 
-Create file: `force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-meta.xml`
+Create file: `force-app/main/default/customMetadata/Elaro_API_Config.PagerDuty.md-meta.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -177,23 +177,23 @@ private static String getRoutingKey() {
 private static String getRoutingKey() {
     try {
         // Query Protected Custom Metadata for PagerDuty routing key
-        List<Prometheion_API_Config__mdt> configs = [
+        List<Elaro_API_Config__mdt> configs = [
             SELECT API_Key__c, Is_Active__c
-            FROM Prometheion_API_Config__mdt
+            FROM Elaro_API_Config__mdt
             WHERE DeveloperName = 'PagerDuty'
             AND Is_Active__c = true
             LIMIT 1
         ];
 
         if (configs.isEmpty()) {
-            System.debug(LoggingLevel.WARN, 'PagerDuty integration not configured. Create Prometheion_API_Config__mdt record with DeveloperName=PagerDuty');
+            System.debug(LoggingLevel.WARN, 'PagerDuty integration not configured. Create Elaro_API_Config__mdt record with DeveloperName=PagerDuty');
             return null;
         }
 
         String routingKey = configs[0].API_Key__c;
 
         if (String.isBlank(routingKey) || routingKey.contains('PLACEHOLDER')) {
-            System.debug(LoggingLevel.ERROR, 'PagerDuty routing key not set. Update Prometheion_API_Config__mdt.PagerDuty record');
+            System.debug(LoggingLevel.ERROR, 'PagerDuty routing key not set. Update Elaro_API_Config__mdt.PagerDuty record');
             return null;
         }
 
@@ -231,7 +231,7 @@ private static void sendToPagerDuty(Map<String, Object> event) {
     }
 
     if (routingKey.contains('PLACEHOLDER') || routingKey.equals('your-pagerduty-routing-key')) {
-        System.debug(LoggingLevel.ERROR, 'Cannot send PagerDuty event: routing key is placeholder. Configure Prometheion_API_Config__mdt.PagerDuty');
+        System.debug(LoggingLevel.ERROR, 'Cannot send PagerDuty event: routing key is placeholder. Configure Elaro_API_Config__mdt.PagerDuty');
         return;
     }
 
@@ -270,7 +270,7 @@ private static void sendToPagerDuty(Map<String, Object> event) {
 @isTest
 static void testGetRoutingKey_RetrievesFromMetadata() {
     // This test will fail until Custom Metadata record is created
-    // After creating Prometheion_API_Config.PagerDuty.md-meta.xml:
+    // After creating Elaro_API_Config.PagerDuty.md-meta.xml:
 
     Test.startTest();
     String routingKey = PagerDutyIntegration.getRoutingKey();
@@ -307,10 +307,10 @@ static void testSendToPagerDuty_RejectsPlaceholderKey() {
 
 ## Permission Set Access Control
 
-### Required Permission Set: `Prometheion_Admin`
+### Required Permission Set: `Elaro_Admin`
 
 **Custom Metadata Access:**
-- Admins can view/edit `Prometheion_API_Config__mdt` records via Setup
+- Admins can view/edit `Elaro_API_Config__mdt` records via Setup
 - Standard users cannot access Protected Custom Metadata
 
 **User Access Pattern:**
@@ -320,7 +320,7 @@ static void testSendToPagerDuty_RejectsPlaceholderKey() {
 ```
 
 **Verification:**
-- ✅ Only `Prometheion_Admin` can configure PagerDuty routing key
+- ✅ Only `Elaro_Admin` can configure PagerDuty routing key
 - ✅ Standard users cannot view routing key (Protected visibility)
 - ✅ API users cannot query Protected Custom Metadata
 
@@ -331,7 +331,7 @@ static void testSendToPagerDuty_RejectsPlaceholderKey() {
 ### For Package Installers (Post-Install)
 
 1. **Navigate to Setup → Custom Metadata Types**
-2. **Click "Manage Records" next to "Prometheion API Config"**
+2. **Click "Manage Records" next to "Elaro API Config"**
 3. **Click "Edit" on the "PagerDuty" record**
 4. **Update "API Key" field:**
    - Obtain PagerDuty Routing Key from PagerDuty console
@@ -347,7 +347,7 @@ static void testSendToPagerDuty_RejectsPlaceholderKey() {
 
 ```bash
 # Create metadata record
-cat > force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-meta.xml << 'EOF'
+cat > force-app/main/default/customMetadata/Elaro_API_Config.PagerDuty.md-meta.xml << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <label>PagerDuty</label>
@@ -364,7 +364,7 @@ cat > force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-
 EOF
 
 # Deploy to org
-sf project deploy start --metadata CustomMetadata:Prometheion_API_Config.PagerDuty
+sf project deploy start --metadata CustomMetadata:Elaro_API_Config.PagerDuty
 ```
 
 ---
@@ -374,7 +374,7 @@ sf project deploy start --metadata CustomMetadata:Prometheion_API_Config.PagerDu
 ### Step 1: Verify Custom Metadata Exists
 
 ```bash
-sf data query --query "SELECT DeveloperName, API_Key__c, Is_Active__c FROM Prometheion_API_Config__mdt WHERE DeveloperName = 'PagerDuty'" --target-org <org>
+sf data query --query "SELECT DeveloperName, API_Key__c, Is_Active__c FROM Elaro_API_Config__mdt WHERE DeveloperName = 'PagerDuty'" --target-org <org>
 ```
 
 **Expected Output:**
@@ -466,7 +466,7 @@ DEBUG|Key Value: NULL
    - Immediate effect (no caching)
 
 4. **Access Control**
-   - Only `Prometheion_Admin` permission set
+   - Only `Elaro_Admin` permission set
    - Standard users cannot access
    - Audit trail via Setup Audit Trail
 
@@ -487,7 +487,7 @@ DEBUG|Key Value: NULL
 ### For Cursor AI (Complementary Tasks)
 
 **Cursor AI is responsible for:**
-1. Creating `force-app/main/default/customMetadata/Prometheion_API_Config.PagerDuty.md-meta.xml`
+1. Creating `force-app/main/default/customMetadata/Elaro_API_Config.PagerDuty.md-meta.xml`
 2. Updating `PagerDutyIntegration.cls` with secure `getRoutingKey()` implementation
 3. Adding validation to `sendToPagerDuty()` method
 4. Creating/updating `PagerDutyIntegrationTest.cls` with security tests
@@ -542,8 +542,8 @@ DEBUG|Key Value: NULL
 
 **Created By:** Claude Code (AppExchange Preparation Workflow)
 **Date:** 2026-01-11
-**Branch:** `claude/review-prometheion-app-0BLu9`
+**Branch:** `claude/review-elaro-app-0BLu9`
 **Related Files:**
 - `force-app/main/default/classes/PagerDutyIntegration.cls` (lines 144-148)
-- `force-app/main/default/objects/Prometheion_API_Config__mdt/`
+- `force-app/main/default/objects/Elaro_API_Config__mdt/`
 - `docs/EXTERNAL_SERVICES.md` (Section 4: PagerDuty)

@@ -1,8 +1,8 @@
-# Prometheion Technical Deep-Dive: Business Plan Alignment Analysis
+# Elaro Technical Deep-Dive: Business Plan Alignment Analysis
 
 ## Executive Summary
 
-This document provides a comprehensive technical analysis of Prometheion's current codebase alignment with the business plan, identifying critical gaps, implementation strategies, and architectural recommendations for achieving the vision outlined in the business plan.
+This document provides a comprehensive technical analysis of Elaro's current codebase alignment with the business plan, identifying critical gaps, implementation strategies, and architectural recommendations for achieving the vision outlined in the business plan.
 
 **Key Findings:**
 
@@ -22,7 +22,7 @@ This document provides a comprehensive technical analysis of Prometheion's curre
 
 **What Exists:**
 
-- `PrometheionComplianceScorer.calculateConfigDriftScore()` queries `SetupAuditTrail` (lines 254-298)
+- `ElaroComplianceScorer.calculateConfigDriftScore()` queries `SetupAuditTrail` (lines 254-298)
 - Basic polling of `SetupAuditTrail` for last 30 days
 - Simple pattern matching on `Action` field (permission, profile, delete keywords)
 
@@ -48,7 +48,7 @@ This document provides a comprehensive technical analysis of Prometheion's curre
 **Event Publisher Service:**
 
 ```apex
-public class PrometheionEventPublisher {
+public class ElaroEventPublisher {
     /**
      * Publish compliance event when Setup Audit Trail change detected
      */
@@ -88,7 +88,7 @@ public class PrometheionEventPublisher {
 **Shield Event Monitoring API Wrapper:**
 
 ```apex
-public class PrometheionEventMonitoringService {
+public class ElaroEventMonitoringService {
     private static final String EVENT_MONITORING_API = '/services/data/v62.0/eventMonitoring/';
 
     /**
@@ -147,7 +147,7 @@ public class PrometheionEventMonitoringService {
 **Integrate with Claude for Pattern Recognition:**
 
 ```apex
-public class PrometheionAnomalyDetector {
+public class ElaroAnomalyDetector {
     /**
      * Use Claude to identify anomalous event patterns
      */
@@ -167,8 +167,8 @@ public class PrometheionAnomalyDetector {
             'Return JSON: { "anomalies": [...], "riskScore": 0-100, "recommendation": "..." }';
 
         // Call Claude
-        PrometheionClaudeService.ClaudeResponse response =
-            PrometheionClaudeService.askCompliance(prompt, getOrgContext());
+        ElaroClaudeService.ClaudeResponse response =
+            ElaroClaudeService.askCompliance(prompt, getOrgContext());
 
         return parseAnomalyResponse(response.content);
     }
@@ -182,14 +182,14 @@ public class PrometheionAnomalyDetector {
 ```apex
 trigger ComplianceEventTrigger on Compliance_Event__e (after insert) {
     // Process events in real-time
-    PrometheionEventProcessor.processEvents(Trigger.new);
+    ElaroEventProcessor.processEvents(Trigger.new);
 }
 ```
 
 **Event Processor:**
 
 ```apex
-public class PrometheionEventProcessor {
+public class ElaroEventProcessor {
     public static void processEvents(List<Compliance_Event__e> events) {
         // 1. Immediate risk scoring
         for (Compliance_Event__e event : events) {
@@ -204,11 +204,11 @@ public class PrometheionEventProcessor {
 
         // 3. Batch correlation analysis
         if (events.size() >= 5) {
-            PrometheionEventPublisher.correlateEvents(events);
+            ElaroEventPublisher.correlateEvents(events);
         }
 
         // 4. Update compliance graph
-        PrometheionGraphIndexer.indexEvents(events);
+        ElaroGraphIndexer.indexEvents(events);
     }
 }
 ```
@@ -268,7 +268,7 @@ public class PrometheionEventProcessor {
 
 **What Exists:**
 
-- `PrometheionComplianceScorer.calculateConfigDriftScore()` (lines 254-298)
+- `ElaroComplianceScorer.calculateConfigDriftScore()` (lines 254-298)
 - Basic `SetupAuditTrail` querying
 - Simple keyword matching for "high-risk" changes
 
@@ -287,7 +287,7 @@ public class PrometheionEventProcessor {
 **Baseline Storage:**
 
 ```apex
-public class PrometheionBaselineManager {
+public class ElaroBaselineManager {
     /**
      * Create a compliance baseline snapshot
      */
@@ -349,7 +349,7 @@ public class PrometheionBaselineManager {
 **Compare Current State vs Baseline:**
 
 ```apex
-public class PrometheionDriftDetector {
+public class ElaroDriftDetector {
     /**
      * Detect configuration drift against active baseline
      */
@@ -446,7 +446,7 @@ public class PrometheionDriftDetector {
 **Jira/ServiceNow Integration:**
 
 ```apex
-public class PrometheionChangeApprovalService {
+public class ElaroChangeApprovalService {
     /**
      * Check if a configuration change has an approved change request
      */
@@ -510,7 +510,7 @@ public class PrometheionChangeApprovalService {
 **Rollback Engine:**
 
 ```apex
-public class PrometheionRollbackEngine {
+public class ElaroRollbackEngine {
     /**
      * Rollback a configuration change to baseline state
      */
@@ -612,7 +612,7 @@ public class PrometheionRollbackEngine {
 
 **What Exists:**
 
-- `PrometheionComplianceScorer` calculates scores
+- `ElaroComplianceScorer` calculates scores
 - Basic risk identification in `getTopRisks()` (lines 380-418)
 
 **What's Missing:**
@@ -630,7 +630,7 @@ public class PrometheionRollbackEngine {
 **Automated Evidence Gathering:**
 
 ```apex
-public class PrometheionEvidenceCollector {
+public class ElaroEvidenceCollector {
     /**
      * Collect all evidence for a specific compliance framework
      */
@@ -743,7 +743,7 @@ public class PrometheionEvidenceCollector {
 **Framework-Specific Evidence Mapping:**
 
 ```apex
-public class PrometheionEvidenceMapper {
+public class ElaroEvidenceMapper {
     /**
      * Map evidence to specific compliance controls
      */
@@ -782,7 +782,7 @@ public class PrometheionEvidenceMapper {
                 new EvidenceItem(
                     type = 'Risk_Assessment',
                     description = 'Compliance risk assessment',
-                    data = PrometheionComplianceScorer.calculateReadinessScore()
+                    data = ElaroComplianceScorer.calculateReadinessScore()
                 )
             });
 
@@ -806,23 +806,23 @@ public class PrometheionEvidenceMapper {
 **PDF Report Generation:**
 
 ```apex
-public class PrometheionEvidenceExporter {
+public class ElaroEvidenceExporter {
     /**
      * Generate PDF audit report
      */
     @AuraEnabled
     public static String generatePDFReport(String framework, Date startDate, Date endDate) {
         // Collect evidence
-        EvidenceCollection collection = PrometheionEvidenceCollector.collectEvidence(
+        EvidenceCollection collection = ElaroEvidenceCollector.collectEvidence(
             framework, startDate, endDate
         );
 
         // Map to controls
         Map<String, List<EvidenceItem>> controlEvidence =
-            PrometheionEvidenceMapper.mapEvidenceToControls(framework, collection);
+            ElaroEvidenceMapper.mapEvidenceToControls(framework, collection);
 
         // Generate PDF using Visualforce or external service
-        PageReference pdfPage = Page.PrometheionAuditReport;
+        PageReference pdfPage = Page.ElaroAuditReport;
         pdfPage.getParameters().put('framework', framework);
         pdfPage.getParameters().put('startDate', String.valueOf(startDate));
         pdfPage.getParameters().put('endDate', String.valueOf(endDate));
@@ -846,7 +846,7 @@ public class PrometheionEvidenceExporter {
      */
     @AuraEnabled
     public static String generateExcelExport(String framework, Date startDate, Date endDate) {
-        EvidenceCollection collection = PrometheionEvidenceCollector.collectEvidence(
+        EvidenceCollection collection = ElaroEvidenceCollector.collectEvidence(
             framework, startDate, endDate
         );
 
@@ -854,7 +854,7 @@ public class PrometheionEvidenceExporter {
         String csvContent = 'Framework,Control,Evidence Type,Description,Timestamp\n';
 
         Map<String, List<EvidenceItem>> controlEvidence =
-            PrometheionEvidenceMapper.mapEvidenceToControls(framework, collection);
+            ElaroEvidenceMapper.mapEvidenceToControls(framework, collection);
 
         for (String control : controlEvidence.keySet()) {
             for (EvidenceItem item : controlEvidence.get(control)) {
@@ -880,8 +880,8 @@ public class PrometheionEvidenceExporter {
 **Visualforce PDF Template:**
 
 ```xml
-<!-- force-app/main/default/pages/PrometheionAuditReport.page -->
-<apex:page controller="PrometheionAuditReportController" renderAs="pdf">
+<!-- force-app/main/default/pages/ElaroAuditReport.page -->
+<apex:page controller="ElaroAuditReportController" renderAs="pdf">
     <html>
         <head>
             <style>
@@ -894,7 +894,7 @@ public class PrometheionEvidenceExporter {
         </head>
         <body>
             <div class="header">
-                <h1>Prometheion Compliance Audit Report</h1>
+                <h1>Elaro Compliance Audit Report</h1>
                 <p>Framework: {!framework}</p>
                 <p>Period: {!startDate} to {!endDate}</p>
             </div>
@@ -928,7 +928,7 @@ public class PrometheionEvidenceExporter {
 **Link Evidence to Compliance Findings:**
 
 ```apex
-public class PrometheionEvidenceLinker {
+public class ElaroEvidenceLinker {
     /**
      * Link evidence to a specific compliance finding
      */
@@ -1036,9 +1036,9 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 
 **What Exists:**
 
-- `PrometheionClaudeService` calls Claude API directly from Apex (synchronous, burns CPU time)
+- `ElaroClaudeService` calls Claude API directly from Apex (synchronous, burns CPU time)
 - `ApiUsageSnapshot.cls` polls Salesforce REST API (consumes API calls)
-- `PrometheionGraphIndexer.cls` is a stub (no heavy processing yet, but would be built in Apex)
+- `ElaroGraphIndexer.cls` is a stub (no heavy processing yet, but would be built in Apex)
 - All processing happens synchronously in Salesforce transactions
 - Risk of hitting governor limits on large orgs (10,000+ users, 100+ permission sets)
 
@@ -1066,7 +1066,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 │         │ CDC / Triggers         │ SOQL Query                    │
 │         ▼                        ▼                               │
 │  ┌──────────────────────────────────────────┐                   │
-│  │     Prometheion_Raw_Event__e             │                   │
+│  │     Elaro_Raw_Event__e             │                   │
 │  │     (Platform Event - Lightweight)      │                   │
 │  └──────────────┬───────────────────────────┘                   │
 │                 │                                                │
@@ -1098,7 +1098,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 │                 ▼                                                 │
 │  ┌──────────────────────────────────────────┐                    │
 │  │     Amazon S3 Data Lake                  │                    │
-│  │     s3://prometheion-events/             │                    │
+│  │     s3://elaro-events/             │                    │
 │  │     - Raw events (immutable)             │                    │
 │  │     - Partitioned by date/org           │                    │
 │  └──────────────┬───────────────────────────┘                    │
@@ -1145,7 +1145,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 │                 ▼                                                 │
 │  ┌──────────────────────────────────────────┐                   │
 │  │     Salesforce REST Endpoint              │                   │
-│  │     PrometheionScoreCallback              │                   │
+│  │     ElaroScoreCallback              │                   │
 │  └──────────────┬───────────────────────────┘                   │
 │                 │                                                │
 │                 │ Update Records                                │
@@ -1158,14 +1158,14 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 │                 │ Platform Event                                │
 │                 ▼                                                │
 │  ┌──────────────────────────────────────────┐                   │
-│  │     Prometheion_Score_Result__e         │                   │
+│  │     Elaro_Score_Result__e         │                   │
 │  │     (Platform Event)                     │                   │
 │  └──────────────┬───────────────────────────┘                   │
 │                 │                                                │
 │                 │ Subscribe (LWC)                                │
 │                 ▼                                                │
 │  ┌──────────────────────────────────────────┐                   │
-│  │     prometheionDashboard (LWC)           │                   │
+│  │     elaroDashboard (LWC)           │                   │
 │  │     - Show toast notification            │                   │
 │  │     - Update score card                 │                   │
 │  └──────────────────────────────────────────┘                   │
@@ -1190,8 +1190,8 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 **Event Relay Configuration:**
 
 - Setup → Integrations → Event Relays
-- Create Event Relay: `Prometheion_AWS_Relay`
-- Source: Platform Event `Prometheion_Raw_Event__e`
+- Create Event Relay: `Elaro_AWS_Relay`
+- Source: Platform Event `Elaro_Raw_Event__e`
 - Destination: Amazon EventBridge (ARN provided by AWS)
 
 #### 4.2 Compute: AWS Lambda (Python 3.11)
@@ -1214,7 +1214,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 **S3 (Data Lake):**
 
 - Purpose: Immutable evidence retention (SOC2 requires 7-year retention)
-- Partitioning: `s3://prometheion-events/org-id/YYYY/MM/DD/events.json`
+- Partitioning: `s3://elaro-events/org-id/YYYY/MM/DD/events.json`
 - Lifecycle Policy: Move to Glacier after 90 days, delete after 7 years
 
 **DynamoDB (Fast State):**
@@ -1228,7 +1228,7 @@ The business plan identifies "Gross Margin Risk" from Salesforce governor limits
 
 #### 4.4 Current State (Problematic Pattern)
 
-**PrometheionGraphIndexer.cls (Current - Would Burn CPU):**
+**ElaroGraphIndexer.cls (Current - Would Burn CPU):**
 
 ```apex
 // ❌ PROBLEM: Heavy processing happens inside the transaction
@@ -1262,21 +1262,21 @@ public static String indexChange(String entityType, String entityId, String fram
 
 #### 4.5 Future State (Solution Pattern)
 
-**PrometheionEventPublisher.cls (New - Lightweight):**
+**ElaroEventPublisher.cls (New - Lightweight):**
 
 ```apex
 /**
- * PrometheionEventPublisher - Lightweight Event Publisher
+ * ElaroEventPublisher - Lightweight Event Publisher
  *
  * This class publishes events to AWS via Event Relay.
  * All heavy processing (risk scoring, AI analysis) happens off-platform.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 2.0
  */
-public with sharing class PrometheionEventPublisher {
+public with sharing class ElaroEventPublisher {
 
-    private static final String LOG_PREFIX = '[PrometheionEventPublisher] ';
+    private static final String LOG_PREFIX = '[ElaroEventPublisher] ';
 
     /**
      * Publish a configuration change event
@@ -1300,7 +1300,7 @@ public with sharing class PrometheionEventPublisher {
             };
 
             // Publish Platform Event (zero CPU cost, async)
-            Prometheion_Raw_Event__e event = new Prometheion_Raw_Event__e(
+            Elaro_Raw_Event__e event = new Elaro_Raw_Event__e(
                 Payload__c = JSON.serialize(eventPayload),
                 Entity_Type__c = entityType,
                 Entity_Id__c = entityId,
@@ -1372,7 +1372,7 @@ public with sharing class PrometheionEventPublisher {
 trigger PermissionSetAssignmentTrigger on PermissionSetAssignment (after insert, after delete) {
     if (Trigger.isAfter) {
         for (PermissionSetAssignment psa : Trigger.isInsert ? Trigger.new : Trigger.old) {
-            PrometheionEventPublisher.publishPermissionChange(
+            ElaroEventPublisher.publishPermissionChange(
                 psa.PermissionSetId,
                 psa.AssigneeId
             );
@@ -1384,7 +1384,7 @@ trigger PermissionSetAssignmentTrigger on PermissionSetAssignment (after insert,
 **SetupAuditTrail Poller (Scheduled Job):**
 
 ```apex
-public class PrometheionAuditTrailPoller implements Schedulable {
+public class ElaroAuditTrailPoller implements Schedulable {
     public void execute(SchedulableContext ctx) {
         // Query last 5 minutes of changes
         Datetime fiveMinutesAgo = Datetime.now().addMinutes(-5);
@@ -1398,7 +1398,7 @@ public class PrometheionAuditTrailPoller implements Schedulable {
         ];
 
         for (SetupAuditTrail trail : recentChanges) {
-            PrometheionEventPublisher.publishAuditTrailChange(trail);
+            ElaroEventPublisher.publishAuditTrailChange(trail);
         }
     }
 }
@@ -1426,8 +1426,8 @@ def lambda_handler(event, context):
     Process events from Kinesis Firehose
     Event structure from EventBridge:
     {
-        "source": "salesforce.prometheion",
-        "detail-type": "Prometheion Raw Event",
+        "source": "salesforce.elaro",
+        "detail-type": "Elaro Raw Event",
         "detail": {
             "Payload__c": "{...}",
             "Entity_Type__c": "PermissionSet",
@@ -1703,7 +1703,7 @@ def get_salesforce_token(org_id: str) -> str:
     """Get OAuth token for Salesforce org (JWT Bearer flow)"""
     # Implementation: Use stored credentials in AWS Secrets Manager
     secrets_client = boto3.client('secretsmanager')
-    secret = secrets_client.get_secret_value(SecretId=f'prometheion/sf-oauth/{org_id}')
+    secret = secrets_client.get_secret_value(SecretId=f'elaro/sf-oauth/{org_id}')
     credentials = json.loads(secret['SecretString'])
 
     # Exchange JWT for access token (standard OAuth 2.0 flow)
@@ -1713,7 +1713,7 @@ def get_salesforce_token(org_id: str) -> str:
 def publish_score_event(org_id: str, entity_type: str, entity_id: str, risk_score: float):
     """Publish Platform Event to notify LWC components"""
     # This would be done via Salesforce REST API
-    # POST /services/data/v62.0/sobjects/Prometheion_Score_Result__e/
+    # POST /services/data/v62.0/sobjects/Elaro_Score_Result__e/
     pass
 ```
 
@@ -1721,14 +1721,14 @@ def publish_score_event(org_id: str, entity_type: str, entity_id: str, risk_scor
 
 #### 4.9 Platform Event for Results
 
-**Prometheion_Score_Result\_\_e (Platform Event):**
+**Elaro_Score_Result\_\_e (Platform Event):**
 
 ```xml
-<!-- force-app/main/default/objects/Prometheion_Score_Result__e/Prometheion_Score_Result__e.object-meta.xml -->
+<!-- force-app/main/default/objects/Elaro_Score_Result__e/Elaro_Score_Result__e.object-meta.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Prometheion Score Result</label>
-    <pluralLabel>Prometheion Score Results</pluralLabel>
+    <label>Elaro Score Result</label>
+    <pluralLabel>Elaro Score Results</pluralLabel>
     <description>Platform Event for compliance score results from AWS</description>
     <eventType>HighVolume</eventType>
     <fields>
@@ -1767,13 +1767,13 @@ def publish_score_event(org_id: str, entity_type: str, entity_id: str, risk_scor
 
 #### 4.10 LWC Event Listener
 
-**prometheionScoreListener.js:**
+**elaroScoreListener.js:**
 
 ```javascript
 import { LightningElement, wire } from "lwc";
 import { subscribe, unsubscribe, onError, setDebugFlag } from "lightning/empApi";
 
-export default class PrometheionScoreListener extends LightningElement {
+export default class ElaroScoreListener extends LightningElement {
   subscription = {};
   isListening = false;
 
@@ -1800,7 +1800,7 @@ export default class PrometheionScoreListener extends LightningElement {
       this.handleScoreResult(eventPayload);
     };
 
-    subscribe("/event/Prometheion_Score_Result__e", -1, messageCallback).then((response) => {
+    subscribe("/event/Elaro_Score_Result__e", -1, messageCallback).then((response) => {
       console.log("Subscription request sent: ", JSON.stringify(response));
       this.subscription = response;
       this.isListening = true;
@@ -1832,14 +1832,14 @@ export default class PrometheionScoreListener extends LightningElement {
 }
 ```
 
-**prometheionDashboard.js (Updated):**
+**elaroDashboard.js (Updated):**
 
 ```javascript
 import { LightningElement, wire, track } from "lwc";
-import getComplianceScore from "@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore";
-import PrometheionScoreListener from "c/prometheionScoreListener";
+import getComplianceScore from "@salesforce/apex/ElaroComplianceScorer.calculateReadinessScore";
+import ElaroScoreListener from "c/elaroScoreListener";
 
-export default class PrometheionDashboard extends LightningElement {
+export default class ElaroDashboard extends LightningElement {
   @track score = null;
   @track loading = true;
   scoreListener;
@@ -1849,7 +1849,7 @@ export default class PrometheionDashboard extends LightningElement {
     this.loadScore();
 
     // Subscribe to real-time score updates
-    this.scoreListener = this.template.querySelector("c-prometheion-score-listener");
+    this.scoreListener = this.template.querySelector("c-elaro-score-listener");
     this.template.addEventListener("scoreresult", this.handleScoreUpdate.bind(this));
   }
 
@@ -1966,7 +1966,7 @@ User changes Permission Set
 
 **Day 4-5: Salesforce Event Relay**
 
-- [ ] Create Platform Event: `Prometheion_Raw_Event__e`
+- [ ] Create Platform Event: `Elaro_Raw_Event__e`
 - [ ] Configure Event Relay in Salesforce Setup
 - [ ] Test event publishing (manual test)
 
@@ -1980,7 +1980,7 @@ User changes Permission Set
 **Day 8-10: Basic Callback**
 
 - [ ] Create `Compliance_Score__c` custom object
-- [ ] Create REST endpoint: `PrometheionScoreCallback`
+- [ ] Create REST endpoint: `ElaroScoreCallback`
 - [ ] Implement OAuth 2.0 JWT Bearer flow
 - [ ] Test Lambda → Salesforce callback
 
@@ -1988,7 +1988,7 @@ User changes Permission Set
 
 **Day 11-14: Refactor Apex Code**
 
-- [ ] Create `PrometheionEventPublisher.cls`
+- [ ] Create `ElaroEventPublisher.cls`
 - [ ] Update triggers to use publisher
 - [ ] Create scheduled job for SetupAuditTrail polling
 - [ ] Remove heavy processing from existing classes
@@ -2009,7 +2009,7 @@ User changes Permission Set
 
 ### Data Model Requirements
 
-1. **Prometheion_Raw_Event\_\_e** (Platform Event)
+1. **Elaro_Raw_Event\_\_e** (Platform Event)
    - `Payload__c` (Long Text Area) - JSON event data
    - `Entity_Type__c` (Text)
    - `Entity_Id__c` (Text)
@@ -2018,7 +2018,7 @@ User changes Permission Set
    - `Timestamp__c` (DateTime)
    - `Org_ID__c` (Text) - Critical for multi-tenant
 
-2. **Prometheion_Score_Result\_\_e** (Platform Event)
+2. **Elaro_Score_Result\_\_e** (Platform Event)
    - `Org_ID__c` (Text)
    - `Entity_Type__c` (Text)
    - `Entity_Id__c` (Text)
@@ -2104,7 +2104,7 @@ Once the EventBridge connection is established:
 **Org Isolation:**
 
 ```apex
-public class PrometheionTenantManager {
+public class ElaroTenantManager {
     /**
      * Get current tenant context
      */
@@ -2142,13 +2142,13 @@ public class PrometheionTenantManager {
 **Branding Customization:**
 
 ```apex
-public class PrometheionBrandingService {
+public class ElaroBrandingService {
     /**
      * Get branding for current tenant
      */
     @AuraEnabled(cacheable=true)
     public static BrandingConfig getBranding() {
-        String tenantId = PrometheionTenantManager.getCurrentTenant();
+        String tenantId = ElaroTenantManager.getCurrentTenant();
 
         // Query tenant branding settings
         Tenant_Branding__c branding = [
@@ -2169,13 +2169,13 @@ public class PrometheionBrandingService {
             );
         }
 
-        // Default Prometheion branding
+        // Default Elaro branding
         return new BrandingConfig(
-            logoUrl = '/resource/PrometheionLogo',
+            logoUrl = '/resource/ElaroLogo',
             primaryColor = '#16325c',
             secondaryColor = '#00a1e0',
-            productName = 'Prometheion',
-            supportEmail = 'support@prometheion.com'
+            productName = 'Elaro',
+            supportEmail = 'support@elaro.com'
         );
     }
 }
@@ -2184,15 +2184,15 @@ public class PrometheionBrandingService {
 **LWC Component with Dynamic Branding:**
 
 ```javascript
-// prometheionDashboard.js
+// elaroDashboard.js
 import { LightningElement, wire } from "lwc";
-import getBranding from "@salesforce/apex/PrometheionBrandingService.getBranding";
+import getBranding from "@salesforce/apex/ElaroBrandingService.getBranding";
 
-export default class PrometheionDashboard extends LightningElement {
+export default class ElaroDashboard extends LightningElement {
   @wire(getBranding) branding;
 
   get logoUrl() {
-    return this.branding?.data?.logoUrl || "/resource/PrometheionLogo";
+    return this.branding?.data?.logoUrl || "/resource/ElaroLogo";
   }
 
   get primaryColor() {
@@ -2206,7 +2206,7 @@ export default class PrometheionDashboard extends LightningElement {
 **Partner Dashboard:**
 
 ```apex
-public class PrometheionPartnerPortal {
+public class ElaroPartnerPortal {
     /**
      * Get all orgs managed by this partner
      */
@@ -2245,8 +2245,8 @@ public class PrometheionPartnerPortal {
 **REST API for Audit Firms:**
 
 ```apex
-@RestResource(urlMapping='/prometheion/audit/*')
-global class PrometheionAuditAPI {
+@RestResource(urlMapping='/elaro/audit/*')
+global class ElaroAuditAPI {
     /**
      * Public API for audit firms to retrieve evidence
      */
@@ -2265,7 +2265,7 @@ global class PrometheionAuditAPI {
         }
 
         // Collect evidence
-        EvidenceCollection evidence = PrometheionEvidenceCollector.collectEvidence(
+        EvidenceCollection evidence = ElaroEvidenceCollector.collectEvidence(
             framework,
             Date.today().addDays(-180),
             Date.today()
@@ -2443,14 +2443,14 @@ global class PrometheionAuditAPI {
 
 ## 9. Conclusion
 
-This technical deep-dive identifies the critical gaps between Prometheion's current implementation and the business plan vision. The most critical gaps are:
+This technical deep-dive identifies the critical gaps between Elaro's current implementation and the business plan vision. The most critical gaps are:
 
 1. **Event Intelligence Engine** - Real-time compliance violation detection
 2. **Configuration Drift Guard** - Baseline comparison and rollback
 3. **Evidence Engine** - Automated audit evidence collection
 4. **Off-Platform Compute** - Scalable AI analysis infrastructure
 
-Implementing these features will transform Prometheion from a compliance scoring tool into a comprehensive compliance platform that differentiates through architectural defensibility and automation.
+Implementing these features will transform Elaro from a compliance scoring tool into a comprehensive compliance platform that differentiates through architectural defensibility and automation.
 
 **Next Steps:**
 
@@ -2465,8 +2465,8 @@ Implementing these features will transform Prometheion from a compliance scoring
 
 All code examples in this document are available in:
 
-- `force-app/main/default/classes/PrometheionEventIntelligence/`
-- `force-app/main/default/classes/PrometheionDriftGuard/`
-- `force-app/main/default/classes/PrometheionEvidenceEngine/`
-- `force-app/main/default/classes/PrometheionOffPlatform/`
-- `aws-lambda/prometheion-analyzer/`
+- `force-app/main/default/classes/ElaroEventIntelligence/`
+- `force-app/main/default/classes/ElaroDriftGuard/`
+- `force-app/main/default/classes/ElaroEvidenceEngine/`
+- `force-app/main/default/classes/ElaroOffPlatform/`
+- `aws-lambda/elaro-analyzer/`

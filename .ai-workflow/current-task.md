@@ -39,13 +39,13 @@
 The TriggerRecursionGuard.cls **already exists** and is well-implemented with comprehensive test coverage. However, only 2 of 5 triggers are currently using it:
 
 **✅ Using Recursion Guard:**
-1. PrometheionAlertTrigger.trigger
-2. PrometheionConsentWithdrawalTrigger.trigger
+1. ElaroAlertTrigger.trigger
+2. ElaroConsentWithdrawalTrigger.trigger
 
 **❌ Missing Recursion Guard:**
 3. PerformanceAlertEventTrigger.trigger
-4. PrometheionEventCaptureTrigger.trigger
-5. PrometheionPCIAccessAlertTrigger.trigger
+4. ElaroEventCaptureTrigger.trigger
+5. ElaroPCIAccessAlertTrigger.trigger
 
 ### Task Clarification
 

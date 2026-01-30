@@ -2,7 +2,7 @@
  * @description Industry benchmarking service for compliance maturity
  * Provides industry comparisons and maturity assessments
  * @group Enterprise Features
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class BenchmarkingService {
     
@@ -86,7 +86,7 @@ public with sharing class BenchmarkingService {
         result.comparedAt = Datetime.now();
         
         // Get current org score
-        Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
+        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
         result.orgScore = (Decimal)scoreData.get('overallScore');
         
         // Get industry benchmarks
@@ -146,7 +146,7 @@ public with sharing class BenchmarkingService {
         assessment.assessedAt = Datetime.now();
         
         // Get compliance score
-        Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
+        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
         Decimal overallScore = (Decimal)scoreData.get('overallScore');
         
         // Determine maturity level

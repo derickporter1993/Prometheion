@@ -303,7 +303,7 @@ The reference file includes:
 4. Create the 6 custom objects
 5. Create the 4 Platform Events
 6. Create the 4 LWC components
-7. Update references to use Prometheion branding
+7. Update references to use Elaro branding
 8. Deploy and test
 
 **Estimated Time:** 2-3 hours (vs 5-7 days to build from scratch)
@@ -433,11 +433,11 @@ The reference implementation found in [Solentra branch](https://github.com/deric
 
 ## 🚀 Next Steps
 
-To implement these services in Prometheion:
+To implement these services in Elaro:
 
 1. **Review the reference file** (`docs/COMPLIANCE_FRAMEWORKS_CODE_REFERENCE.md`)
 2. **Extract each service class** and create in `force-app/main/default/classes/`
-3. **Update branding** from "Solentra" to "Prometheion"
+3. **Update branding** from "Solentra" to "Elaro"
 4. **Create custom objects** and Platform Events
 5. **Deploy and test**
 

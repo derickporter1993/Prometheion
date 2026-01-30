@@ -9,12 +9,12 @@
  * - Alert acknowledgment tracking
  * - Snooze functionality
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class MobileAlertPublisher {
 
-    private static final String CRITICAL_NOTIFICATION_TYPE = 'Prometheion_Critical_Alert';
+    private static final String CRITICAL_NOTIFICATION_TYPE = 'Elaro_Critical_Alert';
 
     /**
      * @description Publishes a critical alert to on-call users
@@ -162,10 +162,10 @@ public with sharing class MobileAlertPublisher {
         Datetime now = Datetime.now();
         List<OnCallUser> result = new List<OnCallUser>();
 
-        List<Prometheion_On_Call_Schedule__c> schedules = [
+        List<Elaro_On_Call_Schedule__c> schedules = [
             SELECT Id, User__c, User__r.Name, User__r.Email, Rotation_Name__c,
                    Start_Time__c, End_Time__c, Notification_Methods__c
-            FROM Prometheion_On_Call_Schedule__c
+            FROM Elaro_On_Call_Schedule__c
             WHERE Start_Time__c <= :now
             AND End_Time__c >= :now
             AND Active__c = true
@@ -173,7 +173,7 @@ public with sharing class MobileAlertPublisher {
             ORDER BY Rotation_Name__c
         ];
 
-        for (Prometheion_On_Call_Schedule__c schedule : schedules) {
+        for (Elaro_On_Call_Schedule__c schedule : schedules) {
             OnCallUser ocu = new OnCallUser();
             ocu.userId = schedule.User__c;
             ocu.userName = schedule.User__r.Name;
@@ -195,16 +195,16 @@ public with sharing class MobileAlertPublisher {
     public static List<EscalationPathEntry> getEscalationPath() {
         List<EscalationPathEntry> result = new List<EscalationPathEntry>();
 
-        List<Prometheion_Escalation_Path__c> paths = [
+        List<Elaro_Escalation_Path__c> paths = [
             SELECT Id, User__c, User__r.Name, User__r.Email, Level__c,
                    Role__c, Notification_Method__c, Escalation_Delay_Minutes__c
-            FROM Prometheion_Escalation_Path__c
+            FROM Elaro_Escalation_Path__c
             WHERE Active__c = true
             WITH USER_MODE
             ORDER BY Level__c ASC
         ];
 
-        for (Prometheion_Escalation_Path__c path : paths) {
+        for (Elaro_Escalation_Path__c path : paths) {
             EscalationPathEntry entry = new EscalationPathEntry();
             entry.pathId = path.Id;
             entry.userId = path.User__c;
@@ -261,9 +261,9 @@ public with sharing class MobileAlertPublisher {
 
     private static List<Id> getOnCallUsers() {
         Datetime now = Datetime.now();
-        List<Prometheion_On_Call_Schedule__c> schedules = [
+        List<Elaro_On_Call_Schedule__c> schedules = [
             SELECT User__c
-            FROM Prometheion_On_Call_Schedule__c
+            FROM Elaro_On_Call_Schedule__c
             WHERE Start_Time__c <= :now
             AND End_Time__c >= :now
             AND Active__c = true
@@ -271,7 +271,7 @@ public with sharing class MobileAlertPublisher {
         ];
 
         List<Id> userIds = new List<Id>();
-        for (Prometheion_On_Call_Schedule__c schedule : schedules) {
+        for (Elaro_On_Call_Schedule__c schedule : schedules) {
             userIds.add(schedule.User__c);
         }
         return userIds;
@@ -281,7 +281,7 @@ public with sharing class MobileAlertPublisher {
         List<PermissionSetAssignment> admins = [
             SELECT AssigneeId
             FROM PermissionSetAssignment
-            WHERE PermissionSet.Name = 'Prometheion_Admin'
+            WHERE PermissionSet.Name = 'Elaro_Admin'
             WITH USER_MODE
             LIMIT 10
         ];
@@ -294,9 +294,9 @@ public with sharing class MobileAlertPublisher {
     }
 
     private static Integer getEscalationDelayMinutes(Integer level) {
-        List<Prometheion_Escalation_Path__c> paths = [
+        List<Elaro_Escalation_Path__c> paths = [
             SELECT Escalation_Delay_Minutes__c
-            FROM Prometheion_Escalation_Path__c
+            FROM Elaro_Escalation_Path__c
             WHERE Level__c = :level AND Active__c = true
             WITH USER_MODE
             LIMIT 1
@@ -309,7 +309,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     private static void scheduleEscalationCheck(String alertId, Integer minutes) {
-        String jobName = 'Prometheion Escalation - ' + alertId.substring(0, 15);
+        String jobName = 'Elaro Escalation - ' + alertId.substring(0, 15);
         String cronExp = getCronForMinutesFromNow(minutes);
 
         try {
@@ -320,7 +320,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     private static void scheduleDelayedNotification(String alertId, Integer minutes) {
-        String jobName = 'Prometheion Delayed Alert - ' + alertId.substring(0, 15);
+        String jobName = 'Elaro Delayed Alert - ' + alertId.substring(0, 15);
         String cronExp = getCronForMinutesFromNow(minutes);
 
         try {
@@ -331,7 +331,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     private static void cancelEscalation(String alertId) {
-        String jobPrefix = 'Prometheion Escalation - ' + alertId.substring(0, 15);
+        String jobPrefix = 'Elaro Escalation - ' + alertId.substring(0, 15);
 
         List<CronTrigger> jobs = [
             SELECT Id FROM CronTrigger

@@ -69,8 +69,8 @@ Try these queries in Claude Desktop:
 
 ```
 "Query the first 5 Accounts from Salesforce"
-"Describe the Prometheion_Compliance_Graph__b object"
-"Show me all custom objects that start with 'Prometheion'"
+"Describe the Elaro_Compliance_Graph__b object"
+"Show me all custom objects that start with 'Elaro'"
 ```
 
 ## 📋 Your Salesforce Org Details
@@ -86,19 +86,19 @@ You'll need:
 
 Once configured, you'll have these powerful capabilities in Claude:
 
-### 1. Query Prometheion Data
+### 1. Query Elaro Data
 
 ```
 "Show me all compliance violations from the last 30 days"
 "Query Performance_Alert_History__c where Severity='Critical'"
-"Get all Prometheion baseline scan results"
+"Get all Elaro baseline scan results"
 ```
 
 ### 2. Analyze Metadata
 
 ```
 "Describe all custom objects related to compliance"
-"What fields are on the Prometheion_AI_Settings__c object?"
+"What fields are on the Elaro_AI_Settings__c object?"
 "Show me all permission sets that grant 'Modify All Data'"
 ```
 
@@ -114,10 +114,10 @@ Once configured, you'll have these powerful capabilities in Claude:
 ```
 "Query all audit trail entries and format as CSV"
 "Analyze the top 10 compliance risks by severity"
-"Export all Prometheion configuration settings"
+"Export all Elaro configuration settings"
 ```
 
-### 5. Prometheion-Specific Queries
+### 5. Elaro-Specific Queries
 
 ```
 "Show me the current audit readiness score"
@@ -155,7 +155,7 @@ All documentation is available at:
 - **Quick Start**: `~/salesforce-mcp-server/QUICK_START.md`
 - **Detailed Setup**: `~/salesforce-mcp-server/SETUP_INSTRUCTIONS.md`
 - **MCP Server README**: `~/salesforce-mcp-server/README.md`
-- **Prometheion Docs**: `~/sentinel-code/docs/`
+- **Elaro Docs**: `~/sentinel-code/docs/`
 
 ## 🐛 Troubleshooting
 
@@ -226,7 +226,7 @@ Once you're comfortable with basic queries, try:
 ### 4. Data Export
 
 ```
-"Export all Prometheion compliance data as JSON"
+"Export all Elaro compliance data as JSON"
 "Create a CSV of all high-severity alerts from last month"
 ```
 
@@ -236,7 +236,7 @@ Once you're comfortable with basic queries, try:
 2. **Leverage SOQL**: You can use full SOQL syntax in queries
 3. **Batch operations**: Ask for multiple related queries in one request
 4. **Export formats**: Request data in CSV, JSON, or markdown format
-5. **Prometheion integration**: Combine MCP queries with Prometheion's compliance features
+5. **Elaro integration**: Combine MCP queries with Elaro's compliance features
 
 ## 🎯 Example Workflows
 
@@ -289,8 +289,8 @@ After configuration:
 ### Issues with MCP Server
 - GitHub Issues: https://github.com/kablewy/salesforce-mcp-server/issues
 
-### Issues with Prometheion
-- GitHub Issues: https://github.com/derickporter1993/Solentra---Prometheion/issues
+### Issues with Elaro
+- GitHub Issues: https://github.com/derickporter1993/Solentra---Elaro/issues
 
 ### Salesforce API Questions
 - Trailblazer Community: https://trailhead.salesforce.com/trailblazer-community

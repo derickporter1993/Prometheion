@@ -7,7 +7,7 @@
  * - Maintain inventory of personal data categories
  * - Track data flows and third-party recipients
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class GDPRDataInventoryService extends ComplianceServiceBase implements IEvidenceCollectionService {

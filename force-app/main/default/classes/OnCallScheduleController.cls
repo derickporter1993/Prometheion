@@ -1,8 +1,8 @@
 /**
  * @description Controller for On-Call Schedule LWC component
- * Provides CRUD operations for Prometheion_On_Call_Schedule__c records
+ * Provides CRUD operations for Elaro_On_Call_Schedule__c records
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class OnCallScheduleController {
@@ -12,12 +12,12 @@ public with sharing class OnCallScheduleController {
      * @return List of schedule records with related user info
      */
     @AuraEnabled(cacheable=true)
-    public static List<Prometheion_On_Call_Schedule__c> getSchedules() {
+    public static List<Elaro_On_Call_Schedule__c> getSchedules() {
         return [
             SELECT Id, Name, User__c, User__r.Name, User__r.Email,
                    Rotation_Name__c, Start_Time__c, End_Time__c,
                    Timezone__c, Notification_Methods__c, Active__c
-            FROM Prometheion_On_Call_Schedule__c
+            FROM Elaro_On_Call_Schedule__c
             WITH USER_MODE
             ORDER BY Start_Time__c DESC
             LIMIT 200
@@ -30,10 +30,10 @@ public with sharing class OnCallScheduleController {
      * @return The created schedule ID
      */
     @AuraEnabled
-    public static Id createSchedule(Prometheion_On_Call_Schedule__c schedule) {
+    public static Id createSchedule(Elaro_On_Call_Schedule__c schedule) {
         validateSchedule(schedule);
 
-        if (Schema.sObjectType.Prometheion_On_Call_Schedule__c.isCreateable()) {
+        if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isCreateable()) {
             insert schedule;
             return schedule.Id;
         } else {
@@ -46,10 +46,10 @@ public with sharing class OnCallScheduleController {
      * @param schedule The schedule record to update
      */
     @AuraEnabled
-    public static void updateSchedule(Prometheion_On_Call_Schedule__c schedule) {
+    public static void updateSchedule(Elaro_On_Call_Schedule__c schedule) {
         validateSchedule(schedule);
 
-        if (Schema.sObjectType.Prometheion_On_Call_Schedule__c.isUpdateable()) {
+        if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isUpdateable()) {
             update schedule;
         } else {
             throw new AuraHandledException('Insufficient permissions to update schedules');
@@ -62,8 +62,8 @@ public with sharing class OnCallScheduleController {
      */
     @AuraEnabled
     public static void deleteSchedule(Id scheduleId) {
-        if (Schema.sObjectType.Prometheion_On_Call_Schedule__c.isDeletable()) {
-            delete [SELECT Id FROM Prometheion_On_Call_Schedule__c WHERE Id = :scheduleId WITH USER_MODE];
+        if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isDeletable()) {
+            delete [SELECT Id FROM Elaro_On_Call_Schedule__c WHERE Id = :scheduleId WITH USER_MODE];
         } else {
             throw new AuraHandledException('Insufficient permissions to delete schedules');
         }
@@ -73,7 +73,7 @@ public with sharing class OnCallScheduleController {
      * @description Validates schedule data before save
      * @param schedule The schedule to validate
      */
-    private static void validateSchedule(Prometheion_On_Call_Schedule__c schedule) {
+    private static void validateSchedule(Elaro_On_Call_Schedule__c schedule) {
         if (schedule.Start_Time__c == null) {
             throw new AuraHandledException('Start time is required');
         }

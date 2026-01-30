@@ -2,7 +2,7 @@
  * @description Test class for JiraWebhookHandler
  * Provides comprehensive coverage for Jira webhook processing
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest
@@ -13,7 +13,7 @@ private class JiraWebhookHandlerTest {
     @TestSetup
     static void setupTestData() {
         // Create test settings with webhook secret
-        Prometheion_Jira_Settings__c settings = new Prometheion_Jira_Settings__c(
+        Elaro_Jira_Settings__c settings = new Elaro_Jira_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Jira_Instance_URL__c = 'https://test.atlassian.net',
             Project_Key__c = 'COMPLIANCE',
@@ -282,7 +282,7 @@ private class JiraWebhookHandlerTest {
     @isTest
     static void testHandleWebhook_NoSecretConfigured() {
         // Remove webhook secret from settings
-        Prometheion_Jira_Settings__c settings = Prometheion_Jira_Settings__c.getOrgDefaults();
+        Elaro_Jira_Settings__c settings = Elaro_Jira_Settings__c.getOrgDefaults();
         settings.Webhook_Secret__c = null;
         update settings;
 

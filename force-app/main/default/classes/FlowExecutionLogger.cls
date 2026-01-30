@@ -10,13 +10,13 @@ public with sharing class FlowExecutionLogger {
     @InvocableMethod(label='Log Flow Execution')
     public static void logInvocable(List<LogInput> inputs) {
         // Validate CRUD access
-        PrometheionSecurityUtils.validateCRUDAccess('Flow_Execution__c', PrometheionSecurityUtils.DmlOperation.INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('Flow_Execution__c', ElaroSecurityUtils.DmlOperation.INSERT);
         
         // Validate FLS for required fields
         List<String> requiredFields = new List<String>{
             'Flow_Name__c', 'Status__c', 'CPU__c', 'SOQL__c', 'DML__c', 'Run_Time__c'
         };
-        PrometheionSecurityUtils.validateFLSAccess('Flow_Execution__c', requiredFields, true);
+        ElaroSecurityUtils.validateFLSAccess('Flow_Execution__c', requiredFields, true);
         
         List<Flow_Execution__c> toInsert = new List<Flow_Execution__c>();
         for (LogInput i : inputs) {
@@ -31,7 +31,7 @@ public with sharing class FlowExecutionLogger {
         
         if (!toInsert.isEmpty()) {
             // Strip inaccessible fields before insert
-            List<SObject> accessibleRecords = PrometheionSecurityUtils.stripInaccessibleFields(
+            List<SObject> accessibleRecords = ElaroSecurityUtils.stripInaccessibleFields(
                 AccessType.CREATABLE,
                 toInsert
             );

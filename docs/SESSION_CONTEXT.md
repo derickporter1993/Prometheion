@@ -1,4 +1,4 @@
-# Prometheion Session Context
+# Elaro Session Context
 
 **Last Updated**: 2026-01-13
 **Current Branch**: main
@@ -40,24 +40,24 @@ Update TASK_AUDITOR.md as you complete tasks.
 ## P1 Blockers Detail
 
 ### ✅ Input Validation (COMPLETE)
-- ~~`PrometheionGraphIndexer.cls`~~ - lines 5-18
+- ~~`ElaroGraphIndexer.cls`~~ - lines 5-18
 - ~~`PerformanceAlertPublisher.cls`~~ - lines 22-31
 - ~~`FlowExecutionLogger.cls`~~ - lines 13-19
 
 ### ✅ USER_MODE Enforcement (COMPLETE)
-- ~~`PrometheionComplianceScorer.cls`~~ - WITH USER_MODE at lines 170, 181, 189, 257, 270, 311, 475
-- ~~`PrometheionGraphIndexer.cls`~~ - WITH USER_MODE at lines 79, 100
+- ~~`ElaroComplianceScorer.cls`~~ - WITH USER_MODE at lines 170, 181, 189, 257, 270, 311, 475
+- ~~`ElaroGraphIndexer.cls`~~ - WITH USER_MODE at lines 79, 100
 - ~~`EvidenceCollectionService.cls`~~ - WITH SECURITY_ENFORCED at line 123
 - ~~`ComplianceDashboardController.cls`~~ - WITH SECURITY_ENFORCED at lines 49, 58, 88, 97
 
 ### ⏳ Trigger Recursion Guards (3 items) - REMAINING
 - `PerformanceAlertEventTrigger.trigger` - needs TriggerRecursionGuard
-- `PrometheionPCIAccessAlertTrigger.trigger` - needs TriggerRecursionGuard
-- `PrometheionEventCaptureTrigger.trigger` - needs TriggerRecursionGuard
+- `ElaroPCIAccessAlertTrigger.trigger` - needs TriggerRecursionGuard
+- `ElaroEventCaptureTrigger.trigger` - needs TriggerRecursionGuard
 
 ### ⏳ Bulk Tests (4 items) - REMAINING
-- `PrometheionComplianceScorerTest.cls`
-- `PrometheionGraphIndexerTest.cls`
+- `ElaroComplianceScorerTest.cls`
+- `ElaroGraphIndexerTest.cls`
 - `EvidenceCollectionServiceTest.cls`
 - `PerformanceAlertPublisherTest.cls`
 

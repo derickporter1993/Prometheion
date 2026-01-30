@@ -1,7 +1,7 @@
 # Failed Pull Requests Summary
 
 ## Overview
-This document summarizes all failed pull requests in the Prometheion repository and provides recommendations for closing them.
+This document summarizes all failed pull requests in the Elaro repository and provides recommendations for closing them.
 
 ## Already Closed (No Action Needed)
 
@@ -102,7 +102,7 @@ gh pr close 61 --comment "Closing in favor of PR #62, which addresses the same i
 ```
 
 ### Option 2: Using GitHub Web Interface
-1. Navigate to https://github.com/derickporter1993/prometheion/pulls
+1. Navigate to https://github.com/derickporter1993/elaro/pulls
 2. Click on each PR (#57, #61)
 3. Scroll to the bottom and click "Close pull request"
 4. Add a comment explaining the reason

@@ -13,35 +13,35 @@ Based on analysis, the following classes need test coverage:
 ### Batch 1: Schedulers & Batch Classes (Priority 1)
 
 1. WeeklyScorecardScheduler
-2. PrometheionCCPASLAMonitorScheduler
-3. PrometheionDormantAccountAlertScheduler
-4. PrometheionGLBAAnnualNoticeBatch
-5. PrometheionGLBAAnnualNoticeScheduler
-6. PrometheionISO27001QuarterlyScheduler
-7. PrometheionISO27001QuarterlyReviewScheduler
+2. ElaroCCPASLAMonitorScheduler
+3. ElaroDormantAccountAlertScheduler
+4. ElaroGLBAAnnualNoticeBatch
+5. ElaroGLBAAnnualNoticeScheduler
+6. ElaroISO27001QuarterlyScheduler
+7. ElaroISO27001QuarterlyReviewScheduler
 
 ### Batch 2: Service Classes (Priority 2)
 
-8. PrometheionChangeAdvisor
-9. PrometheionQuickActionsService
-10. PrometheionRemediationEngine
-11. PrometheionPCIDataMaskingService
-12. PrometheionPCIAccessLogger
-13. PrometheionPCIAccessAlertHandler
-14. PrometheionEventPublisher
-15. PrometheionScoreCallback
-16. PrometheionAuditTrailPoller
-17. PrometheionConsentWithdrawalHandler
-18. PrometheionSalesforceThreatDetector
+8. ElaroChangeAdvisor
+9. ElaroQuickActionsService
+10. ElaroRemediationEngine
+11. ElaroPCIDataMaskingService
+12. ElaroPCIAccessLogger
+13. ElaroPCIAccessAlertHandler
+14. ElaroEventPublisher
+15. ElaroScoreCallback
+16. ElaroAuditTrailPoller
+17. ElaroConsentWithdrawalHandler
+18. ElaroSalesforceThreatDetector
 
 ### Batch 3: Controller Classes (Priority 3)
 
-19. PrometheionTrendController
-20. PrometheionMatrixController
-21. PrometheionDrillDownController
-22. PrometheionDynamicReportController
-23. PrometheionExecutiveKPIController
-24. PrometheionComplianceCopilot
+19. ElaroTrendController
+20. ElaroMatrixController
+21. ElaroDrillDownController
+22. ElaroDynamicReportController
+23. ElaroExecutiveKPIController
+24. ElaroComplianceCopilot
 
 ### Batch 4: Utility Classes (Priority 4)
 

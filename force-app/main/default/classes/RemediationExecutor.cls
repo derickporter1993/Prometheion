@@ -8,7 +8,7 @@
  * - Rollback failed remediations
  * - Audit trail for compliance
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class RemediationExecutor {

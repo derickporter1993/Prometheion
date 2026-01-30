@@ -1,7 +1,7 @@
 # Metadata Synchronization Resolution
 
 **Date**: January 2026  
-**Issue**: Integration_Error__c and Prometheion_Audit_Log__c metadata missing from local project
+**Issue**: Integration_Error__c and Elaro_Audit_Log__c metadata missing from local project
 
 ---
 
@@ -9,7 +9,7 @@
 
 **Symptom**: Compilation errors preventing deployment of 3 classes:
 - `PerformanceAlertPublisher.cls`
-- `PrometheionGraphIndexer.cls`
+- `ElaroGraphIndexer.cls`
 - `SlackNotifier.cls`
 
 **Root Cause**: Object fields exist in org but not in local project metadata
@@ -30,8 +30,8 @@ DML requires SObject or SObject list type: Integration_Error__c (76:21)
 # Pull Integration_Error__c with all fields
 sf project retrieve start --metadata CustomObject:Integration_Error__c --target-org <org>
 
-# Pull Prometheion_Audit_Log__c with all fields
-sf project retrieve start --metadata CustomObject:Prometheion_Audit_Log__c --target-org <org>
+# Pull Elaro_Audit_Log__c with all fields
+sf project retrieve start --metadata CustomObject:Elaro_Audit_Log__c --target-org <org>
 ```
 
 **Result**: Metadata files retrieved from org
@@ -40,14 +40,14 @@ sf project retrieve start --metadata CustomObject:Prometheion_Audit_Log__c --tar
 
 Checked that field metadata files now exist locally:
 - `Integration_Error__c/fields/*.field-meta.xml`
-- `Prometheion_Audit_Log__c/fields/*.field-meta.xml`
+- `Elaro_Audit_Log__c/fields/*.field-meta.xml`
 
 ### Step 3: Redeploy Affected Classes ✅
 
 ```bash
 # Deploy the 3 affected classes
 sf project deploy start --source-dir force-app/main/default/classes/PerformanceAlertPublisher.cls
-sf project deploy start --source-dir force-app/main/default/classes/PrometheionGraphIndexer.cls
+sf project deploy start --source-dir force-app/main/default/classes/ElaroGraphIndexer.cls
 sf project deploy start --source-dir force-app/main/default/classes/SlackNotifier.cls
 ```
 

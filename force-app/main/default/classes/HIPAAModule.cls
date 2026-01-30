@@ -2,7 +2,7 @@
  * @description HIPAA compliance module implementation
  * Covers 164.308 (Administrative), 164.310 (Physical), 164.312 (Technical) safeguards
  * @group Framework Modules
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class HIPAAModule implements IComplianceModule {
     
@@ -148,7 +148,7 @@ public with sharing class HIPAAModule implements IComplianceModule {
     
     public Blob generateReport(Id auditPackageId) {
         // Generate HIPAA-specific report
-        PageReference pdfPage = Page.PrometheionAuditPackagePDF;
+        PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
         pdfPage.getParameters().put('framework', 'HIPAA');
         
@@ -215,7 +215,7 @@ public with sharing class HIPAAModule implements IComplianceModule {
         
         // Check for access control evidence
         Integer evidenceCount = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :auditPackageId
             AND Evidence_Type__c IN ('PermissionSet', 'Profile', 'AccessReview')
             LIMIT 100
@@ -291,7 +291,7 @@ public with sharing class HIPAAModule implements IComplianceModule {
         
         // Check for incident-related evidence
         Integer incidentEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :auditPackageId
             AND Evidence_Type__c IN ('Incident', 'SecurityIncident', 'Alert')
             LIMIT 100
@@ -313,7 +313,7 @@ public with sharing class HIPAAModule implements IComplianceModule {
         
         // Generic evidence check
         Integer evidenceCount = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :auditPackageId
             LIMIT 100
         ];

@@ -3,7 +3,7 @@
  * 
  * Track all metadata changes for compliance (vs Strongpoint)
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class MetadataChangeTracker {

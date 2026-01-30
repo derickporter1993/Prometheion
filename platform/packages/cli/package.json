@@ -1,11 +1,11 @@
 {
   "name": "@platform/cli",
   "version": "0.1.0",
-  "description": "Prometheion CLI - AI Compliance Brain for Salesforce",
+  "description": "Elaro CLI - AI Compliance Brain for Salesforce",
   "private": true,
   "type": "module",
   "bin": {
-    "prometheion": "./dist/index.js"
+    "elaro": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

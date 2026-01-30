@@ -1,4 +1,4 @@
-# Security Remediation Plan - Prometheion AppExchange Compliance
+# Security Remediation Plan - Elaro AppExchange Compliance
 
 **Date:** 2026-01-11
 **Priority:** P0-P2 based on AppExchange security requirements
@@ -17,7 +17,7 @@ This plan addresses remaining security issues identified in the codebase audit:
 
 ## P0 - Critical (AppExchange Blockers)
 
-### 1. SOQL Security: PrometheionComplianceCopilot.cls
+### 1. SOQL Security: ElaroComplianceCopilot.cls
 
 **Issue:** 4 SetupAuditTrail queries missing `WITH SECURITY_ENFORCED`
 
@@ -30,7 +30,7 @@ This plan addresses remaining security issues identified in the codebase audit:
 
 **Status:** PENDING
 
-### 2. SOQL Security: PrometheionCCPASLAMonitorScheduler.cls
+### 2. SOQL Security: ElaroCCPASLAMonitorScheduler.cls
 
 **Issue:** Uses `WITH USER_MODE` instead of `WITH SECURITY_ENFORCED`
 
@@ -52,15 +52,15 @@ This plan addresses remaining security issues identified in the codebase audit:
 
 - Line 90-92: Compliance_Gap\_\_c has `isCreateable()` check
 - Line 122-124: Compliance_Evidence\_\_c has `isCreateable()` check
-- Line 193-196: Prometheion_Audit_Log\_\_c has `isCreateable()` check
+- Line 193-196: Elaro_Audit_Log\_\_c has `isCreateable()` check
 
 ### 4. CRUD/FLS: EvidenceCollectionService.cls
 
 **Status:** ALREADY COMPLIANT
 
-- Line 47-48: Uses `PrometheionSecurityUtils.validateCRUDAccess()`
+- Line 47-48: Uses `ElaroSecurityUtils.validateCRUDAccess()`
 
-### 5. Bulkification: PrometheionConsentWithdrawalHandler.cls
+### 5. Bulkification: ElaroConsentWithdrawalHandler.cls
 
 **Status:** ALREADY COMPLIANT
 
@@ -71,16 +71,16 @@ This plan addresses remaining security issues identified in the codebase audit:
 
 ## P1 - High Priority
 
-### 6. API Key Security: PrometheionScoreCallback.cls
+### 6. API Key Security: ElaroScoreCallback.cls
 
 **Issue:** API keys stored in Custom Metadata Type (plain-text, visible in Setup)
 
 **Location:** Lines 138-147
 
 ```apex
-List<Prometheion_API_Config__mdt> configs = [
+List<Elaro_API_Config__mdt> configs = [
     SELECT API_Key__c, Is_Active__c
-    FROM Prometheion_API_Config__mdt
+    FROM Elaro_API_Config__mdt
     WHERE Is_Active__c = true
 ];
 return apiKey == configs[0].API_Key__c;  // Direct comparison
@@ -102,10 +102,10 @@ return apiKey == configs[0].API_Key__c;  // Direct comparison
 | ------------------------------ | ---- | ------- | ---------- |
 | PerformanceRuleEngine.cls      | 307  | `'MD5'` | `'SHA256'` |
 | PerformanceRuleEngine.cls      | 313  | `'MD5'` | `'SHA256'` |
-| PrometheionReasoningEngine.cls | 215  | `'MD5'` | `'SHA256'` |
-| PrometheionGraphIndexer.cls    | 224  | `'MD5'` | `'SHA256'` |
+| ElaroReasoningEngine.cls | 215  | `'MD5'` | `'SHA256'` |
+| ElaroGraphIndexer.cls    | 224  | `'MD5'` | `'SHA256'` |
 
-**Note:** Line 65 in PrometheionGraphIndexer.cls already uses SHA256 correctly.
+**Note:** Line 65 in ElaroGraphIndexer.cls already uses SHA256 correctly.
 
 **Status:** PENDING
 
@@ -155,10 +155,10 @@ The provided SOC2Module.cls file uses proper security patterns:
 
 | Priority | Task                             | File                                   | Est. Effort |
 | -------- | -------------------------------- | -------------------------------------- | ----------- |
-| 1        | Add WITH SECURITY_ENFORCED       | PrometheionComplianceCopilot.cls       | 15 min      |
+| 1        | Add WITH SECURITY_ENFORCED       | ElaroComplianceCopilot.cls       | 15 min      |
 | 2        | Migrate MD5 to SHA256            | 3 files                                | 15 min      |
-| 3        | Document API key migration plan  | PrometheionScoreCallback.cls           | 30 min      |
-| 4        | Update WITH USER_MODE (optional) | PrometheionCCPASLAMonitorScheduler.cls | 10 min      |
+| 3        | Document API key migration plan  | ElaroScoreCallback.cls           | 30 min      |
+| 4        | Update WITH USER_MODE (optional) | ElaroCCPASLAMonitorScheduler.cls | 10 min      |
 
 ---
 
@@ -176,7 +176,7 @@ The provided SOC2Module.cls file uses proper security patterns:
 
 ## Remaining Work
 
-- [ ] PrometheionComplianceCopilot.cls - 4 SOQL queries
+- [ ] ElaroComplianceCopilot.cls - 4 SOQL queries
 - [ ] MD5 to SHA256 migration - 4 instances in 3 files
 - [ ] API key security documentation
 - [ ] (Optional) WITH USER_MODE to WITH SECURITY_ENFORCED

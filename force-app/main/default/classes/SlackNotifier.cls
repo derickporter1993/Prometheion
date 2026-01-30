@@ -15,7 +15,7 @@ public with sharing class SlackNotifier {
             String jsonPayload = JSON.serialize(payload);
             String correlationId = 'TEXT-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
 
-            PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(jsonPayload, correlationId);
+            ElaroSlackNotifierQueueable job = new ElaroSlackNotifierQueueable(jsonPayload, correlationId);
             System.enqueueJob(job);
         } catch (Exception e) {
             String correlationId = 'TEXT-ERROR-' + System.now().getTime();
@@ -40,7 +40,7 @@ public with sharing class SlackNotifier {
             JSON.deserializeUntyped(jsonPayload);
 
             String correlationId = 'RICH-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
-            PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(jsonPayload, correlationId);
+            ElaroSlackNotifierQueueable job = new ElaroSlackNotifierQueueable(jsonPayload, correlationId);
             System.enqueueJob(job);
         } catch (JSONException e) {
             String correlationId = 'RICH-ERROR-' + System.now().getTime();
@@ -130,7 +130,7 @@ public with sharing class SlackNotifier {
         payload.put(
             'text',
             emoji +
-            ' Prometheion Alert: ' +
+            ' Elaro Alert: ' +
             metric +
             ' at ' +
             percentOfLimit.setScale(1) +
@@ -252,7 +252,7 @@ public with sharing class SlackNotifier {
         attachment.put('color', color);
         attachment.put(
             'footer',
-            'Prometheion | ' +
+            'Elaro | ' +
             Datetime.now().format('yyyy-MM-dd HH:mm:ss')
         );
         attachments.add(attachment);

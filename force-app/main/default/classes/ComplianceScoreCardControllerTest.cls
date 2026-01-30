@@ -3,7 +3,7 @@
  * 
  * Test class for ComplianceScoreCardController
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest
@@ -15,8 +15,8 @@ private class ComplianceScoreCardControllerTest {
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
-            Email = 'testuser2@prometheion.test',
-            Username = 'testuser2' + System.now().getTime() + '@prometheion.test',
+            Email = 'testuser2@elaro.test',
+            Username = 'testuser2' + System.now().getTime() + '@elaro.test',
             Alias = 'tuser2',
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',
@@ -27,7 +27,7 @@ private class ComplianceScoreCardControllerTest {
         insert testUser;
         
         // Create test audit package
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Test SOC2 Package',
             Framework__c = 'SOC2',
             Status__c = 'IN_PROGRESS',
@@ -39,8 +39,8 @@ private class ComplianceScoreCardControllerTest {
         insert pkg;
         
         // Create framework mappings
-        List<Prometheion_Framework_Mapping__c> mappings = new List<Prometheion_Framework_Mapping__c>();
-        mappings.add(new Prometheion_Framework_Mapping__c(
+        List<Elaro_Framework_Mapping__c> mappings = new List<Elaro_Framework_Mapping__c>();
+        mappings.add(new Elaro_Framework_Mapping__c(
             Audit_Package__c = pkg.Id,
             Framework__c = 'SOC2',
             Requirement_Code__c = 'SOC2-CC6.1',
@@ -48,7 +48,7 @@ private class ComplianceScoreCardControllerTest {
             Entity_Type__c = 'PERMISSION_SET',
             Is_Active__c = true
         ));
-        mappings.add(new Prometheion_Framework_Mapping__c(
+        mappings.add(new Elaro_Framework_Mapping__c(
             Audit_Package__c = pkg.Id,
             Framework__c = 'SOC2',
             Requirement_Code__c = 'SOC2-CC6.2',
@@ -59,9 +59,9 @@ private class ComplianceScoreCardControllerTest {
         insert mappings;
         
         // Create evidence items
-        List<Prometheion_Evidence_Item__c> evidenceItems = new List<Prometheion_Evidence_Item__c>();
+        List<Elaro_Evidence_Item__c> evidenceItems = new List<Elaro_Evidence_Item__c>();
         for (Integer i = 0; i < 3; i++) {
-            evidenceItems.add(new Prometheion_Evidence_Item__c(
+            evidenceItems.add(new Elaro_Evidence_Item__c(
                 Audit_Package__c = pkg.Id,
                 Evidence_Type__c = 'SETUP_AUDIT_TRAIL',
                 Evidence_Date__c = Date.today().addDays(-i),

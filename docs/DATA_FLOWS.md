@@ -1,6 +1,6 @@
-# Prometheion Data Flow Diagrams
+# Elaro Data Flow Diagrams
 
-This document provides data flow diagrams for key Prometheion processes to help AppExchange reviewers understand the end-to-end architecture.
+This document provides data flow diagrams for key Elaro processes to help AppExchange reviewers understand the end-to-end architecture.
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@ graph TD
     D -->|GDPR| G[GDPRComplianceService]
     D -->|PCI-DSS| H[PCIDSSComplianceService]
 
-    E --> I[PrometheionComplianceScorer]
+    E --> I[ElaroComplianceScorer]
     F --> I
     G --> I
     H --> I
@@ -44,7 +44,7 @@ graph TD
 **Security Points:**
 
 - All SOQL queries use `WITH SECURITY_ENFORCED`
-- CRUD/FLS checks via `PrometheionSecurityUtils` before DML
+- CRUD/FLS checks via `ElaroSecurityUtils` before DML
 - Results stripped of inaccessible fields before returning to UI
 
 ---
@@ -55,8 +55,8 @@ graph TD
 sequenceDiagram
     participant User
     participant LWC as Compliance Copilot LWC
-    participant Controller as PrometheionComplianceCopilotService
-    participant Security as PrometheionSecurityUtils
+    participant Controller as ElaroComplianceCopilotService
+    participant Security as ElaroSecurityUtils
     participant API as Claude API (Named Credential)
     participant DB as Salesforce Database
 
@@ -88,16 +88,16 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    A[Prometheion Service] --> B{Callout Type}
+    A[Elaro Service] --> B{Callout Type}
     B -->|Slack| C[SlackIntegration]
     B -->|Teams| D[TeamsNotifier]
     B -->|PagerDuty| E[PagerDutyIntegration]
-    B -->|Claude AI| F[PrometheionComplianceCopilotService]
+    B -->|Claude AI| F[ElaroComplianceCopilotService]
 
     C --> G[Named Credential: Slack_Webhook]
     D --> H[Named Credential: Teams_Webhook]
     E --> I[Named Credential: PagerDuty_API]
-    F --> J[Named Credential: Prometheion_Claude_API]
+    F --> J[Named Credential: Elaro_Claude_API]
 
     G --> K[External Service]
     H --> K
@@ -127,20 +127,20 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Salesforce Event] --> B[Platform Event: Prometheion_Raw_Event__e]
-    B --> C[PrometheionEventProcessor]
-    C --> D[PrometheionAuditTrailPoller]
+    A[Salesforce Event] --> B[Platform Event: Elaro_Raw_Event__e]
+    B --> C[ElaroEventProcessor]
+    C --> D[ElaroAuditTrailPoller]
     D --> E[Query Event Data WITH SECURITY_ENFORCED]
-    E --> F[PrometheionGraphIndexer]
+    E --> F[ElaroGraphIndexer]
     F --> G[Calculate Risk Score]
-    G --> H[Store in Prometheion_Compliance_Graph__b]
-    H --> I[PrometheionReasoningEngine]
+    G --> H[Store in Elaro_Compliance_Graph__b]
+    H --> I[ElaroReasoningEngine]
     I --> J[AI Adjudication]
     J --> K[Create Compliance_Gap__c]
     K --> L[Generate Evidence Item]
-    L --> M[Store Prometheion_Evidence_Item__c]
+    L --> M[Store Elaro_Evidence_Item__c]
     M --> N[Link to Audit Package]
-    N --> O[Prometheion_Audit_Package__c]
+    N --> O[Elaro_Audit_Package__c]
     O --> P[Generate Audit Report]
 
     style E fill:#90EE90
@@ -168,9 +168,9 @@ graph TD
     C --> D[Query Records for Deletion]
     D --> E[WITH SECURITY_ENFORCED]
     E --> F{Record Type}
-    F -->|GDPR| G[PrometheionGDPRDataErasureService]
-    F -->|CCPA| H[PrometheionCCPADataInventoryService]
-    F -->|GLBA| I[PrometheionGLBAPrivacyNoticeService]
+    F -->|GDPR| G[ElaroGDPRDataErasureService]
+    F -->|CCPA| H[ElaroCCPADataInventoryService]
+    F -->|GLBA| I[ElaroGLBAPrivacyNoticeService]
 
     G --> J[Validate Erasure Request]
     H --> J
@@ -206,7 +206,7 @@ sequenceDiagram
     participant User
     participant LWC as Lightning Web Component
     participant Apex as Apex Controller
-    participant Security as PrometheionSecurityUtils
+    participant Security as ElaroSecurityUtils
     participant DB as Salesforce Database
 
     User->>LWC: Request data
@@ -256,7 +256,7 @@ Before returning data to UI:
 
 ```apex
 List<SObject> rawResults = Database.query(secureSOQL);
-List<SObject> filteredResults = PrometheionSecurityUtils.stripInaccessibleFields(
+List<SObject> filteredResults = ElaroSecurityUtils.stripInaccessibleFields(
     AccessType.READABLE,
     rawResults
 );
@@ -268,9 +268,9 @@ return filteredResults;
 Before DML operations:
 
 ```apex
-PrometheionSecurityUtils.validateCRUDAccess(
+ElaroSecurityUtils.validateCRUDAccess(
     'Account',
-    PrometheionSecurityUtils.DmlOperation.DML_INSERT
+    ElaroSecurityUtils.DmlOperation.DML_INSERT
 );
 insert accounts;
 ```
@@ -281,7 +281,7 @@ All external callouts use Named Credentials:
 
 ```apex
 HttpRequest req = new HttpRequest();
-req.setEndpoint('callout:Prometheion_Claude_API');  // ← Named Credential
+req.setEndpoint('callout:Elaro_Claude_API');  // ← Named Credential
 req.setMethod('POST');
 // ... rest of request
 ```
@@ -319,6 +319,6 @@ req.setMethod('POST');
 
 For detailed security implementation, see:
 
-- `PrometheionSecurityUtils.cls` - Centralized security utilities
+- `ElaroSecurityUtils.cls` - Centralized security utilities
 - `docs/SECURITY.md` - Security documentation
 - `CLAUDE.md` - Development guidelines

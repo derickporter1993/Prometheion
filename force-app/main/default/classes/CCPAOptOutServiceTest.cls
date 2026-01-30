@@ -2,7 +2,7 @@
  * Test class for CCPAOptOutService
  * Tests opt-out processing, GPC signal handling, Do Not Sell list management
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

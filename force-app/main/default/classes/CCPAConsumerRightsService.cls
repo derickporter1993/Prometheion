@@ -7,7 +7,7 @@
  * - Right to Delete: Consumers can request deletion of personal information
  * - Right to Opt-Out: Consumers can opt-out of sale of personal information
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class CCPAConsumerRightsService extends ComplianceServiceBase implements IDataSubjectService {

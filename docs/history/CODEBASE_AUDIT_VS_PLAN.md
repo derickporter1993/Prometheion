@@ -34,14 +34,14 @@
 
 | Class Name                     | Plan Status | Reality               | Notes                                                 |
 | ------------------------------ | ----------- | --------------------- | ----------------------------------------------------- |
-| `PrometheionShieldService`     | ❌ Create   | ✅ **EXISTS** (v65.0) | Fully implemented                                     |
-| `PrometheionComplianceScorer`  | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
-| `PrometheionGraphIndexer`      | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
-| `PrometheionReasoningEngine`   | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
-| `PrometheionRemediationEngine` | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
-| `EventCaptureService`          | ❌ Create   | ⚠️ **SIMILAR EXISTS** | `PrometheionEventMonitoringService` exists            |
+| `ElaroShieldService`     | ❌ Create   | ✅ **EXISTS** (v65.0) | Fully implemented                                     |
+| `ElaroComplianceScorer`  | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
+| `ElaroGraphIndexer`      | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
+| `ElaroReasoningEngine`   | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
+| `ElaroRemediationEngine` | ❌ Create   | ✅ **EXISTS**         | Already in codebase                                   |
+| `EventCaptureService`          | ❌ Create   | ⚠️ **SIMILAR EXISTS** | `ElaroEventMonitoringService` exists            |
 | `EvidencePackageService`       | ❌ Create   | ⚠️ **SIMILAR EXISTS** | `EvidenceCollectionService` exists                    |
-| `PDFGeneratorService`          | ❌ Create   | ✅ **EXISTS**         | `PrometheionPDFExporter` + `PrometheionPDFController` |
+| `PDFGeneratorService`          | ❌ Create   | ✅ **EXISTS**         | `ElaroPDFExporter` + `ElaroPDFController` |
 
 **Analysis:** 7 of 8 "to create" classes already exist, often with better names and implementations.
 
@@ -49,24 +49,24 @@
 
 **Compliance Services:**
 
-- ✅ `PrometheionGDPRComplianceService`
-- ✅ `PrometheionGDPRDataErasureService`
-- ✅ `PrometheionGDPRDataPortabilityService`
-- ✅ `PrometheionCCPAComplianceService`
-- ✅ `PrometheionCCPADataInventoryService`
-- ✅ `PrometheionPCIDSSComplianceService`
-- ✅ `PrometheionPCIDataMaskingService`
-- ✅ `PrometheionSOC2ComplianceService`
-- ✅ `PrometheionHIPAAComplianceService`
-- ✅ `PrometheionGLBAPrivacyNoticeService`
-- ✅ `PrometheionISO27001AccessReviewService`
+- ✅ `ElaroGDPRComplianceService`
+- ✅ `ElaroGDPRDataErasureService`
+- ✅ `ElaroGDPRDataPortabilityService`
+- ✅ `ElaroCCPAComplianceService`
+- ✅ `ElaroCCPADataInventoryService`
+- ✅ `ElaroPCIDSSComplianceService`
+- ✅ `ElaroPCIDataMaskingService`
+- ✅ `ElaroSOC2ComplianceService`
+- ✅ `ElaroHIPAAComplianceService`
+- ✅ `ElaroGLBAPrivacyNoticeService`
+- ✅ `ElaroISO27001AccessReviewService`
 
 **Core Services:**
 
-- ✅ `PrometheionComplianceCopilotService`
-- ✅ `PrometheionDeliveryService`
-- ✅ `PrometheionShieldService`
-- ✅ `PrometheionEventMonitoringService`
+- ✅ `ElaroComplianceCopilotService`
+- ✅ `ElaroDeliveryService`
+- ✅ `ElaroShieldService`
+- ✅ `ElaroEventMonitoringService`
 - ✅ `EvidenceCollectionService`
 - ✅ `ComplianceFrameworkService`
 - ✅ `NaturalLanguageQueryService`
@@ -91,10 +91,10 @@
 
 | Engine                         | Plan Status   | Reality               |
 | ------------------------------ | ------------- | --------------------- |
-| `PrometheionReasoningEngine`   | ❌ Create     | ✅ **EXISTS**         |
-| `PrometheionRemediationEngine` | ❌ Create     | ✅ **EXISTS**         |
+| `ElaroReasoningEngine`   | ❌ Create     | ✅ **EXISTS**         |
+| `ElaroRemediationEngine` | ❌ Create     | ✅ **EXISTS**         |
 | `RootCauseAnalysisEngine`      | ❌ Create     | ✅ **EXISTS**         |
-| `PrometheionFrameworkEngine`   | Not mentioned | ✅ **EXISTS** (bonus) |
+| `ElaroFrameworkEngine`   | Not mentioned | ✅ **EXISTS** (bonus) |
 | `PerformanceRuleEngine`        | Not mentioned | ✅ **EXISTS** (bonus) |
 
 **Total Engine Classes:** 5 (vs plan's assumption of 2-3)
@@ -107,11 +107,11 @@
 
 | Component                  | Plan Status   | Reality               | Test Status                     |
 | -------------------------- | ------------- | --------------------- | ------------------------------- |
-| `prometheionDashboard`     | Needs tests   | ✅ **EXISTS** + Tests | ⚠️ Tests failing (wire adapter) |
+| `elaroDashboard`     | Needs tests   | ✅ **EXISTS** + Tests | ⚠️ Tests failing (wire adapter) |
 | `complianceCopilot`        | In 2B tasks   | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
-| `prometheionCopilot`       | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
-| `prometheionAuditWizard`   | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
-| `prometheionEventExplorer` | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
+| `elaroCopilot`       | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
+| `elaroAuditWizard`   | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
+| `elaroEventExplorer` | Not mentioned | ✅ **EXISTS** + Tests | ⚠️ Tests failing                |
 | `controlMappingMatrix`     | In 2D tasks   | ✅ **EXISTS** + Tests | ✅ Tests passing                |
 | `complianceDashboard`      | Not mentioned | ✅ **EXISTS**         | ❌ No tests                     |
 | `complianceGapList`        | Not mentioned | ✅ **EXISTS**         | ❌ No tests                     |
@@ -124,11 +124,11 @@
 **Components with Tests:** 6 out of 31 (19% coverage)
 
 - ✅ `controlMappingMatrix` - Tests passing
-- ⚠️ `prometheionDashboard` - Tests exist but failing
+- ⚠️ `elaroDashboard` - Tests exist but failing
 - ⚠️ `complianceCopilot` - Tests exist but failing
-- ⚠️ `prometheionCopilot` - Tests exist but failing
-- ⚠️ `prometheionAuditWizard` - Tests exist but failing
-- ⚠️ `prometheionEventExplorer` - Tests exist but failing
+- ⚠️ `elaroCopilot` - Tests exist but failing
+- ⚠️ `elaroAuditWizard` - Tests exist but failing
+- ⚠️ `elaroEventExplorer` - Tests exist but failing
 
 **Components Needing Tests:** 25 components
 
@@ -145,9 +145,9 @@
 | `Compliance_Evidence__c`          | ❌ Create   | ✅ **EXISTS**              |
 | `API_Usage_Snapshot__c`           | ❌ Create   | ✅ **EXISTS**              |
 | `Performance_Alert_History__c`    | ❌ Create   | ✅ **EXISTS**              |
-| `Prometheion_AI_Settings__c`      | ❌ Create   | ✅ **EXISTS**              |
-| `Prometheion_Audit_Log__c`        | ❌ Create   | ✅ **EXISTS**              |
-| `Prometheion_Compliance_Graph__b` | ❌ Create   | ✅ **EXISTS** (Big Object) |
+| `Elaro_AI_Settings__c`      | ❌ Create   | ✅ **EXISTS**              |
+| `Elaro_Audit_Log__c`        | ❌ Create   | ✅ **EXISTS**              |
+| `Elaro_Compliance_Graph__b` | ❌ Create   | ✅ **EXISTS** (Big Object) |
 | `GDPR_Erasure_Request__c`         | ❌ Create   | ✅ **EXISTS**              |
 | `CCPA_Request__c`                 | ❌ Create   | ✅ **EXISTS**              |
 | `Privacy_Notice__c`               | ❌ Create   | ✅ **EXISTS**              |
@@ -158,13 +158,13 @@
 
 **Additional Objects Not in Plan:**
 
-- `Prometheion_Alert_Config__c`
-- `Prometheion_Connected_Org__c`
-- `Prometheion_Evidence_Anchor__c`
-- `Prometheion_Evidence_Item__c`
-- `Prometheion_Framework_Mapping__c`
-- `Prometheion_Audit_Package__c`
-- `Prometheion_Scheduler_Config__mdt`
+- `Elaro_Alert_Config__c`
+- `Elaro_Connected_Org__c`
+- `Elaro_Evidence_Anchor__c`
+- `Elaro_Evidence_Item__c`
+- `Elaro_Framework_Mapping__c`
+- `Elaro_Audit_Package__c`
+- `Elaro_Scheduler_Config__mdt`
 - `Executive_KPI__mdt`
 - `Compliance_Policy__mdt`
 - `Integration_Error__c`
@@ -180,10 +180,10 @@
 
 | Permission Set               | Plan Status | Reality       |
 | ---------------------------- | ----------- | ------------- |
-| `Prometheion_Admin`          | ✅ Exists   | ✅ **EXISTS** |
-| `Prometheion_Admin_Extended` | ✅ Exists   | ✅ **EXISTS** |
-| `Prometheion_User`           | ✅ Exists   | ✅ **EXISTS** |
-| `Prometheion_Auditor`        | ✅ Exists   | ✅ **EXISTS** |
+| `Elaro_Admin`          | ✅ Exists   | ✅ **EXISTS** |
+| `Elaro_Admin_Extended` | ✅ Exists   | ✅ **EXISTS** |
+| `Elaro_User`           | ✅ Exists   | ✅ **EXISTS** |
+| `Elaro_Auditor`        | ✅ Exists   | ✅ **EXISTS** |
 
 **Status:** ✅ **100% Match** - All 4 permission sets exist as planned
 
@@ -217,10 +217,10 @@ Tests:       93 failed, 59 passed, 152 total
 **Failing Test Suites:**
 
 1. `complianceCopilot.test.js` - Wire adapter issues
-2. `prometheionDashboard.test.js` - Wire adapter issues
-3. `prometheionEventExplorer.test.js` - Wire adapter issues
-4. `prometheionCopilot.test.js` - Wire adapter issues
-5. `prometheionAuditWizard.test.js` - Wire adapter issues
+2. `elaroDashboard.test.js` - Wire adapter issues
+3. `elaroEventExplorer.test.js` - Wire adapter issues
+4. `elaroCopilot.test.js` - Wire adapter issues
+5. `elaroAuditWizard.test.js` - Wire adapter issues
 
 **Passing Test Suites:**
 
@@ -250,9 +250,9 @@ Tests:       93 failed, 59 passed, 152 total
 - `GDPRModule.cls-meta.xml`: 59.0 → 63.0
 - `SOC2Module.cls-meta.xml`: 59.0 → 63.0
 - `HIPAAModule.cls-meta.xml`: 59.0 → 63.0
-- `PrometheionEventParser.cls-meta.xml`: 65.0 → 63.0
-- `PrometheionPDFExporter.cls-meta.xml`: 65.0 → 63.0
-- `PrometheionShieldService.cls-meta.xml`: 65.0 → 63.0
+- `ElaroEventParser.cls-meta.xml`: 65.0 → 63.0
+- `ElaroPDFExporter.cls-meta.xml`: 65.0 → 63.0
+- `ElaroShieldService.cls-meta.xml`: 65.0 → 63.0
 - And others...
 
 ---
@@ -276,7 +276,7 @@ Tests:       93 failed, 59 passed, 152 total
 
 | Item                    | Plan Says         | Reality                   | Status    |
 | ----------------------- | ----------------- | ------------------------- | --------- |
-| **ROADMAP.md**          | Needs updating    | ✅ Updated to Prometheion | **FIXED** |
+| **ROADMAP.md**          | Needs updating    | ✅ Updated to Elaro | **FIXED** |
 | **SETUP_GUIDE.md**      | Needs GitHub URLs | ✅ Updated                | **FIXED** |
 | **Sentinel references** | Some remain       | ✅ Mostly fixed           | **FIXED** |
 
@@ -302,13 +302,13 @@ Tests:       93 failed, 59 passed, 152 total
 
 | Class                          | Plan                            | Reality                                         | Action Needed                   |
 | ------------------------------ | ------------------------------- | ----------------------------------------------- | ------------------------------- |
-| `PrometheionShieldService`     | Create                          | ✅ Exists                                       | ✅ None - already done          |
-| `PrometheionComplianceScorer`  | Create                          | ✅ Exists                                       | ✅ None - already done          |
-| `PrometheionGraphIndexer`      | Create                          | ✅ Exists                                       | ✅ None - already done          |
-| `PrometheionReasoningEngine`   | Create                          | ✅ Exists                                       | ✅ None - already done          |
-| `PrometheionRemediationEngine` | Create                          | ✅ Exists                                       | ✅ None - already done          |
-| `PrometheionPDFExporter`       | Create (as PDFGeneratorService) | ✅ Exists                                       | ✅ None - already done          |
-| `EventCaptureService`          | Create                          | ⚠️ Similar: `PrometheionEventMonitoringService` | ⚠️ Verify if same functionality |
+| `ElaroShieldService`     | Create                          | ✅ Exists                                       | ✅ None - already done          |
+| `ElaroComplianceScorer`  | Create                          | ✅ Exists                                       | ✅ None - already done          |
+| `ElaroGraphIndexer`      | Create                          | ✅ Exists                                       | ✅ None - already done          |
+| `ElaroReasoningEngine`   | Create                          | ✅ Exists                                       | ✅ None - already done          |
+| `ElaroRemediationEngine` | Create                          | ✅ Exists                                       | ✅ None - already done          |
+| `ElaroPDFExporter`       | Create (as PDFGeneratorService) | ✅ Exists                                       | ✅ None - already done          |
+| `EventCaptureService`          | Create                          | ⚠️ Similar: `ElaroEventMonitoringService` | ⚠️ Verify if same functionality |
 | `EvidencePackageService`       | Create                          | ⚠️ Similar: `EvidenceCollectionService`         | ⚠️ Verify if same functionality |
 
 **Verdict:** 6 of 8 "to create" classes already exist. Plan overestimates work by ~75%.
@@ -321,12 +321,12 @@ Tests:       93 failed, 59 passed, 152 total
 
 | Component                  | Plan Status   | Reality           | Test Status |
 | -------------------------- | ------------- | ----------------- | ----------- |
-| `prometheionDashboard`     | Needs tests   | ✅ Exists + Tests | ⚠️ Failing  |
+| `elaroDashboard`     | Needs tests   | ✅ Exists + Tests | ⚠️ Failing  |
 | `complianceCopilot`        | In 2B tasks   | ✅ Exists + Tests | ⚠️ Failing  |
 | `controlMappingMatrix`     | In 2D tasks   | ✅ Exists + Tests | ✅ Passing  |
-| `prometheionCopilot`       | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
-| `prometheionAuditWizard`   | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
-| `prometheionEventExplorer` | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
+| `elaroCopilot`       | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
+| `elaroAuditWizard`   | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
+| `elaroEventExplorer` | Not mentioned | ✅ Exists + Tests | ⚠️ Failing  |
 | `apiUsageDashboard`        | Not mentioned | ✅ Exists         | ❌ No tests |
 | `systemMonitorDashboard`   | Not mentioned | ✅ Exists         | ❌ No tests |
 | `complianceDashboard`      | Not mentioned | ✅ Exists         | ❌ No tests |
@@ -335,7 +335,7 @@ Tests:       93 failed, 59 passed, 152 total
 | `complianceTimeline`       | Not mentioned | ✅ Exists         | ❌ No tests |
 | `complianceTrendChart`     | Not mentioned | ✅ Exists         | ❌ No tests |
 | `riskHeatmap`              | Not mentioned | ✅ Exists         | ❌ No tests |
-| `prometheionROICalculator` | Not mentioned | ✅ Exists         | ❌ No tests |
+| `elaroROICalculator` | Not mentioned | ✅ Exists         | ❌ No tests |
 | And 16 more...             |               |                   |             |
 
 **Total:** 31 components exist (vs plan's ~15 assumption)
@@ -354,21 +354,21 @@ Tests:       93 failed, 59 passed, 152 total
 - ✅ `Compliance_Evidence__c`
 - ✅ `API_Usage_Snapshot__c`
 - ✅ `Performance_Alert_History__c`
-- ✅ `Prometheion_AI_Settings__c`
-- ✅ `Prometheion_Audit_Log__c`
-- ✅ `Prometheion_Compliance_Graph__b` (Big Object)
+- ✅ `Elaro_AI_Settings__c`
+- ✅ `Elaro_Audit_Log__c`
+- ✅ `Elaro_Compliance_Graph__b` (Big Object)
 - ✅ `GDPR_Erasure_Request__c`
 - ✅ `CCPA_Request__c`
 - ✅ `Privacy_Notice__c`
 - ✅ `Access_Review__c`
 - ✅ `Consent__c`
-- ✅ `Prometheion_Alert_Config__c`
-- ✅ `Prometheion_Connected_Org__c`
-- ✅ `Prometheion_Evidence_Anchor__c`
-- ✅ `Prometheion_Evidence_Item__c`
-- ✅ `Prometheion_Framework_Mapping__c`
-- ✅ `Prometheion_Audit_Package__c`
-- ✅ `Prometheion_Scheduler_Config__mdt`
+- ✅ `Elaro_Alert_Config__c`
+- ✅ `Elaro_Connected_Org__c`
+- ✅ `Elaro_Evidence_Anchor__c`
+- ✅ `Elaro_Evidence_Item__c`
+- ✅ `Elaro_Framework_Mapping__c`
+- ✅ `Elaro_Audit_Package__c`
+- ✅ `Elaro_Scheduler_Config__mdt`
 - And 18 more...
 
 **Verdict:** Plan assumes ~50% of objects need creation; reality is ~95% already exist.
@@ -440,7 +440,7 @@ Tests:       93 failed, 59 passed, 152 total
 #### Medium Priority
 
 6. **Verify Similar Service Classes**
-   - **Question:** Is `EventCaptureService` same as `PrometheionEventMonitoringService`?
+   - **Question:** Is `EventCaptureService` same as `ElaroEventMonitoringService`?
    - **Question:** Is `EvidencePackageService` same as `EvidenceCollectionService`?
    - **Effort:** 2 hours (code review)
    - **Status:** Need verification
@@ -557,7 +557,7 @@ Tests:       93 failed, 59 passed, 152 total
 | ----------------------- | ---------------------------------- | --------------------------- | -------------------- |
 | **Phase 2 Foundation**  | 100% Complete                      | ✅ Merged in current branch | ✅ CORRECT           |
 | **Domain Separation**   | Claude=Apex, Cursor=LWC            | Valid approach              | ✅ CORRECT           |
-| **Big Object**          | `Prometheion_Compliance_Graph__b`  | ✅ Exists in codebase       | ✅ CORRECT           |
+| **Big Object**          | `Elaro_Compliance_Graph__b`  | ✅ Exists in codebase       | ✅ CORRECT           |
 | **Permission Sets**     | 4 sets (Admin, User, Auditor, API) | ✅ Confirmed                | ✅ CORRECT           |
 | **Test Coverage Issue** | Need 75%+                          | Need to verify actual %     | ⚠️ PARTIALLY CORRECT |
 
@@ -586,7 +586,7 @@ Tests:       93 failed, 59 passed, 152 total
    - Target: 80%+ coverage
 
 4. **Verify Service Class Equivalency** (2 hours)
-   - Compare `EventCaptureService` vs `PrometheionEventMonitoringService`
+   - Compare `EventCaptureService` vs `ElaroEventMonitoringService`
    - Compare `EvidencePackageService` vs `EvidenceCollectionService`
 
 ### Medium-Term Actions (2-4 Weeks)

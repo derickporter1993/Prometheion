@@ -5,7 +5,7 @@
  * Handles breach assessment, 4-factor risk analysis, notification tracking,
  * and compliance with 60-day notification deadlines.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class HIPAABreachNotificationService extends ComplianceServiceBase implements IBreachNotificationService {
@@ -285,7 +285,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Breach_Type__c = (String) breachData.get('breachType');
         breach.Status__c = 'Open';
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_INSERT);
         insert breach;
 
         // Log audit entry
@@ -344,7 +344,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Individual_Notification_Date__c = Date.today();
         breach.Individuals_Notified_Count__c = individualsNotified;
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
+        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
         update breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
@@ -369,7 +369,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.HHS_Notification_Date__c = Date.today();
         breach.HHS_Confirmation_Number__c = hhsConfirmationNumber;
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
+        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
         update breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();

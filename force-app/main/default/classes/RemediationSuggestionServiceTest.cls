@@ -1,6 +1,6 @@
 /**
  * @description Test class for RemediationSuggestionService
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest

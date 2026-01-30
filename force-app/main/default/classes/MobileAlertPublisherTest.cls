@@ -1,6 +1,6 @@
 /**
  * @description Test class for MobileAlertPublisher
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest
@@ -12,19 +12,19 @@ private class MobileAlertPublisherTest {
         Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User testUser = new User(
             Alias = 'oncllusr',
-            Email = 'oncalluser@prometheion.test',
+            Email = 'oncalluser@elaro.test',
             EmailEncodingKey = 'UTF-8',
             LastName = 'OnCall',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
             ProfileId = p.Id,
             TimeZoneSidKey = 'America/New_York',
-            UserName = 'oncalluser' + Datetime.now().getTime() + '@prometheion.test'
+            UserName = 'oncalluser' + Datetime.now().getTime() + '@elaro.test'
         );
         insert testUser;
 
         // Create on-call schedule for test user (current time window)
-        Prometheion_On_Call_Schedule__c schedule = new Prometheion_On_Call_Schedule__c(
+        Elaro_On_Call_Schedule__c schedule = new Elaro_On_Call_Schedule__c(
             Name = 'Primary On-Call',
             User__c = testUser.Id,
             Start_Time__c = Datetime.now().addHours(-1),
@@ -37,8 +37,8 @@ private class MobileAlertPublisherTest {
         insert schedule;
 
         // Create escalation paths
-        List<Prometheion_Escalation_Path__c> escalationPaths = new List<Prometheion_Escalation_Path__c>();
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        List<Elaro_Escalation_Path__c> escalationPaths = new List<Elaro_Escalation_Path__c>();
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 1,
             Active__c = true,
@@ -46,7 +46,7 @@ private class MobileAlertPublisherTest {
             Notification_Method__c = 'Both',
             Escalation_Delay_Minutes__c = 15
         ));
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 2,
             Active__c = true,
@@ -54,7 +54,7 @@ private class MobileAlertPublisherTest {
             Notification_Method__c = 'Both',
             Escalation_Delay_Minutes__c = 30
         ));
-        escalationPaths.add(new Prometheion_Escalation_Path__c(
+        escalationPaths.add(new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 3,
             Active__c = true,
@@ -287,8 +287,8 @@ private class MobileAlertPublisherTest {
     @isTest
     static void testGetEscalationPath_NoActivePaths() {
         // Deactivate all paths
-        List<Prometheion_Escalation_Path__c> paths = [SELECT Id FROM Prometheion_Escalation_Path__c];
-        for (Prometheion_Escalation_Path__c path : paths) {
+        List<Elaro_Escalation_Path__c> paths = [SELECT Id FROM Elaro_Escalation_Path__c];
+        for (Elaro_Escalation_Path__c path : paths) {
             path.Active__c = false;
         }
         update paths;
@@ -303,8 +303,8 @@ private class MobileAlertPublisherTest {
     @isTest
     static void testGetCurrentOnCallUsers_NoActiveSchedules() {
         // Deactivate all schedules
-        List<Prometheion_On_Call_Schedule__c> schedules = [SELECT Id FROM Prometheion_On_Call_Schedule__c];
-        for (Prometheion_On_Call_Schedule__c schedule : schedules) {
+        List<Elaro_On_Call_Schedule__c> schedules = [SELECT Id FROM Elaro_On_Call_Schedule__c];
+        for (Elaro_On_Call_Schedule__c schedule : schedules) {
             schedule.Active__c = false;
         }
         update schedules;
@@ -319,8 +319,8 @@ private class MobileAlertPublisherTest {
     @isTest
     static void testPublishAlertWithNoOnCallUsers() {
         // Deactivate all schedules to test fallback to admin users
-        List<Prometheion_On_Call_Schedule__c> schedules = [SELECT Id FROM Prometheion_On_Call_Schedule__c];
-        for (Prometheion_On_Call_Schedule__c schedule : schedules) {
+        List<Elaro_On_Call_Schedule__c> schedules = [SELECT Id FROM Elaro_On_Call_Schedule__c];
+        for (Elaro_On_Call_Schedule__c schedule : schedules) {
             schedule.Active__c = false;
         }
         update schedules;
