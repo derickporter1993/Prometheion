@@ -17,7 +17,7 @@ let mockQuickCommandsCallbacks = new Set();
 // Mock wire adapter with constructor-based class
 // LWC expects adapters to be instantiable with 'new'
 jest.mock(
-  "@salesforce/apex/PrometheionComplianceCopilot.getQuickCommands",
+  "@salesforce/apex/ElaroComplianceCopilot.getQuickCommands",
   () => ({
     default: function MockAdapter(callback) {
       if (new.target) {
@@ -48,7 +48,7 @@ const resetWireCallbacks = () => {
 // Mock Apex method (imperative)
 const mockAskCopilot = jest.fn();
 jest.mock(
-  "@salesforce/apex/PrometheionComplianceCopilot.askCopilot",
+  "@salesforce/apex/ElaroComplianceCopilot.askCopilot",
   () => ({ default: mockAskCopilot }),
   { virtual: true }
 );
@@ -67,48 +67,48 @@ jest.mock(
   { virtual: true }
 );
 jest.mock(
-  "@salesforce/label/c.Prometheion_Quick_Commands",
+  "@salesforce/label/c.Elaro_Quick_Commands",
   () => ({ default: "Quick Commands:" }),
   { virtual: true }
 );
 jest.mock(
-  "@salesforce/label/c.Prometheion_Ask_Question",
+  "@salesforce/label/c.Elaro_Ask_Question",
   () => ({ default: "Ask a compliance question" }),
   { virtual: true }
 );
 jest.mock(
-  "@salesforce/label/c.Prometheion_Input_Placeholder",
+  "@salesforce/label/c.Elaro_Input_Placeholder",
   () => ({ default: "e.g., Why did my compliance score drop?" }),
   { virtual: true }
 );
-jest.mock("@salesforce/label/c.Prometheion_Send", () => ({ default: "Send" }), { virtual: true });
-jest.mock("@salesforce/label/c.Prometheion_Clear_Chat", () => ({ default: "Clear Chat" }), {
+jest.mock("@salesforce/label/c.Elaro_Send", () => ({ default: "Send" }), { virtual: true });
+jest.mock("@salesforce/label/c.Elaro_Clear_Chat", () => ({ default: "Clear Chat" }), {
   virtual: true,
 });
-jest.mock("@salesforce/label/c.Prometheion_Evidence", () => ({ default: "Evidence:" }), {
+jest.mock("@salesforce/label/c.Elaro_Evidence", () => ({ default: "Evidence:" }), {
   virtual: true,
 });
-jest.mock("@salesforce/label/c.Prometheion_Risk_Score", () => ({ default: "Risk: {0}/10" }), {
+jest.mock("@salesforce/label/c.Elaro_Risk_Score", () => ({ default: "Risk: {0}/10" }), {
   virtual: true,
 });
-jest.mock("@salesforce/label/c.Prometheion_Error_Title", () => ({ default: "Error" }), {
+jest.mock("@salesforce/label/c.Elaro_Error_Title", () => ({ default: "Error" }), {
   virtual: true,
 });
-jest.mock("@salesforce/label/c.Prometheion_Info_Title", () => ({ default: "Info" }), {
+jest.mock("@salesforce/label/c.Elaro_Info_Title", () => ({ default: "Info" }), {
   virtual: true,
 });
 jest.mock(
-  "@salesforce/label/c.Prometheion_Auto_Fix_Coming",
+  "@salesforce/label/c.Elaro_Auto_Fix_Coming",
   () => ({ default: "Auto-fix functionality coming soon" }),
   { virtual: true }
 );
 jest.mock(
-  "@salesforce/label/c.Prometheion_Export_Coming",
+  "@salesforce/label/c.Elaro_Export_Coming",
   () => ({ default: "Export functionality coming soon" }),
   { virtual: true }
 );
 jest.mock(
-  "@salesforce/label/c.Prometheion_Processing_Error",
+  "@salesforce/label/c.Elaro_Processing_Error",
   () => ({ default: "I encountered an error processing your query. Please try again." }),
   { virtual: true }
 );

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <label>Elaro Jira Settings</label>
+    <visibility>Public</visibility>
+    <description>Configuration settings for Jira integration with Elaro</description>
+    <fields>
+        <fullName>Jira_Instance_URL__c</fullName>
+        <label>Jira Instance URL</label>
+        <type>Url</type>
+        <description>Base URL of your Jira Cloud instance (e.g., https://mycompany.atlassian.net)</description>
+    </fields>
+    <fields>
+        <fullName>Project_Key__c</fullName>
+        <label>Project Key</label>
+        <type>Text</type>
+        <length>10</length>
+        <defaultValue>&quot;COMPLIANCE&quot;</defaultValue>
+        <description>Jira project key for compliance issues</description>
+    </fields>
+    <fields>
+        <fullName>Issue_Type__c</fullName>
+        <label>Issue Type</label>
+        <type>Text</type>
+        <length>50</length>
+        <defaultValue>&quot;Task&quot;</defaultValue>
+        <description>Default Jira issue type for compliance gaps</description>
+    </fields>
+    <fields>
+        <fullName>Default_Priority__c</fullName>
+        <label>Default Priority</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Highest</fullName>
+                    <default>false</default>
+                    <label>Highest</label>
+                </value>
+                <value>
+                    <fullName>High</fullName>
+                    <default>true</default>
+                    <label>High</label>
+                </value>
+                <value>
+                    <fullName>Medium</fullName>
+                    <default>false</default>
+                    <label>Medium</label>
+                </value>
+                <value>
+                    <fullName>Low</fullName>
+                    <default>false</default>
+                    <label>Low</label>
+                </value>
+                <value>
+                    <fullName>Lowest</fullName>
+                    <default>false</default>
+                    <label>Lowest</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Auto_Create_Enabled__c</fullName>
+        <label>Auto-Create Enabled</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+        <description>Automatically create Jira issues for high-risk gaps</description>
+    </fields>
+    <fields>
+        <fullName>Risk_Threshold__c</fullName>
+        <label>Risk Threshold</label>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>1</scale>
+        <defaultValue>8.0</defaultValue>
+        <description>Minimum risk score to trigger auto-creation (when enabled)</description>
+    </fields>
+    <fields>
+        <fullName>Webhook_Secret__c</fullName>
+        <label>Webhook Secret</label>
+        <type>Text</type>
+        <length>255</length>
+        <description>Secret for validating incoming Jira webhooks</description>
+    </fields>
+    <fields>
+        <fullName>Sync_Enabled__c</fullName>
+        <label>Sync Enabled</label>
+        <type>Checkbox</type>
+        <defaultValue>true</defaultValue>
+        <description>Enable bidirectional status sync between Salesforce and Jira</description>
+    </fields>
+</CustomObject>

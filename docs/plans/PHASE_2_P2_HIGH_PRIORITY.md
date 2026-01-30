@@ -24,9 +24,9 @@ Phase 2 addresses high-priority improvements that strengthen the application's s
 
 ## 2.1 SCHEDULER/BATCH ERROR HANDLING (8 hours)
 
-### Task SCH1: PrometheionCCPASLAMonitorScheduler
+### Task SCH1: ElaroCCPASLAMonitorScheduler
 
-**File:** `force-app/main/default/classes/PrometheionCCPASLAMonitorScheduler.cls`
+**File:** `force-app/main/default/classes/ElaroCCPASLAMonitorScheduler.cls`
 **Issue:** No try-catch in execute() method (Line 22)
 
 **Current State:**
@@ -59,7 +59,7 @@ private void logSuccessfulExecution() {
         Error_Type__c = 'SCHEDULER_SUCCESS',
         Error_Message__c = 'CCPA SLA Monitor completed successfully',
         Timestamp__c = System.now(),
-        Context__c = 'PrometheionCCPASLAMonitorScheduler'
+        Context__c = 'ElaroCCPASLAMonitorScheduler'
     );
 }
 
@@ -69,7 +69,7 @@ private void logExecutionError(Exception e) {
         Error_Message__c = e.getMessage(),
         Stack_Trace__c = e.getStackTraceString().left(32000),
         Timestamp__c = System.now(),
-        Context__c = 'PrometheionCCPASLAMonitorScheduler'
+        Context__c = 'ElaroCCPASLAMonitorScheduler'
     );
 }
 
@@ -101,9 +101,9 @@ for (Database.SaveResult sr : results) {
 
 ---
 
-### Task SCH2: PrometheionDormantAccountAlertScheduler
+### Task SCH2: ElaroDormantAccountAlertScheduler
 
-**File:** `force-app/main/default/classes/PrometheionDormantAccountAlertScheduler.cls`
+**File:** `force-app/main/default/classes/ElaroDormantAccountAlertScheduler.cls`
 **Issue:** No error handling in 4 methods
 
 **Methods to wrap in try-catch:**
@@ -120,7 +120,7 @@ public void execute(SchedulableContext sc) {
         detectApproachingDormant();
         generateSecurityReport();
     } catch (Exception e) {
-        handleSchedulerError('PrometheionDormantAccountAlertScheduler', e);
+        handleSchedulerError('ElaroDormantAccountAlertScheduler', e);
     }
 }
 
@@ -146,15 +146,15 @@ private void handleSchedulerError(String schedulerName, Exception e) {
 LIMIT 500
 
 // AFTER - Use Custom Metadata for configuration
-Integer batchLimit = Prometheion_Scheduler_Config__mdt.getInstance('DormantAccountAlert')?.Batch_Size__c?.intValue() ?? 500;
+Integer batchLimit = Elaro_Scheduler_Config__mdt.getInstance('DormantAccountAlert')?.Batch_Size__c?.intValue() ?? 500;
 // ... LIMIT :batchLimit
 ```
 
 ---
 
-### Task SCH3: PrometheionGLBAAnnualNoticeScheduler
+### Task SCH3: ElaroGLBAAnnualNoticeScheduler
 
-**File:** `force-app/main/default/classes/PrometheionGLBAAnnualNoticeScheduler.cls`
+**File:** `force-app/main/default/classes/ElaroGLBAAnnualNoticeScheduler.cls`
 **Issues:**
 - No error handling in execute() (Line 19)
 - No logging at all in entire class
@@ -171,7 +171,7 @@ public void execute(SchedulableContext sc) {
             return;
         }
 
-        Id batchId = Database.executeBatch(new PrometheionGLBAAnnualNoticeBatch(), 200);
+        Id batchId = Database.executeBatch(new ElaroGLBAAnnualNoticeBatch(), 200);
         System.debug(LoggingLevel.INFO, 'Batch job queued with ID: ' + batchId);
 
         // Log successful scheduling
@@ -190,7 +190,7 @@ public void execute(SchedulableContext sc) {
             Error_Type__c = 'SCHEDULER_FAILURE',
             Error_Message__c = e.getMessage(),
             Stack_Trace__c = e.getStackTraceString().left(32000),
-            Context__c = 'PrometheionGLBAAnnualNoticeScheduler',
+            Context__c = 'ElaroGLBAAnnualNoticeScheduler',
             Timestamp__c = System.now()
         );
     }
@@ -199,9 +199,9 @@ public void execute(SchedulableContext sc) {
 
 ---
 
-### Task SCH4: PrometheionGLBAAnnualNoticeBatch
+### Task SCH4: ElaroGLBAAnnualNoticeBatch
 
-**File:** `force-app/main/default/classes/PrometheionGLBAAnnualNoticeBatch.cls`
+**File:** `force-app/main/default/classes/ElaroGLBAAnnualNoticeBatch.cls`
 
 **Fix start() method (Line 14):**
 ```apex
@@ -343,7 +343,7 @@ public class SchedulerErrorHandler {
 
 ### Task P1: Remove modifyAllRecords from Admin_Extended
 
-**File:** `force-app/main/default/permissionsets/Prometheion_Admin_Extended.permissionset-meta.xml`
+**File:** `force-app/main/default/permissionsets/Elaro_Admin_Extended.permissionset-meta.xml`
 
 **Current State (Dangerous):**
 ```xml
@@ -377,7 +377,7 @@ public class SchedulerErrorHandler {
 
 ### Task P2: Add Missing Object Permissions
 
-**File:** `force-app/main/default/permissionsets/Prometheion_Admin.permissionset-meta.xml`
+**File:** `force-app/main/default/permissionsets/Elaro_Admin.permissionset-meta.xml`
 
 **Add permissions for 9 missing objects:**
 
@@ -404,8 +404,8 @@ public class SchedulerErrorHandler {
 </objectPermissions>
 
 <!-- Repeat for: Consent__c, GDPR_Erasure_Request__c, Privacy_Notice__c,
-     Prometheion_AI_Settings__c, Prometheion_Audit_Log__c,
-     Prometheion_Compliance_Graph__b, CCX_Settings__c -->
+     Elaro_AI_Settings__c, Elaro_Audit_Log__c,
+     Elaro_Compliance_Graph__b, CCX_Settings__c -->
 ```
 
 ---
@@ -417,64 +417,64 @@ public class SchedulerErrorHandler {
 ```xml
 <!-- Controllers -->
 <classAccesses>
-    <apexClass>PrometheionMatrixController</apexClass>
+    <apexClass>ElaroMatrixController</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionTrendController</apexClass>
+    <apexClass>ElaroTrendController</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionExecutiveKPIController</apexClass>
+    <apexClass>ElaroExecutiveKPIController</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionDrillDownController</apexClass>
+    <apexClass>ElaroDrillDownController</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionDynamicReportController</apexClass>
+    <apexClass>ElaroDynamicReportController</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 
 <!-- Services -->
 <classAccesses>
-    <apexClass>PrometheionGDPRDataErasureService</apexClass>
+    <apexClass>ElaroGDPRDataErasureService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <classAccesses>
-    <apexClass>PrometheionGDPRDataPortabilityService</apexClass>
+    <apexClass>ElaroGDPRDataPortabilityService</apexClass>
     <enabled>true</enabled>
 </classAccesses>
 <!-- ... add remaining 21 classes -->
 ```
 
 **Full list of 28 classes to add:**
-1. PrometheionMatrixController
-2. PrometheionTrendController
-3. PrometheionExecutiveKPIController
-4. PrometheionDrillDownController
-5. PrometheionDynamicReportController
-6. PrometheionGDPRDataErasureService
-7. PrometheionGDPRDataPortabilityService
-8. PrometheionPCIAccessLogger
-9. PrometheionPCIDataMaskingService
-10. PrometheionSalesforceThreatDetector
-11. PrometheionRemediationEngine
-12. PrometheionChangeAdvisor
-13. PrometheionConsentWithdrawalHandler
-14. PrometheionCCPADataInventoryService
+1. ElaroMatrixController
+2. ElaroTrendController
+3. ElaroExecutiveKPIController
+4. ElaroDrillDownController
+5. ElaroDynamicReportController
+6. ElaroGDPRDataErasureService
+7. ElaroGDPRDataPortabilityService
+8. ElaroPCIAccessLogger
+9. ElaroPCIDataMaskingService
+10. ElaroSalesforceThreatDetector
+11. ElaroRemediationEngine
+12. ElaroChangeAdvisor
+13. ElaroConsentWithdrawalHandler
+14. ElaroCCPADataInventoryService
 15. ISO27001QuarterlyReviewScheduler
-16. PrometheionAuditTrailPoller
-17. PrometheionCCPASLAMonitorScheduler
-18. PrometheionDormantAccountAlertScheduler
-19. PrometheionISO27001QuarterlyScheduler
-20. PrometheionGLBAAnnualNoticeBatch
-21. PrometheionGLBAAnnualNoticeScheduler
-22. PrometheionEventPublisher
-23. PrometheionScoreCallback
-24. PrometheionPCIAccessAlertHandler
-25. PrometheionSlackNotifierQueueable
+16. ElaroAuditTrailPoller
+17. ElaroCCPASLAMonitorScheduler
+18. ElaroDormantAccountAlertScheduler
+19. ElaroISO27001QuarterlyScheduler
+20. ElaroGLBAAnnualNoticeBatch
+21. ElaroGLBAAnnualNoticeScheduler
+22. ElaroEventPublisher
+23. ElaroScoreCallback
+24. ElaroPCIAccessAlertHandler
+25. ElaroSlackNotifierQueueable
 26. ApiUsageSnapshot
 27. PerformanceAlertPublisher
 28. WeeklyScorecardScheduler
@@ -537,9 +537,9 @@ for (Compliance_Policy__mdt policy : policies) {
 
 ---
 
-### Task Q2: Optimize PrometheionISO27001AccessReviewService
+### Task Q2: Optimize ElaroISO27001AccessReviewService
 
-**File:** `force-app/main/default/classes/PrometheionISO27001AccessReviewService.cls`
+**File:** `force-app/main/default/classes/ElaroISO27001AccessReviewService.cls`
 **Lines:** 309-378
 
 **Current State (6 separate COUNT queries):**
@@ -590,7 +590,7 @@ List<AggregateResult> userStats = [
 
 ### Task Q3: Add Transaction Management to GDPR Erasure
 
-**File:** `force-app/main/default/classes/PrometheionGDPRDataErasureService.cls`
+**File:** `force-app/main/default/classes/ElaroGDPRDataErasureService.cls`
 **Lines:** 52-128
 
 ```apex
@@ -639,25 +639,25 @@ public class GDPRErasureException extends Exception {}
 
 ### Task Q4: Add Sharing Declarations
 
-**File:** `force-app/main/default/classes/PrometheionAuditTrailPoller.cls`
+**File:** `force-app/main/default/classes/ElaroAuditTrailPoller.cls`
 
 ```apex
 // BEFORE
-public class PrometheionAuditTrailPoller implements Schedulable {
+public class ElaroAuditTrailPoller implements Schedulable {
 
 // AFTER
-public without sharing class PrometheionAuditTrailPoller implements Schedulable {
+public without sharing class ElaroAuditTrailPoller implements Schedulable {
     // Runs in system context to poll audit trail regardless of user permissions
 ```
 
-**File:** `force-app/main/default/classes/PrometheionScoreCallback.cls`
+**File:** `force-app/main/default/classes/ElaroScoreCallback.cls`
 
 ```apex
 // BEFORE
-global class PrometheionScoreCallback {
+global class ElaroScoreCallback {
 
 // AFTER
-global without sharing class PrometheionScoreCallback {
+global without sharing class ElaroScoreCallback {
     // External API callback runs in system context
 ```
 
@@ -671,16 +671,16 @@ global without sharing class PrometheionScoreCallback {
 
 | File | Current | Target |
 |------|---------|--------|
-| `PrometheionAlertTrigger.trigger-meta.xml` | 62.0 | 63.0 |
-| `PrometheionPCIAccessAlertTrigger.trigger-meta.xml` | 64.0 | 63.0 |
-| `PrometheionConsentWithdrawalTrigger.trigger-meta.xml` | 64.0 | 63.0 |
+| `ElaroAlertTrigger.trigger-meta.xml` | 62.0 | 63.0 |
+| `ElaroPCIAccessAlertTrigger.trigger-meta.xml` | 64.0 | 63.0 |
+| `ElaroConsentWithdrawalTrigger.trigger-meta.xml` | 64.0 | 63.0 |
 | `PerformanceAlertEventTrigger.trigger-meta.xml` | 65.0 | 63.0 |
 
 ---
 
 ### Task CFG2: Move CRON to Custom Metadata
 
-**Create Custom Metadata Type:** `Prometheion_Scheduler_Config__mdt`
+**Create Custom Metadata Type:** `Elaro_Scheduler_Config__mdt`
 
 **Fields:**
 - `Scheduler_Name__c` (Text, Unique)
@@ -723,9 +723,9 @@ Is_Active__c: true
 
 Delete one of:
 - `ISO27001QuarterlyReviewScheduler.cls`
-- `PrometheionISO27001QuarterlyScheduler.cls`
+- `ElaroISO27001QuarterlyScheduler.cls`
 
-**Keep:** `PrometheionISO27001QuarterlyScheduler.cls` (follows naming convention)
+**Keep:** `ElaroISO27001QuarterlyScheduler.cls` (follows naming convention)
 **Delete:** `ISO27001QuarterlyReviewScheduler.cls`
 
 **Update references** in any test classes or scheduled jobs.
@@ -745,11 +745,11 @@ Delete one of:
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <!-- Dashboard Titles -->
     <labels>
-        <fullName>Prometheion_Dashboard_Title</fullName>
+        <fullName>Elaro_Dashboard_Title</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Dashboard Title</shortDescription>
-        <value>Prometheion Compliance Hub</value>
+        <value>Elaro Compliance Hub</value>
     </labels>
     <labels>
         <fullName>API_Usage_Title</fullName>
@@ -767,9 +767,9 @@ Delete one of:
 **Pattern:**
 ```javascript
 // Import labels
-import DASHBOARD_TITLE from '@salesforce/label/c.Prometheion_Dashboard_Title';
+import DASHBOARD_TITLE from '@salesforce/label/c.Elaro_Dashboard_Title';
 
-export default class PrometheionDashboard extends LightningElement {
+export default class ElaroDashboard extends LightningElement {
     labels = {
         dashboardTitle: DASHBOARD_TITLE
     };
@@ -787,7 +787,7 @@ export default class PrometheionDashboard extends LightningElement {
 
 ### Task XSS1: Sanitize Rich Text Content
 
-**Files:** `prometheionCopilot.html`, `complianceCopilot.html`
+**Files:** `elaroCopilot.html`, `complianceCopilot.html`
 
 **Option 1: Use lightning-formatted-text instead:**
 ```html
@@ -816,7 +816,7 @@ public static String sanitizeContent(String content) {
 
 ### Task MOB1: Add Responsive CSS
 
-**Create:** `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.css`
+**Create:** `force-app/main/default/lwc/elaroDashboard/elaroDashboard.css`
 
 ```css
 /* Mobile-first responsive design */
@@ -895,7 +895,7 @@ sfdx force:apex:test:run --codecoverage --resultformat human
 sfdx force:apex:execute -f scripts/apex/verify-schedulers.apex
 
 # Test permission sets
-sfdx force:user:permset:assign -n Prometheion_Admin -u testuser@example.com
+sfdx force:user:permset:assign -n Elaro_Admin -u testuser@example.com
 ```
 
 ---

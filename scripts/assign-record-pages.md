@@ -44,8 +44,8 @@ If you need to hide specific fields:
 
 ### 3. Test the Dashboard
 
-1. Go to: App Launcher → Prometheion
-2. Navigate to the "Prometheion Compliance Hub" tab
+1. Go to: App Launcher → Elaro
+2. Navigate to the "Elaro Compliance Hub" tab
 3. You should see all 9 new components:
    - Compliance Dashboard
    - Framework Selector
@@ -64,4 +64,4 @@ If you need to hide specific fields:
 - Compliance Gap: `/lightning/setup/ObjectManager/Compliance_Gap__c/Details/view`
 - Metadata Change: `/lightning/setup/ObjectManager/Metadata_Change__c/Details/view`
 - Vendor Compliance: `/lightning/setup/ObjectManager/Vendor_Compliance__c/Details/view`
-- Prometheion App: `/lightning/n/Prometheion`
+- Elaro App: `/lightning/n/Elaro`

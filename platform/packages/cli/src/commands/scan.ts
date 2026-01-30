@@ -133,7 +133,7 @@ async function runScan(options: ScanOptions): Promise<void> {
     }
 
     console.log();
-    console.log(chalk.bold.cyan("Prometheion Compliance Scan Results"));
+    console.log(chalk.bold.cyan("Elaro Compliance Scan Results"));
     console.log(chalk.gray("═".repeat(50)));
 
     for (const result of results) {
@@ -166,8 +166,8 @@ async function runScan(options: ScanOptions): Promise<void> {
     // Recommendations
     if (avgScore < 85) {
       console.log(chalk.bold("Recommendations:"));
-      console.log("  1. Review failed compliance checks in Prometheion dashboard");
-      console.log("  2. Run 'prometheion scan --all' for comprehensive analysis");
+      console.log("  1. Review failed compliance checks in Elaro dashboard");
+      console.log("  2. Run 'elaro scan --all' for comprehensive analysis");
       console.log("  3. Export detailed report for compliance team review");
       console.log();
     }

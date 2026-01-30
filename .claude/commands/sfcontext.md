@@ -1,6 +1,6 @@
 # Load Salesforce Project Context
 
-This command loads the current state of the Prometheion project and prepares you for development work.
+This command loads the current state of the Elaro project and prepares you for development work.
 
 ## Steps
 
@@ -28,7 +28,7 @@ Use TodoWrite to add pending Claude Code tasks from SESSION_CONTEXT.md to the ac
 If appropriate, run:
 ```bash
 sf org list --all
-sf org display --target-org prometheion-dev
+sf org display --target-org elaro-dev
 ```
 
 ### 5. Recommend Next Action
@@ -37,15 +37,15 @@ Based on the loaded context and pending tasks, recommend the highest-priority it
 ## Important Reminders
 - Before ending the session, update `docs/SESSION_CONTEXT.md` with completed work
 - Always run tests before deploying: `sf apex run test --test-level RunLocalTests`
-- Use security-enforced queries and PrometheionSecurityUtils
+- Use security-enforced queries and ElaroSecurityUtils
 - Check `claude.me` for full project guidelines
 
 ## Example Output
 ```
-📊 Prometheion Project Status: v3.0 Production Ready (B+ 86/100)
+📊 Elaro Project Status: v3.0 Production Ready (B+ 86/100)
 
 ✅ Recently Completed:
-- Integrated PrometheionSecurityUtils across all 207 Apex classes
+- Integrated ElaroSecurityUtils across all 207 Apex classes
 - Achieved 100% deployment success (up from 55%)
 - Added critical test coverage for security utilities
 

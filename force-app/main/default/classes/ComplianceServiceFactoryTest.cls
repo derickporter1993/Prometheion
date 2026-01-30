@@ -3,7 +3,7 @@
  *
  * Test coverage for ComplianceServiceFactory
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest
@@ -18,7 +18,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         System.assertNotEquals(null, service, 'Should return HIPAA service');
-        System.assert(service instanceof PrometheionHIPAAComplianceService,
+        System.assert(service instanceof ElaroHIPAAComplianceService,
             'Should return correct service type');
     }
 
@@ -31,7 +31,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         System.assertNotEquals(null, service, 'Should return SOC2 service');
-        System.assert(service instanceof PrometheionSOC2ComplianceService,
+        System.assert(service instanceof ElaroSOC2ComplianceService,
             'Should return correct service type');
     }
 
@@ -44,7 +44,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         System.assertNotEquals(null, service, 'Should return GDPR service');
-        System.assert(service instanceof PrometheionGDPRComplianceService,
+        System.assert(service instanceof ElaroGDPRComplianceService,
             'Should return correct service type');
     }
 
@@ -57,7 +57,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         System.assertNotEquals(null, service, 'Should return CCPA service');
-        System.assert(service instanceof PrometheionCCPAComplianceService,
+        System.assert(service instanceof ElaroCCPAComplianceService,
             'Should return correct service type');
     }
 
@@ -70,7 +70,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         System.assertNotEquals(null, service, 'Should return PCI-DSS service');
-        System.assert(service instanceof PrometheionPCIDSSComplianceService,
+        System.assert(service instanceof ElaroPCIDSSComplianceService,
             'Should return correct service type');
     }
 

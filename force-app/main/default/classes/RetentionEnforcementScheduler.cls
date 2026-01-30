@@ -8,7 +8,7 @@
  * Schedule Example:
  * System.schedule('Retention Enforcement', '0 0 2 ? * SUN', new RetentionEnforcementScheduler());
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class RetentionEnforcementScheduler implements Schedulable {
@@ -49,7 +49,7 @@ public with sharing class RetentionEnforcementScheduler implements Schedulable {
      */
     private Integer getBatchSize() {
         try {
-            Prometheion_Scheduler_Config__mdt config = Prometheion_Scheduler_Config__mdt.getInstance('RetentionEnforcement');
+            Elaro_Scheduler_Config__mdt config = Elaro_Scheduler_Config__mdt.getInstance('RetentionEnforcement');
             if (config != null && config.Batch_Size__c != null) {
                 return config.Batch_Size__c.intValue();
             }

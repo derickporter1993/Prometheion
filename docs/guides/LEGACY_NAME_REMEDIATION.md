@@ -1,7 +1,7 @@
 # Legacy Name Remediation Report
 
 **Generated:** January 7, 2026  
-**Repository:** https://github.com/derickporter1993/Solentra---Prometheion.git  
+**Repository:** https://github.com/derickporter1993/Solentra---Elaro.git  
 **Local Path:** /Users/derickporter/sentinel-code
 
 ---
@@ -21,15 +21,15 @@
 
 #### 1. GitHub Repository Name
 
-- **Current:** `Solentra---Prometheion` ❌
-- **Should Be:** `Prometheion` or `prometheion-salesforce-compliance`
+- **Current:** `Solentra---Elaro` ❌
+- **Should Be:** `Elaro` or `elaro-salesforce-compliance`
 - **Impact:** HIGH - Repository branding, all documentation links
 - **Action Required:** Rename repository in GitHub settings
 
 #### 2. Local Directory Name
 
 - **Current:** `/Users/derickporter/sentinel-code` ❌
-- **Should Be:** `/Users/derickporter/prometheion-code`
+- **Should Be:** `/Users/derickporter/elaro-code`
 - **Impact:** MEDIUM - Local development only
 - **Action Required:** Rename directory after git operations complete
 
@@ -38,8 +38,8 @@
 **File:** `package.json`
 
 - Line 3: `"name": "sentinel-enterprise"` in package-lock.json ❌
-- Line 22: `"prometheion": "git+https://github.com/derickporter1993/Solentra---Prometheion.git"` ❌
-- Line 47: `"url": "git+https://github.com/derickporter1993/Solentra---Prometheion.git"` ❌
+- Line 22: `"elaro": "git+https://github.com/derickporter1993/Solentra---Elaro.git"` ❌
+- Line 47: `"url": "git+https://github.com/derickporter1993/Solentra---Elaro.git"` ❌
 
 **Action Required:** Update after repository is renamed
 
@@ -56,7 +56,7 @@
 
 **Critical References:**
 
-- Line 281: `git clone https://github.com/derickporter1993/Solentra---Prometheion.git` ❌
+- Line 281: `git clone https://github.com/derickporter1993/Solentra---Elaro.git` ❌
 - Line 282: `cd sentinel-code` ❌
 - Line 682-683: GitHub links with old repo name ❌
 
@@ -81,7 +81,7 @@ These files document the migration history and should likely be **PRESERVED AS-I
 11. `docs/history/PHASE1_SETUP_GUIDE.md` - Historical record ✅ Keep
 12. `docs/history/PLAN_VS_IMPLEMENTATION_COMPARISON.md` - Historical comparison ✅ Keep
 
-**Rationale:** These documents provide valuable historical context for the migration from Sentinel/Solentra to Prometheion.
+**Rationale:** These documents provide valuable historical context for the migration from Sentinel/Solentra to Elaro.
 
 ### Comparison Documents (Historical Reference)
 
@@ -114,7 +114,7 @@ These files document the migration history and should likely be **PRESERVED AS-I
 These scripts are **designed** to reference legacy names for migration purposes:
 
 1. **`scripts/apex/migrate-from-opsguardian.apex`** ✅ Keep
-   - Purpose: Migrate data FROM OpsGuardian TO Prometheion
+   - Purpose: Migrate data FROM OpsGuardian TO Elaro
    - References to `OpsGuardian_History__c` are intentional
 
 2. **`scripts/migrate-from-opsguardian.apex`** ✅ Keep
@@ -128,26 +128,26 @@ These scripts are **designed** to reference legacy names for migration purposes:
    - Should be updated for consistency
 
 5. **`scripts/apex/runComplianceCheck.apex`** ❌ UPDATE
-   - Line 9-10: References `SolentraComplianceScorer` (should be `PrometheionComplianceScorer`)
-   - Line 20: References `SolentraComplianceCopilot` (should be `PrometheionComplianceCopilot`)
+   - Line 9-10: References `SolentraComplianceScorer` (should be `ElaroComplianceScorer`)
+   - Line 20: References `SolentraComplianceCopilot` (should be `ElaroComplianceCopilot`)
 
 ---
 
 ## 🔵 NODE_MODULES (Stale Dependency Cache)
 
-**Issue:** The `node_modules/prometheion/` directory contains old code with legacy names.
+**Issue:** The `node_modules/elaro/` directory contains old code with legacy names.
 
 **Files Found (Sample):**
 
-- `node_modules/prometheion/force-app/main/default/lwc/solentraDashboard/*`
-- `node_modules/prometheion/force-app/main/default/lwc/sentinelReadinessScore/*`
-- `node_modules/prometheion/force-app/main/default/lwc/sentinelAiSettings/*`
-- `node_modules/prometheion/force-app/main/default/classes/SolentraComplianceCopilot.cls`
-- `node_modules/prometheion/force-app/main/default/classes/SentinelAISettingsController.cls`
+- `node_modules/elaro/force-app/main/default/lwc/solentraDashboard/*`
+- `node_modules/elaro/force-app/main/default/lwc/sentinelReadinessScore/*`
+- `node_modules/elaro/force-app/main/default/lwc/sentinelAiSettings/*`
+- `node_modules/elaro/force-app/main/default/classes/SolentraComplianceCopilot.cls`
+- `node_modules/elaro/force-app/main/default/classes/SentinelAISettingsController.cls`
 
 **Root Cause:**
 
-- `package.json` dependency points to old repository: `git+https://github.com/derickporter1993/Solentra---Prometheion.git`
+- `package.json` dependency points to old repository: `git+https://github.com/derickporter1993/Solentra---Elaro.git`
 - Cached old version before rebranding was complete
 
 **Action Required:**
@@ -200,14 +200,14 @@ These documents track work progress and contain contextual references:
 **Must be completed FIRST before other changes**
 
 1. **Rename GitHub Repository:**
-   - Go to: https://github.com/derickporter1993/Solentra---Prometheion/settings
-   - Rename to: `prometheion` or `prometheion-salesforce-compliance`
+   - Go to: https://github.com/derickporter1993/Solentra---Elaro/settings
+   - Rename to: `elaro` or `elaro-salesforce-compliance`
    - GitHub will automatically set up redirects from old URL
 
 2. **Update Git Remote (Local):**
    ```bash
    cd /Users/derickporter/sentinel-code
-   git remote set-url origin https://github.com/derickporter1993/prometheion.git
+   git remote set-url origin https://github.com/derickporter1993/elaro.git
    git remote remove solentra  # Remove the old solentra remote
    ```
 
@@ -227,20 +227,20 @@ These documents track work progress and contain contextual references:
 
 1. **`README.md`:**
    - Line 281: Update git clone URL
-   - Line 282: Change `cd sentinel-code` to `cd prometheion-code`
+   - Line 282: Change `cd sentinel-code` to `cd elaro-code`
    - Lines 682-683: Update GitHub Issues/Discussions URLs
 
 2. **`docs/SETUP_GUIDE.md`:**
-   - Update title to "Prometheion Setup Guide"
-   - Replace all "Sentinel" references with "Prometheion"
+   - Update title to "Elaro Setup Guide"
+   - Replace all "Sentinel" references with "Elaro"
    - Update git clone command
 
 3. **`docs/GITHUB_REPO_SETUP.md`:**
-   - Update all example URLs from "sentinel" to "prometheion"
+   - Update all example URLs from "sentinel" to "elaro"
 
 4. **`docs/COMPLIANCE_FRAMEWORKS_CODE_REFERENCE.md`:**
-   - Change `@author Solentra` to `@author Prometheion Team`
-   - Change `SolentraConstants` to `PrometheionConstants`
+   - Change `@author Solentra` to `@author Elaro Team`
+   - Change `SolentraConstants` to `ElaroConstants`
 
 ### Phase 4: Update Scripts
 
@@ -248,10 +248,10 @@ These documents track work progress and contain contextual references:
    - Change `REPO="derickporter1993/Sentinel"` to correct repo name
 
 2. **`scripts/apex/runComplianceCheck.apex`:**
-   - Update class names from `Solentra*` to `Prometheion*`
+   - Update class names from `Solentra*` to `Elaro*`
 
 3. **`scripts/apex/generate-baseline-report.apex`:**
-   - Update debug messages from "Sentinel" to "Prometheion"
+   - Update debug messages from "Sentinel" to "Elaro"
 
 ### Phase 5: Update Status/Tracking Documents
 
@@ -264,8 +264,8 @@ These documents track work progress and contain contextual references:
 
 ```bash
 cd /Users/derickporter
-mv sentinel-code prometheion-code
-cd prometheion-code
+mv sentinel-code elaro-code
+cd elaro-code
 ```
 
 ### Phase 7: Update `.gitignore` (If Needed)
@@ -283,10 +283,10 @@ package-lock.json
 
 These areas have **ZERO** legacy name references (already fully migrated):
 
-1. ✅ **`force-app/main/default/classes/`** - All Apex classes use Prometheion naming
-2. ✅ **`force-app/main/default/lwc/`** - All LWC components use Prometheion naming
-3. ✅ **`force-app/main/default/objects/`** - All custom objects use Prometheion naming
-4. ✅ **`force-app/main/default/triggers/`** - All triggers use Prometheion naming
+1. ✅ **`force-app/main/default/classes/`** - All Apex classes use Elaro naming
+2. ✅ **`force-app/main/default/lwc/`** - All LWC components use Elaro naming
+3. ✅ **`force-app/main/default/objects/`** - All custom objects use Elaro naming
+4. ✅ **`force-app/main/default/triggers/`** - All triggers use Elaro naming
 5. ✅ **Production Code** - ZERO references to legacy names in deployable code
 
 ---

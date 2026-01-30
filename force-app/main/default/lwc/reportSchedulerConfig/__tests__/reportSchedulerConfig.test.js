@@ -76,7 +76,7 @@ jest.mock(
 const MOCK_SCHEDULED_REPORTS = [
   {
     jobId: "08e000000000001",
-    name: "Prometheion WEEKLY Report - ALL - 20240115120000",
+    name: "Elaro WEEKLY Report - ALL - 20240115120000",
     frequency: "WEEKLY",
     framework: "ALL",
     nextRun: "2024-01-22T08:00:00.000Z",
@@ -85,7 +85,7 @@ const MOCK_SCHEDULED_REPORTS = [
   },
   {
     jobId: "08e000000000002",
-    name: "Prometheion DAILY Report - HIPAA - 20240110090000",
+    name: "Elaro DAILY Report - HIPAA - 20240110090000",
     frequency: "DAILY",
     framework: "HIPAA",
     nextRun: "2024-01-16T08:00:00.000Z",

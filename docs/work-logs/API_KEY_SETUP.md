@@ -1,10 +1,10 @@
-# Prometheion API Key Setup Guide
+# Elaro API Key Setup Guide
 
-**Purpose:** Step-by-step guide to obtain and configure your Anthropic Claude API key for Prometheion AI Copilot
+**Purpose:** Step-by-step guide to obtain and configure your Anthropic Claude API key for Elaro AI Copilot
 
 ## Overview
 
-Prometheion's AI Copilot requires an Anthropic Claude API key to function. This guide walks you through:
+Elaro's AI Copilot requires an Anthropic Claude API key to function. This guide walks you through:
 1. Creating an Anthropic account
 2. Generating an API key
 3. Configuring it in Salesforce
@@ -32,7 +32,7 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 - Claude 3 Sonnet: ~$3 per 1M input tokens, ~$15 per 1M output tokens
 - Claude 3 Haiku: ~$0.25 per 1M input tokens, ~$1.25 per 1M output tokens
 
-**Prometheion uses:** Claude 3 Sonnet (default) and Claude 4 Opus (for Deep Analysis)
+**Elaro uses:** Claude 3 Sonnet (default) and Claude 4 Opus (for Deep Analysis)
 
 ---
 
@@ -46,7 +46,7 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 
 ### 2.2 Create New API Key
 1. Click **Create Key** button
-2. Enter a name (e.g., "Prometheion Salesforce Production")
+2. Enter a name (e.g., "Elaro Salesforce Production")
 3. Select permissions:
    - ✅ **Read** (required)
    - ✅ **Write** (required for API calls)
@@ -74,10 +74,10 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 3. In Quick Find, type: **Custom Metadata Types**
 4. Click **Custom Metadata Types**
 
-### 3.2 Access Prometheion Claude Settings
-1. Find **Prometheion Claude Settings** in the list
-2. Click **Prometheion Claude Settings**
-3. Click **Manage Prometheion Claude Settings** button
+### 3.2 Access Elaro Claude Settings
+1. Find **Elaro Claude Settings** in the list
+2. Click **Elaro Claude Settings**
+3. Click **Manage Elaro Claude Settings** button
 4. You should see an empty list (or existing records)
 
 ### 3.3 Create New Record
@@ -112,10 +112,10 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 
 ## Step 4: Test Configuration
 
-### 4.1 Test via Prometheion Copilot
-1. Navigate to **Prometheion** app
+### 4.1 Test via Elaro Copilot
+1. Navigate to **Elaro** app
 2. Go to **Compliance Hub** tab
-3. Scroll to **Prometheion Copilot** component
+3. Scroll to **Elaro Copilot** component
 4. Type a test query: `"What is my compliance score?"`
 5. Press Enter or click Send
 
@@ -152,7 +152,7 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
    - ✅ Response received from API
 
 ### 5.2 Check Browser Console
-1. Open Prometheion Copilot
+1. Open Elaro Copilot
 2. Open browser Developer Tools (F12)
 3. Go to **Console** tab
 4. Send a query
@@ -175,12 +175,12 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 **Solutions:**
 
 1. **Verify Custom Metadata Record Exists**
-   - Go to Setup → Custom Metadata Types → Prometheion Claude Settings
+   - Go to Setup → Custom Metadata Types → Elaro Claude Settings
    - Verify "Default" record exists
    - If not, create it (see Step 3)
 
 2. **Verify Developer Name is "Default"**
-   - The code looks for `Prometheion_Claude_Settings__mdt.getInstance('Default')`
+   - The code looks for `Elaro_Claude_Settings__mdt.getInstance('Default')`
    - Developer Name must be exactly "Default" (case-sensitive)
    - Edit the record and verify Developer Name
 
@@ -191,7 +191,7 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 
 4. **Check Apex Debug Logs**
    - Setup → Debug Logs
-   - Look for errors in `PrometheionClaudeService`
+   - Look for errors in `ElaroClaudeService`
    - Check for "Custom Metadata not available" warnings
 
 5. **Verify API Key Format**
@@ -264,12 +264,12 @@ Prometheion's AI Copilot requires an Anthropic Claude API key to function. This 
 2. **Redeploy Custom Metadata Type**
    ```bash
    # Deploy just the Custom Metadata Type
-   sf project deploy start --source-dir force-app/main/default/objects/Prometheion_Claude_Settings__mdt -o prod-org
+   sf project deploy start --source-dir force-app/main/default/objects/Elaro_Claude_Settings__mdt -o prod-org
    ```
 
 3. **Check API Version**
    - Verify Custom Metadata Type uses compatible API version
-   - Check `PrometheionClaudeService` API version matches
+   - Check `ElaroClaudeService` API version matches
 
 ---
 
@@ -309,15 +309,15 @@ For enhanced security, you can use Salesforce Named Credentials instead of Custo
 5. Identity Type: Named Principal
 6. Authentication Protocol: Password Authentication
 7. Username: Your API key
-8. Update `PrometheionClaudeService` to use Named Credential
+8. Update `ElaroClaudeService` to use Named Credential
 
-**Note:** This requires code changes to `PrometheionClaudeService.cls`
+**Note:** This requires code changes to `ElaroClaudeService.cls`
 
 ---
 
 ## Testing Without API Key
 
-If you want to test Prometheion **without** an API key:
+If you want to test Elaro **without** an API key:
 
 ### What Works:
 - ✅ Compliance Dashboard (all features)
@@ -345,7 +345,7 @@ sk-ant-api03-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### Custom Metadata Record
-- **Type:** Prometheion_Claude_Settings__mdt
+- **Type:** Elaro_Claude_Settings__mdt
 - **Developer Name:** Default (required)
 - **Field:** API_Key__c
 - **Value:** Your Anthropic API key

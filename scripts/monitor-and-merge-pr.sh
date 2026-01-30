@@ -138,7 +138,7 @@ if all_checks_passed; then
         
         echo ""
         echo "✅ Success!"
-        echo "   PR merged: https://github.com/derickporter1993/Prometheion/pull/${PR_NUMBER}"
+        echo "   PR merged: https://github.com/derickporter1993/Elaro/pull/${PR_NUMBER}"
         echo "   Release tagged: ${TAG_VERSION}"
         echo "   Branch deleted: phase-1-core-infrastructure"
     else

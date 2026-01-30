@@ -2,7 +2,7 @@
  * Test class for ComplianceReportGenerator
  * Provides comprehensive coverage for report generation functionality
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest

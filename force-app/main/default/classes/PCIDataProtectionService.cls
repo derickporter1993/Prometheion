@@ -6,7 +6,7 @@
  * - Requirement 3: Protect stored cardholder data (encryption, tokenization)
  * - Requirement 4: Encrypt transmission of cardholder data across open, public networks
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class PCIDataProtectionService extends ComplianceServiceBase {

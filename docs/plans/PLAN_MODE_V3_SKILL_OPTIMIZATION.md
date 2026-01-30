@@ -1,8 +1,8 @@
-# PLAN MODE V3 SKILL OPTIMIZATION - PROMETHEION
+# PLAN MODE V3 SKILL OPTIMIZATION - ELARO
 
 ## Executive Summary
 
-**Current State:** Prometheion v3.0 is production-ready (B+ 86/100) with comprehensive compliance capabilities across 10 frameworks, but faces three challenges: (1) AppExchange readiness blockers (48% test coverage vs 75% required), (2) v1.5 feature velocity (1/5 complete), and (3) competitive differentiation in a crowded GRC market.
+**Current State:** Elaro v3.0 is production-ready (B+ 86/100) with comprehensive compliance capabilities across 10 frameworks, but faces three challenges: (1) AppExchange readiness blockers (48% test coverage vs 75% required), (2) v1.5 feature velocity (1/5 complete), and (3) competitive differentiation in a crowded GRC market.
 
 **Optimization Strategy:** Three-tier architecture focused on integration moat
 
@@ -28,13 +28,13 @@
 
 ## 1. CORE SKILL STRUCTURE
 
-### A. Minimal Viable Skill (Prometheion Context)
+### A. Minimal Viable Skill (Elaro Context)
 
 ```markdown
-# PLAN MODE V3: PROMETHEION STRATEGY → EXECUTION ENGINE
+# PLAN MODE V3: ELARO STRATEGY → EXECUTION ENGINE
 
 ## IDENTITY
-You are a planning system for Prometheion, an AI-powered compliance automation platform for Salesforce. You produce defensible strategies and execution-ready roadmaps. You optimize for:
+You are a planning system for Elaro, an AI-powered compliance automation platform for Salesforce. You produce defensible strategies and execution-ready roadmaps. You optimize for:
 - Clarity over cleverness
 - Testability over certainty
 - Decisions over discussion
@@ -45,27 +45,27 @@ You are a planning system for Prometheion, an AI-powered compliance automation p
 **Phase 1: INTAKE** (Context + Constraints)
 - Output: ContextInventory + Assumptions + AppExchangeGate
 - Checkpoint: Confirm scope, P1 blockers, test coverage status
-- Prometheion-specific: Load SESSION_CONTEXT.md, check TASK_AUDITOR.md
+- Elaro-specific: Load SESSION_CONTEXT.md, check TASK_AUDITOR.md
 
 **Phase 2: STRATEGY** (Brief + Wedge)
 - Output: StrategicBrief + WedgeThesis + CompetitiveLandscape
 - Checkpoint: Lock ICP (regulated enterprises), North Star (Time-to-Compliance), Primary Wedge (integration_moat)
-- Prometheion-specific: Map to 10-framework coverage, Claude API differentiation
+- Elaro-specific: Map to 10-framework coverage, Claude API differentiation
 
 **Phase 3: OPPORTUNITIES** (Gaps + Prioritization)
 - Output: JourneyAndGaps + OpportunityBacklog (ranked)
 - Checkpoint: Confirm top 3 opportunities (v1.5 features vs AppExchange prep)
-- Prometheion-specific: Balance test coverage push vs feature delivery
+- Elaro-specific: Balance test coverage push vs feature delivery
 
 **Phase 4: ROADMAP** (Execution Plan)
 - Output: Roadmap + Backlog + Experiments + RiskRegistry
 - Checkpoint: Lock sequencing, run prune pass, verify P1 blocker resolution
-- Prometheion-specific: 12-week v1.5 timeline, 75% coverage gate
+- Elaro-specific: 12-week v1.5 timeline, 75% coverage gate
 
 **Phase 5: ACTIVATION** (Ship Tomorrow)
 - Output: NextActions48h + NextSprintTickets
 - Checkpoint: Final go/no-go for AppExchange submission
-- Prometheion-specific: sf project deploy preview, test run
+- Elaro-specific: sf project deploy preview, test run
 
 ## ENFORCEMENT RULES (Non-Negotiable)
 
@@ -78,7 +78,7 @@ You are a planning system for Prometheion, an AI-powered compliance automation p
 7. **Validation Gates:** No phase proceeds if quality scores < 8/10
 8. **AppExchange Gate:** P1 blockers must be resolved before v1.5 features
 
-## 9 WEDGE TAXONOMY (Prometheion Focus)
+## 9 WEDGE TAXONOMY (Elaro Focus)
 1. time_to_value | 2. data_advantage | 3. workflow_lock_in
 4. **integration_moat** ★ | 5. quality_moat | 6. trust_moat
 7. community_moat | 8. distribution_moat | 9. economics_moat
@@ -98,7 +98,7 @@ You are a planning system for Prometheion, an AI-powered compliance automation p
 
 ### B. Enhancement Modules (Plug-in Architecture)
 
-|Module                     |When to Enable                    |Adds                                 |Prometheion Relevance|
+|Module                     |When to Enable                    |Adds                                 |Elaro Relevance|
 |---------------------------|----------------------------------|-------------------------------------|---------------------|
 |**PR/FAQ Generator**       |AppExchange listing or major bet  |Working-backwards narrative          |AppExchange description|
 |**Technical Deep Dive**    |Building v1.5 features            |RFC + ADRs + OpsReadiness            |Jira Integration, Mobile Alerts|
@@ -113,7 +113,7 @@ You are a planning system for Prometheion, an AI-powered compliance automation p
 
 ## 2. DECISION TREES & MODE SELECTION
 
-### Mode Selection Logic (Prometheion-Specific)
+### Mode Selection Logic (Elaro-Specific)
 
 ```
 START
@@ -141,7 +141,7 @@ Q5: Are P1 blockers resolved?
   → YES → Proceed with v1.5 planning
 ```
 
-### Audience-Specific Question Banks (Prometheion Context)
+### Audience-Specific Question Banks (Elaro Context)
 
 **Activation Pattern:** Ask CORE questions (7) first. Then add ROLE questions based on primary audience.
 
@@ -159,7 +159,7 @@ Q5: Are P1 blockers resolved?
 
 ## 3. SCHEMA OPTIMIZATION
 
-### Tiered Schema Library (Prometheion-Specific)
+### Tiered Schema Library (Elaro-Specific)
 
 **Tier 1: Required (v3.0 AppExchange)**
 
@@ -183,11 +183,11 @@ Q5: Are P1 blockers resolved?
 14. `ScenarioComparison` – Lean (AppExchange first) vs Aggressive (v1.5 features)
 15. `PlanBundle` – Top-level container with version control
 
-### Schema Enforcement Pattern (Prometheion)
+### Schema Enforcement Pattern (Elaro)
 
 ```typescript
-// Example: Roadmap schema with Prometheion-specific validation
-interface PrometheionRoadmapEpic {
+// Example: Roadmap schema with Elaro-specific validation
+interface ElaroRoadmapEpic {
   epic_id: string;
   title: string;
   description: string;
@@ -199,7 +199,7 @@ interface PrometheionRoadmapEpic {
   experiments: string[]; // experiment_ids
   mvp_critical: boolean; // gates prune pass
 
-  // Prometheion-specific fields
+  // Elaro-specific fields
   apex_classes_affected: string[]; // e.g., ['JiraIntegrationService.cls']
   lwc_components_affected: string[]; // e.g., ['jiraIssueCard']
   test_coverage_impact: number; // expected % change
@@ -212,12 +212,12 @@ const PRUNE_THRESHOLD = 2;
 const MVP_OVERRIDE = true;
 const MIN_TEST_COVERAGE = 75; // AppExchange requirement
 
-function shouldPrune(epic: PrometheionRoadmapEpic): boolean {
+function shouldPrune(epic: ElaroRoadmapEpic): boolean {
   if (epic.p1_blocker) return false; // Never prune P1 blockers
   return epic.moat_strength_score <= PRUNE_THRESHOLD && !epic.mvp_critical;
 }
 
-function validateAppExchangeReadiness(epics: PrometheionRoadmapEpic[], currentCoverage: number): boolean {
+function validateAppExchangeReadiness(epics: ElaroRoadmapEpic[], currentCoverage: number): boolean {
   const p1Blockers = epics.filter(e => e.p1_blocker && e.status !== 'completed');
   const projectedCoverage = currentCoverage + epics.reduce((sum, e) => sum + e.test_coverage_impact, 0);
   return p1Blockers.length === 0 && projectedCoverage >= MIN_TEST_COVERAGE;
@@ -226,11 +226,11 @@ function validateAppExchangeReadiness(epics: PrometheionRoadmapEpic[], currentCo
 
 -----
 
-## 4. QUALITY GATES (Prometheion-Specific)
+## 4. QUALITY GATES (Elaro-Specific)
 
 ### Automatic Validation (Machine-Checkable)
 
-|Gate                       |Rule                                               |Severity|Prometheion Context|
+|Gate                       |Rule                                               |Severity|Elaro Context|
 |---------------------------|---------------------------------------------------|--------|-------------------|
 |**Schema Compliance**      |All artifacts pass JSON schema validation          |BLOCKING|Standard|
 |**Wedge Discipline**       |Primary wedge = integration_moat                   |BLOCKING|Salesforce lock-in|
@@ -256,11 +256,11 @@ After each phase, score:
 
 **Rule:** If ANY score < 8, either revise that section or escalate to human checkpoint.
 
-### Prometheion-Specific Quality Checks
+### Elaro-Specific Quality Checks
 
 ```apex
 // Quality gate validation (conceptual Apex)
-public class PrometheionPlanValidator {
+public class ElaroPlanValidator {
 
     public static ValidationResult validatePhase(PlanPhase phase) {
         ValidationResult result = new ValidationResult();
@@ -295,7 +295,7 @@ public class PrometheionPlanValidator {
 
 -----
 
-## 5. CHECKPOINT PROTOCOL (Prometheion Context)
+## 5. CHECKPOINT PROTOCOL (Elaro Context)
 
 ### Checkpoint Object Schema
 
@@ -314,7 +314,7 @@ public class PrometheionPlanValidator {
     {"assumption": "Test coverage can reach 75% with 3 weeks effort", "confidence": 0.6, "impacts": ["Roadmap.Phase2", "Roadmap.Phase3"]},
     {"assumption": "Claude API rate limits support production load", "confidence": 0.9, "impacts": ["v1.5.AIExplanations"]}
   ],
-  "prometheion_specific": {
+  "elaro_specific": {
     "p1_blockers_remaining": 4,
     "current_test_coverage": 48,
     "projected_test_coverage": 78,
@@ -354,7 +354,7 @@ Instead of vague instructions like "prioritize differently," users submit:
     "target_reduction_pct": 30,
     "preserve_wedge_strength": true,
     "defer_criteria": "moat_score <= 3 AND !p1_blocker",
-    "prometheion_specific": {
+    "elaro_specific": {
       "preserve_frameworks": ["HIPAA", "SOC2", "GDPR"],
       "defer_frameworks": ["GLBA", "ISO27001"],
       "prioritize_coverage": true
@@ -365,7 +365,7 @@ Instead of vague instructions like "prioritize differently," users submit:
 
 **Supported Edit Types:**
 
-- `replace_wedge` – Change primary wedge (rarely needed for Prometheion)
+- `replace_wedge` – Change primary wedge (rarely needed for Elaro)
 - `reduce_scope` – Auto-prune by percentage, preserve P1 blockers
 - `switch_scenario` – Load AppExchange-first/Features-first preset
 - `change_icp` – Re-evaluate framework priority (e.g., drop GLBA)
@@ -375,12 +375,12 @@ Instead of vague instructions like "prioritize differently," users submit:
 
 -----
 
-## 6. PRUNE PASS IMPLEMENTATION (Prometheion)
+## 6. PRUNE PASS IMPLEMENTATION (Elaro)
 
 ### Algorithm
 
 ```python
-def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat') -> PruneReport:
+def prune_roadmap(epics: List[ElaroEpic], wedge: str = 'integration_moat') -> PruneReport:
     """
     Remove low-moat-strength items that aren't MVP-critical or P1 blockers.
     Return both pruned roadmap and audit trail.
@@ -404,7 +404,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
                 "epic": epic,
                 "reason": f"Low moat strength ({epic.moat_strength_score}) and not MVP-critical",
                 "re_add_trigger": f"When {wedge} advantage is established via AppExchange, revisit",
-                "prometheion_context": {
+                "elaro_context": {
                     "apex_classes": epic.apex_classes_affected,
                     "test_coverage_saved": epic.estimated_test_effort_hours
                 }
@@ -427,7 +427,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
     )
 ```
 
-### Prune Pass Output Example (Prometheion v1.5)
+### Prune Pass Output Example (Elaro v1.5)
 
 **Before Prune:** 15 epics
 **After Prune:** 9 epics (6 deferred)
@@ -456,7 +456,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
 
 -----
 
-## 7. EXPRESS MODE SPECIFICATION (Prometheion 30-Minute Path)
+## 7. EXPRESS MODE SPECIFICATION (Elaro 30-Minute Path)
 
 ### Input Template (10 questions max)
 
@@ -473,7 +473,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
 10. Riskiest assumption: Can achieve 75% coverage in 3 weeks
 ```
 
-### Express Output Bundle (Prometheion)
+### Express Output Bundle (Elaro)
 
 1. **StrategicBrief** (1 page)
    - ICP: Regulated enterprises (healthcare, finance, government)
@@ -505,7 +505,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
 
 6. **NextActions48h** (first sprint)
    - Add TriggerRecursionGuard to 3 triggers
-   - Add bulk tests to PrometheionComplianceScorerTest.cls
+   - Add bulk tests to ElaroComplianceScorerTest.cls
    - Deploy to scratch org and run sf apex run test
 
 **Time Budget:**
@@ -524,7 +524,7 @@ def prune_roadmap(epics: List[PrometheionEpic], wedge: str = 'integration_moat')
 
 -----
 
-## 8. PROMETHEION MODE DEFAULTS
+## 8. ELARO MODE DEFAULTS
 
 When `project_type == "salesforce_isv"`, auto-enable:
 
@@ -543,7 +543,7 @@ When `project_type == "salesforce_isv"`, auto-enable:
 - P1 blockers remaining? (4 items: 3 triggers, 1 framework validation)
 - Shield license required? (Optional but recommended)
 - Named Credentials configured? (Slack, Teams, Claude API, Jira)
-- Scratch org or sandbox for testing? (Scratch org: prometheion-dev)
+- Scratch org or sandbox for testing? (Scratch org: elaro-dev)
 - Package namespace? (None - unmanaged for now)
 
 ### Validation Emphasis
@@ -555,7 +555,7 @@ When `project_type == "salesforce_isv"`, auto-enable:
 
 -----
 
-## 9. DUAL OUTPUT RECOMMENDATION (Prometheion)
+## 9. DUAL OUTPUT RECOMMENDATION (Elaro)
 
 **JSON + Human-Readable** is the optimal path. Here's why:
 
@@ -574,15 +574,15 @@ Output Formats:
 - SESSION_CONTEXT.md Update (next session handoff)
 ```
 
-### Implementation Pattern (Prometheion-Specific)
+### Implementation Pattern (Elaro-Specific)
 
 ```typescript
-interface PrometheionRenderConfig {
+interface ElaroRenderConfig {
   audience: "compliance_officer" | "ciso" | "salesforce_admin" | "dev" | "exec";
   format: "markdown" | "jira_tickets" | "session_context" | "json";
   depth: "summary" | "standard" | "detailed";
   sections: string[]; // Which artifacts to include
-  prometheion_specific: {
+  elaro_specific: {
     include_apex_impact: boolean;
     include_lwc_impact: boolean;
     include_test_coverage: boolean;
@@ -590,7 +590,7 @@ interface PrometheionRenderConfig {
   }
 }
 
-function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output {
+function renderPlan(bundle: PlanBundle, config: ElaroRenderConfig): Output {
   // Select appropriate template
   // Filter to requested sections
   // Apply audience-specific language (compliance vs technical)
@@ -603,7 +603,7 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 **For Compliance Officer (Email Format):**
 
-> Prometheion v1.5 targets integration_moat wedge with AI-powered remediation. Phase 1 resolves 4 AppExchange blockers + achieves 75% test coverage in 30 days. Top risk: Coverage stalls at 60% (kill if <70% by Day 21). Next actions: Trigger guards this week, bulk tests next week.
+> Elaro v1.5 targets integration_moat wedge with AI-powered remediation. Phase 1 resolves 4 AppExchange blockers + achieves 75% test coverage in 30 days. Top risk: Coverage stalls at 60% (kill if <70% by Day 21). Next actions: Trigger guards this week, bulk tests next week.
 
 **For CISO (Risk Brief):**
 
@@ -629,26 +629,26 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 -----
 
-## 10. IMPLEMENTATION ROADMAP (Prometheion v1.5)
+## 10. IMPLEMENTATION ROADMAP (Elaro v1.5)
 
 ### Week 1-2: P1 Blocker Resolution (AppExchange Gate)
 
-- [x] Input validation - PrometheionGraphIndexer.cls ✅
+- [x] Input validation - ElaroGraphIndexer.cls ✅
 - [x] Input validation - PerformanceAlertPublisher.cls ✅
 - [x] Input validation - FlowExecutionLogger.cls ✅
-- [x] USER_MODE - PrometheionComplianceScorer.cls ✅
-- [x] USER_MODE - PrometheionGraphIndexer.cls ✅
+- [x] USER_MODE - ElaroComplianceScorer.cls ✅
+- [x] USER_MODE - ElaroGraphIndexer.cls ✅
 - [x] USER_MODE - EvidenceCollectionService.cls ✅
 - [x] USER_MODE - ComplianceDashboardController.cls ✅
 - [ ] Recursion guard - PerformanceAlertEventTrigger
-- [ ] Recursion guard - PrometheionPCIAccessAlertTrigger
-- [ ] Recursion guard - PrometheionEventCaptureTrigger
+- [ ] Recursion guard - ElaroPCIAccessAlertTrigger
+- [ ] Recursion guard - ElaroEventCaptureTrigger
 - [ ] Framework validation - Add to remaining service classes
 
 ### Week 3-4: Test Coverage Push (48% → 75%)
 
-- [ ] Bulk tests - PrometheionComplianceScorerTest.cls (200+ records)
-- [ ] Bulk tests - PrometheionGraphIndexerTest.cls (200+ records)
+- [ ] Bulk tests - ElaroComplianceScorerTest.cls (200+ records)
+- [ ] Bulk tests - ElaroGraphIndexerTest.cls (200+ records)
 - [ ] Bulk tests - EvidenceCollectionServiceTest.cls (200+ records)
 - [ ] Bulk tests - PerformanceAlertPublisherTest.cls (200+ records)
 - [ ] LWC tests - 28 components need Jest coverage
@@ -683,7 +683,7 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 -----
 
-## CRITICAL DECISIONS REQUIRED (Prometheion)
+## CRITICAL DECISIONS REQUIRED (Elaro)
 
 ### 1. AppExchange-First vs Features-First
 
@@ -714,9 +714,9 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 **Decision:** Claude API (already integrated)
 **Rationale:**
-- PrometheionComplianceCopilotService already uses Claude
+- ElaroComplianceCopilotService already uses Claude
 - Rate limiting and caching already implemented
-- Named Credential (Prometheion_Claude_API) configured
+- Named Credential (Elaro_Claude_API) configured
 - Switching would delay v1.5 by 2+ weeks
 
 ### 5. Version Control for Plans
@@ -731,7 +731,7 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 -----
 
-## ANTI-PATTERNS TO PREVENT (Prometheion-Specific)
+## ANTI-PATTERNS TO PREVENT (Elaro-Specific)
 
 |Anti-Pattern              |Detection                                   |Prevention                                                             |
 |--------------------------|--------------------------------------------|-----------------------------------------------------------------------|
@@ -746,7 +746,7 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 -----
 
-## FINAL RECOMMENDATIONS (Prometheion)
+## FINAL RECOMMENDATIONS (Elaro)
 
 ### Start Simple, Enforce Strictly
 
@@ -757,7 +757,7 @@ function renderPlan(bundle: PlanBundle, config: PrometheionRenderConfig): Output
 
 ### Measure Effectiveness
 
-Track these metrics on Plan Mode usage for Prometheion:
+Track these metrics on Plan Mode usage for Elaro:
 
 - Time from intake to first AppExchange submission
 - % of plans that pass quality gates on first attempt
@@ -774,7 +774,7 @@ The checkpoint + decision lever system is your **highest-leverage** innovation. 
 - More predictive (use sf apex run test history to recommend which tests to prioritize)
 - More automated (detect when coverage stalls and suggest checkpoint)
 
-### Prometheion-Specific Success Criteria
+### Elaro-Specific Success Criteria
 
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
@@ -792,6 +792,6 @@ The checkpoint + decision lever system is your **highest-leverage** innovation. 
 
 *Document Version: 1.0*
 *Last Updated: 2026-01-13*
-*Project: Prometheion v3.0 → v1.5*
+*Project: Elaro v3.0 → v1.5*
 *Primary Wedge: integration_moat*
 *Author: Claude Code (Plan Mode V3)*

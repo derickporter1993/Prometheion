@@ -11,7 +11,7 @@ rg "ClassName" force-app/main/default/classes/*Test.cls
 rg "TriggerName|ObjectApiName" force-app/main/default/classes/*Test.cls
 
 # Find tests for a feature area
-rg "Prometheion" force-app/main/default/classes/*Test.cls
+rg "Elaro" force-app/main/default/classes/*Test.cls
 ```
 
 ### Compile/Check-Only Deploy
@@ -42,10 +42,10 @@ sf apex test run --test-level RunLocalTests --result-format human --wait 30
 
 ## Backend (Phase 1)
 
-### 1. Add WITH SECURITY_ENFORCED to PrometheionQuickActionsService
+### 1. Add WITH SECURITY_ENFORCED to ElaroQuickActionsService
 
 **Implementation Steps:**
-- Open `PrometheionQuickActionsService.cls`
+- Open `ElaroQuickActionsService.cls`
 - Identify the 3 methods requiring WITH SECURITY_ENFORCED
 - Add `WITH SECURITY_ENFORCED` to each SOQL query
 - Remove any inaccessible fields from SELECT if needed
@@ -54,10 +54,10 @@ sf apex test run --test-level RunLocalTests --result-format human --wait 30
 **After implementation:**
 ```bash
 # (a) Compile
-sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionQuickActionsService.cls
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/ElaroQuickActionsService.cls
 
 # (b) Find tests
-rg "PrometheionQuickActionsService" force-app/main/default/classes/*Test.cls
+rg "ElaroQuickActionsService" force-app/main/default/classes/*Test.cls
 
 # (c) Run tests (replace with actual test class names from grep)
 sf apex test run --tests <TestClassNames> --result-format human --wait 30
@@ -65,10 +65,10 @@ sf apex test run --tests <TestClassNames> --result-format human --wait 30
 
 ---
 
-### 2. Add CRUD Checks to PrometheionQuickActionsService DML
+### 2. Add CRUD Checks to ElaroQuickActionsService DML
 
 **Implementation Steps:**
-- Locate the 3 DML operations in `PrometheionQuickActionsService.cls`
+- Locate the 3 DML operations in `ElaroQuickActionsService.cls`
 - Add `Schema.sObjectType.X.isCreateable()`, `isUpdateable()`, or `isDeletable()` checks before each DML
 - If DML list contains multiple sObject types, group by type and check each
 - Update tests to cover denial path or ensure happy-path remains intact
@@ -76,10 +76,10 @@ sf apex test run --tests <TestClassNames> --result-format human --wait 30
 **After implementation:**
 ```bash
 # (a) Compile
-sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionQuickActionsService.cls
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/ElaroQuickActionsService.cls
 
 # (b) Find tests
-rg "PrometheionQuickActionsService" force-app/main/default/classes/*Test.cls
+rg "ElaroQuickActionsService" force-app/main/default/classes/*Test.cls
 
 # (c) Run tests
 sf apex test run --tests <TestClassNames> --result-format human --wait 30
@@ -156,7 +156,7 @@ rg "Handler2|Trigger2|ObjectApiName2" force-app/main/default/classes/*Test.cls
 sf apex test run --tests <TestClassNames> --result-format human --wait 30
 
 # Fallback if no direct hits:
-rg "Prometheion" force-app/main/default/classes/*Test.cls
+rg "Elaro" force-app/main/default/classes/*Test.cls
 ```
 
 ---
@@ -279,10 +279,10 @@ npx sfdx-lwc-jest force-app/main/default/lwc/componentY
 
 ## Lower Priority Items
 
-### Phase 2: Add notifyOnFailure() to PrometheionGLBAAnnualNoticeBatch
+### Phase 2: Add notifyOnFailure() to ElaroGLBAAnnualNoticeBatch
 
 **Implementation Steps:**
-- Open `PrometheionGLBAAnnualNoticeBatch.cls`
+- Open `ElaroGLBAAnnualNoticeBatch.cls`
 - Review existing error tracking/notification patterns in similar batch classes
 - Implement `notifyOnFailure()` in `finish()` method
 - Trigger notification only when failures occurred
@@ -292,10 +292,10 @@ npx sfdx-lwc-jest force-app/main/default/lwc/componentY
 **After implementation:**
 ```bash
 # (a) Compile
-sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionGLBAAnnualNoticeBatch.cls
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/ElaroGLBAAnnualNoticeBatch.cls
 
 # (b) Find tests
-rg "PrometheionGLBAAnnualNoticeBatch" force-app/main/default/classes/*Test.cls
+rg "ElaroGLBAAnnualNoticeBatch" force-app/main/default/classes/*Test.cls
 
 # (c) Run tests
 sf apex test run --tests <TestClassNames> --result-format human --wait 30

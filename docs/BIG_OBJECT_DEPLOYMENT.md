@@ -2,7 +2,7 @@
 
 ## Overview
 
-`Prometheion_Compliance_Graph__b` is a Big Object used to store compliance graph nodes for long-term retention and analysis. Big Objects have special deployment requirements and limitations.
+`Elaro_Compliance_Graph__b` is a Big Object used to store compliance graph nodes for long-term retention and analysis. Big Objects have special deployment requirements and limitations.
 
 ## Deployment Options
 
@@ -12,12 +12,12 @@
 
 1. Navigate to **Setup → Big Objects → New**
 2. Enter object details:
-   - **Label:** Prometheion Compliance Graph
+   - **Label:** Elaro Compliance Graph
    - **Plural Label:** Compliance Graph Nodes
-   - **Object Name:** `Prometheion_Compliance_Graph__b`
+   - **Object Name:** `Elaro_Compliance_Graph__b`
 3. Add all required fields (see field list below)
 4. Create indexes:
-   - **Index Name:** `PrometheionGraphIndex`
+   - **Index Name:** `ElaroGraphIndex`
    - **Fields:**
      - `Graph_Node_Id__c` (DESC)
      - `Timestamp__c` (DESC)
@@ -39,7 +39,7 @@
 **Command:**
 
 ```bash
-sf project deploy start --metadata BigObject:Prometheion_Compliance_Graph__b
+sf project deploy start --metadata BigObject:Elaro_Compliance_Graph__b
 ```
 
 **Requirements:**
@@ -70,7 +70,7 @@ sf project deploy start --metadata BigObject:Prometheion_Compliance_Graph__b
 **Command:**
 
 ```bash
-sf project deploy start --source-dir force-app/main/default/objects/Prometheion_Compliance_Graph__b
+sf project deploy start --source-dir force-app/main/default/objects/Elaro_Compliance_Graph__b
 ```
 
 **Requirements:**
@@ -111,7 +111,7 @@ sf project deploy start --source-dir force-app/main/default/objects/Prometheion_
 
 ### Index Configuration
 
-**Index Name:** `PrometheionGraphIndex`
+**Index Name:** `ElaroGraphIndex`
 
 **Fields:**
 
@@ -130,15 +130,15 @@ sf project deploy start --source-dir force-app/main/default/objects/Prometheion_
 
 **Via Setup UI:**
 
-1. Navigate to **Setup → Big Objects → Prometheion Compliance Graph**
+1. Navigate to **Setup → Big Objects → Elaro Compliance Graph**
 2. Click **Indexes** tab
-3. Verify `PrometheionGraphIndex` exists with both fields
+3. Verify `ElaroGraphIndex` exists with both fields
 
 **Via SOQL:**
 
 ```sql
 SELECT Graph_Node_Id__c, Timestamp__c
-FROM Prometheion_Compliance_Graph__b
+FROM Elaro_Compliance_Graph__b
 WHERE Graph_Node_Id__c != null
 LIMIT 1
 ```
@@ -148,7 +148,7 @@ LIMIT 1
 **Apex Test:**
 
 ```apex
-String nodeId = PrometheionGraphIndexer.indexChange(
+String nodeId = ElaroGraphIndexer.indexChange(
     'PERMISSION_SET',
     '00e000000000000AAA',
     null,
@@ -162,9 +162,9 @@ System.assertNotEquals(null, nodeId, 'Node ID should be returned');
 **Test Query:**
 
 ```apex
-List<Prometheion_Compliance_Graph__b> nodes = [
+List<Elaro_Compliance_Graph__b> nodes = [
     SELECT Graph_Node_Id__c, Timestamp__c, Entity_Type__c
-    FROM Prometheion_Compliance_Graph__b
+    FROM Elaro_Compliance_Graph__b
     WHERE Graph_Node_Id__c = :testNodeId
     AND Timestamp__c >= :startDate
     WITH USER_MODE

@@ -1,4 +1,4 @@
-# Prometheion Deployment Checklist
+# Elaro Deployment Checklist
 
 **Version:** 3.0.0  
 **Last Updated:** 2025-12-25
@@ -15,7 +15,7 @@
 - [ ] Queueable classes used instead of `@future` methods
 
 ### ✅ Naming & Cleanup
-- [ ] All Sentinel/OpsGuardian references replaced with Prometheion
+- [ ] All Sentinel/OpsGuardian references replaced with Elaro
 - [ ] All object metadata files updated
 - [ ] All permission sets renamed
 - [ ] All configuration files updated
@@ -44,22 +44,22 @@
 
 ```bash
 # Create scratch org with Platform Cache
-sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-dev -d -y 30
+sf org create scratch -f config/elaro-scratch-def.json -a elaro-dev -d -y 30
 
 # Deploy metadata
-sf project deploy start -o prometheion-dev --wait 10
+sf project deploy start -o elaro-dev --wait 10
 
 # Run tests
-sf apex run test --test-level RunLocalTests --code-coverage -o prometheion-dev
+sf apex run test --test-level RunLocalTests --code-coverage -o elaro-dev
 
 # Assign permission set
-sf org assign permset -n Prometheion_Admin -o prometheion-dev
+sf org assign permset -n Elaro_Admin -o elaro-dev
 
 # Verify Platform Cache partition exists
 # (Check in Setup → Platform Cache → Partitions)
 
 # Open org to verify
-sf org open -o prometheion-dev
+sf org open -o elaro-dev
 ```
 
 ### Step 2: Sandbox Deployment
@@ -69,9 +69,9 @@ sf org open -o prometheion-dev
 1. **Platform Cache Configuration**
    - Navigate to: Setup → Platform Cache → Partitions
    - Create new partition:
-     - **Label:** PrometheionCompliance
+     - **Label:** ElaroCompliance
      - **Type:** Org Cache
-     - **Description:** Prometheion Compliance cache partition for storing compliance scores
+     - **Description:** Elaro Compliance cache partition for storing compliance scores
      - **Capacity:** Minimum 5MB (recommended 10MB+)
    - Save the partition
 
@@ -81,7 +81,7 @@ sf org open -o prometheion-dev
    - Test connectivity if needed
 
 3. **Custom Settings Preparation**
-   - `Prometheion_AI_Settings__c` will be created during deployment
+   - `Elaro_AI_Settings__c` will be created during deployment
    - `CCX_Settings__c` should exist (verify or create)
 
 #### B. Deploy Metadata
@@ -98,10 +98,10 @@ sf project deploy report --target-org sandbox-alias
 
 1. **Custom Settings**
    ```apex
-   // Create org default for Prometheion_AI_Settings__c
-   Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getInstance();
+   // Create org default for Elaro_AI_Settings__c
+   Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getInstance();
    if (settings == null) {
-       settings = new Prometheion_AI_Settings__c(
+       settings = new Elaro_AI_Settings__c(
            SetupOwnerId = UserInfo.getOrganizationId(),
            Enable_AI_Reasoning__c = true,
            Confidence_Threshold__c = 0.85,
@@ -115,7 +115,7 @@ sf project deploy report --target-org sandbox-alias
 2. **Permission Sets**
    ```bash
    # Assign to admin users
-   sf org assign permset -n Prometheion_Admin -u admin-user@example.com -o sandbox-alias
+   sf org assign permset -n Elaro_Admin -u admin-user@example.com -o sandbox-alias
    ```
 
 3. **Initial Data Setup**
@@ -168,7 +168,7 @@ If deployment fails or issues are discovered:
    ```
 
 2. **Data Considerations**
-   - Prometheion objects (Big Object, Custom Settings) contain audit data
+   - Elaro objects (Big Object, Custom Settings) contain audit data
    - Decide whether to preserve or clear data before rollback
    - Document data migration strategy if needed
 
@@ -183,7 +183,7 @@ If deployment fails or issues are discovered:
 
 ### Functional Tests
 
-- [ ] Navigate to Prometheion app/dashboard
+- [ ] Navigate to Elaro app/dashboard
 - [ ] Verify compliance readiness score calculates correctly
 - [ ] Test AI settings configuration page
 - [ ] Verify Platform Cache is working (check debug logs for cache hits)
@@ -201,7 +201,7 @@ If deployment fails or issues are discovered:
 
 ### Security Tests
 
-- [ ] Users without Prometheion_Admin cannot access admin features
+- [ ] Users without Elaro_Admin cannot access admin features
 - [ ] FLS is enforced (test with restricted user)
 - [ ] SOQL queries respect sharing rules
 - [ ] Platform Cache partition access is secure
@@ -236,18 +236,18 @@ If deployment fails or issues are discovered:
 
 **Solution:**
 1. Verify partition exists: Setup → Platform Cache → Partitions
-2. Check partition name matches: `PrometheionCompliance`
+2. Check partition name matches: `ElaroCompliance`
 3. Verify partition type is "Org Cache" (not Session)
 4. Check capacity allocation (increase if needed)
 5. Review debug logs for `OrgCacheException`
 
 ### Compliance Score Calculation Fails
 
-**Symptoms:** Errors when calling `PrometheionComplianceScorer.calculateReadinessScore()`
+**Symptoms:** Errors when calling `ElaroComplianceScorer.calculateReadinessScore()`
 
 **Solution:**
 1. Check debug logs for specific error
-2. Verify custom objects exist (Prometheion_Compliance_Graph__b)
+2. Verify custom objects exist (Elaro_Compliance_Graph__b)
 3. Check user has necessary permissions
 4. Verify SOQL queries aren't hitting governor limits
 5. Test with `clearCache()` to reset state

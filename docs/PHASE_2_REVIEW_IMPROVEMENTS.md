@@ -10,7 +10,7 @@ Phase 2 implementation is **85% complete** with several critical issues and impr
 
 ### 1. ✅ FIXED: SOQL CASE Statements Don't Work in Salesforce
 
-**File:** `force-app/main/default/classes/PrometheionISO27001AccessReviewService.cls` (Lines 317-319, 356-357)
+**File:** `force-app/main/default/classes/ElaroISO27001AccessReviewService.cls` (Lines 317-319, 356-357)
 
 **Status:** ✅ **FIXED** - Replaced CASE WHEN with separate COUNT queries
 
@@ -67,20 +67,20 @@ List<AggregateResult> reviewStats = [
 
 ### 2. Custom Metadata Not Fully Utilized
 
-**Problem:** Schedulers still have hardcoded CRON expressions and batch sizes instead of reading from `Prometheion_Scheduler_Config__mdt`.
+**Problem:** Schedulers still have hardcoded CRON expressions and batch sizes instead of reading from `Elaro_Scheduler_Config__mdt`.
 
 **Affected Files:**
-- `PrometheionCCPASLAMonitorScheduler.cls` - Hardcoded `'0 0 8 * * ?'` in `scheduleDaily()`
-- `PrometheionDormantAccountAlertScheduler.cls` - Hardcoded `'0 0 5 * * ?'` in `scheduleDaily()`
-- `PrometheionGLBAAnnualNoticeScheduler.cls` - Hardcoded `'0 0 6 * * ?'` and batch size `200`
-- `PrometheionISO27001QuarterlyScheduler.cls` - Hardcoded CRON expressions
+- `ElaroCCPASLAMonitorScheduler.cls` - Hardcoded `'0 0 8 * * ?'` in `scheduleDaily()`
+- `ElaroDormantAccountAlertScheduler.cls` - Hardcoded `'0 0 5 * * ?'` in `scheduleDaily()`
+- `ElaroGLBAAnnualNoticeScheduler.cls` - Hardcoded `'0 0 6 * * ?'` and batch size `200`
+- `ElaroISO27001QuarterlyScheduler.cls` - Hardcoded CRON expressions
 
 **Required Fix:** Create helper method to read from Custom Metadata:
 ```apex
 private static String getCronExpression(String schedulerName) {
     try {
-        Prometheion_Scheduler_Config__mdt config = 
-            Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+        Elaro_Scheduler_Config__mdt config = 
+            Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
         if (config != null && config.Is_Active__c && 
             String.isNotBlank(config.CRON_Expression__c)) {
             return config.CRON_Expression__c;
@@ -94,8 +94,8 @@ private static String getCronExpression(String schedulerName) {
 
 private static Integer getBatchSize(String schedulerName) {
     try {
-        Prometheion_Scheduler_Config__mdt config = 
-            Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+        Elaro_Scheduler_Config__mdt config = 
+            Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
         if (config != null && config.Batch_Size__c != null) {
             return config.Batch_Size__c.intValue();
         }
@@ -140,7 +140,7 @@ public without sharing class SchedulerErrorHandler {
 
 ### 4. ✅ FIXED: GLBA Batch Size Hardcoded
 
-**File:** `force-app/main/default/classes/PrometheionGLBAAnnualNoticeScheduler.cls` (Line 29)
+**File:** `force-app/main/default/classes/ElaroGLBAAnnualNoticeScheduler.cls` (Line 29)
 
 **Status:** ✅ **FIXED** - Now reads from Custom Metadata with fallback
 
@@ -148,13 +148,13 @@ public without sharing class SchedulerErrorHandler {
 
 **Current:**
 ```apex
-Id batchId = Database.executeBatch(new PrometheionGLBAAnnualNoticeBatch(), 200);
+Id batchId = Database.executeBatch(new ElaroGLBAAnnualNoticeBatch(), 200);
 ```
 
 **Recommended:**
 ```apex
 Integer batchSize = getBatchSize('GLBAAnnualNotice');
-Id batchId = Database.executeBatch(new PrometheionGLBAAnnualNoticeBatch(), batchSize);
+Id batchId = Database.executeBatch(new ElaroGLBAAnnualNoticeBatch(), batchSize);
 ```
 
 **Impact:** Low - Configuration not externalized
@@ -165,7 +165,7 @@ Id batchId = Database.executeBatch(new PrometheionGLBAAnnualNoticeBatch(), batch
 
 ### 5. Savepoint in Scheduler May Be Unnecessary
 
-**File:** `force-app/main/default/classes/PrometheionCCPASLAMonitorScheduler.cls` (Line 23)
+**File:** `force-app/main/default/classes/ElaroCCPASLAMonitorScheduler.cls` (Line 23)
 
 **Problem:** Using Savepoint in a scheduler that primarily performs read operations and updates may not provide value. Schedulers run in system context and failures should be logged, not rolled back.
 
@@ -227,8 +227,8 @@ static void testSchedulerErrorHandler_NotificationFailure() {
 **Problem:** New classes created have inconsistent API versions:
 - `SchedulerErrorHandler.cls-meta.xml`: 63.0 ✓
 - `GDPRModule.cls-meta.xml`: 59.0
-- `PrometheionEventParser.cls-meta.xml`: 65.0
-- `PrometheionPDFExporter.cls-meta.xml`: 65.0
+- `ElaroEventParser.cls-meta.xml`: 65.0
+- `ElaroPDFExporter.cls-meta.xml`: 65.0
 
 **Recommended:** Standardize all new classes to API 63.0 (matching trigger standardization).
 
@@ -243,9 +243,9 @@ static void testSchedulerErrorHandler_NotificationFailure() {
 
 **Recommended:** Create utility method in `SchedulerErrorHandler`:
 ```apex
-public static Prometheion_Scheduler_Config__mdt getConfig(String schedulerName) {
+public static Elaro_Scheduler_Config__mdt getConfig(String schedulerName) {
     try {
-        return Prometheion_Scheduler_Config__mdt.getInstance(schedulerName);
+        return Elaro_Scheduler_Config__mdt.getInstance(schedulerName);
     } catch (Exception e) {
         System.debug(LoggingLevel.WARN, 
             'Could not load scheduler config for ' + schedulerName + ': ' + e.getMessage());
@@ -254,7 +254,7 @@ public static Prometheion_Scheduler_Config__mdt getConfig(String schedulerName) 
 }
 
 public static String getCronExpression(String schedulerName, String defaultCron) {
-    Prometheion_Scheduler_Config__mdt config = getConfig(schedulerName);
+    Elaro_Scheduler_Config__mdt config = getConfig(schedulerName);
     if (config != null && config.Is_Active__c && 
         String.isNotBlank(config.CRON_Expression__c)) {
         return config.CRON_Expression__c;
@@ -263,7 +263,7 @@ public static String getCronExpression(String schedulerName, String defaultCron)
 }
 
 public static Integer getBatchSize(String schedulerName, Integer defaultSize) {
-    Prometheion_Scheduler_Config__mdt config = getConfig(schedulerName);
+    Elaro_Scheduler_Config__mdt config = getConfig(schedulerName);
     if (config != null && config.Batch_Size__c != null) {
         return config.Batch_Size__c.intValue();
     }
@@ -278,7 +278,7 @@ public static Integer getBatchSize(String schedulerName, Integer defaultSize) {
 
 ### 9. Missing Validation in GDPR Erasure
 
-**File:** `force-app/main/default/classes/PrometheionGDPRDataErasureService.cls`
+**File:** `force-app/main/default/classes/ElaroGDPRDataErasureService.cls`
 
 **Observation:** Validation is called but audit log is created before validation. If validation fails, we have an audit log with "In Progress" status that never completes.
 
@@ -298,11 +298,11 @@ public static Integer getBatchSize(String schedulerName, Integer defaultSize) {
 
 ### 10. Permission Set: ISO27001QuarterlyReviewScheduler Reference
 
-**File:** `force-app/main/default/permissionsets/Prometheion_Admin.permissionset-meta.xml` (Line 376)
+**File:** `force-app/main/default/permissionsets/Elaro_Admin.permissionset-meta.xml` (Line 376)
 
 **Problem:** Permission set still references deleted `ISO27001QuarterlyReviewScheduler` class.
 
-**Status:** Already fixed in implementation ✓ (updated to `PrometheionISO27001QuarterlyScheduler`)
+**Status:** Already fixed in implementation ✓ (updated to `ElaroISO27001QuarterlyScheduler`)
 
 ---
 

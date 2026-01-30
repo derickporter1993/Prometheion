@@ -3,7 +3,7 @@
  *
  * Test class for HIPAAAuditControlService
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @isTest

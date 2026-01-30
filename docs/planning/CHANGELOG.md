@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Prometheion will be documented in this file.
+All notable changes to Elaro will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Overview
 
-Prometheion v3.0 is a major release focused on AppExchange readiness, security hardening, and enterprise-grade compliance automation. This release includes comprehensive security reviews, automated installation handling, enhanced test utilities, and extensive documentation for AppExchange submission.
+Elaro v3.0 is a major release focused on AppExchange readiness, security hardening, and enterprise-grade compliance automation. This release includes comprehensive security reviews, automated installation handling, enhanced test utilities, and extensive documentation for AppExchange submission.
 
 **Release Focus:**
 - ✅ AppExchange Security Review compliance
@@ -26,30 +26,30 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 
 #### Installation & Configuration
 
-- **PrometheionInstallHandler** - Automatic post-install configuration
+- **ElaroInstallHandler** - Automatic post-install configuration
   - Creates default AI settings (AI disabled until configured)
   - Generates welcome audit log entry
   - Posts Chatter notifications with next steps
   - Supports install, upgrade, and push upgrade scenarios
   - Comprehensive error handling (non-blocking)
-  - **Files:** `PrometheionInstallHandler.cls`, `PrometheionInstallHandlerTest.cls`
+  - **Files:** `ElaroInstallHandler.cls`, `ElaroInstallHandlerTest.cls`
 
 #### Security & Testing
 
-- **PrometheionTestUserFactory** - User factory for security testing
-  - Creates users with Prometheion permission sets
+- **ElaroTestUserFactory** - User factory for security testing
+  - Creates users with Elaro permission sets
   - Supports Admin, Auditor, User, AI User roles
   - Generates user hierarchies for sharing tests
   - Creates multiple users for bulk testing scenarios
   - Permission set verification utilities
-  - **Files:** `PrometheionTestUserFactory.cls`
+  - **Files:** `ElaroTestUserFactory.cls`
 
-- **Enhanced PrometheionTestDataFactory** (existing, enhanced)
+- **Enhanced ElaroTestDataFactory** (existing, enhanced)
   - Bulk data generation (200+ records for governor limit testing)
   - Compliance scores, gaps, evidence, API snapshots, performance alerts
   - Sharing test data with mixed ownership
   - Comprehensive dataset creation for integration testing
-  - **Files:** `PrometheionTestDataFactory.cls`
+  - **Files:** `ElaroTestDataFactory.cls`
 
 #### CI/CD & Quality Assurance
 
@@ -59,7 +59,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
   - HTML, JSON, and table format reports
   - Artifact upload (30-day retention)
   - Severity threshold enforcement (fails on High+)
-  - **Files:** `.github/workflows/prometheion-ci.yml`, `.circleci/config.yml`
+  - **Files:** `.github/workflows/elaro-ci.yml`, `.circleci/config.yml`
 
 - **Local Scanner Script** - `scripts/run-appexchange-scanner.sh`
   - Prerequisites validation (sf CLI, Code Analyzer, Java)
@@ -122,7 +122,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 #### Repository Improvements
 
 - **Destructive Changes Archive** - `docs/archive/destructive-changes-2026-01-11/`
-  - Archived historical Sentinel→Prometheion destructive changes
+  - Archived historical Sentinel→Elaro destructive changes
   - Comprehensive README explaining Executive_KPI__mdt conflict
   - Prevents accidental application of destructive changes
   - Maintains audit trail of migration
@@ -138,7 +138,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 
 #### CI/CD Pipeline Updates
 
-- **GitHub Actions** (`.github/workflows/prometheion-ci.yml`)
+- **GitHub Actions** (`.github/workflows/elaro-ci.yml`)
   - Changed scanner from basic security to AppExchange selectors
   - Added JSON report generation for CI analysis
   - Added table format for console output
@@ -154,7 +154,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 
 - **EXTERNAL_SERVICES.md** - Corrected PagerDuty section
   - Fixed incorrect Custom Metadata Type reference
-  - Changed from `Prometheion_Integration_Settings__mdt` to `Prometheion_API_Config__mdt`
+  - Changed from `Elaro_Integration_Settings__mdt` to `Elaro_API_Config__mdt`
   - Added prominent security warning with link to security review
   - Documented current hardcoded placeholder issue
   - Provided post-fix configuration instructions
@@ -168,7 +168,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 - **PagerDuty Routing Key** - Documented hardcoded placeholder (requires Cursor AI fix)
   - Issue: `PagerDutyIntegration.cls` line 144-148 returns hardcoded placeholder
   - Impact: Fails AppExchange Security Review Section 4.4 (No hardcoded credentials)
-  - Solution: Use Protected Custom Metadata (`Prometheion_API_Config__mdt`)
+  - Solution: Use Protected Custom Metadata (`Elaro_API_Config__mdt`)
   - Status: **Documented for Cursor AI to implement**
   - **Files:** `docs/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md`
 
@@ -251,7 +251,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 
 **Upgrade Steps:**
 1. Install v3.0 package (upgrade path)
-2. `PrometheionInstallHandler` runs automatically
+2. `ElaroInstallHandler` runs automatically
 3. Verify AI settings preserved (existing settings not overwritten)
 4. Review Chatter notification for any post-upgrade actions
 5. Test critical workflows
@@ -322,7 +322,7 @@ Prometheion v3.0 is a major release focused on AppExchange readiness, security h
 
 This release includes contributions from:
 - Claude Code (AppExchange Preparation Workflow)
-- Prometheion Engineering Team
+- Elaro Engineering Team
 
 Special thanks to all contributors who helped make v3.0 possible!
 
@@ -383,18 +383,18 @@ See [ROADMAP.md](ROADMAP.md) for full roadmap.
 - **Documentation:** [docs/](docs/)
 - **Installation Guide:** [docs/INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md)
 - **External Services:** [docs/EXTERNAL_SERVICES.md](docs/EXTERNAL_SERVICES.md)
-- **Security:** security@prometheion.io
-- **Support:** support@prometheion.io
-- **Issues:** [GitHub Issues](https://github.com/prometheion/prometheion/issues)
+- **Security:** security@elaro.io
+- **Support:** support@elaro.io
+- **Issues:** [GitHub Issues](https://github.com/elaro/elaro/issues)
 
 ---
 
 ### Links
 
-- **Repository:** https://github.com/prometheion/prometheion
-- **AppExchange:** https://appexchange.salesforce.com/prometheion (pending)
-- **Documentation:** https://docs.prometheion.io
-- **Website:** https://prometheion.io
+- **Repository:** https://github.com/elaro/elaro
+- **AppExchange:** https://appexchange.salesforce.com/elaro (pending)
+- **Documentation:** https://docs.elaro.io
+- **Website:** https://elaro.io
 
 ---
 
@@ -424,7 +424,7 @@ See [ROADMAP.md](ROADMAP.md) for full roadmap.
 - API usage tracking dashboard
 
 ### Changed
-- Rebranded from Sentinel to Prometheion
+- Rebranded from Sentinel to Elaro
 - Upgraded to Salesforce API v65.0
 
 ### Deprecated
@@ -444,8 +444,8 @@ See [ROADMAP.md](ROADMAP.md) for full roadmap.
 
 ---
 
-**Maintained By:** Prometheion Engineering Team
+**Maintained By:** Elaro Engineering Team
 **Version Format:** [MAJOR.MINOR.PATCH]
 **Release Cadence:** Quarterly major/minor, monthly patches
 
-© 2026 Prometheion. All rights reserved.
+© 2026 Elaro. All rights reserved.

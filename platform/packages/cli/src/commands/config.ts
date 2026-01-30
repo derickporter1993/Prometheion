@@ -4,7 +4,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
 
-interface PrometheionConfig {
+interface ElaroConfig {
   defaultOrg?: string;
   defaultFrameworks?: string[];
   outputFormat?: "text" | "json";
@@ -15,7 +15,7 @@ interface PrometheionConfig {
   };
 }
 
-const CONFIG_DIR = join(homedir(), ".prometheion");
+const CONFIG_DIR = join(homedir(), ".elaro");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
 function ensureConfigDir(): void {
@@ -24,7 +24,7 @@ function ensureConfigDir(): void {
   }
 }
 
-function loadConfig(): PrometheionConfig {
+function loadConfig(): ElaroConfig {
   ensureConfigDir();
   if (existsSync(CONFIG_FILE)) {
     try {
@@ -37,7 +37,7 @@ function loadConfig(): PrometheionConfig {
   return {};
 }
 
-function saveConfig(config: PrometheionConfig): void {
+function saveConfig(config: ElaroConfig): void {
   ensureConfigDir();
   writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
 }
@@ -51,7 +51,7 @@ async function showConfig(options: { json?: boolean }): Promise<void> {
   }
 
   console.log();
-  console.log(chalk.bold.cyan("Prometheion Configuration"));
+  console.log(chalk.bold.cyan("Elaro Configuration"));
   console.log(chalk.gray("─".repeat(50)));
   console.log();
   console.log(chalk.gray(`Config file: ${CONFIG_FILE}`));
@@ -59,7 +59,7 @@ async function showConfig(options: { json?: boolean }): Promise<void> {
 
   if (Object.keys(config).length === 0) {
     console.log(chalk.yellow("  No configuration set"));
-    console.log(chalk.gray("  Run 'prometheion config set <key> <value>' to configure"));
+    console.log(chalk.gray("  Run 'elaro config set <key> <value>' to configure"));
   } else {
     console.log(chalk.bold("Current Settings:"));
     console.log(`  Default Org:        ${config.defaultOrg || chalk.gray("(not set)")}`);
@@ -118,7 +118,7 @@ async function setConfig(key: string, value: string): Promise<void> {
       break;
     default:
       console.error(chalk.red(`Error: Unknown config key '${key}'`));
-      console.log(chalk.gray("Run 'prometheion config' to see available settings"));
+      console.log(chalk.gray("Run 'elaro config' to see available settings"));
       process.exit(1);
   }
 
@@ -163,7 +163,7 @@ async function resetConfig(): Promise<void> {
 }
 
 export const configCommand = new Command("config")
-  .description("Manage Prometheion CLI configuration")
+  .description("Manage Elaro CLI configuration")
   .option("--json", "Output in JSON format")
   .action(showConfig)
   .addCommand(

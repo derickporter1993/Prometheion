@@ -4,7 +4,7 @@
  * Factory class for instantiating compliance framework services.
  * Provides centralized service resolution based on framework identifier.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ComplianceServiceFactory {
@@ -147,19 +147,19 @@ public with sharing class ComplianceServiceFactory {
     private static IRiskScoringService createService(String framework) {
         switch on framework.toUpperCase() {
             when 'HIPAA' {
-                return new PrometheionHIPAAComplianceService();
+                return new ElaroHIPAAComplianceService();
             }
             when 'SOC2' {
-                return new PrometheionSOC2ComplianceService();
+                return new ElaroSOC2ComplianceService();
             }
             when 'GDPR' {
-                return new PrometheionGDPRComplianceService();
+                return new ElaroGDPRComplianceService();
             }
             when 'CCPA' {
-                return new PrometheionCCPAComplianceService();
+                return new ElaroCCPAComplianceService();
             }
             when 'PCI_DSS' {
-                return new PrometheionPCIDSSComplianceService();
+                return new ElaroPCIDSSComplianceService();
             }
             when else {
                 // Try to get from metadata configuration

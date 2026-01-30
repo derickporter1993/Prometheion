@@ -1,6 +1,6 @@
 # Phase 1 Setup Guide: Off-Platform Compute Architecture
 
-This guide walks you through setting up the foundational architecture for Prometheion's off-platform compute system.
+This guide walks you through setting up the foundational architecture for Elaro's off-platform compute system.
 
 ## Prerequisites
 
@@ -18,8 +18,8 @@ cd /Users/derickporter/salesforce-projects/Solentra
 
 # Deploy Platform Events
 sf project deploy start \
-  --source-dir force-app/main/default/objects/Prometheion_Raw_Event__e \
-  --source-dir force-app/main/default/objects/Prometheion_Score_Result__e \
+  --source-dir force-app/main/default/objects/Elaro_Raw_Event__e \
+  --source-dir force-app/main/default/objects/Elaro_Score_Result__e \
   -o prod-org
 
 # Deploy Custom Object
@@ -33,12 +33,12 @@ sf project deploy start \
 ```bash
 # Deploy event publisher and callback
 sf project deploy start \
-  --source-dir force-app/main/default/classes/PrometheionEventPublisher.cls \
-  --source-dir force-app/main/default/classes/PrometheionEventPublisher.cls-meta.xml \
-  --source-dir force-app/main/default/classes/PrometheionAuditTrailPoller.cls \
-  --source-dir force-app/main/default/classes/PrometheionAuditTrailPoller.cls-meta.xml \
-  --source-dir force-app/main/default/classes/PrometheionScoreCallback.cls \
-  --source-dir force-app/main/default/classes/PrometheionScoreCallback.cls-meta.xml \
+  --source-dir force-app/main/default/classes/ElaroEventPublisher.cls \
+  --source-dir force-app/main/default/classes/ElaroEventPublisher.cls-meta.xml \
+  --source-dir force-app/main/default/classes/ElaroAuditTrailPoller.cls \
+  --source-dir force-app/main/default/classes/ElaroAuditTrailPoller.cls-meta.xml \
+  --source-dir force-app/main/default/classes/ElaroScoreCallback.cls \
+  --source-dir force-app/main/default/classes/ElaroScoreCallback.cls-meta.xml \
   -o prod-org
 ```
 
@@ -55,8 +55,8 @@ sf project deploy start \
 
 ```bash
 sf project deploy start \
-  --source-dir force-app/main/default/lwc/prometheionScoreListener \
-  --source-dir force-app/main/default/lwc/prometheionDashboard \
+  --source-dir force-app/main/default/lwc/elaroScoreListener \
+  --source-dir force-app/main/default/lwc/elaroDashboard \
   -o prod-org
 ```
 
@@ -65,7 +65,7 @@ sf project deploy start \
 ```bash
 # Run test classes
 sf apex run test \
-  --class-names PrometheionEventPublisherTest,PrometheionAuditTrailPollerTest,PrometheionScoreCallbackTest \
+  --class-names ElaroEventPublisherTest,ElaroAuditTrailPollerTest,ElaroScoreCallbackTest \
   --result-format human \
   --code-coverage \
   -o prod-org
@@ -78,8 +78,8 @@ sf apex run test \
 1. Navigate to **Setup** → **Integrations** → **Event Relays**
 2. Click **New Event Relay**
 3. Configure:
-   - **Name**: `Prometheion_AWS_Relay`
-   - **Source Event**: `Prometheion_Raw_Event__e`
+   - **Name**: `Elaro_AWS_Relay`
+   - **Source Event**: `Elaro_Raw_Event__e`
    - **Destination Type**: `Amazon EventBridge`
    - **Event Bus ARN**: (You'll get this from AWS in Step 3)
    - **Region**: `us-east-1` (or your preferred region)
@@ -96,23 +96,23 @@ sf apex run test \
 Use the Terraform configuration or AWS Console to create:
 
 1. **Amazon EventBridge Custom Bus**
-   - Name: `prometheion-events`
+   - Name: `elaro-events`
    - Region: `us-east-1`
 
 2. **Amazon Kinesis Firehose Delivery Stream**
-   - Name: `prometheion-events-stream`
-   - Destination: S3 bucket `prometheion-events`
+   - Name: `elaro-events-stream`
+   - Destination: S3 bucket `elaro-events`
    - Buffer size: 1 MB
    - Buffer interval: 60 seconds
 
 3. **Amazon S3 Bucket**
-   - Name: `prometheion-events` (must be globally unique)
+   - Name: `elaro-events` (must be globally unique)
    - Region: `us-east-1`
    - Enable versioning: Yes
    - Lifecycle policy: Move to Glacier after 90 days
 
 4. **Amazon DynamoDB Table**
-   - Name: `prometheion-scores`
+   - Name: `elaro-scores`
    - Partition Key: `PK` (String)
    - Sort Key: `SK` (String)
    - Billing: On-demand
@@ -122,7 +122,7 @@ Use the Terraform configuration or AWS Console to create:
 ### 3.2 Configure EventBridge Rule
 
 Create an EventBridge rule that:
-- **Source**: `salesforce.prometheion`
+- **Source**: `salesforce.elaro`
 - **Target**: Kinesis Firehose delivery stream
 - **Pattern**: Match all events from Salesforce
 
@@ -137,7 +137,7 @@ Deploy:
 cd lambda
 zip -r event_processor.zip event_processor.py
 aws lambda create-function \
-  --function-name prometheion-event-processor \
+  --function-name elaro-event-processor \
   --runtime python3.11 \
   --role arn:aws:iam::ACCOUNT_ID:role/lambda-execution-role \
   --handler event_processor.lambda_handler \
@@ -154,7 +154,7 @@ Deploy:
 ```bash
 zip -r compliance_scorer.zip compliance_scorer.py
 aws lambda create-function \
-  --function-name prometheion-compliance-scorer \
+  --function-name elaro-compliance-scorer \
   --runtime python3.11 \
   --role arn:aws:iam::ACCOUNT_ID:role/lambda-execution-role \
   --handler compliance_scorer.lambda_handler \
@@ -164,7 +164,7 @@ aws lambda create-function \
   --environment Variables="{
     ANTHROPIC_API_KEY=your-api-key,
     SALESFORCE_INSTANCE_URL=https://yourinstance.salesforce.com,
-    SCORES_TABLE=prometheion-scores
+    SCORES_TABLE=elaro-scores
   }"
 ```
 
@@ -179,8 +179,8 @@ aws lambda create-function \
 
 1. Navigate to **Setup** → **App Manager** → **New Connected App**
 2. Configure:
-   - **Name**: `Prometheion AWS Lambda`
-   - **API Name**: `Prometheion_AWS_Lambda`
+   - **Name**: `Elaro AWS Lambda`
+   - **API Name**: `Elaro_AWS_Lambda`
    - **Enable OAuth Settings**: Yes
    - **Callback URL**: `https://lambda-url.amazonaws.com/callback`
    - **Selected OAuth Scopes**: 
@@ -193,7 +193,7 @@ aws lambda create-function \
 
 ```bash
 aws secretsmanager create-secret \
-  --name prometheion/sf-oauth/ORG_ID \
+  --name elaro/sf-oauth/ORG_ID \
   --secret-string '{
     "consumer_key": "YOUR_CONSUMER_KEY",
     "consumer_secret": "YOUR_CONSUMER_SECRET",
@@ -216,14 +216,14 @@ Execute in **Developer Console** → **Anonymous Apex**:
 
 ```apex
 // Schedule the audit trail poller to run every 5 minutes
-String jobId = PrometheionAuditTrailPoller.schedule();
+String jobId = ElaroAuditTrailPoller.schedule();
 System.debug('Scheduled job: ' + jobId);
 ```
 
 ### 6.2 Verify Schedule
 
 1. Navigate to **Setup** → **Apex Jobs**
-2. Find "Prometheion Audit Trail Poller"
+2. Find "Elaro Audit Trail Poller"
 3. Verify it's scheduled and running
 
 ## Step 7: Test End-to-End Flow
@@ -234,7 +234,7 @@ Execute in **Developer Console** → **Anonymous Apex**:
 
 ```apex
 // Publish a test event
-PrometheionEventPublisher.publishConfigChange(
+ElaroEventPublisher.publishConfigChange(
     'PermissionSet',
     '0PS000000000000AAA',
     'MODIFIED',
@@ -245,11 +245,11 @@ PrometheionEventPublisher.publishConfigChange(
 ### 7.2 Verify Event in AWS
 
 1. Check **Amazon EventBridge** → **Events** → Recent events
-2. Verify event appears with source `salesforce.prometheion`
+2. Verify event appears with source `salesforce.elaro`
 
 ### 7.3 Verify S3 Storage
 
-1. Check **Amazon S3** → `prometheion-events` bucket
+1. Check **Amazon S3** → `elaro-events` bucket
 2. Verify events are being written (may take up to 60 seconds due to Firehose buffering)
 
 ### 7.4 Test Lambda Callback
@@ -277,7 +277,7 @@ Manually invoke Compliance Scorer Lambda with test payload:
 
 ### 7.6 Test Real-Time UI Updates
 
-1. Open **Prometheion Dashboard** in Lightning App
+1. Open **Elaro Dashboard** in Lightning App
 2. Assign a Permission Set to a user (triggers event)
 3. Wait 30-60 seconds for Lambda processing
 4. Verify toast notification appears with updated score
@@ -287,14 +287,14 @@ Manually invoke Compliance Scorer Lambda with test payload:
 ### 8.1 Monitor Event Publishing
 
 **Salesforce Debug Logs:**
-- Filter: `PrometheionEventPublisher`
+- Filter: `ElaroEventPublisher`
 - Look for: "Published event for..." messages
 
 ### 8.2 Monitor AWS Lambda
 
 **CloudWatch Logs:**
-- `/aws/lambda/prometheion-event-processor`
-- `/aws/lambda/prometheion-compliance-scorer`
+- `/aws/lambda/elaro-event-processor`
+- `/aws/lambda/elaro-compliance-scorer`
 
 **Common Issues:**
 - **Lambda timeout**: Increase timeout to 5 minutes
@@ -303,7 +303,7 @@ Manually invoke Compliance Scorer Lambda with test payload:
 
 ### 8.3 Monitor Event Relay
 
-**Salesforce Setup** → **Event Relays** → **Prometheion_AWS_Relay**
+**Salesforce Setup** → **Event Relays** → **Elaro_AWS_Relay**
 - Check **Status**: Should be "Enabled"
 - Check **Last Event**: Should show recent timestamp
 - Check **Error Count**: Should be 0

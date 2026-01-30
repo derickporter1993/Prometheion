@@ -1,7 +1,7 @@
-# Prometheion - AI Compliance Brain for Salesforce
+# Elaro - AI Compliance Brain for Salesforce
 
 ## Project Overview
-Prometheion is an enterprise compliance automation platform for Salesforce that detects configuration drift, generates audit evidence, and provides intelligent compliance analysis for regulated organizations.
+Elaro is an enterprise compliance automation platform for Salesforce that detects configuration drift, generates audit evidence, and provides intelligent compliance analysis for regulated organizations.
 
 **Current Version:** v3.0 - Unified Enterprise Platform
 **Status:** Production-ready (Grade: B+ 86/100)
@@ -41,15 +41,15 @@ platform/             # Node.js tooling
 
 ### Salesforce Commands
 - Always use the SF CLI v2 syntax (`sf` not `sfdx`)
-- Default org alias: `prometheion-dev`
+- Default org alias: `elaro-dev`
 - Dev Hub: `prod-org`
 - Scratch org config: `config/project-scratch-def.json`
 
 ### Code Standards
-- **Security:** Use PrometheionSecurityUtils for all CRUD/FLS checks
+- **Security:** Use ElaroSecurityUtils for all CRUD/FLS checks
 - **SOQL:** All queries MUST include `WITH SECURITY_ENFORCED`
 - **Testing:** Minimum 75% code coverage (target: 85%+)
-- **Naming:** Classes use PrometheionXxx prefix
+- **Naming:** Classes use ElaroXxx prefix
 - **Documentation:** JSDoc for Apex, TSDoc for TypeScript
 
 ### Testing Strategy
@@ -71,25 +71,25 @@ Use the custom command: `/sfcontext` to load current project status
 
 ### Create Scratch Org
 ```bash
-sf org create scratch -f config/project-scratch-def.json -a prometheion-scratch -d 30
-sf project deploy start --target-org prometheion-scratch
+sf org create scratch -f config/project-scratch-def.json -a elaro-scratch -d 30
+sf project deploy start --target-org elaro-scratch
 ```
 
 ### Run Tests
 ```bash
-sf apex run test --test-level RunLocalTests --target-org prometheion-dev
+sf apex run test --test-level RunLocalTests --target-org elaro-dev
 npm run test:unit  # LWC tests
 ```
 
 ### Deploy Changes
 ```bash
-sf project deploy preview --target-org prometheion-dev
-sf project deploy start --target-org prometheion-dev
+sf project deploy preview --target-org elaro-dev
+sf project deploy start --target-org elaro-dev
 ```
 
 ### Query Compliance Data
 ```bash
-sf data query --query "SELECT Id, Name, Status__c FROM Prometheion_Compliance_Rule__c" --target-org prometheion-dev
+sf data query --query "SELECT Id, Name, Status__c FROM Elaro_Compliance_Rule__c" --target-org elaro-dev
 ```
 
 ## File Structure Priorities

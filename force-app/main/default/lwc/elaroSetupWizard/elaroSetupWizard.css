@@ -1,0 +1,102 @@
+/* Elaro Setup Wizard Styles */
+
+.wizard-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.step-panel {
+  min-height: 400px;
+  padding: 1.5rem 0;
+}
+
+.framework-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  background: white;
+  width: 100%;
+  text-align: left;
+}
+
+.framework-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.framework-card:focus {
+  outline: 2px solid #0176d3;
+  outline-offset: 2px;
+}
+
+.framework-card.selected {
+  border-color: #0176d3;
+  background-color: #f3f3f3;
+}
+
+.notification-option {
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.notification-option.selected {
+  border-color: #0176d3;
+  background-color: #f0f8ff;
+}
+
+.feature-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  height: 100%;
+}
+
+.feature-icon {
+  margin-bottom: 1rem;
+}
+
+.completion-panel {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.success-icon {
+  color: #2e844a;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.checklist-item:last-child {
+  border-bottom: none;
+}
+
+.checklist-icon {
+  margin-right: 0.75rem;
+}
+
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.ai-settings-panel {
+  background-color: #fafaf9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.threshold-display {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0176d3;
+}

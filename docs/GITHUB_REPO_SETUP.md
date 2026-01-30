@@ -1,18 +1,18 @@
 # GitHub Repository Setup Instructions
 
-This document explains how to properly configure your GitHub repository to reflect Prometheion's new positioning as a **compliance-first Salesforce configuration drift guardrail**.
+This document explains how to properly configure your GitHub repository to reflect Elaro's new positioning as a **compliance-first Salesforce configuration drift guardrail**.
 
 ---
 
 ## 1. Rename the Repository
 
-**Current Name**: `Ops-Gurdian` (or `Prometheion`)
-**Recommended Name**: `prometheion-salesforce-compliance-drift-guard`
+**Current Name**: `Ops-Gurdian` (or `Elaro`)
+**Recommended Name**: `elaro-salesforce-compliance-drift-guard`
 
 ### Why This Name?
 
 The new name immediately tells visitors:
-1. **What it is**: Prometheion (product name)
+1. **What it is**: Elaro (product name)
 2. **What platform**: Salesforce
 3. **What it does**: Compliance + drift detection
 4. **What category**: Guardrail (not a full GRC platform)
@@ -22,12 +22,12 @@ The new name immediately tells visitors:
 1. Go to your GitHub repository
 2. Click **Settings** (top right)
 3. Scroll to **General** → **Repository name**
-4. Change to: `prometheion-salesforce-compliance-drift-guard`
+4. Change to: `elaro-salesforce-compliance-drift-guard`
 5. Click **Rename**
 
 **⚠️ Important**: After renaming, update your local git remote:
 ```bash
-git remote set-url origin https://github.com/derickporter1993/prometheion-salesforce-compliance-drift-guard.git
+git remote set-url origin https://github.com/derickporter1993/elaro-salesforce-compliance-drift-guard.git
 ```
 
 ---
@@ -89,9 +89,9 @@ A good social preview image makes your repo stand out when shared on Twitter, Li
 
 Create a 1280x640px image with:
 - **Background**: Professional gradient (blue/purple)
-- **Logo**: Prometheion logo (if available)
+- **Logo**: Elaro logo (if available)
 - **Tagline**: "Compliance-first Salesforce drift guardrail"
-- **Visual**: Simple diagram showing Salesforce → Prometheion → Audit Report
+- **Visual**: Simple diagram showing Salesforce → Elaro → Audit Report
 
 ### How to Add
 
@@ -111,9 +111,9 @@ If you create a documentation site (e.g., GitHub Pages, GitBook), add it to your
 
 ### Recommended Sites
 
-- **GitHub Pages**: `https://derickporter1993.github.io/prometheion`
-- **ReadTheDocs**: `https://prometheion.readthedocs.io`
-- **Custom Domain**: `https://prometheion.dev`
+- **GitHub Pages**: `https://derickporter1993.github.io/elaro`
+- **ReadTheDocs**: `https://elaro.readthedocs.io`
+- **Custom Domain**: `https://elaro.dev`
 
 ### How to Add
 
@@ -187,9 +187,9 @@ Already done in the new README, but verify these badges work:
 
 ### Optional Badges to Add
 
-- **Code Coverage**: `[![Coverage](https://img.shields.io/codecov/c/github/derickporter1993/prometheion)](https://codecov.io)`
-- **Issues**: `[![GitHub issues](https://img.shields.io/github/issues/derickporter1993/prometheion)](https://github.com/derickporter1993/prometheion/issues)`
-- **Contributors**: `[![Contributors](https://img.shields.io/github/contributors/derickporter1993/prometheion)](https://github.com/derickporter1993/prometheion/graphs/contributors)`
+- **Code Coverage**: `[![Coverage](https://img.shields.io/codecov/c/github/derickporter1993/elaro)](https://codecov.io)`
+- **Issues**: `[![GitHub issues](https://img.shields.io/github/issues/derickporter1993/elaro)](https://github.com/derickporter1993/elaro/issues)`
+- **Contributors**: `[![Contributors](https://img.shields.io/github/contributors/derickporter1993/elaro)](https://github.com/derickporter1993/elaro/graphs/contributors)`
 
 ---
 
@@ -199,7 +199,7 @@ Help users report bugs and request features with templates.
 
 ### Bug Report Template
 
-Already exists at `.github/ISSUE_TEMPLATE/bug_report.md` (updated to reference Prometheion).
+Already exists at `.github/ISSUE_TEMPLATE/bug_report.md` (updated to reference Elaro).
 
 ### Feature Request Template
 
@@ -208,7 +208,7 @@ Create `.github/ISSUE_TEMPLATE/feature_request.md`:
 ```markdown
 ---
 name: Feature Request
-about: Suggest a feature for Prometheion
+about: Suggest a feature for Elaro
 labels: enhancement
 ---
 
@@ -248,14 +248,14 @@ Help contributors understand how to contribute.
 Create `CONTRIBUTING.md` at repository root:
 
 ```markdown
-# Contributing to Prometheion
+# Contributing to Elaro
 
-Thank you for your interest in contributing to Prometheion!
+Thank you for your interest in contributing to Elaro!
 
 ## Ways to Contribute
 
-- 🐛 Report bugs via [GitHub Issues](https://github.com/derickporter1993/prometheion/issues)
-- 💡 Suggest features via [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions)
+- 🐛 Report bugs via [GitHub Issues](https://github.com/derickporter1993/elaro/issues)
+- 💡 Suggest features via [GitHub Discussions](https://github.com/derickporter1993/elaro/discussions)
 - 📖 Improve documentation
 - 🧪 Add test coverage
 - 🔧 Fix bugs or implement features
@@ -290,7 +290,7 @@ See [README.md](README.md#development) for setup instructions.
 
 ## Questions?
 
-Ask in [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions).
+Ask in [GitHub Discussions](https://github.com/derickporter1993/elaro/discussions).
 ```
 
 ---
@@ -326,9 +326,9 @@ Create `SECURITY.md` at repository root:
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Prometheion, please **DO NOT** open a public GitHub issue.
+If you discover a security vulnerability in Elaro, please **DO NOT** open a public GitHub issue.
 
-Instead, email: **security@prometheion.dev** (or your email)
+Instead, email: **security@elaro.dev** (or your email)
 
 Include:
 - Description of the vulnerability
@@ -347,11 +347,11 @@ We will respond within **48 hours** and provide a timeline for a fix.
 
 ## Security Best Practices
 
-When deploying Prometheion:
+When deploying Elaro:
 - Use Named Credentials for API keys (never hardcode)
 - Enable Shield Platform Encryption for sensitive data
-- Restrict Prometheion_Admin permission set to authorized users only
-- Review Prometheion's audit trail regularly
+- Restrict Elaro_Admin permission set to authorized users only
+- Review Elaro's audit trail regularly
 ```
 
 ---
@@ -377,7 +377,7 @@ Pin 3-5 key issues/discussions to the top of your Issues/Discussions page.
 
 ### Recommended Pins
 
-1. **"Welcome! Start here"** — Introduction to Prometheion
+1. **"Welcome! Start here"** — Introduction to Elaro
 2. **"v1 Roadmap"** — Link to ROADMAP.md
 3. **"Feature Requests"** — Link to Discussions
 4. **"Known Issues"** — List of current bugs/limitations
@@ -404,7 +404,7 @@ If your CI/CD workflow is named something other than `ci.yml`, update the badge 
 ### Dynamic Badge (shows actual CI status)
 
 ```markdown
-[![CI](https://github.com/derickporter1993/prometheion/workflows/CI/badge.svg)](https://github.com/derickporter1993/prometheion/actions)
+[![CI](https://github.com/derickporter1993/elaro/workflows/CI/badge.svg)](https://github.com/derickporter1993/elaro/actions)
 ```
 
 Replace `derickporter1993` and ensure workflow name matches (`.github/workflows/ci.yml`).
@@ -415,7 +415,7 @@ Replace `derickporter1993` and ensure workflow name matches (`.github/workflows/
 
 Use this checklist to ensure everything is configured:
 
-- [ ] Repository renamed to `prometheion-salesforce-compliance-drift-guard`
+- [ ] Repository renamed to `elaro-salesforce-compliance-drift-guard`
 - [ ] Description updated
 - [ ] Topics added (12 total)
 - [ ] Social preview image uploaded (optional)
@@ -438,7 +438,7 @@ Use this checklist to ensure everything is configured:
 Once everything is configured:
 
 1. **Share on social media**:
-   - Twitter: "Just repositioned Prometheion as a Salesforce compliance drift guardrail! [link]"
+   - Twitter: "Just repositioned Elaro as a Salesforce compliance drift guardrail! [link]"
    - LinkedIn: Post about solving audit readiness for regulated orgs
    - Reddit: r/salesforce, r/compliance
 
@@ -455,7 +455,7 @@ Once everything is configured:
    - Add to README
 
 4. **Write launch blog post**:
-   - "How Prometheion Makes Your Salesforce Org Audit-Ready in 24 Hours"
+   - "How Elaro Makes Your Salesforce Org Audit-Ready in 24 Hours"
    - Include sample report, installation guide, and roadmap
 
 ---

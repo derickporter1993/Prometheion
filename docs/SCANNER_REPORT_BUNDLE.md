@@ -1,4 +1,4 @@
-# Prometheion v3.0 - AppExchange Security Scanner Report Bundle
+# Elaro v3.0 - AppExchange Security Scanner Report Bundle
 
 **Date Generated:** 2026-01-11
 **Package Version:** 3.0
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This document provides comprehensive guidance for generating, interpreting, and submitting Salesforce Code Analyzer reports for Prometheion v3.0 AppExchange security review.
+This document provides comprehensive guidance for generating, interpreting, and submitting Salesforce Code Analyzer reports for Elaro v3.0 AppExchange security review.
 
 **Scanner Configuration:**
 - **Tool:** Salesforce Code Analyzer (sfdx-scanner)
@@ -67,8 +67,8 @@ This document provides comprehensive guidance for generating, interpreting, and 
 
 ```bash
 # Clone repository
-git clone https://github.com/prometheion/prometheion.git
-cd prometheion
+git clone https://github.com/elaro/elaro.git
+cd elaro
 
 # Ensure force-app/ directory exists
 ls -la force-app/main/default/
@@ -218,7 +218,7 @@ Severity: High
 File: force-app/main/default/classes/MyController.cls
 Line: 42
 Message: CRUD/FLS check missing before DML operation
-Recommendation: Add Security.stripInaccessible() or PrometheionSecurityUtils.validateCRUDAccess()
+Recommendation: Add Security.stripInaccessible() or ElaroSecurityUtils.validateCRUDAccess()
 ```
 
 ### JSON Format (CI/CD and Programmatic Analysis)
@@ -284,7 +284,7 @@ force-app/main/default/lwc/myComponent/myComponent.js 120  15   3        @lwc/lw
 
 **GitHub Integration:**
 ```yaml
-# .github/workflows/prometheion-ci.yml
+# .github/workflows/elaro-ci.yml
 - name: Upload SARIF to GitHub
   uses: github/codeql-action/upload-sarif@v2
   with:
@@ -320,9 +320,9 @@ public void updateAccounts(List<Account> accounts) {
 
 **Remediation:**
 ```apex
-// ✅ GOOD: Uses Prometheion security utility
+// ✅ GOOD: Uses Elaro security utility
 public void updateAccounts(List<Account> accounts) {
-    PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
+    ElaroSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
     update Security.stripInaccessible(AccessType.UPDATABLE, accounts).getRecords();
 }
 ```
@@ -386,7 +386,7 @@ public class MyController {
 // ✅ GOOD: Comprehensive documentation
 /**
  * @description Controller for My Component
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public class MyController {
     /**
@@ -468,13 +468,13 @@ CRUD check missing before DML operation on System_Config__c custom setting.
 
 **Justification:**
 System_Config__c is a protected custom setting accessible only via
-Prometheion_Admin permission set. The operation is executed in a
+Elaro_Admin permission set. The operation is executed in a
 controlled administrative context where CRUD checks would be redundant.
 This is a false positive.
 
 **Mitigation:**
 - Custom setting is protected (not exposed to standard users)
-- Operation requires Prometheion_Admin permission set
+- Operation requires Elaro_Admin permission set
 - Comprehensive test coverage verifies permission enforcement
 
 **Security Impact:** None (administrative operation in controlled context)
@@ -523,7 +523,7 @@ grep -r "SELECT.*FROM.*WHERE" force-app/main/default/classes/ | \
 /**
  * @description [Brief class purpose]
  * @group [Group name]
- * @author Prometheion Team
+ * @author Elaro Team
  * @version 3.0
  */
 public class ClassName { }
@@ -543,7 +543,7 @@ public String methodName(String paramName) { }
 
 ### GitHub Actions Integration
 
-The scanner runs automatically on every push via `.github/workflows/prometheion-ci.yml`:
+The scanner runs automatically on every push via `.github/workflows/elaro-ci.yml`:
 
 ```yaml
 security-scan:
@@ -699,7 +699,7 @@ public void myMethod() {
 
 ## Scan Result Benchmarks
 
-### Prometheion v3.0 Expected Results
+### Elaro v3.0 Expected Results
 
 Based on code audit, expected scanner results:
 
@@ -746,7 +746,7 @@ Before submitting to AppExchange:
 **Document Version:** 1.0
 **Last Updated:** 2026-01-11
 **Scanner Version:** @salesforce/sfdx-scanner 4.x.x
-**Prepared For:** Prometheion v3.0 AppExchange Submission
-**Maintained By:** Prometheion Engineering Team
+**Prepared For:** Elaro v3.0 AppExchange Submission
+**Maintained By:** Elaro Engineering Team
 
-© 2026 Prometheion. All rights reserved.
+© 2026 Elaro. All rights reserved.

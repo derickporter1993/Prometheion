@@ -3,7 +3,7 @@
  * 
  * Detect and remediate Segregation of Duties (SoD) violations
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class SegregationOfDutiesService {

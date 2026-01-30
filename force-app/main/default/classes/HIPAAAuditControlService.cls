@@ -4,7 +4,7 @@
  * Audit controls per HIPAA Security Rule (45 CFR 164.312(b)).
  * Handles audit log analysis, access pattern monitoring, and compliance reporting.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class HIPAAAuditControlService extends ComplianceServiceBase {
@@ -265,7 +265,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId

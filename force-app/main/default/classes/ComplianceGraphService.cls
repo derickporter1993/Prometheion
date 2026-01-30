@@ -8,7 +8,7 @@
  * - Entity dependency mapping
  * - Impact analysis
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class ComplianceGraphService {

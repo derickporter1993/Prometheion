@@ -7,7 +7,7 @@
  * - Identify data sales to third parties
  * - Track third-party sharing
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class CCPADataInventoryService extends ComplianceServiceBase implements IEvidenceCollectionService {

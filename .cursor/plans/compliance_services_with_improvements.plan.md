@@ -115,7 +115,7 @@ Localized fixes in 4 files; ideal for normal Sonnet 4.5 with tight prompts.
 - Implement retry logic (3 attempts)
 - Validate response bodies
 
-**1.4 Input Validation in PrometheionComplianceCopilot**
+**1.4 Input Validation in ElaroComplianceCopilot**
 
 - Add max length check (5000 chars)
 - Implement rate limiting (10 queries per 5 min)
@@ -161,7 +161,7 @@ Localized fixes in 4 files; ideal for normal Sonnet 4.5 with tight prompts.
 
 3. **Consistent naming:**
 
-   - Classes: `Prometheion*` prefix
+   - Classes: `Elaro*` prefix
    - Objects: descriptive `__c` suffix
    - Events: descriptive `__e` suffix
 
@@ -265,11 +265,11 @@ System.assertEquals(45, result.responseDeadlineDays, 'CCPA deadline is 45 days')
 **1. Large methods:**
 
 - WeeklyScorecardScheduler.sendSlackScorecard() (130+ lines) → Extract helper methods
-- PrometheionComplianceCopilot.classifyQuery() (40 lines) → Map-based lookup
+- ElaroComplianceCopilot.classifyQuery() (40 lines) → Map-based lookup
 
 **2. Code duplication:**
 
-- Risk score calculation (3 implementations) → Centralize in PrometheionReasoningEngine
+- Risk score calculation (3 implementations) → Centralize in ElaroReasoningEngine
 
 **3. Exception handling:**
 
@@ -279,7 +279,7 @@ System.assertEquals(45, result.responseDeadlineDays, 'CCPA deadline is 45 days')
 **4. Governor limits:**
 
 - GDPRDataErasureService: Bulkify sequential deletes
-- PrometheionComplianceScorer: Combine multiple COUNT queries
+- ElaroComplianceScorer: Combine multiple COUNT queries
 
 ### Sonnet 4.5 vs Max
 
@@ -308,10 +308,10 @@ System.assertEquals(45, result.responseDeadlineDays, 'CCPA deadline is 45 days')
 
 ### Files to Fix
 
-- prometheionScoreListener.js (5 console statements)
-- prometheionDashboard.js (2)
+- elaroScoreListener.js (5 console statements)
+- elaroDashboard.js (2)
 - complianceCopilot.js (1)
-- prometheionCopilot.js (1)
+- elaroCopilot.js (1)
 - Plus 4 more components
 
 ### Sonnet 4.5 vs Max
@@ -334,7 +334,7 @@ System.assertEquals(45, result.responseDeadlineDays, 'CCPA deadline is 45 days')
 2. **Document complex logic:**
 
    - WeeklyScorecardScheduler date calculations
-   - PrometheionComplianceScorer return structure
+   - ElaroComplianceScorer return structure
 
 3. **Create service catalog:**
 

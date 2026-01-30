@@ -1,18 +1,18 @@
-# Prometheion Testing Checklist
+# Elaro Testing Checklist
 
 **Date:** December 18, 2025  
-**Purpose:** Complete step-by-step guide to configure and test Prometheion
+**Purpose:** Complete step-by-step guide to configure and test Elaro
 
 ## Pre-Testing Setup (Required)
 
 ### Step 1: Verify Deployment ✅
 - [ ] All Apex classes deployed successfully
 - [ ] All Lightning Web Components deployed successfully
-- [ ] Custom Metadata Type `Prometheion_Claude_Settings__mdt` exists
-- [ ] Permission Set `Prometheion_Admin` exists
-- [ ] Application `Prometheion` exists
-- [ ] Tab `Prometheion_Compliance_Hub` exists
-- [ ] FlexiPage `Prometheion_Compliance_Hub` exists
+- [ ] Custom Metadata Type `Elaro_Claude_Settings__mdt` exists
+- [ ] Permission Set `Elaro_Admin` exists
+- [ ] Application `Elaro` exists
+- [ ] Tab `Elaro_Compliance_Hub` exists
+- [ ] FlexiPage `Elaro_Compliance_Hub` exists
 
 **Verification:**
 ```bash
@@ -31,8 +31,8 @@ sf project deploy start --dry-run -o prod-org
 
 2. **Create Custom Metadata Record**
    - [ ] Navigate to: **Setup → Custom Metadata Types**
-   - [ ] Click **Prometheion Claude Settings**
-   - [ ] Click **Manage Prometheion Claude Settings**
+   - [ ] Click **Elaro Claude Settings**
+   - [ ] Click **Manage Elaro Claude Settings**
    - [ ] Click **New**
    - [ ] Fill in:
      - **Label:** `Default`
@@ -49,10 +49,10 @@ sf project deploy start --dry-run -o prod-org
 
 ### Step 3: Assign Permission Sets
 
-1. **Assign Prometheion Admin**
+1. **Assign Elaro Admin**
    - [ ] Navigate to: **Setup → Users → Permission Sets**
-   - [ ] Find **Prometheion Admin**
-   - [ ] Click **Prometheion Admin**
+   - [ ] Find **Elaro Admin**
+   - [ ] Click **Elaro Admin**
    - [ ] Click **Manage Assignments**
    - [ ] Click **Add Assignments**
    - [ ] Select users who need access (start with yourself)
@@ -61,19 +61,19 @@ sf project deploy start --dry-run -o prod-org
 
 2. **Verify Assignment**
    - [ ] Log in as assigned user
-   - [ ] Check App Launcher for "Prometheion" app
+   - [ ] Check App Launcher for "Elaro" app
    - [ ] Verify app appears in available apps
 
 ### Step 4: Verify Application Access
 
-1. **Access Prometheion App**
+1. **Access Elaro App**
    - [ ] Click **App Launcher** (9-dot menu)
-   - [ ] Search for **Prometheion**
-   - [ ] Click **Prometheion** app
+   - [ ] Search for **Elaro**
+   - [ ] Click **Elaro** app
    - [ ] Verify app opens without errors
 
 2. **Verify Tab Access**
-   - [ ] In Prometheion app, verify **Compliance Hub** tab appears
+   - [ ] In Elaro app, verify **Compliance Hub** tab appears
    - [ ] Click **Compliance Hub** tab
    - [ ] Verify page loads (may show loading state initially)
 
@@ -84,7 +84,7 @@ sf project deploy start --dry-run -o prod-org
 ### Test 1.1: Dashboard Load & Display
 
 **Test Steps:**
-1. [ ] Navigate to **Prometheion → Compliance Hub**
+1. [ ] Navigate to **Elaro → Compliance Hub**
 2. [ ] Wait for dashboard to load (should show loading spinner initially)
 3. [ ] Verify dashboard displays without errors
 
@@ -212,14 +212,14 @@ sf project deploy start --dry-run -o prod-org
 ### Test 2.1: Copilot Component Load
 
 **Test Steps:**
-1. [ ] In Compliance Hub, scroll to Prometheion Copilot component
+1. [ ] In Compliance Hub, scroll to Elaro Copilot component
 2. [ ] Verify copilot component loads
 3. [ ] Verify welcome message displays
 
 **Expected Results:**
 - ✅ Copilot component renders
 - ✅ Welcome section displays with:
-  - Prometheion logo/icon
+  - Elaro logo/icon
   - "How can I help with compliance today?" heading
   - Subtitle text
   - Quick command buttons grid
@@ -354,11 +354,11 @@ sf project deploy start --dry-run -o prod-org
 **Test Steps:**
 1. [ ] Assign permission set to multiple users
 2. [ ] Each user logs in
-3. [ ] Each user accesses Prometheion
+3. [ ] Each user accesses Elaro
 4. [ ] Each user tests dashboard and copilot
 
 **Expected Results:**
-- ✅ All users can access Prometheion
+- ✅ All users can access Elaro
 - ✅ Each user sees their own compliance data
 - ✅ No permission errors
 - ✅ No data leakage between users
@@ -380,7 +380,7 @@ sf project deploy start --dry-run -o prod-org
 ### Test 3.3: Mobile Responsiveness
 
 **Test Steps:**
-1. [ ] Open Prometheion on mobile device
+1. [ ] Open Elaro on mobile device
 2. [ ] Or resize browser to mobile width
 3. [ ] Test dashboard display
 4. [ ] Test copilot interface
@@ -492,7 +492,7 @@ sf project deploy start --dry-run -o prod-org
 **Solutions:**
 1. Check browser console for errors
 2. Check Apex debug logs
-3. Verify `PrometheionComplianceScorer` is deployed
+3. Verify `ElaroComplianceScorer` is deployed
 4. Verify user has permission set assigned
 
 ### Issue: Copilot shows "API key not configured"
@@ -504,8 +504,8 @@ sf project deploy start --dry-run -o prod-org
 
 ### Issue: Permission denied errors
 **Solutions:**
-1. Assign Prometheion Admin permission set
-2. Verify user has access to Prometheion app
+1. Assign Elaro Admin permission set
+2. Verify user has access to Elaro app
 3. Check object-level permissions
 4. Check field-level permissions
 

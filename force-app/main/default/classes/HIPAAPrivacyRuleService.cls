@@ -4,7 +4,7 @@
  * Enforces HIPAA Privacy Rule (45 CFR 164.500-164.534) for PHI access controls.
  * Evaluates minimum necessary access, tracks PHI disclosures, and monitors access patterns.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase {
@@ -213,7 +213,7 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             VersionData = Blob.valueOf(logContent),
             Origin = 'H'
         );
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];

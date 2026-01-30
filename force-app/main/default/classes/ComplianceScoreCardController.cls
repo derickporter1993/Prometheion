@@ -4,7 +4,7 @@
  * Controller for Compliance ScoreCard LWC component
  * Provides framework details including mappings and evidence counts
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class ComplianceScoreCardController {
@@ -21,7 +21,7 @@ public with sharing class ComplianceScoreCardController {
         }
         
         // Validate framework is supported
-        if (!PrometheionConstants.isValidFramework(framework)) {
+        if (!ElaroConstants.isValidFramework(framework)) {
             throw new AuraHandledException('Unsupported framework: ' + framework);
         }
         
@@ -31,7 +31,7 @@ public with sharing class ComplianceScoreCardController {
         // Count active framework mappings
         details.mappingCount = [
             SELECT COUNT()
-            FROM Prometheion_Framework_Mapping__c
+            FROM Elaro_Framework_Mapping__c
             WHERE Framework__c = :framework
             AND Is_Active__c = true
             WITH USER_MODE
@@ -40,9 +40,9 @@ public with sharing class ComplianceScoreCardController {
         // Count evidence items for this framework
         // Note: Evidence items are linked via Audit Package, so we need to query through the relationship
         Set<Id> auditPackageIds = new Set<Id>();
-        for (Prometheion_Audit_Package__c pkg : [
+        for (Elaro_Audit_Package__c pkg : [
             SELECT Id
-            FROM Prometheion_Audit_Package__c
+            FROM Elaro_Audit_Package__c
             WHERE Framework__c = :framework
             WITH USER_MODE
         ]) {
@@ -53,17 +53,17 @@ public with sharing class ComplianceScoreCardController {
         if (!auditPackageIds.isEmpty()) {
             details.evidenceCount = [
                 SELECT COUNT()
-                FROM Prometheion_Evidence_Item__c
+                FROM Elaro_Evidence_Item__c
                 WHERE Audit_Package__c IN :auditPackageIds
                 WITH USER_MODE
             ];
         }
         
         // Get most recent audit package
-        List<Prometheion_Audit_Package__c> recentPackages = [
+        List<Elaro_Audit_Package__c> recentPackages = [
             SELECT Id, Name, Package_Name__c, Status__c, 
                    Audit_Period_Start__c, Audit_Period_End__c, CreatedDate
-            FROM Prometheion_Audit_Package__c
+            FROM Elaro_Audit_Package__c
             WHERE Framework__c = :framework
             WITH USER_MODE
             ORDER BY CreatedDate DESC
@@ -71,7 +71,7 @@ public with sharing class ComplianceScoreCardController {
         ];
         
         if (!recentPackages.isEmpty()) {
-            Prometheion_Audit_Package__c pkg = recentPackages[0];
+            Elaro_Audit_Package__c pkg = recentPackages[0];
             details.latestAuditPackage = new AuditPackageSummary();
             details.latestAuditPackage.id = pkg.Id;
             details.latestAuditPackage.name = pkg.Package_Name__c;
@@ -81,9 +81,9 @@ public with sharing class ComplianceScoreCardController {
             details.latestAuditPackage.createdDate = pkg.CreatedDate;
         }
         
-        // Get framework requirements from PrometheionFrameworkEngine
-        List<PrometheionFrameworkEngine.FrameworkRequirement> requirements = 
-            PrometheionFrameworkEngine.getFrameworkRequirements(framework);
+        // Get framework requirements from ElaroFrameworkEngine
+        List<ElaroFrameworkEngine.FrameworkRequirement> requirements = 
+            ElaroFrameworkEngine.getFrameworkRequirements(framework);
         details.requirementCount = requirements != null ? requirements.size() : 0;
         
         return details;

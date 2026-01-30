@@ -6,11 +6,11 @@ This file contains the exact prompts to give to Claude Code for each task in the
 
 ## Backend (Phase 1)
 
-### 1. Add WITH SECURITY_ENFORCED to PrometheionQuickActionsService
+### 1. Add WITH SECURITY_ENFORCED to ElaroQuickActionsService
 
 **Prompt for Claude Code:**
 ```
-Open PrometheionQuickActionsService.cls. Identify the 3 methods requiring WITH SECURITY_ENFORCED. For each SOQL query in those methods, show the exact query rewritten with WITH SECURITY_ENFORCED. Note any dynamic SOQL and propose the safest compliant approach.
+Open ElaroQuickActionsService.cls. Identify the 3 methods requiring WITH SECURITY_ENFORCED. For each SOQL query in those methods, show the exact query rewritten with WITH SECURITY_ENFORCED. Note any dynamic SOQL and propose the safest compliant approach.
 ```
 
 **Expected Output:**
@@ -21,11 +21,11 @@ Open PrometheionQuickActionsService.cls. Identify the 3 methods requiring WITH S
 
 ---
 
-### 2. Add CRUD Checks to PrometheionQuickActionsService DML
+### 2. Add CRUD Checks to ElaroQuickActionsService DML
 
 **Prompt for Claude Code:**
 ```
-In PrometheionQuickActionsService.cls, locate the 3 DML operations needing CRUD checks. For each, specify create/update/delete permission check(s), where to place them, and what exception/handling pattern matches this codebase. Provide the exact code blocks.
+In ElaroQuickActionsService.cls, locate the 3 DML operations needing CRUD checks. For each, specify create/update/delete permission check(s), where to place them, and what exception/handling pattern matches this codebase. Provide the exact code blocks.
 ```
 
 **Expected Output:**
@@ -180,11 +180,11 @@ For component [ComponentName], produce 3-5 Jest cases each covering: renders def
 
 ## Lower Priority Items
 
-### Phase 2: Add notifyOnFailure() to PrometheionGLBAAnnualNoticeBatch
+### Phase 2: Add notifyOnFailure() to ElaroGLBAAnnualNoticeBatch
 
 **Prompt for Claude Code:**
 ```
-Open PrometheionGLBAAnnualNoticeBatch. Determine existing error tracking/notification patterns in similar batch classes. Implement notifyOnFailure() in finish() so it triggers only when failures occurred. Provide exact code edits and list tests to update/add.
+Open ElaroGLBAAnnualNoticeBatch. Determine existing error tracking/notification patterns in similar batch classes. Implement notifyOnFailure() in finish() so it triggers only when failures occurred. Provide exact code edits and list tests to update/add.
 ```
 
 **Expected Output:**
@@ -235,7 +235,7 @@ Create a screenshot shot-list for AppExchange: enumerate the 12 required views (
   4. Permission set configuration
   5. Sample output/report
   6. [etc. through 12]
-- Naming convention: `prometheion_appexchange_01_setup.png`
+- Naming convention: `elaro_appexchange_01_setup.png`
 - Capture steps for each screenshot:
   - Navigation path in org
   - What to show/highlight

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Elaro Framework Mapping</label>
+    <pluralLabel>Elaro Framework Mappings</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Framework Mapping Number</label>
+        <displayFormat>FM-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Maps Salesforce metadata entities to compliance framework requirements</description>
+    <fields>
+        <fullName>Framework__c</fullName>
+        <label>Framework</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value><fullName>SOX</fullName><default>false</default><label>SOX</label></value>
+                <value><fullName>SOC2</fullName><default>false</default><label>SOC 2</label></value>
+                <value><fullName>HIPAA</fullName><default>false</default><label>HIPAA</label></value>
+                <value><fullName>GDPR</fullName><default>false</default><label>GDPR</label></value>
+                <value><fullName>CCPA</fullName><default>false</default><label>CCPA</label></value>
+                <value><fullName>GLBA</fullName><default>false</default><label>GLBA</label></value>
+                <value><fullName>NIST</fullName><default>false</default><label>NIST 800-53</label></value>
+                <value><fullName>ISO27001</fullName><default>false</default><label>ISO 27001</label></value>
+                <value><fullName>PCI_DSS</fullName><default>false</default><label>PCI-DSS</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Requirement_Code__c</fullName>
+        <label>Requirement Code</label>
+        <type>Text</type>
+        <length>100</length>
+        <required>true</required>
+        <description>Framework-specific requirement identifier (e.g., SOC2-CC6.1, HIPAA-164.308)</description>
+    </fields>
+    <fields>
+        <fullName>Requirement_Description__c</fullName>
+        <label>Requirement Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Entity_Type__c</fullName>
+        <label>Entity Type</label>
+        <type>Picklist</type>
+        <required>true</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value><fullName>PERMISSION_SET</fullName><default>false</default><label>Permission Set</label></value>
+                <value><fullName>PROFILE</fullName><default>false</default><label>Profile</label></value>
+                <value><fullName>FLOW</fullName><default>false</default><label>Flow</label></value>
+                <value><fullName>SHARING_RULE</fullName><default>false</default><label>Sharing Rule</label></value>
+                <value><fullName>FIELD_LEVEL_SECURITY</fullName><default>false</default><label>Field Level Security</label></value>
+                <value><fullName>LOGIN_HISTORY</fullName><default>false</default><label>Login History</label></value>
+                <value><fullName>API_USAGE</fullName><default>false</default><label>API Usage</label></value>
+                <value><fullName>SETUP_AUDIT_TRAIL</fullName><default>false</default><label>Setup Audit Trail</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Mapping_Metadata__c</fullName>
+        <label>Mapping Metadata (JSON)</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Is_Active__c</fullName>
+        <label>Is Active</label>
+        <type>Checkbox</type>
+        <defaultValue>true</defaultValue>
+    </fields>
+    <fields>
+        <fullName>Audit_Package__c</fullName>
+        <label>Audit Package</label>
+        <type>Lookup</type>
+        <referenceTo>Elaro_Audit_Package__c</referenceTo>
+        <relationshipLabel>Framework Mappings</relationshipLabel>
+        <relationshipName>Framework_Mappings</relationshipName>
+    </fields>
+</CustomObject>

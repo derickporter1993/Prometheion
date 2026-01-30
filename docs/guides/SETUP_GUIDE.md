@@ -1,6 +1,6 @@
-# Prometheion Setup Guide
+# Elaro Setup Guide
 
-This guide walks you through setting up Prometheion in your Salesforce org.
+This guide walks you through setting up Elaro in your Salesforce org.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This guide walks you through setting up Prometheion in your Salesforce org.
 - Anthropic Claude API key (for AI features)
 - Salesforce CLI installed
 
-## Step 1: Deploy Prometheion
+## Step 1: Deploy Elaro
 
 ### Option A: Using Salesforce CLI (Recommended)
 
@@ -41,8 +41,8 @@ sf project deploy start -o prod-org
 
 2. **Create Custom Metadata Record**
    - Navigate to: Setup > Custom Metadata Types
-   - Click "Prometheion Claude Settings"
-   - Click "Manage Prometheion Claude Settings"
+   - Click "Elaro Claude Settings"
+   - Click "Manage Elaro Claude Settings"
    - Click "New"
    - Fill in:
      - **Label**: Default
@@ -51,7 +51,7 @@ sf project deploy start -o prod-org
    - Click "Save"
 
 3. **Verify Configuration**
-   - Navigate to: Setup > Custom Metadata Types > Prometheion Claude Settings
+   - Navigate to: Setup > Custom Metadata Types > Elaro Claude Settings
    - Verify the "Default" record exists
    - The API Key field should show as protected (masked)
 
@@ -59,10 +59,10 @@ sf project deploy start -o prod-org
 
 1. **Navigate to Permission Sets**
    - Setup > Users > Permission Sets
-   - Find "Prometheion Admin"
+   - Find "Elaro Admin"
 
 2. **Assign to Users**
-   - Click "Prometheion Admin"
+   - Click "Elaro Admin"
    - Click "Manage Assignments"
    - Click "Add Assignments"
    - Select users who need access
@@ -70,7 +70,7 @@ sf project deploy start -o prod-org
    - Click "Done"
 
 3. **Verify Assignment**
-   - Users should see "Prometheion" in App Launcher
+   - Users should see "Elaro" in App Launcher
    - Users can access Compliance Hub tab
 
 ## Step 4: Configure Email Digest (Optional)
@@ -79,26 +79,26 @@ The weekly email digest is automatically scheduled. To customize:
 
 1. **View Scheduled Jobs**
    - Setup > Apex > Scheduled Jobs
-   - Find "Prometheion Weekly Compliance Digest"
+   - Find "Elaro Weekly Compliance Digest"
 
 2. **Modify Schedule** (if needed)
 
    ```apex
    // In Developer Console or VS Code
-   PrometheionEmailDigestScheduler.scheduleWeeklyJob();
+   ElaroEmailDigestScheduler.scheduleWeeklyJob();
    ```
 
 3. **Unschedule** (if needed)
    ```apex
-   PrometheionEmailDigestScheduler.unscheduleWeeklyJob();
+   ElaroEmailDigestScheduler.unscheduleWeeklyJob();
    ```
 
-## Step 5: Access Prometheion
+## Step 5: Access Elaro
 
 1. **Open App Launcher**
    - Click App Launcher icon (9 dots) in top navigation
-   - Search for "Prometheion"
-   - Click on "Prometheion" app
+   - Search for "Elaro"
+   - Click on "Elaro" app
 
 2. **Navigate to Compliance Hub**
    - Click "Compliance Hub" tab
@@ -114,26 +114,26 @@ The weekly email digest is automatically scheduled. To customize:
 
 1. **Apex Classes**
    - Setup > Apex Classes
-   - Verify all Prometheion\* classes are present
+   - Verify all Elaro\* classes are present
 
 2. **Custom Metadata**
    - Setup > Custom Metadata Types
-   - Verify "Prometheion Claude Settings" exists
+   - Verify "Elaro Claude Settings" exists
    - Verify "Default" record exists
 
 3. **Permission Sets**
    - Setup > Permission Sets
-   - Verify "Prometheion Admin" exists
+   - Verify "Elaro Admin" exists
 
 4. **Custom Application**
    - Setup > App Manager
-   - Verify "Prometheion" app exists
+   - Verify "Elaro" app exists
 
 ### Run Tests
 
 ```bash
-# Run all Prometheion tests
-sf apex run test --class-names PrometheionConstantsTest -o prod-org
+# Run all Elaro tests
+sf apex run test --class-names ElaroConstantsTest -o prod-org
 ```
 
 ## Troubleshooting
@@ -151,7 +151,7 @@ sf apex run test --class-names PrometheionConstantsTest -o prod-org
 
 **Solution:**
 
-1. Verify user has "Prometheion Admin" permission set assigned
+1. Verify user has "Elaro Admin" permission set assigned
 2. Check user profile has necessary object permissions
 3. Verify sharing settings allow access
 
@@ -160,10 +160,10 @@ sf apex run test --class-names PrometheionConstantsTest -o prod-org
 **Solution:**
 
 1. Check Platform Cache is enabled: Setup > Platform Cache
-2. Verify partition exists: `local.PrometheionCompliance`
+2. Verify partition exists: `local.ElaroCompliance`
 3. Clear cache and recalculate:
    ```apex
-   Cache.OrgPartition orgPartition = Cache.Org.getPartition('local.PrometheionCompliance');
+   Cache.OrgPartition orgPartition = Cache.Org.getPartition('local.ElaroCompliance');
    orgPartition.remove('readinessScore');
    ```
 
@@ -178,10 +178,10 @@ sf apex run test --class-names PrometheionConstantsTest -o prod-org
 
 ## Post-Installation Checklist
 
-- [ ] All Prometheion classes deployed successfully
+- [ ] All Elaro classes deployed successfully
 - [ ] Custom Metadata record created with API key
 - [ ] Permission set assigned to admin users
-- [ ] Prometheion app accessible from App Launcher
+- [ ] Elaro app accessible from App Launcher
 - [ ] Compliance Hub tab visible and functional
 - [ ] AI Copilot responds to queries
 - [ ] Compliance score displays correctly
@@ -191,7 +191,7 @@ sf apex run test --class-names PrometheionConstantsTest -o prod-org
 
 1. **Customize Compliance Frameworks**
    - Review framework-specific requirements
-   - Adjust scoring weights if needed (in PrometheionConstants)
+   - Adjust scoring weights if needed (in ElaroConstants)
 
 2. **Configure Monitoring**
    - Set up alerts for critical compliance issues

@@ -1,6 +1,6 @@
-# Claude Configuration for Prometheion
+# Claude Configuration for Elaro
 
-This directory contains Claude Code configuration files that enhance AI-assisted development for the Prometheion project.
+This directory contains Claude Code configuration files that enhance AI-assisted development for the Elaro project.
 
 ## 📁 File Structure
 
@@ -38,7 +38,7 @@ Access helpful workflows with slash commands:
 **Key Sections:**
 
 1. **customInstructions** - High-level guidance for Claude
-   - Security-first development (PrometheionSecurityUtils)
+   - Security-first development (ElaroSecurityUtils)
    - Salesforce best practices
    - Test coverage requirements (75%+ minimum)
 
@@ -53,7 +53,7 @@ Access helpful workflows with slash commands:
    - ❌ **Deny:** Production deploys, destructive operations
 
 4. **env** - Environment variables
-   - `SF_ORG_ALIAS`: Default org (prometheion-dev)
+   - `SF_ORG_ALIAS`: Default org (elaro-dev)
    - `SF_DEFAULT_DEV_HUB`: Dev Hub org (prod-org)
    - `SF_LOG_LEVEL`: Logging level (warn)
 
@@ -142,7 +142,7 @@ Access helpful workflows with slash commands:
 
 All Apex code must:
 - Use `WITH SECURITY_ENFORCED` in SOQL
-- Use PrometheionSecurityUtils for CRUD/FLS checks
+- Use ElaroSecurityUtils for CRUD/FLS checks
 - Include `with sharing` (unless documented exception)
 - Pass security violation tests
 
@@ -150,7 +150,7 @@ All Apex code must:
 
 ### 1. Security-First Development
 - Pattern: `**/*.cls`
-- All Apex must use PrometheionSecurityUtils
+- All Apex must use ElaroSecurityUtils
 - All SOQL must include WITH SECURITY_ENFORCED
 
 ### 2. Test Coverage Requirement
@@ -159,7 +159,7 @@ All Apex code must:
 - Target: 85%+ org-wide
 
 ### 3. No Direct Production Deploys
-- Never deploy to prod-org or prometheion-prod
+- Never deploy to prod-org or elaro-prod
 - Use scratch orgs for development
 - Use staging for validation
 

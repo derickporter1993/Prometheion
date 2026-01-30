@@ -2,7 +2,7 @@
 
 ## ✅ Dashboard Successfully Deployed!
 
-The `prometheionDashboard` component is now deployed and ready to test.
+The `elaroDashboard` component is now deployed and ready to test.
 
 ---
 
@@ -10,14 +10,14 @@ The `prometheionDashboard` component is now deployed and ready to test.
 
 ### Option 1: Minimal Compliance Hub Page (Recommended)
 
-1. **App Launcher** → Search **"Prometheion Compliance Hub Minimal"**
-2. Or use direct URL: `https://[your-instance].salesforce.com/lightning/n/Prometheion_Compliance_Hub_Minimal`
+1. **App Launcher** → Search **"Elaro Compliance Hub Minimal"**
+2. Or use direct URL: `https://[your-instance].salesforce.com/lightning/n/Elaro_Compliance_Hub_Minimal`
 
 ### Option 2: Add Component to Any Lightning Page
 
 1. Navigate to any Lightning App Page or Home Page
 2. Click **⚙️ Settings** → **Edit Page**
-3. In the component palette, search for **"Prometheion Dashboard"**
+3. In the component palette, search for **"Elaro Dashboard"**
 4. Drag it onto the page
 5. Click **Save** → **Activate**
 
@@ -25,7 +25,7 @@ The `prometheionDashboard` component is now deployed and ready to test.
 
 1. Open **Developer Console** (Setup → Developer Console)
 2. Go to **File** → **New** → **Lightning Component**
-3. Use component: `c:prometheionDashboard`
+3. Use component: `c:elaroDashboard`
 
 ---
 
@@ -119,7 +119,7 @@ sf project deploy report --job-id [deploy-id] --target-org prod-org
 
 - Open browser **Developer Tools** (F12)
 - Check **Console** tab for JavaScript errors
-- Verify `PrometheionComplianceScorer.calculateReadinessScore` is returning data
+- Verify `ElaroComplianceScorer.calculateReadinessScore` is returning data
 
 ### If Scores Don't Show:
 
@@ -150,13 +150,13 @@ When viewing all frameworks, you should see these colors:
 
 ```bash
 # 1. Open the minimal page
-sf org open --target-org prod-org --path "lightning/n/Prometheion_Compliance_Hub_Minimal"
+sf org open --target-org prod-org --path "lightning/n/Elaro_Compliance_Hub_Minimal"
 
 # 2. Verify policies are active
 sf data query --query "SELECT COUNT() FROM Compliance_Policy__mdt WHERE Is_Active__c = true" --target-org prod-org
 
 # 3. Check dashboard component
-sf project list metadata --metadata-type LightningComponentBundle --target-org prod-org | grep prometheionDashboard
+sf project list metadata --metadata-type LightningComponentBundle --target-org prod-org | grep elaroDashboard
 ```
 
 ---
