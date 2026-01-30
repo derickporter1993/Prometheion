@@ -1,23 +1,23 @@
 /**
- * @description Unit tests for PrometheionDailyDigest
+ * @description Unit tests for ElaroDailyDigest
  * Tests digest generation, scheduling, email/Slack delivery, and data compilation
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
-private class PrometheionDailyDigestTest {
+private class ElaroDailyDigestTest {
     
     @testSetup
     static void setupTestData() {
         // Create audit package and evidence items
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 15);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 15);
         
         // Create evidence items with different statuses
-        List<Prometheion_Evidence_Item__c> items = [
-            SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5
+        List<Elaro_Evidence_Item__c> items = [
+            SELECT Id FROM Elaro_Evidence_Item__c LIMIT 5
         ];
-        for (Prometheion_Evidence_Item__c item : items) {
+        for (Elaro_Evidence_Item__c item : items) {
             item.Status__c = 'Resolved';
         }
         update items;
@@ -29,7 +29,7 @@ private class PrometheionDailyDigestTest {
     
     @isTest
     static void testExecute_Success() {
-        PrometheionDailyDigest scheduler = new PrometheionDailyDigest();
+        ElaroDailyDigest scheduler = new ElaroDailyDigest();
         
         Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, '{"ok":true}'));
         
@@ -43,7 +43,7 @@ private class PrometheionDailyDigestTest {
     
     @isTest
     static void testExecute_WithData() {
-        PrometheionDailyDigest scheduler = new PrometheionDailyDigest();
+        ElaroDailyDigest scheduler = new ElaroDailyDigest();
         
         Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, '{"ok":true}'));
         
@@ -64,7 +64,7 @@ private class PrometheionDailyDigestTest {
         String cronExpression = '0 0 6 * * ?'; // Daily at 6 AM
         
         Test.startTest();
-        Id jobId = PrometheionDailyDigest.scheduleDigest(cronExpression);
+        Id jobId = ElaroDailyDigest.scheduleDigest(cronExpression);
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -77,14 +77,14 @@ private class PrometheionDailyDigestTest {
         ];
         
         System.assertEquals(cronExpression, ct.CronExpression, 'Cron expression should match');
-        System.assert(ct.CronJobDetail.Name.contains('Prometheion_Daily_Digest_'), 
-            'Job name should contain Prometheion_Daily_Digest_');
+        System.assert(ct.CronJobDetail.Name.contains('Elaro_Daily_Digest_'), 
+            'Job name should contain Elaro_Daily_Digest_');
     }
     
     @isTest
     static void testScheduleDigest_DefaultCron() {
         Test.startTest();
-        Id jobId = PrometheionDailyDigest.scheduleDigest(null);
+        Id jobId = ElaroDailyDigest.scheduleDigest(null);
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID with default cron');
@@ -103,11 +103,11 @@ private class PrometheionDailyDigestTest {
     static void testScheduleDigest_RemovesExistingJob() {
         // Schedule first job
         String cronExpression = '0 0 6 * * ?';
-        Id firstJobId = PrometheionDailyDigest.scheduleDigest(cronExpression);
+        Id firstJobId = ElaroDailyDigest.scheduleDigest(cronExpression);
         
         Test.startTest();
         // Schedule again - should remove first job
-        Id secondJobId = PrometheionDailyDigest.scheduleDigest(cronExpression);
+        Id secondJobId = ElaroDailyDigest.scheduleDigest(cronExpression);
         Test.stopTest();
         
         System.assertNotEquals(null, secondJobId, 'Should return new job ID');
@@ -130,7 +130,7 @@ private class PrometheionDailyDigestTest {
         Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, '{"ok":true}'));
         
         Test.startTest();
-        PrometheionDailyDigest.generateAndSendDigest();
+        ElaroDailyDigest.generateAndSendDigest();
         Test.stopTest();
         
         // Verify no exceptions
@@ -143,7 +143,7 @@ private class PrometheionDailyDigestTest {
         
         Test.startTest();
         // Should handle Slack error gracefully
-        PrometheionDailyDigest.generateAndSendDigest();
+        ElaroDailyDigest.generateAndSendDigest();
         Test.stopTest();
         
         System.assert(true, 'Should handle Slack errors gracefully');
@@ -156,7 +156,7 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testGetDigestPreview() {
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
         System.assertNotEquals(null, digest, 'Should return digest data');
@@ -172,7 +172,7 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testGetDigestPreview_Statistics() {
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
         System.assertNotEquals(null, digest.statistics, 'Should have statistics');
@@ -184,12 +184,12 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testGetDigestPreview_TopRisks() {
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
         System.assertNotEquals(null, digest.topRisks, 'Should have top risks list');
         
-        for (PrometheionDailyDigest.RiskItem risk : digest.topRisks) {
+        for (ElaroDailyDigest.RiskItem risk : digest.topRisks) {
             System.assertNotEquals(null, risk.id, 'Risk should have ID');
             System.assertNotEquals(null, risk.title, 'Risk should have title');
             System.assertNotEquals(null, risk.severity, 'Risk should have severity');
@@ -200,7 +200,7 @@ private class PrometheionDailyDigestTest {
     static void testGetDigestPreview_NoData() {
         // Test with minimal data
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
         System.assertNotEquals(null, digest, 'Should return digest even with minimal data');
@@ -215,17 +215,17 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testBulkDigestGeneration() {
         // Create many evidence items
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 200);
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 200);
         
         Test.setMock(HttpCalloutMock.class, new SlackCalloutMock(200, '{"ok":true}'));
         
         Test.startTest();
-        PrometheionDailyDigest.generateAndSendDigest();
+        ElaroDailyDigest.generateAndSendDigest();
         Test.stopTest();
         
         // Verify bulk data is handled
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         System.assert(digest.statistics.totalEvents >= 200, 'Should count all evidence items');
     }
     
@@ -240,7 +240,7 @@ private class PrometheionDailyDigestTest {
         Test.startTest();
         // Should handle any exceptions gracefully
         try {
-            PrometheionDailyDigest.generateAndSendDigest();
+            ElaroDailyDigest.generateAndSendDigest();
         } catch (Exception e) {
             System.assert(false, 'Should not throw unhandled exception: ' + e.getMessage());
         }
@@ -254,7 +254,7 @@ private class PrometheionDailyDigestTest {
         Test.startTest();
         // Should handle exceptions in data compilation
         try {
-            PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+            ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
             System.assertNotEquals(null, digest, 'Should return digest even on errors');
         } catch (Exception e) {
             System.assert(false, 'Should not throw exception: ' + e.getMessage());
@@ -269,7 +269,7 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testDigestData_Structure() {
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
         // Verify all required fields are present
@@ -284,10 +284,10 @@ private class PrometheionDailyDigestTest {
     @isTest
     static void testEventStatistics_Structure() {
         Test.startTest();
-        PrometheionDailyDigest.DigestData digest = PrometheionDailyDigest.getDigestPreview();
+        ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
         Test.stopTest();
         
-        PrometheionDailyDigest.EventStatistics stats = digest.statistics;
+        ElaroDailyDigest.EventStatistics stats = digest.statistics;
         System.assertNotEquals(null, stats.totalEvents, 'Should have totalEvents');
         System.assertNotEquals(null, stats.criticalEvents, 'Should have criticalEvents');
         System.assertNotEquals(null, stats.highRiskEvents, 'Should have highRiskEvents');

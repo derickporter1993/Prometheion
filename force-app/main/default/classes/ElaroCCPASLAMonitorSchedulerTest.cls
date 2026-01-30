@@ -1,11 +1,11 @@
 /**
- * @description Test class for PrometheionCCPASLAMonitorScheduler
+ * @description Test class for ElaroCCPASLAMonitorScheduler
  * Tests CCPA SLA monitoring and deadline tracking
  * @group Tests
- * @see PrometheionCCPASLAMonitorScheduler
+ * @see ElaroCCPASLAMonitorScheduler
  */
 @isTest
-private class PrometheionCCPASLAMonitorSchedulerTest {
+private class ElaroCCPASLAMonitorSchedulerTest {
 
     @TestSetup
     static void setup() {
@@ -55,7 +55,7 @@ private class PrometheionCCPASLAMonitorSchedulerTest {
         String cronExpression = '0 0 8 * * ?';
 
         Test.startTest();
-        String jobId = System.schedule('Test CCPA SLA Monitor', cronExpression, new PrometheionCCPASLAMonitorScheduler());
+        String jobId = System.schedule('Test CCPA SLA Monitor', cronExpression, new ElaroCCPASLAMonitorScheduler());
         Test.stopTest();
 
         CronTrigger ct = [SELECT Id, CronExpression, State FROM CronTrigger WHERE Id = :jobId];
@@ -65,7 +65,7 @@ private class PrometheionCCPASLAMonitorSchedulerTest {
     @isTest
     static void testScheduleDailyMethod() {
         Test.startTest();
-        String jobId = PrometheionCCPASLAMonitorScheduler.scheduleDaily();
+        String jobId = ElaroCCPASLAMonitorScheduler.scheduleDaily();
         Test.stopTest();
 
         System.assertNotEquals(null, jobId, 'Job ID should not be null');
@@ -74,7 +74,7 @@ private class PrometheionCCPASLAMonitorSchedulerTest {
     @isTest
     static void testScheduleHourlyMethod() {
         Test.startTest();
-        String jobId = PrometheionCCPASLAMonitorScheduler.scheduleHourly();
+        String jobId = ElaroCCPASLAMonitorScheduler.scheduleHourly();
         Test.stopTest();
 
         System.assertNotEquals(null, jobId, 'Hourly job ID should not be null');
@@ -82,7 +82,7 @@ private class PrometheionCCPASLAMonitorSchedulerTest {
 
     @isTest
     static void testExecuteMethod() {
-        PrometheionCCPASLAMonitorScheduler scheduler = new PrometheionCCPASLAMonitorScheduler();
+        ElaroCCPASLAMonitorScheduler scheduler = new ElaroCCPASLAMonitorScheduler();
 
         Test.startTest();
         scheduler.execute(null);
@@ -100,7 +100,7 @@ private class PrometheionCCPASLAMonitorSchedulerTest {
     static void testExecuteWithNoRequests() {
         delete [SELECT Id FROM CCPA_Request__c];
 
-        PrometheionCCPASLAMonitorScheduler scheduler = new PrometheionCCPASLAMonitorScheduler();
+        ElaroCCPASLAMonitorScheduler scheduler = new ElaroCCPASLAMonitorScheduler();
 
         Test.startTest();
         scheduler.execute(null);

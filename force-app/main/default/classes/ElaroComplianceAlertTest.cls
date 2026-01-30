@@ -1,18 +1,18 @@
 /**
- * @description Unit tests for PrometheionComplianceAlert
+ * @description Unit tests for ElaroComplianceAlert
  * Tests alert configuration, processing, notifications, and multi-channel delivery
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
-private class PrometheionComplianceAlertTest {
+private class ElaroComplianceAlertTest {
     
     @testSetup
     static void setupTestData() {
         // Create alert configurations
-        List<Prometheion_Alert_Config__c> configs = new List<Prometheion_Alert_Config__c>();
+        List<Elaro_Alert_Config__c> configs = new List<Elaro_Alert_Config__c>();
         
-        configs.add(new Prometheion_Alert_Config__c(
+        configs.add(new Elaro_Alert_Config__c(
             Name = 'High Risk Alert',
             Alert_Type__c = 'Risk Threshold',
             Threshold__c = 80,
@@ -23,7 +23,7 @@ private class PrometheionComplianceAlertTest {
             Is_Active__c = true
         ));
         
-        configs.add(new Prometheion_Alert_Config__c(
+        configs.add(new Elaro_Alert_Config__c(
             Name = 'Critical Alert',
             Alert_Type__c = 'Risk Threshold',
             Threshold__c = 95,
@@ -37,14 +37,14 @@ private class PrometheionComplianceAlertTest {
         insert configs;
         
         // Create evidence items for active alerts
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 10);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 10);
         
         // Update some items to pending review status
-        List<Prometheion_Evidence_Item__c> items = [
-            SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 5
+        List<Elaro_Evidence_Item__c> items = [
+            SELECT Id FROM Elaro_Evidence_Item__c LIMIT 5
         ];
-        for (Prometheion_Evidence_Item__c item : items) {
+        for (Elaro_Evidence_Item__c item : items) {
             item.Status__c = 'Pending Review';
         }
         update items;
@@ -56,7 +56,7 @@ private class PrometheionComplianceAlertTest {
     
     @isTest
     static void testConfigureAlert_Success() {
-        PrometheionComplianceAlert.AlertConfig config = new PrometheionComplianceAlert.AlertConfig();
+        ElaroComplianceAlert.AlertConfig config = new ElaroComplianceAlert.AlertConfig();
         config.name = 'Test Alert Config';
         config.alertType = 'Risk Threshold';
         config.threshold = 75;
@@ -66,14 +66,14 @@ private class PrometheionComplianceAlertTest {
         config.description = 'Test alert configuration';
         
         Test.startTest();
-        Id configId = PrometheionComplianceAlert.configureAlert(config);
+        Id configId = ElaroComplianceAlert.configureAlert(config);
         Test.stopTest();
         
         System.assertNotEquals(null, configId, 'Should return config ID');
         
-        Prometheion_Alert_Config__c alertConfig = [
+        Elaro_Alert_Config__c alertConfig = [
             SELECT Id, Name, Threshold__c, Channels__c, Severity__c
-            FROM Prometheion_Alert_Config__c
+            FROM Elaro_Alert_Config__c
             WHERE Id = :configId
         ];
         
@@ -84,14 +84,14 @@ private class PrometheionComplianceAlertTest {
     
     @isTest
     static void testConfigureAlert_MissingName() {
-        PrometheionComplianceAlert.AlertConfig config = new PrometheionComplianceAlert.AlertConfig();
+        ElaroComplianceAlert.AlertConfig config = new ElaroComplianceAlert.AlertConfig();
         config.alertType = 'Risk Threshold';
         config.threshold = 75;
         config.channels = new List<String>{'EMAIL'};
         
         Test.startTest();
         try {
-            PrometheionComplianceAlert.configureAlert(config);
+            ElaroComplianceAlert.configureAlert(config);
             System.assert(false, 'Should throw exception for missing name');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('name'), 'Should mention name requirement');
@@ -101,14 +101,14 @@ private class PrometheionComplianceAlertTest {
     
     @isTest
     static void testConfigureAlert_InvalidThreshold() {
-        PrometheionComplianceAlert.AlertConfig config = new PrometheionComplianceAlert.AlertConfig();
+        ElaroComplianceAlert.AlertConfig config = new ElaroComplianceAlert.AlertConfig();
         config.name = 'Test Alert';
         config.threshold = 150; // Invalid (> 100)
         config.channels = new List<String>{'EMAIL'};
         
         Test.startTest();
         try {
-            PrometheionComplianceAlert.configureAlert(config);
+            ElaroComplianceAlert.configureAlert(config);
             System.assert(false, 'Should throw exception for invalid threshold');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('Threshold'), 'Should mention threshold requirement');
@@ -118,14 +118,14 @@ private class PrometheionComplianceAlertTest {
     
     @isTest
     static void testConfigureAlert_EmptyChannels() {
-        PrometheionComplianceAlert.AlertConfig config = new PrometheionComplianceAlert.AlertConfig();
+        ElaroComplianceAlert.AlertConfig config = new ElaroComplianceAlert.AlertConfig();
         config.name = 'Test Alert';
         config.threshold = 75;
         config.channels = new List<String>();
         
         Test.startTest();
         try {
-            PrometheionComplianceAlert.configureAlert(config);
+            ElaroComplianceAlert.configureAlert(config);
             System.assert(false, 'Should throw exception for empty channels');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('channel'), 'Should mention channel requirement');
@@ -149,8 +149,8 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.AlertResult result = 
-            PrometheionComplianceAlert.processAlert(eventData);
+        ElaroComplianceAlert.AlertResult result = 
+            ElaroComplianceAlert.processAlert(eventData);
         Test.stopTest();
         
         System.assertNotEquals(null, result, 'Should return alert result');
@@ -172,8 +172,8 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.AlertResult result = 
-            PrometheionComplianceAlert.processAlert(eventData);
+        ElaroComplianceAlert.AlertResult result = 
+            ElaroComplianceAlert.processAlert(eventData);
         Test.stopTest();
         
         System.assertEquals(true, result.alertTriggered, 'Alert should be triggered');
@@ -192,8 +192,8 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.AlertResult result = 
-            PrometheionComplianceAlert.processAlert(eventData);
+        ElaroComplianceAlert.AlertResult result = 
+            ElaroComplianceAlert.processAlert(eventData);
         Test.stopTest();
         
         System.assertEquals(false, result.alertTriggered, 'Alert should not be triggered');
@@ -211,8 +211,8 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.AlertResult result = 
-            PrometheionComplianceAlert.processAlert(eventData);
+        ElaroComplianceAlert.AlertResult result = 
+            ElaroComplianceAlert.processAlert(eventData);
         Test.stopTest();
         
         System.assertEquals(true, result.alertTriggered, 'Alert should be triggered');
@@ -235,7 +235,7 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.sendAlertNotification('EMAIL', JSON.serialize(alertData));
+        ElaroComplianceAlert.sendAlertNotification('EMAIL', JSON.serialize(alertData));
         Test.stopTest();
         
         // Verify email was sent (in test context, email limits are checked)
@@ -256,7 +256,7 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.sendAlertNotification('SLACK', JSON.serialize(alertData));
+        ElaroComplianceAlert.sendAlertNotification('SLACK', JSON.serialize(alertData));
         Test.stopTest();
         
         System.assert(true, 'Slack alert should be sent');
@@ -276,7 +276,7 @@ private class PrometheionComplianceAlertTest {
         };
         
         Test.startTest();
-        PrometheionComplianceAlert.sendAlertNotification('PAGERDUTY', JSON.serialize(alertData));
+        ElaroComplianceAlert.sendAlertNotification('PAGERDUTY', JSON.serialize(alertData));
         Test.stopTest();
         
         System.assert(true, 'PagerDuty alert should be sent');
@@ -296,7 +296,7 @@ private class PrometheionComplianceAlertTest {
         Test.startTest();
         // Should handle invalid channel gracefully
         try {
-            PrometheionComplianceAlert.sendAlertNotification('INVALID', JSON.serialize(alertData));
+            ElaroComplianceAlert.sendAlertNotification('INVALID', JSON.serialize(alertData));
         } catch (Exception e) {
             // May or may not throw exception depending on implementation
             System.assert(true, 'Should handle invalid channel');
@@ -311,14 +311,14 @@ private class PrometheionComplianceAlertTest {
     @isTest
     static void testGetActiveAlerts() {
         Test.startTest();
-        List<PrometheionComplianceAlert.AlertSummary> alerts = 
-            PrometheionComplianceAlert.getActiveAlerts();
+        List<ElaroComplianceAlert.AlertSummary> alerts = 
+            ElaroComplianceAlert.getActiveAlerts();
         Test.stopTest();
         
         System.assertNotEquals(null, alerts, 'Should return alerts list');
         
         // Should include evidence items with 'Pending Review' status
-        for (PrometheionComplianceAlert.AlertSummary alert : alerts) {
+        for (ElaroComplianceAlert.AlertSummary alert : alerts) {
             System.assertNotEquals(null, alert.id, 'Alert should have ID');
             System.assertNotEquals(null, alert.title, 'Alert should have title');
             System.assertNotEquals(null, alert.description, 'Alert should have description');
@@ -331,8 +331,8 @@ private class PrometheionComplianceAlertTest {
     static void testGetActiveAlerts_WithData() {
         // Verify alerts are returned from evidence items
         Test.startTest();
-        List<PrometheionComplianceAlert.AlertSummary> alerts = 
-            PrometheionComplianceAlert.getActiveAlerts();
+        List<ElaroComplianceAlert.AlertSummary> alerts = 
+            ElaroComplianceAlert.getActiveAlerts();
         Test.stopTest();
         
         // Should have at least the pending review items from setup
@@ -345,9 +345,9 @@ private class PrometheionComplianceAlertTest {
     
     @isTest
     static void testQueueAlert() {
-        Prometheion_Alert_Config__c config = [
+        Elaro_Alert_Config__c config = [
             SELECT Id, Channels__c, Severity__c
-            FROM Prometheion_Alert_Config__c
+            FROM Elaro_Alert_Config__c
             LIMIT 1
         ];
         
@@ -357,12 +357,12 @@ private class PrometheionComplianceAlertTest {
             'riskScore' => 85
         };
         
-        PrometheionComplianceAlert.AlertResult result = new PrometheionComplianceAlert.AlertResult();
+        ElaroComplianceAlert.AlertResult result = new ElaroComplianceAlert.AlertResult();
         result.alertId = 'ALERT-QUEUE';
         result.alertTriggered = true;
         
         Test.startTest();
-        PrometheionComplianceAlert.queueAlert(config, eventData, result);
+        ElaroComplianceAlert.queueAlert(config, eventData, result);
         Test.stopTest();
         
         // Verify queue items were created (async processing)
@@ -392,7 +392,7 @@ private class PrometheionComplianceAlertTest {
         
         Test.startTest();
         for (Map<String, Object> alertData : alertDataList) {
-            PrometheionComplianceAlert.sendAlertNotification('EMAIL', JSON.serialize(alertData));
+            ElaroComplianceAlert.sendAlertNotification('EMAIL', JSON.serialize(alertData));
         }
         Test.stopTest();
         
@@ -415,10 +415,10 @@ private class PrometheionComplianceAlertTest {
         }
         
         Test.startTest();
-        List<PrometheionComplianceAlert.AlertResult> results = new List<PrometheionComplianceAlert.AlertResult>();
+        List<ElaroComplianceAlert.AlertResult> results = new List<ElaroComplianceAlert.AlertResult>();
         for (Map<String, Object> eventData : eventDataList) {
-            PrometheionComplianceAlert.AlertResult result = 
-                PrometheionComplianceAlert.processAlert(eventData);
+            ElaroComplianceAlert.AlertResult result = 
+                ElaroComplianceAlert.processAlert(eventData);
             results.add(result);
         }
         Test.stopTest();
@@ -427,7 +427,7 @@ private class PrometheionComplianceAlertTest {
         
         // Verify some alerts were triggered (those with riskScore >= 80)
         Integer triggeredCount = 0;
-        for (PrometheionComplianceAlert.AlertResult result : results) {
+        for (ElaroComplianceAlert.AlertResult result : results) {
             if (result.alertTriggered) {
                 triggeredCount++;
             }
@@ -461,8 +461,8 @@ private class PrometheionComplianceAlertTest {
             };
             
             Test.startTest();
-            PrometheionComplianceAlert.AlertResult result = 
-                PrometheionComplianceAlert.processAlert(eventData);
+            ElaroComplianceAlert.AlertResult result = 
+                ElaroComplianceAlert.processAlert(eventData);
             Test.stopTest();
             
             System.assertEquals(expectedSeverities.get(riskScore), result.severity, 

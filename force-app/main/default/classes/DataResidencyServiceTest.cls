@@ -9,7 +9,7 @@ private class DataResidencyServiceTest {
 
     @TestSetup
     static void setup() {
-        Prometheion_Evidence_Item__c item = new Prometheion_Evidence_Item__c(
+        Elaro_Evidence_Item__c item = new Elaro_Evidence_Item__c(
             Evidence_Type__c = 'Login',
             Evidence_Date__c = Date.today(),
             Description__c = 'Test evidence for international transfer',

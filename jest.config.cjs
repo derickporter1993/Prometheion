@@ -6,6 +6,7 @@ module.exports = {
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
     "<rootDir>/Sentinel-main/",
+    "<rootDir>/platform/",
     "<rootDir>/force-app/main/default/lwc/__tests__/setupTests.js",
     "<rootDir>/force-app/main/default/lwc/__tests__/axeTestHelper.js",
     // Temporarily skip tests with wire adapter compatibility issues (sfdx-lwc-jest 7.x)

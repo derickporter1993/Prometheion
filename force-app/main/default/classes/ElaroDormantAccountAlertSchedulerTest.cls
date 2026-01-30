@@ -1,11 +1,11 @@
 /**
- * @description Test class for PrometheionDormantAccountAlertScheduler
+ * @description Test class for ElaroDormantAccountAlertScheduler
  * Tests dormant account detection and alert generation
  * @group Tests
- * @see PrometheionDormantAccountAlertScheduler
+ * @see ElaroDormantAccountAlertScheduler
  */
 @isTest
-private class PrometheionDormantAccountAlertSchedulerTest {
+private class ElaroDormantAccountAlertSchedulerTest {
 
     @isTest
     static void testSchedulerExecution() {
@@ -14,7 +14,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
 
         // Act
         Test.startTest();
-        String jobId = System.schedule('Test Dormant Account Alert', cronExpression, new PrometheionDormantAccountAlertScheduler());
+        String jobId = System.schedule('Test Dormant Account Alert', cronExpression, new ElaroDormantAccountAlertScheduler());
         Test.stopTest();
 
         // Assert
@@ -27,7 +27,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
     static void testScheduleDailyMethod() {
         // Act
         Test.startTest();
-        String jobId = PrometheionDormantAccountAlertScheduler.scheduleDaily();
+        String jobId = ElaroDormantAccountAlertScheduler.scheduleDaily();
         Test.stopTest();
 
         // Assert
@@ -39,7 +39,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
     @isTest
     static void testExecuteMethod() {
         // Arrange
-        PrometheionDormantAccountAlertScheduler scheduler = new PrometheionDormantAccountAlertScheduler();
+        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
 
         // Act
         Test.startTest();
@@ -53,7 +53,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
     @isTest
     static void testExecuteWithNoUsers() {
         // Arrange - test with no standard users that are dormant
-        PrometheionDormantAccountAlertScheduler scheduler = new PrometheionDormantAccountAlertScheduler();
+        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
 
         // Act
         Test.startTest();
@@ -67,7 +67,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
     @isTest
     static void testAccessReviewCreation() {
         // Arrange
-        PrometheionDormantAccountAlertScheduler scheduler = new PrometheionDormantAccountAlertScheduler();
+        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
 
         // Act
         Test.startTest();
@@ -83,7 +83,7 @@ private class PrometheionDormantAccountAlertSchedulerTest {
     @isTest
     static void testSchedulerErrorHandling() {
         // Arrange
-        PrometheionDormantAccountAlertScheduler scheduler = new PrometheionDormantAccountAlertScheduler();
+        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
 
         // Act
         Test.startTest();

@@ -1,16 +1,16 @@
 /**
- * @description Test class for PrometheionAlertQueueable
+ * @description Test class for ElaroAlertQueueable
  * Tests queueable alert processing
  * @group Tests
- * @see PrometheionAlertQueueable
+ * @see ElaroAlertQueueable
  */
 @isTest
-private class PrometheionAlertQueueableTest {
+private class ElaroAlertQueueableTest {
 
     @isTest
     static void testQueueableExecution() {
         // Create mock queue item
-        PrometheionComplianceAlert.AlertQueueItem queueItem = new PrometheionComplianceAlert.AlertQueueItem();
+        ElaroComplianceAlert.AlertQueueItem queueItem = new ElaroComplianceAlert.AlertQueueItem();
         queueItem.alertId = 'ALERT-001';
         queueItem.severity = 'HIGH';
         queueItem.channel = 'Slack';
@@ -21,7 +21,7 @@ private class PrometheionAlertQueueableTest {
         };
 
         Test.startTest();
-        PrometheionAlertQueueable queueable = new PrometheionAlertQueueable(queueItem);
+        ElaroAlertQueueable queueable = new ElaroAlertQueueable(queueItem);
         System.enqueueJob(queueable);
         Test.stopTest();
 
@@ -31,7 +31,7 @@ private class PrometheionAlertQueueableTest {
     @isTest
     static void testQueueableWithNullItem() {
         Test.startTest();
-        PrometheionAlertQueueable queueable = new PrometheionAlertQueueable(null);
+        ElaroAlertQueueable queueable = new ElaroAlertQueueable(null);
         System.enqueueJob(queueable);
         Test.stopTest();
 
@@ -40,14 +40,14 @@ private class PrometheionAlertQueueableTest {
 
     @isTest
     static void testQueueableWithMinimalData() {
-        PrometheionComplianceAlert.AlertQueueItem queueItem = new PrometheionComplianceAlert.AlertQueueItem();
+        ElaroComplianceAlert.AlertQueueItem queueItem = new ElaroComplianceAlert.AlertQueueItem();
         queueItem.alertId = 'ALERT-002';
         queueItem.severity = 'MEDIUM';
         queueItem.channel = 'Email';
         queueItem.eventData = new Map<String, Object>();
 
         Test.startTest();
-        PrometheionAlertQueueable queueable = new PrometheionAlertQueueable(queueItem);
+        ElaroAlertQueueable queueable = new ElaroAlertQueueable(queueItem);
         System.enqueueJob(queueable);
         Test.stopTest();
 
@@ -56,7 +56,7 @@ private class PrometheionAlertQueueableTest {
 
     @isTest
     static void testQueueableWithCriticalSeverity() {
-        PrometheionComplianceAlert.AlertQueueItem queueItem = new PrometheionComplianceAlert.AlertQueueItem();
+        ElaroComplianceAlert.AlertQueueItem queueItem = new ElaroComplianceAlert.AlertQueueItem();
         queueItem.alertId = 'ALERT-003';
         queueItem.severity = 'CRITICAL';
         queueItem.channel = 'Teams';
@@ -66,7 +66,7 @@ private class PrometheionAlertQueueableTest {
         };
 
         Test.startTest();
-        PrometheionAlertQueueable queueable = new PrometheionAlertQueueable(queueItem);
+        ElaroAlertQueueable queueable = new ElaroAlertQueueable(queueItem);
         System.enqueueJob(queueable);
         Test.stopTest();
 

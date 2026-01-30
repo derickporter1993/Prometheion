@@ -21,7 +21,7 @@
 
 ## Completed Items
 
-### PROM-001: Input Validation - PrometheionGraphIndexer
+### PROM-001: Input Validation - ElaroGraphIndexer
 
 | Field | Value |
 |-------|-------|
@@ -33,10 +33,10 @@
 | **Owner** | Cursor |
 
 **Description:**
-Add input validation to PrometheionGraphIndexer.cls to prevent injection attacks and ensure data integrity.
+Add input validation to ElaroGraphIndexer.cls to prevent injection attacks and ensure data integrity.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionGraphIndexer.cls` (lines 5-18)
+- `force-app/main/default/classes/ElaroGraphIndexer.cls` (lines 5-18)
 
 **Implementation:**
 ```apex
@@ -131,7 +131,7 @@ if (!Schema.sObjectType.Flow_Execution__c.isCreateable()) {
 
 ---
 
-### PROM-004: USER_MODE - PrometheionComplianceScorer
+### PROM-004: USER_MODE - ElaroComplianceScorer
 
 | Field | Value |
 |-------|-------|
@@ -143,10 +143,10 @@ if (!Schema.sObjectType.Flow_Execution__c.isCreateable()) {
 | **Owner** | Cursor |
 
 **Description:**
-Add WITH USER_MODE to all SOQL queries in PrometheionComplianceScorer.cls to enforce field-level security.
+Add WITH USER_MODE to all SOQL queries in ElaroComplianceScorer.cls to enforce field-level security.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionComplianceScorer.cls` (lines 170, 181, 189, 257, 270, 311, 475)
+- `force-app/main/default/classes/ElaroComplianceScorer.cls` (lines 170, 181, 189, 257, 270, 311, 475)
 
 **Implementation:**
 ```apex
@@ -169,7 +169,7 @@ List<Compliance_Score__c> scores = [
 
 ---
 
-### PROM-005: USER_MODE - PrometheionGraphIndexer
+### PROM-005: USER_MODE - ElaroGraphIndexer
 
 | Field | Value |
 |-------|-------|
@@ -181,10 +181,10 @@ List<Compliance_Score__c> scores = [
 | **Owner** | Cursor |
 
 **Description:**
-Add WITH USER_MODE to SOQL queries for PermissionSet and FlowDefinitionView in PrometheionGraphIndexer.cls.
+Add WITH USER_MODE to SOQL queries for PermissionSet and FlowDefinitionView in ElaroGraphIndexer.cls.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionGraphIndexer.cls` (lines 79, 100)
+- `force-app/main/default/classes/ElaroGraphIndexer.cls` (lines 79, 100)
 
 **Implementation:**
 ```apex
@@ -323,7 +323,7 @@ trigger PerformanceAlertEventTrigger on Performance_Alert__e (after insert) {
 
 ---
 
-### PROM-009: Trigger Guard - PrometheionPCIAccessAlertTrigger
+### PROM-009: Trigger Guard - ElaroPCIAccessAlertTrigger
 
 | Field | Value |
 |-------|-------|
@@ -336,19 +336,19 @@ trigger PerformanceAlertEventTrigger on Performance_Alert__e (after insert) {
 | **Commit** | 75d0714 |
 
 **Description:**
-Add TriggerRecursionGuard to PrometheionPCIAccessAlertTrigger to prevent infinite loops when handling PCI access events.
+Add TriggerRecursionGuard to ElaroPCIAccessAlertTrigger to prevent infinite loops when handling PCI access events.
 
 **Files Changed:**
-- `force-app/main/default/triggers/PrometheionPCIAccessAlertTrigger.trigger`
+- `force-app/main/default/triggers/ElaroPCIAccessAlertTrigger.trigger`
 
 **Implementation:**
 ```apex
-trigger PrometheionPCIAccessAlertTrigger on PCI_Access_Event__e (after insert) {
-    if (TriggerRecursionGuard.isFirstRun('PrometheionPCIAccessAlertTrigger')) {
+trigger ElaroPCIAccessAlertTrigger on PCI_Access_Event__e (after insert) {
+    if (TriggerRecursionGuard.isFirstRun('ElaroPCIAccessAlertTrigger')) {
         try {
-            PrometheionPCIAccessAlertHandler.handleAfterInsert(Trigger.new);
+            ElaroPCIAccessAlertHandler.handleAfterInsert(Trigger.new);
         } finally {
-            TriggerRecursionGuard.reset('PrometheionPCIAccessAlertTrigger');
+            TriggerRecursionGuard.reset('ElaroPCIAccessAlertTrigger');
         }
     }
 }
@@ -362,7 +362,7 @@ trigger PrometheionPCIAccessAlertTrigger on PCI_Access_Event__e (after insert) {
 
 ---
 
-### PROM-010: Trigger Guard - PrometheionEventCaptureTrigger
+### PROM-010: Trigger Guard - ElaroEventCaptureTrigger
 
 | Field | Value |
 |-------|-------|
@@ -375,19 +375,19 @@ trigger PrometheionPCIAccessAlertTrigger on PCI_Access_Event__e (after insert) {
 | **Commit** | 75d0714 |
 
 **Description:**
-Add TriggerRecursionGuard to PrometheionEventCaptureTrigger to prevent infinite loops during event processing.
+Add TriggerRecursionGuard to ElaroEventCaptureTrigger to prevent infinite loops during event processing.
 
 **Files Changed:**
-- `force-app/main/default/triggers/PrometheionEventCaptureTrigger.trigger`
+- `force-app/main/default/triggers/ElaroEventCaptureTrigger.trigger`
 
 **Implementation:**
 ```apex
-trigger PrometheionEventCaptureTrigger on Prometheion_Event__e (after insert) {
-    if (TriggerRecursionGuard.isFirstRun('PrometheionEventCaptureTrigger')) {
+trigger ElaroEventCaptureTrigger on Elaro_Event__e (after insert) {
+    if (TriggerRecursionGuard.isFirstRun('ElaroEventCaptureTrigger')) {
         try {
-            PrometheionEventProcessor.processEvents(Trigger.new);
+            ElaroEventProcessor.processEvents(Trigger.new);
         } finally {
-            TriggerRecursionGuard.reset('PrometheionEventCaptureTrigger');
+            TriggerRecursionGuard.reset('ElaroEventCaptureTrigger');
         }
     }
 }
@@ -401,7 +401,7 @@ trigger PrometheionEventCaptureTrigger on Prometheion_Event__e (after insert) {
 
 ---
 
-### PROM-011: Bulk Tests - PrometheionComplianceScorerTest
+### PROM-011: Bulk Tests - ElaroComplianceScorerTest
 
 | Field | Value |
 |-------|-------|
@@ -413,10 +413,10 @@ trigger PrometheionEventCaptureTrigger on Prometheion_Event__e (after insert) {
 | **Owner** | Cursor |
 
 **Description:**
-Verify bulk test coverage with 200+ records for PrometheionComplianceScorerTest.cls.
+Verify bulk test coverage with 200+ records for ElaroComplianceScorerTest.cls.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionComplianceScorerTest.cls`
+- `force-app/main/default/classes/ElaroComplianceScorerTest.cls`
 
 **Implementation:**
 ```apex
@@ -432,7 +432,7 @@ static void testBulkProcessing_250Records() {
     insert scores;
 
     Test.startTest();
-    PrometheionComplianceScorer.calculateReadinessScore();
+    ElaroComplianceScorer.calculateReadinessScore();
     Test.stopTest();
 
     System.assertEquals(250, [SELECT COUNT() FROM Compliance_Score__c]);
@@ -448,7 +448,7 @@ static void testBulkProcessing_250Records() {
 
 ---
 
-### PROM-012: Bulk Tests - PrometheionGraphIndexerTest
+### PROM-012: Bulk Tests - ElaroGraphIndexerTest
 
 | Field | Value |
 |-------|-------|
@@ -460,18 +460,18 @@ static void testBulkProcessing_250Records() {
 | **Owner** | Cursor |
 
 **Description:**
-Verify bulk test coverage with 200+ records for PrometheionGraphIndexerTest.cls.
+Verify bulk test coverage with 200+ records for ElaroGraphIndexerTest.cls.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionGraphIndexerTest.cls`
+- `force-app/main/default/classes/ElaroGraphIndexerTest.cls`
 
 **Implementation:**
 ```apex
 @IsTest
 static void testBulkIndexing_200Records() {
-    List<Prometheion_Event__e> events = new List<Prometheion_Event__e>();
+    List<Elaro_Event__e> events = new List<Elaro_Event__e>();
     for (Integer i = 0; i < 200; i++) {
-        events.add(new Prometheion_Event__e(
+        events.add(new Elaro_Event__e(
             Entity_Type__c = 'PermissionSet',
             Entity_Id__c = '0PS' + String.valueOf(i).leftPad(15, '0'),
             Framework__c = 'SOC2'
@@ -621,14 +621,14 @@ static void testPublishBulkWithMixedMetrics() {
 | **Owner** | Cursor |
 
 **Description:**
-Create SUPPORTED_FRAMEWORKS constant and isValidFramework() method in PrometheionConstants.cls.
+Create SUPPORTED_FRAMEWORKS constant and isValidFramework() method in ElaroConstants.cls.
 
 **Files Changed:**
-- `force-app/main/default/classes/PrometheionConstants.cls`
+- `force-app/main/default/classes/ElaroConstants.cls`
 
 **Implementation:**
 ```apex
-public class PrometheionConstants {
+public class ElaroConstants {
     public static final Set<String> SUPPORTED_FRAMEWORKS = new Set<String>{
         'HIPAA', 'SOC2', 'NIST', 'FedRAMP', 'GDPR', 'SOX',
         'PCI-DSS', 'CCPA', 'GLBA', 'ISO27001'
@@ -671,26 +671,26 @@ public class PrometheionConstants {
 | **Owner** | TBD |
 
 **Description:**
-Add framework validation using PrometheionConstants.isValidFramework() to all service classes that accept framework parameter.
+Add framework validation using ElaroConstants.isValidFramework() to all service classes that accept framework parameter.
 
 **Files to Update:**
-- `PrometheionComplianceScorer.cls`
+- `ElaroComplianceScorer.cls`
 - `EvidenceCollectionService.cls`
 - `ComplianceFrameworkService.cls`
-- `PrometheionRealtimeMonitor.cls`
+- `ElaroRealtimeMonitor.cls`
 - Framework-specific services (HIPAA, SOC2, GDPR, etc.)
 
 **Implementation Pattern:**
 ```apex
 public static void processForFramework(String framework) {
-    PrometheionConstants.validateFramework(framework);
+    ElaroConstants.validateFramework(framework);
     // ... rest of method
 }
 ```
 
 **Acceptance Criteria:**
 - [ ] All public methods accepting framework parameter validate input
-- [ ] Uses PrometheionConstants.validateFramework()
+- [ ] Uses ElaroConstants.validateFramework()
 - [ ] IllegalArgumentException thrown for invalid frameworks
 - [ ] Test coverage for validation paths
 
@@ -733,4 +733,4 @@ Based on completed P1 items:
 
 *Document Version: 1.0*
 *Created: 2026-01-13*
-*Project: Prometheion v3.0*
+*Project: Elaro v3.0*

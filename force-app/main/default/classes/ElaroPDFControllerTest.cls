@@ -1,15 +1,15 @@
 /**
- * @description Test class for PrometheionPDFController
+ * @description Test class for ElaroPDFController
  * Tests Visualforce PDF controller for audit packages
  * @group Tests
- * @see PrometheionPDFController
+ * @see ElaroPDFController
  */
 @isTest
-private class PrometheionPDFControllerTest {
+private class ElaroPDFControllerTest {
 
     @TestSetup
     static void setup() {
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'PDF Test Package',
             Framework__c = 'HIPAA',
             Status__c = 'DRAFT',
@@ -19,29 +19,29 @@ private class PrometheionPDFControllerTest {
         insert pkg;
 
         // Create evidence items with various types
-        List<Prometheion_Evidence_Item__c> items = new List<Prometheion_Evidence_Item__c>();
-        items.add(new Prometheion_Evidence_Item__c(
+        List<Elaro_Evidence_Item__c> items = new List<Elaro_Evidence_Item__c>();
+        items.add(new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'LoginAs',
             Evidence_Date__c = Date.today(),
             Description__c = 'Critical impersonation event',
             Status__c = 'COLLECTED'
         ));
-        items.add(new Prometheion_Evidence_Item__c(
+        items.add(new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'API',
             Evidence_Date__c = Date.today(),
             Description__c = 'High risk API access',
             Status__c = 'COLLECTED'
         ));
-        items.add(new Prometheion_Evidence_Item__c(
+        items.add(new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'Login',
             Evidence_Date__c = Date.today(),
             Description__c = 'Standard login event',
             Status__c = 'COLLECTED'
         ));
-        items.add(new Prometheion_Evidence_Item__c(
+        items.add(new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'Logout',
             Evidence_Date__c = Date.today(),
@@ -53,11 +53,11 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testControllerInitialization() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
 
         Test.startTest();
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
         System.assertNotEquals(null, controller.auditPackage, 'Audit package should be loaded');
@@ -68,11 +68,11 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testStatisticsCalculation() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
 
         Test.startTest();
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
         System.assertEquals(1, controller.criticalCount, 'Should have 1 critical event (LoginAs)');
@@ -83,9 +83,9 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testGetComplianceScore() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
 
         Test.startTest();
         Decimal score = controller.getComplianceScore();
@@ -96,9 +96,9 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testGetDateRange() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
 
         Test.startTest();
         String dateRange = controller.getDateRange();
@@ -109,9 +109,9 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testGetRiskColorClass() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
 
         Test.startTest();
         System.assertEquals('risk-critical', controller.getRiskColorClass('CRITICAL'), 'Critical should map correctly');
@@ -124,11 +124,11 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testControlSummary() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
 
         Test.startTest();
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
         System.assert(controller.controlSummary.size() > 0, 'Control summary should be populated');
@@ -136,18 +136,18 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testControllerWithPageParameter() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
 
         // Set page parameters
-        PageReference pageRef = Page.PrometheionAuditPackagePDF;
+        PageReference pageRef = Page.ElaroAuditPackagePDF;
         pageRef.getParameters().put('id', pkg.Id);
         pageRef.getParameters().put('controls', 'Login,LoginAs');
         Test.setCurrentPage(pageRef);
 
-        ApexPages.StandardController stdController = new ApexPages.StandardController(new Prometheion_Audit_Package__c());
+        ApexPages.StandardController stdController = new ApexPages.StandardController(new Elaro_Audit_Package__c());
 
         Test.startTest();
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
         System.assertNotEquals(null, controller.selectedControls, 'Selected controls should be set');
@@ -155,10 +155,10 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testControllerWithNullPackage() {
-        ApexPages.StandardController stdController = new ApexPages.StandardController(new Prometheion_Audit_Package__c());
+        ApexPages.StandardController stdController = new ApexPages.StandardController(new Elaro_Audit_Package__c());
 
         Test.startTest();
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
         // Should handle gracefully without errors
@@ -167,7 +167,7 @@ private class PrometheionPDFControllerTest {
 
     @isTest
     static void testComplianceScoreNoEvidence() {
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Empty Package',
             Framework__c = 'SOC2',
             Status__c = 'DRAFT'
@@ -175,7 +175,7 @@ private class PrometheionPDFControllerTest {
         insert pkg;
 
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
-        PrometheionPDFController controller = new PrometheionPDFController(stdController);
+        ElaroPDFController controller = new ElaroPDFController(stdController);
 
         Test.startTest();
         Decimal score = controller.getComplianceScore();

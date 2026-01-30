@@ -1,17 +1,17 @@
 /**
- * @description Test class for PrometheionEventScheduler
+ * @description Test class for ElaroEventScheduler
  * Tests scheduled event loading for compliance monitoring
  * @group Tests
- * @see PrometheionEventScheduler
+ * @see ElaroEventScheduler
  */
 @isTest
-private class PrometheionEventSchedulerTest {
+private class ElaroEventSchedulerTest {
 
     @isTest
     static void testDefaultConstructor() {
         // Act
         Test.startTest();
-        PrometheionEventScheduler scheduler = new PrometheionEventScheduler();
+        ElaroEventScheduler scheduler = new ElaroEventScheduler();
         Test.stopTest();
 
         // Assert
@@ -27,7 +27,7 @@ private class PrometheionEventSchedulerTest {
 
         // Act
         Test.startTest();
-        PrometheionEventScheduler scheduler = new PrometheionEventScheduler(eventType, daysBack, framework);
+        ElaroEventScheduler scheduler = new ElaroEventScheduler(eventType, daysBack, framework);
         Test.stopTest();
 
         // Assert
@@ -41,7 +41,7 @@ private class PrometheionEventSchedulerTest {
 
         // Act
         Test.startTest();
-        PrometheionEventScheduler scheduler = new PrometheionEventScheduler(eventType, null, null);
+        ElaroEventScheduler scheduler = new ElaroEventScheduler(eventType, null, null);
         Test.stopTest();
 
         // Assert
@@ -55,7 +55,7 @@ private class PrometheionEventSchedulerTest {
 
         // Act
         Test.startTest();
-        String jobId = System.schedule('Test Event Scheduler', cronExpression, new PrometheionEventScheduler());
+        String jobId = System.schedule('Test Event Scheduler', cronExpression, new ElaroEventScheduler());
         Test.stopTest();
 
         // Assert
@@ -67,7 +67,7 @@ private class PrometheionEventSchedulerTest {
     @isTest
     static void testExecuteMethod() {
         // Arrange
-        PrometheionEventScheduler scheduler = new PrometheionEventScheduler('LOGIN', 7, 'SOC2');
+        ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', 7, 'SOC2');
 
         // Act
         Test.startTest();
@@ -85,7 +85,7 @@ private class PrometheionEventSchedulerTest {
 
         Test.startTest();
         for (String eventType : eventTypes) {
-            PrometheionEventScheduler scheduler = new PrometheionEventScheduler(eventType, 7, 'SOC2');
+            ElaroEventScheduler scheduler = new ElaroEventScheduler(eventType, 7, 'SOC2');
             scheduler.execute(null);
         }
         Test.stopTest();
@@ -101,7 +101,7 @@ private class PrometheionEventSchedulerTest {
 
         Test.startTest();
         for (String framework : frameworks) {
-            PrometheionEventScheduler scheduler = new PrometheionEventScheduler('LOGIN', 7, framework);
+            ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', 7, framework);
             scheduler.execute(null);
         }
         Test.stopTest();

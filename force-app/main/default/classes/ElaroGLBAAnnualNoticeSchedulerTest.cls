@@ -1,11 +1,11 @@
 /**
- * @description Unit tests for PrometheionGLBAAnnualNoticeScheduler
+ * @description Unit tests for ElaroGLBAAnnualNoticeScheduler
  * Tests schedulable execution, business day logic, and batch job queuing
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
-private class PrometheionGLBAAnnualNoticeSchedulerTest {
+private class ElaroGLBAAnnualNoticeSchedulerTest {
     
     @testSetup
     static void setupTestData() {
@@ -51,7 +51,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     
     @isTest
     static void testExecute_BusinessDay() {
-        PrometheionGLBAAnnualNoticeScheduler scheduler = new PrometheionGLBAAnnualNoticeScheduler();
+        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         
         Test.startTest();
         scheduler.execute(null);
@@ -62,7 +62,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
             SELECT Id, Status, JobType
             FROM AsyncApexJob
             WHERE JobType = 'BatchApex'
-            AND ApexClass.Name = 'PrometheionGLBAAnnualNoticeBatch'
+            AND ApexClass.Name = 'ElaroGLBAAnnualNoticeBatch'
             ORDER BY CreatedDate DESC
             LIMIT 1
         ];
@@ -75,7 +75,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     static void testExecute_Weekend() {
         // Note: This test verifies the business day logic
         // The actual day check happens at runtime, so we test the logic
-        PrometheionGLBAAnnualNoticeScheduler scheduler = new PrometheionGLBAAnnualNoticeScheduler();
+        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         
         Test.startTest();
         // Execute regardless of day - the scheduler checks internally
@@ -87,7 +87,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     
     @isTest
     static void testExecute_BatchQueued() {
-        PrometheionGLBAAnnualNoticeScheduler scheduler = new PrometheionGLBAAnnualNoticeScheduler();
+        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         
         Test.startTest();
         scheduler.execute(null);
@@ -114,7 +114,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     @isTest
     static void testScheduleDaily() {
         Test.startTest();
-        String jobId = PrometheionGLBAAnnualNoticeScheduler.scheduleDaily();
+        String jobId = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -135,7 +135,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     static void testScheduleDaily_WithCustomCron() {
         // Test that SchedulerErrorHandler.getCronExpression is used
         Test.startTest();
-        String jobId = PrometheionGLBAAnnualNoticeScheduler.scheduleDaily();
+        String jobId = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -158,7 +158,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     @isTest
     static void testIsBusinessDay_Logic() {
         // Test the business day logic indirectly through execution
-        PrometheionGLBAAnnualNoticeScheduler scheduler = new PrometheionGLBAAnnualNoticeScheduler();
+        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         
         Test.startTest();
         // Execute scheduler - it checks business day internally
@@ -191,7 +191,7 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
         }
         insert notices;
         
-        PrometheionGLBAAnnualNoticeScheduler scheduler = new PrometheionGLBAAnnualNoticeScheduler();
+        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         
         Test.startTest();
         scheduler.execute(null);
@@ -205,8 +205,8 @@ private class PrometheionGLBAAnnualNoticeSchedulerTest {
     static void testMultipleScheduledJobs() {
         // Test that multiple jobs can be scheduled
         Test.startTest();
-        String jobId1 = PrometheionGLBAAnnualNoticeScheduler.scheduleDaily();
-        String jobId2 = PrometheionGLBAAnnualNoticeScheduler.scheduleDaily();
+        String jobId1 = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
+        String jobId2 = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
         System.assertNotEquals(null, jobId1, 'First job should be scheduled');

@@ -34,7 +34,7 @@ private class ServiceNowIntegrationTest {
 
     @TestSetup
     static void setup() {
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Test Package',
             Framework__c = 'SOC2',
             Status__c = 'DRAFT',
@@ -43,7 +43,7 @@ private class ServiceNowIntegrationTest {
         );
         insert pkg;
 
-        Prometheion_Evidence_Item__c evidence = new Prometheion_Evidence_Item__c(
+        Elaro_Evidence_Item__c evidence = new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'Login',
             Evidence_Date__c = Date.today(),
@@ -78,7 +78,7 @@ private class ServiceNowIntegrationTest {
     @isTest
     static void testPushEvidence() {
         Test.setMock(HttpCalloutMock.class, new ServiceNowMock());
-        Prometheion_Evidence_Item__c evidence = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
+        Elaro_Evidence_Item__c evidence = [SELECT Id FROM Elaro_Evidence_Item__c LIMIT 1];
 
         Test.startTest();
         ServiceNowIntegration.pushEvidence(evidence.Id);
@@ -119,7 +119,7 @@ private class ServiceNowIntegrationTest {
     @isTest
     static void testSyncComplianceStatus() {
         Test.setMock(HttpCalloutMock.class, new ServiceNowMock());
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
 
         Test.startTest();
         ServiceNowIntegration.syncComplianceStatus(pkg.Id);

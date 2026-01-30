@@ -1,17 +1,17 @@
 /**
- * @description Unit tests for PrometheionScheduledDelivery
+ * @description Unit tests for ElaroScheduledDelivery
  * Tests scheduled delivery execution, error handling, and scheduling methods
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
-private class PrometheionScheduledDeliveryTest {
+private class ElaroScheduledDeliveryTest {
     
     @testSetup
     static void setupTestData() {
         // Create audit package
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 5);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 5);
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -20,10 +20,10 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testExecute_Success() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com', 'admin@example.com'};
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,
             recipients
         );
@@ -41,7 +41,7 @@ private class PrometheionScheduledDeliveryTest {
         String invalidPackageId = 'a0000000000000AAA';
         List<String> recipients = new List<String>{'test@example.com'};
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             invalidPackageId,
             recipients
         );
@@ -59,10 +59,10 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testExecute_EmptyRecipients() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>();
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,
             recipients
         );
@@ -77,13 +77,13 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testExecute_ErrorNotification() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         
         // Delete package to cause error
         delete pkg;
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,
             recipients
         );
@@ -103,12 +103,12 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testScheduleDelivery() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         String cronExpression = '0 0 8 * * ?'; // Daily at 8 AM
         
         Test.startTest();
-        Id jobId = PrometheionScheduledDelivery.scheduleDelivery(
+        Id jobId = ElaroScheduledDelivery.scheduleDelivery(
             pkg.Id,
             recipients,
             cronExpression
@@ -125,13 +125,13 @@ private class PrometheionScheduledDeliveryTest {
         ];
         
         System.assertEquals(cronExpression, ct.CronExpression, 'Cron expression should match');
-        System.assert(ct.CronJobDetail.Name.contains('Prometheion_Delivery_'), 
-            'Job name should contain Prometheion_Delivery_');
+        System.assert(ct.CronJobDetail.Name.contains('Elaro_Delivery_'), 
+            'Job name should contain Elaro_Delivery_');
     }
     
     @isTest
     static void testScheduleDelivery_MultipleRecipients() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{
             'recipient1@example.com',
             'recipient2@example.com',
@@ -140,7 +140,7 @@ private class PrometheionScheduledDeliveryTest {
         String cronExpression = '0 0 9 * * ?';
         
         Test.startTest();
-        Id jobId = PrometheionScheduledDelivery.scheduleDelivery(
+        Id jobId = ElaroScheduledDelivery.scheduleDelivery(
             pkg.Id,
             recipients,
             cronExpression
@@ -156,11 +156,11 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testScheduleWeekly() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
-        Id jobId = PrometheionScheduledDelivery.scheduleWeekly(pkg.Id, recipients);
+        Id jobId = ElaroScheduledDelivery.scheduleWeekly(pkg.Id, recipients);
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -181,11 +181,11 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testScheduleMonthly() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
-        Id jobId = PrometheionScheduledDelivery.scheduleMonthly(pkg.Id, recipients);
+        Id jobId = ElaroScheduledDelivery.scheduleMonthly(pkg.Id, recipients);
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -206,11 +206,11 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testScheduleQuarterly() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         
         Test.startTest();
-        Id jobId = PrometheionScheduledDelivery.scheduleQuarterly(pkg.Id, recipients);
+        Id jobId = ElaroScheduledDelivery.scheduleQuarterly(pkg.Id, recipients);
         Test.stopTest();
         
         System.assertNotEquals(null, jobId, 'Should return job ID');
@@ -231,7 +231,7 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testBulkDelivery() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         
         // Create 200 recipients
         List<String> recipients = new List<String>();
@@ -239,7 +239,7 @@ private class PrometheionScheduledDeliveryTest {
             recipients.add('recipient' + i + '@example.com');
         }
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,
             recipients
         );
@@ -257,10 +257,10 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testExecute_ExceptionHandling() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         
-        PrometheionScheduledDelivery scheduler = new PrometheionScheduledDelivery(
+        ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,
             recipients
         );
@@ -279,13 +279,13 @@ private class PrometheionScheduledDeliveryTest {
     
     @isTest
     static void testScheduleDelivery_InvalidCron() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         List<String> recipients = new List<String>{'test@example.com'};
         String invalidCron = 'invalid cron expression';
         
         Test.startTest();
         try {
-            Id jobId = PrometheionScheduledDelivery.scheduleDelivery(
+            Id jobId = ElaroScheduledDelivery.scheduleDelivery(
                 pkg.Id,
                 recipients,
                 invalidCron
