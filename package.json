@@ -46,6 +46,9 @@
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4"
   },
+  "overrides": {
+    "fast-xml-parser": "^5.3.4"
+  },
   "lint-staged": {
     "*.{js,ts,html,md,json,yml,yaml,xml}": [
       "prettier --write"

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export interface JwtAuthConfig {
   clientId: string;
@@ -20,10 +20,8 @@ export interface TokenResponse {
  * Authenticate using JWT Bearer flow
  * Recommended for service-to-service authentication
  */
-export async function authenticateWithJwt(
-  config: JwtAuthConfig
-): Promise<TokenResponse> {
-  const loginUrl = config.loginUrl ?? 'https://login.salesforce.com';
+export async function authenticateWithJwt(config: JwtAuthConfig): Promise<TokenResponse> {
+  const loginUrl = config.loginUrl ?? "https://login.salesforce.com";
   const tokenEndpoint = config.tokenEndpoint ?? `${loginUrl}/services/oauth2/token`;
 
   // Create JWT assertion
@@ -35,16 +33,16 @@ export async function authenticateWithJwt(
     exp: now + 300, // 5 minutes
   };
 
-  const assertion = jwt.sign(payload, config.privateKey, { algorithm: 'RS256' });
+  const assertion = jwt.sign(payload, config.privateKey, { algorithm: "RS256" });
 
   // Exchange JWT for access token
   const response = await fetch(tokenEndpoint, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       assertion,
     }),
   });
@@ -54,7 +52,12 @@ export async function authenticateWithJwt(
     throw new AuthenticationError(`JWT authentication failed: ${error}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as {
+    access_token: string;
+    instance_url: string;
+    issued_at: string;
+    token_type: string;
+  };
 
   return {
     accessToken: data.access_token,
@@ -71,17 +74,17 @@ export function validateJwtConfig(config: JwtAuthConfig): string[] {
   const errors: string[] = [];
 
   if (!config.clientId) {
-    errors.push('clientId is required');
+    errors.push("clientId is required");
   }
 
   if (!config.username) {
-    errors.push('username is required');
+    errors.push("username is required");
   }
 
   if (!config.privateKey) {
-    errors.push('privateKey is required');
-  } else if (!config.privateKey.includes('BEGIN') || !config.privateKey.includes('PRIVATE KEY')) {
-    errors.push('privateKey must be a valid PEM-formatted RSA private key');
+    errors.push("privateKey is required");
+  } else if (!config.privateKey.includes("BEGIN") || !config.privateKey.includes("PRIVATE KEY")) {
+    errors.push("privateKey must be a valid PEM-formatted RSA private key");
   }
 
   return errors;
@@ -90,6 +93,6 @@ export function validateJwtConfig(config: JwtAuthConfig): string[] {
 export class AuthenticationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }

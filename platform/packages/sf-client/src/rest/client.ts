@@ -70,7 +70,7 @@ export class RestClient {
   constructor(config: RestClientConfig) {
     this.instanceUrl = config.instanceUrl;
     this.accessToken = config.accessToken;
-    this.apiVersion = config.apiVersion ?? 'v63.0';
+    this.apiVersion = config.apiVersion ?? "v63.0";
     this.baseUrl = `${this.instanceUrl}/services/data/${this.apiVersion}`;
   }
 
@@ -85,9 +85,7 @@ export class RestClient {
   /**
    * Get next page of query results
    */
-  async queryMore<T = Record<string, unknown>>(
-    nextRecordsUrl: string
-  ): Promise<QueryResult<T>> {
+  async queryMore<T = Record<string, unknown>>(nextRecordsUrl: string): Promise<QueryResult<T>> {
     const url = `${this.instanceUrl}${nextRecordsUrl}`;
     return this.request<QueryResult<T>>(url);
   }
@@ -145,7 +143,7 @@ export class RestClient {
   ): Promise<T> {
     let url = `${this.baseUrl}/sobjects/${sobject}/${id}`;
     if (fields && fields.length > 0) {
-      url += `?fields=${fields.join(',')}`;
+      url += `?fields=${fields.join(",")}`;
     }
     return this.request<T>(url);
   }
@@ -159,7 +157,7 @@ export class RestClient {
   ): Promise<{ id: string; success: boolean; errors: string[] }> {
     const url = `${this.baseUrl}/sobjects/${sobject}`;
     return this.request(url, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
@@ -167,14 +165,10 @@ export class RestClient {
   /**
    * Update a record
    */
-  async updateRecord(
-    sobject: string,
-    id: string,
-    data: Record<string, unknown>
-  ): Promise<void> {
+  async updateRecord(sobject: string, id: string, data: Record<string, unknown>): Promise<void> {
     const url = `${this.baseUrl}/sobjects/${sobject}/${id}`;
     await this.request(url, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
@@ -190,7 +184,7 @@ export class RestClient {
   ): Promise<{ id: string; success: boolean; created: boolean }> {
     const url = `${this.baseUrl}/sobjects/${sobject}/${externalIdField}/${externalIdValue}`;
     return this.request(url, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
@@ -200,7 +194,7 @@ export class RestClient {
    */
   async deleteRecord(sobject: string, id: string): Promise<void> {
     const url = `${this.baseUrl}/sobjects/${sobject}/${id}`;
-    await this.request(url, { method: 'DELETE' });
+    await this.request(url, { method: "DELETE" });
   }
 
   /**
@@ -214,9 +208,7 @@ export class RestClient {
   /**
    * Get API version info
    */
-  async getVersions(): Promise<
-    Array<{ label: string; url: string; version: string }>
-  > {
+  async getVersions(): Promise<Array<{ label: string; url: string; version: string }>> {
     const url = `${this.instanceUrl}/services/data`;
     return this.request(url);
   }
@@ -229,8 +221,8 @@ export class RestClient {
       ...options,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
         ...options.headers,
       },
     });
@@ -249,7 +241,7 @@ export class RestClient {
       return undefined as T;
     }
 
-    return response.json();
+    return (await response.json()) as T;
   }
 
   /**
@@ -267,6 +259,6 @@ export class RestApiError extends Error {
     public body: string
   ) {
     super(message);
-    this.name = 'RestApiError';
+    this.name = "RestApiError";
   }
 }

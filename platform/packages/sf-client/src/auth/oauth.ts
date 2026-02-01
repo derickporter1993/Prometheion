@@ -27,18 +27,18 @@ export interface RefreshTokenResponse {
  * Build OAuth authorization URL
  */
 export function buildAuthorizationUrl(config: OAuthConfig, state?: string): string {
-  const loginUrl = config.loginUrl ?? 'https://login.salesforce.com';
-  const scopes = config.scopes ?? ['api', 'refresh_token', 'full'];
+  const loginUrl = config.loginUrl ?? "https://login.salesforce.com";
+  const scopes = config.scopes ?? ["api", "refresh_token", "full"];
 
   const params = new URLSearchParams({
-    response_type: 'code',
+    response_type: "code",
     client_id: config.clientId,
     redirect_uri: config.redirectUri,
-    scope: scopes.join(' '),
+    scope: scopes.join(" "),
   });
 
   if (state) {
-    params.set('state', state);
+    params.set("state", state);
   }
 
   return `${loginUrl}/services/oauth2/authorize?${params.toString()}`;
@@ -51,16 +51,16 @@ export async function exchangeCodeForTokens(
   config: OAuthConfig,
   code: string
 ): Promise<OAuthTokenResponse> {
-  const loginUrl = config.loginUrl ?? 'https://login.salesforce.com';
+  const loginUrl = config.loginUrl ?? "https://login.salesforce.com";
   const tokenEndpoint = `${loginUrl}/services/oauth2/token`;
 
   const response = await fetch(tokenEndpoint, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      grant_type: 'authorization_code',
+      grant_type: "authorization_code",
       client_id: config.clientId,
       client_secret: config.clientSecret,
       redirect_uri: config.redirectUri,
@@ -73,7 +73,15 @@ export async function exchangeCodeForTokens(
     throw new OAuthError(`Token exchange failed: ${error}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as {
+    access_token: string;
+    refresh_token: string;
+    instance_url: string;
+    id: string;
+    issued_at: string;
+    token_type: string;
+    signature: string;
+  };
 
   return {
     accessToken: data.access_token,
@@ -93,16 +101,16 @@ export async function refreshAccessToken(
   config: OAuthConfig,
   refreshToken: string
 ): Promise<RefreshTokenResponse> {
-  const loginUrl = config.loginUrl ?? 'https://login.salesforce.com';
+  const loginUrl = config.loginUrl ?? "https://login.salesforce.com";
   const tokenEndpoint = `${loginUrl}/services/oauth2/token`;
 
   const response = await fetch(tokenEndpoint, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      grant_type: 'refresh_token',
+      grant_type: "refresh_token",
       client_id: config.clientId,
       client_secret: config.clientSecret,
       refresh_token: refreshToken,
@@ -114,7 +122,12 @@ export async function refreshAccessToken(
     throw new OAuthError(`Token refresh failed: ${error}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as {
+    access_token: string;
+    instance_url: string;
+    issued_at: string;
+    token_type: string;
+  };
 
   return {
     accessToken: data.access_token,
@@ -127,16 +140,13 @@ export async function refreshAccessToken(
 /**
  * Revoke tokens
  */
-export async function revokeToken(
-  loginUrl: string,
-  token: string
-): Promise<void> {
+export async function revokeToken(loginUrl: string, token: string): Promise<void> {
   const revokeEndpoint = `${loginUrl}/services/oauth2/revoke`;
 
   const response = await fetch(revokeEndpoint, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({ token }),
   });
@@ -165,7 +175,15 @@ export async function getUserIdentity(
     throw new OAuthError(`Failed to get user identity: ${error}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as {
+    user_id: string;
+    organization_id: string;
+    preferred_username: string;
+    name: string;
+    email: string;
+    profile: string;
+    picture?: string;
+  };
 
   return {
     userId: data.user_id,
@@ -191,6 +209,6 @@ export interface UserIdentity {
 export class OAuthError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'OAuthError';
+    this.name = "OAuthError";
   }
 }
