@@ -68,6 +68,10 @@ Object.defineProperty(window, "matchMedia", {
 // Mock scrollIntoView which isn't available in jsdom
 Element.prototype.scrollIntoView = jest.fn();
 
+// Mock HTMLAnchorElement.click() to prevent JSDOM navigation errors
+// This is needed for components that programmatically download files
+HTMLAnchorElement.prototype.click = jest.fn();
+
 // Helper function to flush all pending promises
 global.flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
