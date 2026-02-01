@@ -116,7 +116,7 @@ jobs:
 
       - name: Upload Scanner Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: scanner-reports
           path: scanner-reports/
