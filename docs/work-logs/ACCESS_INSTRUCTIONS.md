@@ -1,4 +1,4 @@
-# How to Access the Prometheion Compliance Dashboard
+# How to Access the Elaro Compliance Dashboard
 
 ## ✅ Dashboard is Now Deployed and Accessible!
 
@@ -6,10 +6,10 @@
 
 ## 🚀 Access Methods
 
-### Method 1: Via Prometheion App (Recommended)
+### Method 1: Via Elaro App (Recommended)
 1. Click the **App Launcher** (9-dot menu) in the top-left corner
-2. Search for **"Prometheion"**
-3. Click on **Prometheion** app
+2. Search for **"Elaro"**
+3. Click on **Elaro** app
 4. You should see a new tab: **"Compliance Dashboard"**
 5. Click the **"Compliance Dashboard"** tab
 
@@ -20,7 +20,7 @@
 
 ### Method 3: Via Setup (If tab not visible)
 1. Go to **Setup** → **Lightning App Builder**
-2. Search for **"Prometheion Compliance Hub Minimal"**
+2. Search for **"Elaro Compliance Hub Minimal"**
 3. Click **Edit**
 4. The dashboard component should be visible on the page
 5. Click **Save** → **Activate**
@@ -56,7 +56,7 @@ Once you're on the Compliance Dashboard page:
 
 ## 📋 Quick Checklist
 
-- [ ] Prometheion app is accessible
+- [ ] Elaro app is accessible
 - [ ] "Compliance Dashboard" tab appears
 - [ ] Dashboard loads without errors
 - [ ] All 10 framework cards are visible
@@ -72,7 +72,7 @@ Once you're on the Compliance Dashboard page:
 
 ### Option A: Add Tab Manually
 1. **Setup** → **App Manager**
-2. Find **Prometheion** app
+2. Find **Elaro** app
 3. Click **▼** → **Edit**
 4. Go to **Navigation Items**
 5. Find **"Compliance Dashboard"** in Available Items
@@ -83,9 +83,9 @@ Once you're on the Compliance Dashboard page:
 1. **Setup** → **Lightning App Builder**
 2. Click **New** → **App Page**
 3. Name it: **"Compliance Dashboard"**
-4. Drag **"Prometheion Dashboard"** component onto the page
+4. Drag **"Elaro Dashboard"** component onto the page
 5. Click **Save** → **Activate**
-6. Assign to Prometheion app navigation
+6. Assign to Elaro app navigation
 
 ---
 
@@ -108,6 +108,6 @@ When viewing the dashboard, you should see these 10 frameworks:
 
 ## ✅ Verification
 
-All 30 compliance policies are active and deployed. The dashboard should now be accessible through the Prometheion app!
+All 30 compliance policies are active and deployed. The dashboard should now be accessible through the Elaro app!
 
-**Next Step:** Open the Prometheion app and click the "Compliance Dashboard" tab to test the framework filtering and drill-down features.
+**Next Step:** Open the Elaro app and click the "Compliance Dashboard" tab to test the framework filtering and drill-down features.

@@ -8,7 +8,7 @@
  * - Article 17: Right to erasure ("right to be forgotten")
  * - Article 20: Right to data portability
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class GDPRDataSubjectService extends ComplianceServiceBase implements IDataSubjectService {
@@ -300,7 +300,7 @@ public with sharing class GDPRDataSubjectService extends ComplianceServiceBase i
     
     private Integer performErasure(Id dataSubjectId) {
         // Simplified implementation - would cascade delete related records
-        // Similar to PrometheionGDPRDataErasureService
+        // Similar to ElaroGDPRDataErasureService
         return 0;
     }
     

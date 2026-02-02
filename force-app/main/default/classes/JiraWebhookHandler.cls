@@ -10,9 +10,9 @@
  * Configuration:
  * 1. Create a Site in Salesforce with this class as a guest user service
  * 2. Configure webhook in Jira pointing to: https://your-site.force.com/services/apexrest/jira/webhook
- * 3. Set webhook secret in Prometheion_Jira_Settings__c.Webhook_Secret__c
+ * 3. Set webhook secret in Elaro_Jira_Settings__c.Webhook_Secret__c
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @RestResource(urlMapping='/jira/webhook/*')
@@ -243,7 +243,7 @@ global with sharing class JiraWebhookHandler {
      * @return True if valid or no secret configured
      */
     private static Boolean validateWebhookSecret(RestRequest req) {
-        Prometheion_Jira_Settings__c settings = Prometheion_Jira_Settings__c.getOrgDefaults();
+        Elaro_Jira_Settings__c settings = Elaro_Jira_Settings__c.getOrgDefaults();
 
         if (String.isBlank(settings.Webhook_Secret__c)) {
             // No secret configured - allow all requests (not recommended for production)

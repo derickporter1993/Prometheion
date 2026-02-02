@@ -9,7 +9,7 @@ private class RemediationOrchestratorTest {
 
     @TestSetup
     static void setup() {
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Test Package',
             Framework__c = 'SOC2',
             Status__c = 'DRAFT',
@@ -18,7 +18,7 @@ private class RemediationOrchestratorTest {
         );
         insert pkg;
 
-        Prometheion_Evidence_Item__c evidence = new Prometheion_Evidence_Item__c(
+        Elaro_Evidence_Item__c evidence = new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
             Evidence_Type__c = 'LoginAs',
             Evidence_Date__c = Date.today(),
@@ -30,7 +30,7 @@ private class RemediationOrchestratorTest {
 
     @isTest
     static void testCreateRemediationCase() {
-        Prometheion_Evidence_Item__c evidence = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
+        Elaro_Evidence_Item__c evidence = [SELECT Id FROM Elaro_Evidence_Item__c LIMIT 1];
 
         Test.startTest();
         Id caseId = RemediationOrchestrator.createRemediationCase(evidence.Id, 'High');
@@ -44,7 +44,7 @@ private class RemediationOrchestratorTest {
 
     @isTest
     static void testCreateRemediationCaseDefaultPriority() {
-        Prometheion_Evidence_Item__c evidence = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
+        Elaro_Evidence_Item__c evidence = [SELECT Id FROM Elaro_Evidence_Item__c LIMIT 1];
 
         Test.startTest();
         Id caseId = RemediationOrchestrator.createRemediationCase(evidence.Id, null);
@@ -149,7 +149,7 @@ private class RemediationOrchestratorTest {
 
     @isTest
     static void testGetRemediationHistory() {
-        Prometheion_Evidence_Item__c evidence = [SELECT Id FROM Prometheion_Evidence_Item__c LIMIT 1];
+        Elaro_Evidence_Item__c evidence = [SELECT Id FROM Elaro_Evidence_Item__c LIMIT 1];
 
         Test.startTest();
         List<RemediationOrchestrator.RemediationResult> history = RemediationOrchestrator.getRemediationHistory(evidence.Id);

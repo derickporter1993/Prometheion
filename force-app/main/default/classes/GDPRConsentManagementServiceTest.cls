@@ -2,7 +2,7 @@
  * Test class for GDPRConsentManagementService
  * Tests consent recording, withdrawal, history, and validation
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

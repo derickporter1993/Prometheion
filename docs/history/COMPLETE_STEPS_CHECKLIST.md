@@ -1,4 +1,4 @@
-# Prometheion Complete Steps Checklist
+# Elaro Complete Steps Checklist
 
 **Version:** 3.0.0
 **Date:** 2025-12-25
@@ -28,7 +28,7 @@
 - [x] All classes have proper error handling
 - [x] Platform Cache implemented for performance-critical operations
 - [x] Queueable classes used instead of `@future` methods
-- [x] All Sentinel/OpsGuardian references replaced with Prometheion
+- [x] All Sentinel/OpsGuardian references replaced with Elaro
 - [x] VS Code settings configured
 - [x] Recommended extensions documented
 
@@ -46,7 +46,7 @@
 ### Step 1.1: Create Scratch Org
 
 ```bash
-sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-dev -d -y 30
+sf org create scratch -f config/elaro-scratch-def.json -a elaro-dev -d -y 30
 ```
 
 - [ ] Scratch org created successfully
@@ -55,7 +55,7 @@ sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-dev 
 ### Step 1.2: Deploy Metadata
 
 ```bash
-sf project deploy start -o prometheion-dev --wait 10
+sf project deploy start -o elaro-dev --wait 10
 ```
 
 - [ ] Deployment completed without errors
@@ -65,7 +65,7 @@ sf project deploy start -o prometheion-dev --wait 10
 ### Step 1.3: Assign Permission Sets
 
 ```bash
-sf org assign permset -n Prometheion_Admin -o prometheion-dev
+sf org assign permset -n Elaro_Admin -o elaro-dev
 ```
 
 - [ ] Permission set assigned successfully
@@ -76,17 +76,17 @@ sf org assign permset -n Prometheion_Admin -o prometheion-dev
 **In Setup UI:**
 
 1. Navigate to: Setup → Platform Cache → Partitions
-2. Look for partition named: `PrometheionCompliance`
+2. Look for partition named: `ElaroCompliance`
 
 - [ ] Partition exists
 - [ ] Partition type is "Org Cache" (not Session)
 - [ ] Partition has allocated capacity (minimum 5MB recommended)
-- [ ] Description matches: "Prometheion Compliance cache partition for storing compliance scores"
+- [ ] Description matches: "Elaro Compliance cache partition for storing compliance scores"
 
 ### Step 1.5: Run Unit Tests
 
 ```bash
-sf apex test run --test-level RunLocalTests --code-coverage --result-format human -o prometheion-dev
+sf apex test run --test-level RunLocalTests --code-coverage --result-format human -o elaro-dev
 ```
 
 - [ ] All tests pass
@@ -98,9 +98,9 @@ sf apex test run --test-level RunLocalTests --code-coverage --result-format huma
 
 **Check in Setup → Object Manager:**
 
-- [ ] `Prometheion_AI_Settings__c` exists (Custom Settings - Hierarchy)
-- [ ] `Prometheion_Compliance_Graph__b` exists (Big Object)
-- [ ] `Prometheion_Alert_Event__e` exists (Platform Event)
+- [ ] `Elaro_AI_Settings__c` exists (Custom Settings - Hierarchy)
+- [ ] `Elaro_Compliance_Graph__b` exists (Big Object)
+- [ ] `Elaro_Alert_Event__e` exists (Platform Event)
 - [ ] `CCX_Settings__c` exists (Custom Settings)
 - [ ] All field definitions are correct
 
@@ -109,15 +109,15 @@ sf apex test run --test-level RunLocalTests --code-coverage --result-format huma
 #### A. Open Org and Navigate
 
 ```bash
-sf org open -o prometheion-dev
+sf org open -o elaro-dev
 ```
 
 - [ ] Org opens successfully
-- [ ] Can navigate to Prometheion app/dashboard
+- [ ] Can navigate to Elaro app/dashboard
 
 #### B. Test AI Settings
 
-1. Navigate to: Setup → Custom Settings → Prometheion AI Settings → Manage
+1. Navigate to: Setup → Custom Settings → Elaro AI Settings → Manage
 2. Create/verify org default record
 
 - [ ] AI Settings page loads
@@ -143,7 +143,7 @@ sf org open -o prometheion-dev
 
 #### E. Test Permission Sets
 
-- [ ] Users with `Prometheion_Admin` can access all features
+- [ ] Users with `Elaro_Admin` can access all features
 - [ ] Users without permission set cannot access admin features
 - [ ] Field-level security is enforced
 
@@ -160,7 +160,7 @@ sf org open -o prometheion-dev
 ### Step 1.9: Generate Baseline Report (Optional)
 
 ```bash
-sf apex run -f scripts/generate-baseline-report.apex -o prometheion-dev
+sf apex run -f scripts/generate-baseline-report.apex -o elaro-dev
 ```
 
 - [ ] Script executes successfully
@@ -203,10 +203,10 @@ sf apex run -f scripts/generate-baseline-report.apex -o prometheion-dev
 
 1. Navigate to: Setup → Platform Cache → Partitions
 2. Create new partition (if not exists):
-   - **Label:** `PrometheionCompliance`
-   - **Developer Name:** `PrometheionCompliance`
+   - **Label:** `ElaroCompliance`
+   - **Developer Name:** `ElaroCompliance`
    - **Type:** Org Cache
-   - **Description:** Prometheion Compliance cache partition for storing compliance scores
+   - **Description:** Elaro Compliance cache partition for storing compliance scores
    - **Capacity:** Minimum 5MB (10MB+ recommended)
 3. Save partition
 
@@ -267,9 +267,9 @@ sf project deploy start --target-org sandbox-alias --wait 10
 **Option 1: Via Apex (in Developer Console or VS Code)**
 
 ```apex
-Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getInstance();
+Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getInstance();
 if (settings == null) {
-    settings = new Prometheion_AI_Settings__c(
+    settings = new Elaro_AI_Settings__c(
         SetupOwnerId = UserInfo.getOrganizationId(),
         Enable_AI_Reasoning__c = true,
         Confidence_Threshold__c = 0.85,
@@ -286,7 +286,7 @@ if (settings == null) {
 
 **Option 2: Via Setup UI**
 
-1. Setup → Custom Settings → Prometheion AI Settings → Manage
+1. Setup → Custom Settings → Elaro AI Settings → Manage
 2. Click "New" and create org-wide default
 
 - [ ] Org default created via UI
@@ -295,11 +295,11 @@ if (settings == null) {
 #### B. Assign Permission Sets
 
 ```bash
-sf org assign permset -n Prometheion_Admin --target-org sandbox-alias -u admin-user@example.com
+sf org assign permset -n Elaro_Admin --target-org sandbox-alias -u admin-user@example.com
 ```
 
 - [ ] Permission set assigned to appropriate users
-- [ ] Users can access Prometheion features
+- [ ] Users can access Elaro features
 - [ ] Verify with test user login
 
 #### C. Verify CCX_Settings\_\_c (if needed)
@@ -319,7 +319,7 @@ sf apex test run --test-level RunLocalTests --code-coverage --result-format huma
 
 ### Step 2.9: Sandbox Functional Testing
 
-- [ ] Navigate to Prometheion app/dashboard
+- [ ] Navigate to Elaro app/dashboard
 - [ ] Test compliance readiness score
 - [ ] Test AI settings configuration
 - [ ] Test Platform Cache (check debug logs)
@@ -374,10 +374,10 @@ sf apex test run --test-level RunLocalTests --code-coverage --result-format huma
 
 1. Navigate to: Setup → Platform Cache → Partitions
 2. Create new partition:
-   - **Label:** `PrometheionCompliance`
-   - **Developer Name:** `PrometheionCompliance`
+   - **Label:** `ElaroCompliance`
+   - **Developer Name:** `ElaroCompliance`
    - **Type:** Org Cache
-   - **Description:** Prometheion Compliance cache partition for storing compliance scores
+   - **Description:** Elaro Compliance cache partition for storing compliance scores
    - **Capacity:** Minimum 5MB (10MB+ recommended for production)
 3. Save partition
 
@@ -427,14 +427,14 @@ sf project deploy start --target-org production-alias --wait 10
 
 #### A. Create Org Default Custom Settings
 
-- [ ] `Prometheion_AI_Settings__c` org default created
+- [ ] `Elaro_AI_Settings__c` org default created
 - [ ] Settings configured appropriately for production
 - [ ] Settings tested and verified
 
 #### B. Assign Permission Sets
 
 ```bash
-sf org assign permset -n Prometheion_Admin --target-org production-alias -u admin-user@example.com
+sf org assign permset -n Elaro_Admin --target-org production-alias -u admin-user@example.com
 ```
 
 - [ ] Permission set assigned to appropriate users
@@ -460,7 +460,7 @@ sf apex test run --test-level RunLocalTests --code-coverage --result-format huma
 
 ### Step 3.10: Production Smoke Testing
 
-- [ ] Navigate to Prometheion app
+- [ ] Navigate to Elaro app
 - [ ] Test compliance readiness score calculation
 - [ ] Test AI settings page
 - [ ] Verify Platform Cache is working (debug logs)
@@ -556,7 +556,7 @@ sf apex run -f scripts/generate-baseline-report.apex --target-org production-ali
 ### Platform Cache Not Working
 
 - [ ] Verify partition exists: Setup → Platform Cache → Partitions
-- [ ] Check partition name matches: `PrometheionCompliance`
+- [ ] Check partition name matches: `ElaroCompliance`
 - [ ] Verify partition type is "Org Cache"
 - [ ] Check capacity allocation
 - [ ] Review debug logs for `OrgCacheException`
@@ -595,7 +595,7 @@ sf apex run -f scripts/generate-baseline-report.apex --target-org production-ali
 - `MIGRATION_COMPLETE_SUMMARY.md` - Migration status summary
 - `README.md` - Project overview and setup
 - `ROADMAP.md` - Product roadmap
-- `config/prometheion-scratch-def.json` - Scratch org definition
+- `config/elaro-scratch-def.json` - Scratch org definition
 
 ### Important Contacts
 

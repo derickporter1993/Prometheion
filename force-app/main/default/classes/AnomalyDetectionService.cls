@@ -3,7 +3,7 @@
  * 
  * Pattern detection for compliance anomalies
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class AnomalyDetectionService {

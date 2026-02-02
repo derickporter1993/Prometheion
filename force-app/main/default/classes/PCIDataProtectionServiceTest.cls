@@ -2,7 +2,7 @@
  * Test class for PCIDataProtectionService
  * Tests CHD encryption, tokenization, encryption validation, key management
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

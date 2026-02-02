@@ -76,7 +76,7 @@ async function getProjectStatus(): Promise<ProjectStatus> {
 }
 
 async function runStatus(options: StatusOptions): Promise<void> {
-  const spinner = ora("Checking Prometheion status...").start();
+  const spinner = ora("Checking Elaro status...").start();
 
   try {
     const [orgStatus, projectStatus] = await Promise.all([
@@ -92,7 +92,7 @@ async function runStatus(options: StatusOptions): Promise<void> {
     }
 
     console.log();
-    console.log(chalk.bold.cyan("Prometheion Status"));
+    console.log(chalk.bold.cyan("Elaro Status"));
     console.log(chalk.gray("─".repeat(50)));
     console.log();
 
@@ -115,16 +115,16 @@ async function runStatus(options: StatusOptions): Promise<void> {
     } else {
       console.log(`  Status:          ${chalk.red("Not Connected")}`);
       console.log(
-        chalk.gray("  Run 'prometheion org login' to connect to a Salesforce org")
+        chalk.gray("  Run 'elaro org login' to connect to a Salesforce org")
       );
     }
     console.log();
 
     // Quick Actions
     console.log(chalk.bold("Quick Actions:"));
-    console.log(`  ${chalk.gray("prometheion scan")}        Run compliance scan`);
-    console.log(`  ${chalk.gray("prometheion test")}        Run tests`);
-    console.log(`  ${chalk.gray("prometheion deploy")}      Deploy to org`);
+    console.log(`  ${chalk.gray("elaro scan")}        Run compliance scan`);
+    console.log(`  ${chalk.gray("elaro test")}        Run tests`);
+    console.log(`  ${chalk.gray("elaro deploy")}      Deploy to org`);
     console.log();
   } catch (error) {
     spinner.fail("Failed to get status");
@@ -136,7 +136,7 @@ async function runStatus(options: StatusOptions): Promise<void> {
 }
 
 export const statusCommand = new Command("status")
-  .description("Check Prometheion project and org status")
+  .description("Check Elaro project and org status")
   .option("-o, --target-org <alias>", "Target Salesforce org alias")
   .option("--json", "Output results in JSON format")
   .action(runStatus);

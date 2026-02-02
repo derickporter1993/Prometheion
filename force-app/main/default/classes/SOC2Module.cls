@@ -2,7 +2,7 @@
  * @description SOC 2 Type II compliance module implementation
  * Covers Trust Service Criteria (CC6, CC7, CC8, CC9)
  * @group Framework Modules
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class SOC2Module implements IComplianceModule {
     
@@ -105,7 +105,7 @@ public with sharing class SOC2Module implements IComplianceModule {
     }
     
     public Blob generateReport(Id auditPackageId) {
-        PageReference pdfPage = Page.PrometheionAuditPackagePDF;
+        PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
         pdfPage.getParameters().put('framework', 'SOC2');
         return Test.isRunningTest() ? Blob.valueOf('SOC2 Report') : pdfPage.getContentAsPDF();

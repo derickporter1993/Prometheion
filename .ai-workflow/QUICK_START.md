@@ -145,7 +145,7 @@ git log --grep="feat(" --oneline
 
 ### Add shell alias:
 ```bash
-echo "alias ws='cd ~/path/to/prometheion && .ai-workflow/sync.sh status'" >> ~/.zshrc
+echo "alias ws='cd ~/path/to/elaro && .ai-workflow/sync.sh status'" >> ~/.zshrc
 source ~/.zshrc
 ```
 

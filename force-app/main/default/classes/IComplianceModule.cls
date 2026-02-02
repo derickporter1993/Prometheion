@@ -2,7 +2,7 @@
  * @description Interface for compliance framework modules
  * Each framework (HIPAA, SOC2, GDPR, etc.) implements this interface
  * @group Framework Modules
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public interface IComplianceModule {
     

@@ -1,13 +1,13 @@
 # Run Tests
 
-Execute Apex and LWC tests for the Prometheion project with comprehensive coverage reporting.
+Execute Apex and LWC tests for the Elaro project with comprehensive coverage reporting.
 
 ## Quick Commands
 
 ### Run All Tests
 ```bash
 # All Apex tests
-sf apex run test --test-level RunLocalTests --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --test-level RunLocalTests --target-org elaro-dev --result-format human --code-coverage
 
 # All LWC tests
 npm run test:unit
@@ -19,19 +19,19 @@ npm run lint
 ### Run Specific Tests
 ```bash
 # Single test class
-sf apex run test --tests PrometheionSecurityUtilsTest --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --tests ElaroSecurityUtilsTest --target-org elaro-dev --result-format human --code-coverage
 
 # Multiple test classes
-sf apex run test --tests PrometheionSecurityUtilsTest,PrometheionComplianceEngineTest --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --tests ElaroSecurityUtilsTest,ElaroComplianceEngineTest --target-org elaro-dev --result-format human --code-coverage
 
 # Tests matching pattern
-sf apex run test --class-names "Prometheion*Test" --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --class-names "Elaro*Test" --target-org elaro-dev --result-format human --code-coverage
 ```
 
 ### Run Tests for Specific Class
 ```bash
 # Test a single Apex class
-sf apex run test --tests PrometheionMyClassTest --synchronous --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --tests ElaroMyClassTest --synchronous --target-org elaro-dev --result-format human --code-coverage
 ```
 
 ## Test Levels Explained
@@ -52,17 +52,17 @@ sf apex run test --tests PrometheionMyClassTest --synchronous --target-org prome
 
 ### Human-Readable Output
 ```bash
-sf apex run test --tests PrometheionMyClassTest --result-format human --target-org prometheion-dev
+sf apex run test --tests ElaroMyClassTest --result-format human --target-org elaro-dev
 ```
 
 ### JSON Output (for parsing)
 ```bash
-sf apex run test --tests PrometheionMyClassTest --result-format json --target-org prometheion-dev
+sf apex run test --tests ElaroMyClassTest --result-format json --target-org elaro-dev
 ```
 
 ### TAP Format (Test Anything Protocol)
 ```bash
-sf apex run test --tests PrometheionMyClassTest --result-format tap --target-org prometheion-dev
+sf apex run test --tests ElaroMyClassTest --result-format tap --target-org elaro-dev
 ```
 
 ## Checking Coverage
@@ -74,7 +74,7 @@ sf apex get test --test-run-id [run-id] --code-coverage --result-format human
 
 ### Coverage by Class
 ```bash
-sf apex get test --code-coverage --result-format human --target-org prometheion-dev | grep PrometheionMyClass
+sf apex get test --code-coverage --result-format human --target-org elaro-dev | grep ElaroMyClass
 ```
 
 ## Debugging Failed Tests
@@ -82,13 +82,13 @@ sf apex get test --code-coverage --result-format human --target-org prometheion-
 ### View Detailed Logs
 ```bash
 # Tail logs in real-time
-sf apex tail log --target-org prometheion-dev
+sf apex tail log --target-org elaro-dev
 
 # Get specific test log
-sf apex get log --number 1 --target-org prometheion-dev
+sf apex get log --number 1 --target-org elaro-dev
 
 # List recent logs
-sf apex list log --target-org prometheion-dev
+sf apex list log --target-org elaro-dev
 ```
 
 ### Debug Specific Test
@@ -100,7 +100,7 @@ System.debug(LoggingLevel.WARN, '⚠️ Entering critical section');
 
 Then run with synchronous mode:
 ```bash
-sf apex run test --tests PrometheionMyClassTest --synchronous --target-org prometheion-dev
+sf apex run test --tests ElaroMyClassTest --synchronous --target-org elaro-dev
 ```
 
 ## LWC Testing
@@ -154,7 +154,7 @@ static void setup() {
 
 ### Import Test Data from Files
 ```bash
-sf data import tree --plan scripts/apex/sample-data/data-plan.json --target-org prometheion-dev
+sf data import tree --plan scripts/apex/sample-data/data-plan.json --target-org elaro-dev
 ```
 
 ## Pre-Deployment Testing
@@ -168,7 +168,7 @@ npm run lint
 npm run test:unit
 
 # 3. Apex tests with coverage
-sf apex run test --test-level RunLocalTests --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --test-level RunLocalTests --target-org elaro-dev --result-format human --code-coverage
 
 # 4. Check results
 # Ensure ALL tests pass and coverage ≥ 75%
@@ -207,12 +207,12 @@ System.debug('DML Rows: ' + Limits.getDmlRows() + '/' + Limits.getLimitDmlRows()
 ### Test Class Not Found
 Verify class is deployed:
 ```bash
-sf apex list class --target-org prometheion-dev | grep PrometheionMyClassTest
+sf apex list class --target-org elaro-dev | grep ElaroMyClassTest
 ```
 
 If missing, deploy:
 ```bash
-sf project deploy start --source-dir force-app/main/default/classes/PrometheionMyClassTest.cls --target-org prometheion-dev
+sf project deploy start --source-dir force-app/main/default/classes/ElaroMyClassTest.cls --target-org elaro-dev
 ```
 
 ## CI/CD Integration
@@ -251,7 +251,7 @@ After running tests, find reports at:
 
 ```bash
 # 1. Run tests
-sf apex run test --test-level RunLocalTests --target-org prometheion-dev --result-format human --code-coverage
+sf apex run test --test-level RunLocalTests --target-org elaro-dev --result-format human --code-coverage
 
 # 2. Check output
 # Test Results:

@@ -3,7 +3,7 @@
  * 
  * Test class for EvidenceCollectionService
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest

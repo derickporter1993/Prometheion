@@ -1,0 +1,124 @@
+name: PR Status Monitor
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  monitor-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📊 Open Pull Requests Status Report"
+          echo "===================================="
+          echo ""
+          
+          # Get all open PRs
+          PRS=$(gh pr list --repo ${{ github.repository }} --state open --json number,title,author,isDraft,mergeable,mergeStateStatus,reviewDecision,statusCheckRollup --limit 100)
+          
+          TOTAL_PRS=$(echo "$PRS" | jq '. | length')
+          
+          if [ "$TOTAL_PRS" -eq 0 ]; then
+            echo "✅ No open PRs"
+            exit 0
+          fi
+          
+          echo "Total open PRs: $TOTAL_PRS"
+          echo ""
+          
+          # Categorize PRs (using temp file to persist counts across loop)
+          TEMP_COUNTS=$(mktemp)
+          echo "0 0 0 0 0 0" > "$TEMP_COUNTS"
+          
+          while read -r pr; do
+            # Read current counts
+            read -r READY_TO_MERGE NEEDS_REVIEW HAS_CONFLICTS CHECKS_PENDING CHECKS_FAILING DRAFT_PRS < "$TEMP_COUNTS"
+            NUMBER=$(echo "$pr" | jq -r '.number')
+            TITLE=$(echo "$pr" | jq -r '.title')
+            AUTHOR=$(echo "$pr" | jq -r '.author.login')
+            IS_DRAFT=$(echo "$pr" | jq -r '.isDraft')
+            MERGEABLE=$(echo "$pr" | jq -r '.mergeable')
+            MERGE_STATE=$(echo "$pr" | jq -r '.mergeStateStatus')
+            REVIEW_DECISION=$(echo "$pr" | jq -r '.reviewDecision // "NONE"')
+            
+            # Count status checks
+            TOTAL_CHECKS=$(echo "$pr" | jq '.statusCheckRollup | length')
+            PENDING_CHECKS=$(echo "$pr" | jq '[.statusCheckRollup[] | select(.status == "PENDING" or .status == "IN_PROGRESS")] | length')
+            FAILED_CHECKS=$(echo "$pr" | jq '[.statusCheckRollup[] | select(.conclusion == "FAILURE" or .conclusion == "TIMED_OUT" or .conclusion == "CANCELLED")] | length')
+            
+            echo "---"
+            echo "PR #$NUMBER: $TITLE"
+            echo "  Author: $AUTHOR"
+            echo "  Draft: $IS_DRAFT"
+            echo "  Mergeable: $MERGEABLE"
+            echo "  Merge State: $MERGE_STATE"
+            echo "  Review Decision: $REVIEW_DECISION"
+            echo "  Checks: $TOTAL_CHECKS total, $PENDING_CHECKS pending, $FAILED_CHECKS failed"
+            
+            # Categorize
+            if [ "$IS_DRAFT" = "true" ]; then
+              DRAFT_PRS=$((DRAFT_PRS + 1))
+              echo "  Status: 📝 DRAFT"
+            elif [ "$MERGEABLE" = "CONFLICTING" ]; then
+              HAS_CONFLICTS=$((HAS_CONFLICTS + 1))
+              echo "  Status: ⚠️ HAS CONFLICTS"
+            elif [ "$FAILED_CHECKS" -gt 0 ]; then
+              CHECKS_FAILING=$((CHECKS_FAILING + 1))
+              echo "  Status: ❌ CHECKS FAILING"
+            elif [ "$PENDING_CHECKS" -gt 0 ]; then
+              CHECKS_PENDING=$((CHECKS_PENDING + 1))
+              echo "  Status: ⏳ CHECKS PENDING"
+            elif [ "$MERGE_STATE" = "BLOCKED" ]; then
+              NEEDS_REVIEW=$((NEEDS_REVIEW + 1))
+              echo "  Status: 🔒 BLOCKED (may need review or approval)"
+            elif [ "$MERGEABLE" = "MERGEABLE" ] && [ "$MERGE_STATE" = "CLEAN" ]; then
+              READY_TO_MERGE=$((READY_TO_MERGE + 1))
+              echo "  Status: ✅ READY TO MERGE"
+            else
+              echo "  Status: ❓ UNKNOWN STATE"
+            fi
+            echo ""
+            
+            # Write updated counts
+            echo "$READY_TO_MERGE $NEEDS_REVIEW $HAS_CONFLICTS $CHECKS_PENDING $CHECKS_FAILING $DRAFT_PRS" > "$TEMP_COUNTS"
+          done < <(echo "$PRS" | jq -c '.[]')
+          
+          # Read final counts
+          read -r READY_TO_MERGE NEEDS_REVIEW HAS_CONFLICTS CHECKS_PENDING CHECKS_FAILING DRAFT_PRS < "$TEMP_COUNTS"
+          rm -f "$TEMP_COUNTS"
+          
+          echo "===================================="
+          echo "Summary:"
+          echo "  ✅ Ready to merge: $READY_TO_MERGE"
+          echo "  🔒 Needs review: $NEEDS_REVIEW"
+          echo "  ⏳ Checks pending: $CHECKS_PENDING"
+          echo "  ❌ Checks failing: $CHECKS_FAILING"
+          echo "  ⚠️ Has conflicts: $HAS_CONFLICTS"
+          echo "  📝 Draft PRs: $DRAFT_PRS"
+          echo "===================================="
+          
+          # If there are PRs ready to merge, suggest action
+          if [ "$READY_TO_MERGE" -gt 0 ]; then
+            echo ""
+            echo "💡 Suggestion: $READY_TO_MERGE PR(s) are ready to merge!"
+            echo "   Consider enabling auto-merge or merging them manually."
+          fi
+          
+          # If there are blocked PRs, explain why
+          if [ "$NEEDS_REVIEW" -gt 0 ]; then
+            echo ""
+            echo "ℹ️ Note: $NEEDS_REVIEW PR(s) are blocked."
+            echo "   This could be due to:"
+            echo "   - Branch protection rules requiring review"
+            echo "   - Required status checks not passing"
+            echo "   - Waiting for review approval"
+          fi

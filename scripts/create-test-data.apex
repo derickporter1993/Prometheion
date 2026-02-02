@@ -1,5 +1,5 @@
 /**
- * Prometheion Test Data Generator
+ * Elaro Test Data Generator
  * 
  * Creates test data needed to properly test the Compliance Hub dashboard:
  * - Permission Sets with various permission levels

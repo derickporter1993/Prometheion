@@ -40,7 +40,7 @@ async function listOrgs(options: { json?: boolean }): Promise<void> {
 
     if (allOrgs.length === 0) {
       console.log(chalk.yellow("  No orgs connected"));
-      console.log(chalk.gray("  Run 'prometheion org login' to connect to an org"));
+      console.log(chalk.gray("  Run 'elaro org login' to connect to an org"));
     } else {
       console.log();
       console.log(
@@ -158,12 +158,12 @@ async function createScratchOrg(options: {
   const spinner = ora("Creating scratch org...").start();
 
   try {
-    const alias = options.alias || "prometheion-dev";
+    const alias = options.alias || "elaro-dev";
     const duration = options.duration || 30;
 
     spinner.text = `Creating scratch org '${alias}' (${duration} days)...`;
 
-    const command = `sf org create scratch -f config/prometheion-scratch-def.json -a ${alias} -d ${duration} --json`;
+    const command = `sf org create scratch -f config/elaro-scratch-def.json -a ${alias} -d ${duration} --json`;
     const output = execSync(command, {
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -188,9 +188,9 @@ async function createScratchOrg(options: {
     console.log(`  Expires:      ${duration} days`);
     console.log();
     console.log(chalk.bold("Next steps:"));
-    console.log(`  1. Deploy code:     ${chalk.gray("prometheion deploy -o " + alias)}`);
-    console.log(`  2. Assign permset:  ${chalk.gray(`sf org assign permset -n Prometheion_Admin -o ${alias}`)}`);
-    console.log(`  3. Open org:        ${chalk.gray("prometheion org open -o " + alias)}`);
+    console.log(`  1. Deploy code:     ${chalk.gray("elaro deploy -o " + alias)}`);
+    console.log(`  2. Assign permset:  ${chalk.gray(`sf org assign permset -n Elaro_Admin -o ${alias}`)}`);
+    console.log(`  3. Open org:        ${chalk.gray("elaro org open -o " + alias)}`);
     console.log();
   } catch (error) {
     spinner.fail("Failed to create scratch org");
@@ -200,7 +200,7 @@ async function createScratchOrg(options: {
     console.log();
     console.log(chalk.yellow("Troubleshooting:"));
     console.log("  - Ensure you're authenticated to a Dev Hub");
-    console.log("  - Check config/prometheion-scratch-def.json exists");
+    console.log("  - Check config/elaro-scratch-def.json exists");
     console.log("  - Verify your Dev Hub has available scratch org allocations");
     process.exit(1);
   }
@@ -259,7 +259,7 @@ export const orgCommand = new Command("org")
   .addCommand(
     new Command("create")
       .description("Create a new scratch org")
-      .option("-a, --alias <alias>", "Alias for the scratch org", "prometheion-dev")
+      .option("-a, --alias <alias>", "Alias for the scratch org", "elaro-dev")
       .option("-d, --duration <days>", "Duration in days", "30")
       .option("--json", "Output in JSON format")
       .action(createScratchOrg)

@@ -4,7 +4,7 @@
  * Interface for access control operations across compliance frameworks.
  * Implementations handle access reviews, permission analysis, and revocation.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public interface IAccessControlService {

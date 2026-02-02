@@ -1,6 +1,6 @@
-# Prometheion Compliance Hub - Admin Guide
+# Elaro Compliance Hub - Admin Guide
 
-This guide is for system administrators responsible for configuring, managing, and maintaining Prometheion Compliance Hub in your Salesforce org.
+This guide is for system administrators responsible for configuring, managing, and maintaining Elaro Compliance Hub in your Salesforce org.
 
 ---
 
@@ -20,7 +20,7 @@ This guide is for system administrators responsible for configuring, managing, a
 
 ### Post-Installation Checklist
 
-After deploying Prometheion to your org, complete these setup tasks:
+After deploying Elaro to your org, complete these setup tasks:
 
 - [ ] Assign permission sets to administrators
 - [ ] Configure Named Credentials for external integrations
@@ -33,14 +33,14 @@ After deploying Prometheion to your org, complete these setup tasks:
 
 ### Named Credential Configuration
 
-Prometheion requires Named Credentials for external API integrations.
+Elaro requires Named Credentials for external API integrations.
 
 #### Claude API Named Credential
 
 Required for AI Copilot functionality:
 
 1. Navigate to **Setup** → **Named Credentials**
-2. Find **"Prometheion_Claude_API"**
+2. Find **"Elaro_Claude_API"**
 3. Click **Edit**
 4. Configure:
    - **URL**: `https://api.anthropic.com`
@@ -58,7 +58,7 @@ For Slack notifications:
 1. Create a Slack Incoming Webhook in your Slack workspace
 2. Navigate to **Setup** → **Named Credentials**
 3. Create new Named Credential:
-   - **Label**: `Prometheion_Slack_Webhook`
+   - **Label**: `Elaro_Slack_Webhook`
    - **URL**: Your Slack webhook URL
    - **Identity Type**: Anonymous
 4. Update `SlackNotifier` class to use this Named Credential
@@ -84,24 +84,24 @@ For Slack notifications:
 
 ## 2. Permission Management
 
-Prometheion includes two permission sets for role-based access control.
+Elaro includes two permission sets for role-based access control.
 
 ### Permission Sets Overview
 
-#### Prometheion_Admin
+#### Elaro_Admin
 
 **Purpose**: Standard administrator access for day-to-day compliance management
 
 **Permissions Include**:
-- Read/Edit access to all Prometheion custom objects
+- Read/Edit access to all Elaro custom objects
 - View All Records on compliance objects
-- Access to all Prometheion Apex classes
+- Access to all Elaro Apex classes
 - Ability to run assessments and generate reports
 - Access to AI Copilot
 
 **Use Case**: Compliance managers, security analysts, and administrators who need full operational access.
 
-#### Prometheion_Admin_Extended
+#### Elaro_Admin_Extended
 
 **Purpose**: Extended permissions for system configuration and advanced features
 
@@ -111,16 +111,16 @@ Prometheion includes two permission sets for role-based access control.
 - Ability to modify Custom Metadata (via Apex)
 - Extended object permissions for audit operations
 
-**Use Case**: System administrators who configure and maintain Prometheion.
+**Use Case**: System administrators who configure and maintain Elaro.
 
-**Security Note**: `Prometheion_Admin_Extended` does NOT include `modifyAllRecords` permissions. This follows the principle of least privilege.
+**Security Note**: `Elaro_Admin_Extended` does NOT include `modifyAllRecords` permissions. This follows the principle of least privilege.
 
 ### Assigning Permissions to Users
 
 #### Via Setup UI
 
 1. Navigate to **Setup** → **Users** → **Permission Sets**
-2. Find **"Prometheion_Admin"** or **"Prometheion_Admin_Extended"**
+2. Find **"Elaro_Admin"** or **"Elaro_Admin_Extended"**
 3. Click **Manage Assignments**
 4. Click **Add Assignments**
 5. Select users to assign
@@ -129,15 +129,15 @@ Prometheion includes two permission sets for role-based access control.
 #### Via Salesforce CLI
 
 ```bash
-# Assign Prometheion_Admin to a user
+# Assign Elaro_Admin to a user
 sf org assign permset \
-  --name Prometheion_Admin \
+  --name Elaro_Admin \
   --target-org myorg \
   --target-username user@example.com
 
-# Assign Prometheion_Admin_Extended
+# Assign Elaro_Admin_Extended
 sf org assign permset \
-  --name Prometheion_Admin_Extended \
+  --name Elaro_Admin_Extended \
   --target-org myorg \
   --target-username admin@example.com
 ```
@@ -154,13 +154,13 @@ sf org assign permset \
 - Use Field-Level Security (FLS) profiles or permission sets
 - Review field accessibility in Apex classes (use `WITH USER_MODE` or `WITH SYSTEM_MODE`)
 
-**Best Practice**: Grant minimum necessary permissions. Start with `Prometheion_Admin` and only upgrade to `Prometheion_Admin_Extended` when configuration access is required.
+**Best Practice**: Grant minimum necessary permissions. Start with `Elaro_Admin` and only upgrade to `Elaro_Admin_Extended` when configuration access is required.
 
 ---
 
 ## 3. Scheduled Jobs Management
 
-Prometheion includes several scheduled jobs for automated compliance monitoring.
+Elaro includes several scheduled jobs for automated compliance monitoring.
 
 ### Available Schedulers
 
@@ -198,12 +198,12 @@ Prometheion includes several scheduled jobs for automated compliance monitoring.
 
 ### Configuring via Custom Metadata
 
-Scheduler configurations are managed through `Prometheion_Scheduler_Config__mdt` Custom Metadata Type.
+Scheduler configurations are managed through `Elaro_Scheduler_Config__mdt` Custom Metadata Type.
 
 #### Accessing Custom Metadata
 
 1. Navigate to **Setup** → **Custom Metadata Types**
-2. Find **"Prometheion Scheduler Config"**
+2. Find **"Elaro Scheduler Config"**
 3. Click **Manage Records**
 4. Select the scheduler you want to configure
 
@@ -245,7 +245,7 @@ Example: 0 0 7 1 1,4,7,10 ? = First day of each quarter at 7:00 AM
 
 #### Error Monitoring
 
-Prometheion logs scheduler errors to `Integration_Error__c`:
+Elaro logs scheduler errors to `Integration_Error__c`:
 
 1. Navigate to **Integration Errors** tab (if available)
 2. Filter by **Error Type**: `SCHEDULER_FAILURE`
@@ -269,8 +269,8 @@ Prometheion logs scheduler errors to `Integration_Error__c`:
 1. Navigate to **Setup** → **Named Credentials**
 2. Click **New**
 3. Configure:
-   - **Label**: `Prometheion_Slack_Webhook`
-   - **Name**: `Prometheion_Slack_Webhook`
+   - **Label**: `Elaro_Slack_Webhook`
+   - **Name**: `Elaro_Slack_Webhook`
    - **URL**: Your Slack Incoming Webhook URL
    - **Identity Type**: Anonymous
 4. Click **Save**
@@ -278,7 +278,7 @@ Prometheion logs scheduler errors to `Integration_Error__c`:
 #### Channel Configuration
 
 1. In your Slack workspace, create a channel (e.g., `#compliance-alerts`)
-2. Add the Prometheion app/bot to the channel
+2. Add the Elaro app/bot to the channel
 3. Configure webhook to post to this channel
 
 #### Test Notification
@@ -287,7 +287,7 @@ Use Anonymous Apex to test:
 
 ```apex
 // Test Slack notification
-SlackNotifier.notifyAsyncQueueable('Test notification from Prometheion');
+SlackNotifier.notifyAsyncQueueable('Test notification from Elaro');
 ```
 
 Check your Slack channel for the test message.
@@ -308,7 +308,7 @@ Check your Slack channel for the test message.
 
 Configure which Teams channels receive which alert types:
 
-1. Navigate to **Prometheion AI Settings** (if available)
+1. Navigate to **Elaro AI Settings** (if available)
 2. Configure Teams webhook URL
 3. Map alert types to channels:
    - Critical alerts → `#compliance-critical`
@@ -317,7 +317,7 @@ Configure which Teams channels receive which alert types:
 
 ### PagerDuty Integration
 
-1. Create a PagerDuty service for Prometheion
+1. Create a PagerDuty service for Elaro
 2. Obtain integration key or webhook URL
 3. Configure in `PagerDutyIntegration` class
 4. Test with sample alert
@@ -326,14 +326,14 @@ Configure which Teams channels receive which alert types:
 
 1. Create ServiceNow API user with appropriate permissions
 2. Configure Named Credential for ServiceNow instance
-3. Set up integration mapping (Prometheion alerts → ServiceNow incidents)
+3. Set up integration mapping (Elaro alerts → ServiceNow incidents)
 4. Test incident creation
 
 ---
 
 ## 5. Custom Metadata Configuration
 
-### Prometheion_Scheduler_Config__mdt
+### Elaro_Scheduler_Config__mdt
 
 Manages scheduler configurations (CRON expressions, batch sizes, active status).
 
@@ -345,7 +345,7 @@ Manages scheduler configurations (CRON expressions, batch sizes, active status).
 - `WeeklyScorecard`: Weekly scorecard generation
 
 **Configuration Steps**:
-1. Navigate to **Setup** → **Custom Metadata Types** → **Prometheion Scheduler Config**
+1. Navigate to **Setup** → **Custom Metadata Types** → **Elaro Scheduler Config**
 2. Click **Manage Records**
 3. Edit the desired scheduler record
 4. Update fields as needed
@@ -370,9 +370,9 @@ Defines compliance policies and controls for each framework.
 
 ### Alert Thresholds and Rules
 
-Configure alert thresholds via `Prometheion_Alert_Config__c` custom object:
+Configure alert thresholds via `Elaro_Alert_Config__c` custom object:
 
-1. Navigate to **Prometheion Alert Config** tab
+1. Navigate to **Elaro Alert Config** tab
 2. Create or edit alert configuration records
 3. Configure:
    - **Alert Type**: Type of alert (e.g., `GAP_DETECTED`, `DEADLINE_APPROACHING`)
@@ -388,7 +388,7 @@ Configure alert thresholds via `Prometheion_Alert_Config__c` custom object:
 
 ### Log Cleanup Procedures
 
-Prometheion generates logs in `Integration_Error__c` for error tracking.
+Elaro generates logs in `Integration_Error__c` for error tracking.
 
 #### Regular Cleanup
 
@@ -494,8 +494,8 @@ Monitor system performance:
 
 **Guidelines**:
 - Grant minimum necessary permissions
-- Use `Prometheion_Admin` for most users
-- Reserve `Prometheion_Admin_Extended` for system admins only
+- Use `Elaro_Admin` for most users
+- Reserve `Elaro_Admin_Extended` for system admins only
 - Regularly audit permission assignments
 - Remove permissions when users change roles
 
@@ -507,14 +507,14 @@ Monitor system performance:
 
 ### Audit Trail Monitoring
 
-Prometheion maintains audit trails for:
+Elaro maintains audit trails for:
 - Compliance assessments
 - Gap remediation actions
 - Configuration changes
 - User access
 
 **Monitoring Steps**:
-1. Review `Prometheion_Audit_Log__c` records regularly
+1. Review `Elaro_Audit_Log__c` records regularly
 2. Set up alerts for critical changes
 3. Export audit logs for compliance
 4. Monitor for suspicious activity

@@ -1,4 +1,4 @@
-# Prometheion Compliance Hub - AppExchange Listing Content
+# Elaro Compliance Hub - AppExchange Listing Content
 
 This document contains all content needed for the Salesforce AppExchange listing.
 
@@ -6,7 +6,7 @@ This document contains all content needed for the Salesforce AppExchange listing
 
 ## App Information
 
-**Title**: Prometheion Compliance Hub
+**Title**: Elaro Compliance Hub
 
 **Tagline**: AI-Powered Multi-Framework Compliance Management for Salesforce
 
@@ -30,7 +30,7 @@ AI-driven compliance monitoring for HIPAA, SOC2, GDPR, PCI-DSS, and more.
 
 ## Full Description (4000 characters)
 
-Prometheion Compliance Hub transforms your Salesforce org into a comprehensive compliance command center. Monitor multiple frameworks simultaneously, detect gaps automatically, and leverage AI to accelerate remediation.
+Elaro Compliance Hub transforms your Salesforce org into a comprehensive compliance command center. Monitor multiple frameworks simultaneously, detect gaps automatically, and leverage AI to accelerate remediation.
 
 ### KEY FEATURES
 
@@ -53,7 +53,7 @@ Generate comprehensive evidence packages with one click. Include policy document
 Create executive summaries, detailed compliance reports, gap analysis reports, and trend analysis. All reports are professionally formatted with charts, visualizations, and detailed appendices. Schedule automated report generation and distribution.
 
 **Integration Ready**
-Connect Prometheion with your existing tools:
+Connect Elaro with your existing tools:
 - **Slack**: Real-time compliance alerts in your team channels
 - **Microsoft Teams**: Notifications and updates in Teams
 - **PagerDuty**: Critical alerts trigger PagerDuty incidents
@@ -68,12 +68,12 @@ Automated daily, weekly, and quarterly compliance checks:
 - Weekly compliance scorecard generation
 
 **Mobile Responsive Design**
-Access Prometheion from any device. The dashboard and all features are fully responsive, ensuring compliance management on desktop, tablet, and mobile devices.
+Access Elaro from any device. The dashboard and all features are fully responsive, ensuring compliance management on desktop, tablet, and mobile devices.
 
 ### BENEFITS
 
 **Reduce Audit Preparation Time by 60%**
-Stop scrambling before audits. Prometheion maintains continuous compliance monitoring, automatically collects evidence, and generates audit-ready packages. What used to take weeks now takes hours.
+Stop scrambling before audits. Elaro maintains continuous compliance monitoring, automatically collects evidence, and generates audit-ready packages. What used to take weeks now takes hours.
 
 **Continuous Compliance Monitoring**
 Move from point-in-time compliance checks to continuous monitoring. Get real-time alerts when gaps are detected, configurations change, or deadlines approach. Stay compliant between audits.
@@ -85,7 +85,7 @@ No more switching between multiple tools and spreadsheets. View all your complia
 Get intelligent, context-aware recommendations for closing compliance gaps. The AI Copilot understands your specific situation and provides actionable guidance, reducing research time and accelerating remediation.
 
 **Automated Evidence Collection**
-Stop manually gathering audit evidence. Prometheion automatically captures configuration screenshots, audit logs, test results, and policy documents. Build evidence packages with a single click.
+Stop manually gathering audit evidence. Elaro automatically captures configuration screenshots, audit logs, test results, and policy documents. Build evidence packages with a single click.
 
 **Proactive Risk Management**
 Identify compliance risks before they become violations. Real-time gap detection, deadline monitoring, and trend analysis help you stay ahead of compliance issues.
@@ -156,18 +156,18 @@ The following screenshots should be captured for the AppExchange listing:
 
 | # | Screen | Component | Purpose | File Name |
 |---|--------|-----------|---------|-----------|
-| 1 | Main Dashboard | prometheionDashboard | Hero shot - overall view showing compliance scores, metrics, and alerts | dashboard-overview.png |
+| 1 | Main Dashboard | elaroDashboard | Hero shot - overall view showing compliance scores, metrics, and alerts | dashboard-overview.png |
 | 2 | Compliance Score Card | complianceScoreCard | Framework scores with visual indicators and trend arrows | compliance-scorecard.png |
-| 3 | AI Copilot | prometheionCopilot | AI interaction demo showing natural language query and response | ai-copilot.png |
+| 3 | AI Copilot | elaroCopilot | AI interaction demo showing natural language query and response | ai-copilot.png |
 | 4 | Gap Analysis | complianceGapList | Issue identification with severity indicators and remediation status | gap-analysis.png |
 | 5 | Risk Heatmap | riskHeatmap | Visual risk assessment with color-coded risk levels | risk-heatmap.png |
-| 6 | Audit Wizard | prometheionAuditWizard | Report generation interface with framework selection and customization options | audit-wizard.png |
-| 7 | Event Explorer | prometheionEventExplorer | Audit trail view showing compliance events and timeline | event-explorer.png |
-| 8 | Executive KPIs | prometheionExecutiveKPIDashboard | C-suite metrics with charts and trend analysis | executive-kpis.png |
-| 9 | Trend Analyzer | prometheionTrendAnalyzer | Historical trends showing compliance score changes over time | trend-analyzer.png |
+| 6 | Audit Wizard | elaroAuditWizard | Report generation interface with framework selection and customization options | audit-wizard.png |
+| 7 | Event Explorer | elaroEventExplorer | Audit trail view showing compliance events and timeline | event-explorer.png |
+| 8 | Executive KPIs | elaroExecutiveKPIDashboard | C-suite metrics with charts and trend analysis | executive-kpis.png |
+| 9 | Trend Analyzer | elaroTrendAnalyzer | Historical trends showing compliance score changes over time | trend-analyzer.png |
 | 10 | Control Matrix | controlMappingMatrix | Cross-framework mapping showing how controls map across different standards | control-matrix.png |
 | 11 | Alert Panel | performanceAlertPanel | Real-time alerts with severity indicators and action buttons | alert-panel.png |
-| 12 | Mobile View | prometheionDashboard (mobile) | Responsive design showing dashboard on mobile device | mobile-view.png |
+| 12 | Mobile View | elaroDashboard (mobile) | Responsive design showing dashboard on mobile device | mobile-view.png |
 
 ### Screenshot Requirements
 
@@ -251,7 +251,7 @@ The following screenshots should be captured for the AppExchange listing:
 ## Support Information
 
 **Support Channels**:
-- Email: support@prometheion.com
+- Email: support@elaro.com
 - Documentation: Included in package
 - Community: [Community Forum URL]
 - Video Tutorials: [YouTube Channel URL]

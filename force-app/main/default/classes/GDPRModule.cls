@@ -2,7 +2,7 @@
  * @description GDPR compliance module implementation
  * Covers DSR tracking (Articles 15-22), ROPA (Article 30), Breach Notification (Article 33)
  * @group Framework Modules
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class GDPRModule implements IComplianceModule {
     
@@ -117,7 +117,7 @@ public with sharing class GDPRModule implements IComplianceModule {
     }
     
     public Blob generateReport(Id auditPackageId) {
-        PageReference pdfPage = Page.PrometheionAuditPackagePDF;
+        PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
         pdfPage.getParameters().put('framework', 'GDPR');
         return Test.isRunningTest() ? Blob.valueOf('GDPR Report') : pdfPage.getContentAsPDF();
@@ -152,7 +152,7 @@ public with sharing class GDPRModule implements IComplianceModule {
         
         // Check for DSR handling capabilities
         Integer dsrEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :pkgId
             AND (Evidence_Type__c = 'DSR' OR Evidence_Type__c = 'Erasure' OR Description__c LIKE '%deletion%')
             LIMIT 100
@@ -172,7 +172,7 @@ public with sharing class GDPRModule implements IComplianceModule {
         r.controlId = 'Art.30';
         
         Integer ropaEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :pkgId
             AND (Evidence_Type__c = 'ROPA' OR Description__c LIKE '%record of processing%')
             LIMIT 100
@@ -204,7 +204,7 @@ public with sharing class GDPRModule implements IComplianceModule {
         r.controlId = 'Art.33';
         
         Integer breachProcEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :pkgId
             AND (Evidence_Type__c = 'BreachProcedure' OR Description__c LIKE '%breach notification%')
             LIMIT 100

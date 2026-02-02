@@ -320,7 +320,7 @@ export function createLabelMock(labelPath, value) {
  * @param {string} componentName - Name of the component for test descriptions
  *
  * @example
- * runCommonAccessibilityTests(createComponent, 'prometheionDashboard');
+ * runCommonAccessibilityTests(createComponent, 'elaroDashboard');
  */
 export function runCommonAccessibilityTests(createComponentFn, componentName) {
   describe(`${componentName} Accessibility`, () => {

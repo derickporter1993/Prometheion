@@ -39,8 +39,8 @@
 - Need to migrate to modern 2024+ patterns when extracting new services
 
 **Classes Using `without sharing` (require justification):**
-1. `PrometheionEventPublisher.cls` - May be intentional for system-level event publishing
-2. `PrometheionReasoningEngine.cls` - May need system context for AI analysis
+1. `ElaroEventPublisher.cls` - May be intentional for system-level event publishing
+2. `ElaroReasoningEngine.cls` - May need system context for AI analysis
 
 **Action:** Review these 2 classes to ensure `without sharing` is justified and documented.
 
@@ -49,8 +49,8 @@
 ## 🔌 External Dependencies
 
 ### Platform Events: 2 events
-- `Prometheion_Raw_Event__e`
-- `Prometheion_Score_Result__e`
+- `Elaro_Raw_Event__e`
+- `Elaro_Score_Result__e`
 
 **Status:** ✅ Baseline events exist
 
@@ -148,7 +148,7 @@ Database.insert(records, AccessLevel.USER_MODE);
 1. **XSS in LWC components** - `{message.content}` rendered without sanitization
 2. **Unvalidated URL construction** - `nodeId` not validated before URL building
 3. **Missing HTTP timeouts** - SlackNotifier and TeamsNotifier lack timeouts
-4. **No input validation** - PrometheionComplianceCopilot missing length checks
+4. **No input validation** - ElaroComplianceCopilot missing length checks
 5. **Stack traces in logs** - Sensitive info exposure risk
 
 ### Test Coverage Gaps (Fix in Phase 3)

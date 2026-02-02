@@ -1,4 +1,4 @@
-# Technical Changes Required - Prometheion Compliance Platform
+# Technical Changes Required - Elaro Compliance Platform
 
 ## By the Numbers
 
@@ -18,14 +18,14 @@
 
 | Class | Fix Required |
 |-------|-------------|
-| PrometheionGraphIndexer.cls | Add CRUD/FLS checks |
-| PrometheionReasoningEngine.cls | Change to `with sharing` + add FLS |
-| PrometheionLegalDocumentGenerator.cls | Add ContentVersion FLS check |
-| PrometheionAISettingsController.cls | Add input validation + CRUD check |
+| ElaroGraphIndexer.cls | Add CRUD/FLS checks |
+| ElaroReasoningEngine.cls | Change to `with sharing` + add FLS |
+| ElaroLegalDocumentGenerator.cls | Add ContentVersion FLS check |
+| ElaroAISettingsController.cls | Add input validation + CRUD check |
 | AlertHistoryService.cls | Add CRUD/FLS enforcement |
 | FlowExecutionLogger.cls | Add CRUD/FLS enforcement |
 | PerformanceAlertPublisher.cls | Add CRUD/FLS enforcement |
-| PrometheionComplianceScorer.cls | Add `WITH SECURITY_ENFORCED` |
+| ElaroComplianceScorer.cls | Add `WITH SECURITY_ENFORCED` |
 
 ---
 
@@ -48,10 +48,10 @@
 - `EvidenceCollectionService.cls` - Automated evidence
 - `ComplianceDashboardController.cls` - Dashboard backend
 - `AuditReportController.cls` - Report generation
-- `PrometheionSecurityUtils.cls` - Centralized security
+- `ElaroSecurityUtils.cls` - Centralized security
 
 ### AI/ML:
-- `PrometheionAIRiskPredictor.cls` - Einstein risk prediction
+- `ElaroAIRiskPredictor.cls` - Einstein risk prediction
 - `AnomalyDetectionService.cls` - Pattern detection
 - `NaturalLanguageQueryService.cls` - "Am I compliant?" queries
 

@@ -179,7 +179,7 @@ async function runDeploy(options: DeployOptions): Promise<void> {
 }
 
 export const deployCommand = new Command("deploy")
-  .description("Deploy Prometheion to Salesforce org")
+  .description("Deploy Elaro to Salesforce org")
   .option("-o, --target-org <alias>", "Target Salesforce org alias")
   .option("-v, --validate", "Validate deployment without making changes (dry-run)")
   .option(

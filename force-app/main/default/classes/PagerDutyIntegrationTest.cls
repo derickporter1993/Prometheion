@@ -2,7 +2,7 @@
  * @description Unit tests for PagerDutyIntegration
  * Tests HTTP callouts, incident triggering, resolution, and acknowledgment
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
 private class PagerDutyIntegrationTest {
@@ -109,7 +109,7 @@ private class PagerDutyIntegrationTest {
     static void testResolveIncident_Success() {
         Test.setMock(HttpCalloutMock.class, new PagerDutyCalloutMock(202, '{"status":"success"}'));
         
-        String dedupKey = 'prometheion-ALERT-123';
+        String dedupKey = 'elaro-ALERT-123';
         
         Test.startTest();
         PagerDutyIntegration.resolveIncident(dedupKey);
@@ -122,7 +122,7 @@ private class PagerDutyIntegrationTest {
     static void testResolveIncident_HTTPError() {
         Test.setMock(HttpCalloutMock.class, new PagerDutyCalloutMock(404, '{"status":"error","message":"Not Found"}'));
         
-        String dedupKey = 'prometheion-ALERT-456';
+        String dedupKey = 'elaro-ALERT-456';
         
         Test.startTest();
         PagerDutyIntegration.resolveIncident(dedupKey);
@@ -139,7 +139,7 @@ private class PagerDutyIntegrationTest {
     static void testAcknowledgeIncident_Success() {
         Test.setMock(HttpCalloutMock.class, new PagerDutyCalloutMock(202, '{"status":"success"}'));
         
-        String dedupKey = 'prometheion-ALERT-123';
+        String dedupKey = 'elaro-ALERT-123';
         
         Test.startTest();
         PagerDutyIntegration.acknowledgeIncident(dedupKey);
@@ -166,7 +166,7 @@ private class PagerDutyIntegrationTest {
         Test.stopTest();
         
         System.assertNotEquals(null, dedupKey, 'Should return dedup key');
-        System.assert(dedupKey.startsWith('prometheion-'), 'Dedup key should start with prometheion-');
+        System.assert(dedupKey.startsWith('elaro-'), 'Dedup key should start with elaro-');
     }
     
     @isTest

@@ -1,4 +1,4 @@
-# Cursor Task Guide - Prometheion AppExchange
+# Cursor Task Guide - Elaro AppExchange
 
 > Owner: Cursor
 > Branch: `claude/determine-project-phase-Q95M8`
@@ -189,9 +189,9 @@ static void testMethodName_WhitespaceInput() {
 
 | Class | Test File |
 |-------|-----------|
-| PrometheionAlertTriggerHandler | PrometheionAlertTriggerHandlerTest.cls |
-| PrometheionConsentTriggerHandler | PrometheionConsentTriggerHandlerTest.cls |
-| PrometheionBatchEventLoader | PrometheionBatchEventLoaderTest.cls |
+| ElaroAlertTriggerHandler | ElaroAlertTriggerHandlerTest.cls |
+| ElaroConsentTriggerHandler | ElaroConsentTriggerHandlerTest.cls |
+| ElaroBatchEventLoader | ElaroBatchEventLoaderTest.cls |
 | SOC2IncidentResponseService | SOC2IncidentResponseServiceTest.cls |
 | HIPAABreachNotificationService | HIPAABreachNotificationServiceTest.cls |
 
@@ -297,7 +297,7 @@ static void testBulkOperation_MixedSuccessFailure() {
 | auditWizard | ☐ axe scan ☐ keyboard nav ☐ screen reader |
 | eventExplorer | ☐ axe scan ☐ keyboard nav ☐ screen reader |
 | complianceCopilot | ☐ axe scan ☐ keyboard nav ☐ screen reader |
-| prometheionQuickActions | ☐ axe scan ☐ keyboard nav ☐ screen reader |
+| elaroQuickActions | ☐ axe scan ☐ keyboard nav ☐ screen reader |
 | frameworkSelector | ☐ axe scan ☐ keyboard nav ☐ screen reader |
 | evidenceUploader | ☐ axe scan ☐ keyboard nav ☐ screen reader |
 | reportGenerator | ☐ axe scan ☐ keyboard nav ☐ screen reader |

@@ -1,12 +1,12 @@
 /**
- * TeamsNotifier - Microsoft Teams Integration for Prometheion Alerts
+ * TeamsNotifier - Microsoft Teams Integration for Elaro Alerts
  *
  * Q1 2025 Priority 2 Feature (alongside Slack)
  *
  * Sends rich notifications to Microsoft Teams channels via Incoming Webhooks.
  * Supports Adaptive Cards for interactive compliance alerts with approve/reject buttons.
  *
- * @author Prometheion Enterprise
+ * @author Elaro Enterprise
  * @version 1.0
  */
 public with sharing class TeamsNotifier {
@@ -17,7 +17,7 @@ public with sharing class TeamsNotifier {
      */
     public static void notifyAsync(String text) {
         String payload = JSON.serialize(new Map<String, Object>{ 'text' => text });
-        System.enqueueJob(new PrometheionTeamsNotifierQueueable(payload, 0, null));
+        System.enqueueJob(new ElaroTeamsNotifierQueueable(payload, 0, null));
     }
 
     /**
@@ -25,7 +25,7 @@ public with sharing class TeamsNotifier {
      * Uses Queueable for better error handling and retry logic
      */
     public static void notifyRichAsync(String jsonPayload) {
-        System.enqueueJob(new PrometheionTeamsNotifierQueueable(jsonPayload, 0, null));
+        System.enqueueJob(new ElaroTeamsNotifierQueueable(jsonPayload, 0, null));
     }
 
     /**
@@ -46,7 +46,7 @@ public with sharing class TeamsNotifier {
     /**
      * Send auto-remediation notification
      */
-    public static void notifyRemediation(PrometheionRemediationEngine.RemediationResult result, String framework) {
+    public static void notifyRemediation(ElaroRemediationEngine.RemediationResult result, String framework) {
         String payload = buildRemediationCard(result, framework);
         notifyRichAsync(payload);
     }
@@ -83,7 +83,7 @@ public with sharing class TeamsNotifier {
                                 'type' => 'TextBlock',
                                 'size' => 'Large',
                                 'weight' => 'Bolder',
-                                'text' => emoji + ' Prometheion Compliance Alert',
+                                'text' => emoji + ' Elaro Compliance Alert',
                                 'color' => color
                             },
                             // Title
@@ -112,13 +112,13 @@ public with sharing class TeamsNotifier {
                         'actions' => new List<Map<String, Object>>{
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
-                                'title' => '📊 View in Prometheion',
+                                'title' => '📊 View in Elaro',
                                 'url' => orgUrl + '/lightning/page/home'
                             },
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '✅ Approve',
-                                'url' => validateAndBuildUrl(orgUrl, nodeId, '/apex/PrometheionApprove')
+                                'url' => validateAndBuildUrl(orgUrl, nodeId, '/apex/ElaroApprove')
                             }
                         }
                     }
@@ -132,7 +132,7 @@ public with sharing class TeamsNotifier {
     /**
      * Build Adaptive Card for remediation notifications
      */
-    private static String buildRemediationCard(PrometheionRemediationEngine.RemediationResult result, String framework) {
+    private static String buildRemediationCard(ElaroRemediationEngine.RemediationResult result, String framework) {
         String orgUrl = URL.getOrgDomainUrl().toExternalForm();
         String emoji = result.success ? '🛡️' : '⚠️';
         String color = result.success ? 'good' : 'warning';
@@ -151,7 +151,7 @@ public with sharing class TeamsNotifier {
                                 'type' => 'TextBlock',
                                 'size' => 'Large',
                                 'weight' => 'Bolder',
-                                'text' => emoji + ' Prometheion Auto-Remediation',
+                                'text' => emoji + ' Elaro Auto-Remediation',
                                 'color' => color
                             },
                             new Map<String, Object>{
@@ -178,12 +178,12 @@ public with sharing class TeamsNotifier {
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '✅ Approve',
-                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/PrometheionApprove')
+                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/ElaroApprove')
                             },
                             new Map<String, Object>{
                                 'type' => 'Action.OpenUrl',
                                 'title' => '↩️ Rollback',
-                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/PrometheionRollback')
+                                'url' => validateAndBuildUrl(orgUrl, result.remediationId, '/apex/ElaroRollback')
                             }
                         }
                     }
@@ -198,7 +198,7 @@ public with sharing class TeamsNotifier {
      * Send weekly compliance scorecard
      */
     public static void sendWeeklyScorecard() {
-        PrometheionComplianceScorer.ScoreResult score = PrometheionComplianceScorer.calculateReadinessScore();
+        ElaroComplianceScorer.ScoreResult score = ElaroComplianceScorer.calculateReadinessScore();
 
         String emoji = score.overallScore >= 80 ? '🟢' : score.overallScore >= 60 ? '🟡' : '🔴';
         String orgUrl = URL.getOrgDomainUrl().toExternalForm();
@@ -261,7 +261,7 @@ public with sharing class TeamsNotifier {
      * Validate and build URL with proper encoding and validation
      * @param baseUrl The base org URL
      * @param recordId The Salesforce record ID to validate
-     * @param path The path to append (e.g., '/apex/PrometheionApprove')
+     * @param path The path to append (e.g., '/apex/ElaroApprove')
      * @return Validated and encoded URL
      */
     private static String validateAndBuildUrl(String baseUrl, String recordId, String path) {

@@ -8,7 +8,7 @@
  * - Maintain "Do Not Sell" list
  * - Sync opt-out status with vendors
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class CCPAOptOutService extends ComplianceServiceBase {

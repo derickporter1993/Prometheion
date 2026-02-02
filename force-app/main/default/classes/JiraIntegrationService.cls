@@ -1,5 +1,5 @@
 /**
- * @description Service class for Jira integration with Prometheion compliance gaps.
+ * @description Service class for Jira integration with Elaro compliance gaps.
  * Provides bidirectional sync between Salesforce Compliance_Gap__c and Jira issues.
  *
  * Features:
@@ -8,7 +8,7 @@
  * - Add comments and attachments
  * - Bulk operations support
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 public with sharing class JiraIntegrationService {
@@ -294,7 +294,7 @@ public with sharing class JiraIntegrationService {
     }
 
     private static JiraSettings getSettings() {
-        Prometheion_Jira_Settings__c settings = Prometheion_Jira_Settings__c.getOrgDefaults();
+        Elaro_Jira_Settings__c settings = Elaro_Jira_Settings__c.getOrgDefaults();
 
         JiraSettings js = new JiraSettings();
         js.jiraInstanceUrl = settings.Jira_Instance_URL__c;
@@ -325,7 +325,7 @@ public with sharing class JiraIntegrationService {
                     'name' => mapSeverityToJiraPriority(gap.Severity__c, priority)
                 },
                 'labels' => new List<String>{
-                    'prometheion',
+                    'elaro',
                     'compliance',
                     gap.Framework__c.toLowerCase()
                 }
@@ -353,7 +353,7 @@ public with sharing class JiraIntegrationService {
             description += '*Remediation Plan*\n' + gap.Remediation_Plan__c + '\n\n';
         }
 
-        description += '_Created by Prometheion Compliance Platform_\n';
+        description += '_Created by Elaro Compliance Platform_\n';
         description += 'Salesforce Record: ' + URL.getOrgDomainUrl().toExternalForm() + '/' + gap.Id;
 
         return description;

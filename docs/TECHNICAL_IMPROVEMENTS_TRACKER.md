@@ -3,7 +3,7 @@
 **Last Updated**: 2026-01-12
 **Purpose**: Track technical debt and improvements needed for AppExchange submission and product maturity
 
-This document tracks all technical improvements needed across the Prometheion codebase, organized by priority and status.
+This document tracks all technical improvements needed across the Elaro codebase, organized by priority and status.
 
 ---
 
@@ -22,7 +22,7 @@ This document tracks all technical improvements needed across the Prometheion co
 
 | Item | Class/Method                | Status      | Notes                                                               |
 | ---- | --------------------------- | ----------- | ------------------------------------------------------------------- |
-| 1.1  | `PrometheionGraphIndexer`   | ✅ Complete | Validation added lines 5-18 (entityType, entityId, framework)       |
+| 1.1  | `ElaroGraphIndexer`   | ✅ Complete | Validation added lines 5-18 (entityType, entityId, framework)       |
 | 1.2  | `PerformanceAlertPublisher` | ✅ Complete | Validation added lines 22-31 (metric, value, threshold)             |
 | 1.3  | `FlowExecutionLogger`       | ✅ Complete | CRUD/FLS validation lines 13-19; params marked @required            |
 
@@ -43,8 +43,8 @@ if (!SUPPORTED_FRAMEWORKS.contains(framework)) {
 
 | Item | Class                           | Query Location | Status      | Notes                                                        |
 | ---- | ------------------------------- | -------------- | ----------- | ------------------------------------------------------------ |
-| 2.1  | `PrometheionComplianceScorer`   | Multiple       | ✅ Complete | WITH USER_MODE at lines 170, 181, 189, 257, 270, 311, 475    |
-| 2.2  | `PrometheionGraphIndexer`       | Lines 79, 100  | ✅ Complete | WITH USER_MODE on PermissionSet and FlowDefinitionView       |
+| 2.1  | `ElaroComplianceScorer`   | Multiple       | ✅ Complete | WITH USER_MODE at lines 170, 181, 189, 257, 270, 311, 475    |
+| 2.2  | `ElaroGraphIndexer`       | Lines 79, 100  | ✅ Complete | WITH USER_MODE on PermissionSet and FlowDefinitionView       |
 | 2.3  | `EvidenceCollectionService`     | Line 123       | ✅ Complete | WITH SECURITY_ENFORCED on PermissionSet query                |
 | 2.4  | `ComplianceDashboardController` | Lines 49,58,88,97 | ✅ Complete | WITH SECURITY_ENFORCED on Gap and Evidence queries        |
 
@@ -65,8 +65,8 @@ List<Compliance_Score__c> scores = [
 
 | Item | Test Class                        | Current Coverage | Target       | Status      |
 | ---- | --------------------------------- | ---------------- | ------------ | ----------- |
-| 3.1  | `PrometheionComplianceScorerTest` | 250 records      | 200+ records | ✅ Complete |
-| 3.2  | `PrometheionGraphIndexerTest`     | 200 records      | 200+ records | ✅ Complete |
+| 3.1  | `ElaroComplianceScorerTest` | 250 records      | 200+ records | ✅ Complete |
+| 3.2  | `ElaroGraphIndexerTest`     | 200 records      | 200+ records | ✅ Complete |
 | 3.3  | `EvidenceCollectionServiceTest`   | 200 records      | 200+ records | ✅ Complete |
 | 3.4  | `PerformanceAlertPublisherTest`   | 200 records      | 200+ records | ✅ Complete |
 
@@ -85,7 +85,7 @@ static void testBulkProcessing() {
     insert scores;
 
     Test.startTest();
-    PrometheionComplianceScorer.calculateReadinessScore();
+    ElaroComplianceScorer.calculateReadinessScore();
     Test.stopTest();
 
     // Assert bulk processing completed successfully
@@ -98,13 +98,13 @@ static void testBulkProcessing() {
 
 | Item | Description                                     | Status      | Notes                                         |
 | ---- | ----------------------------------------------- | ----------- | --------------------------------------------- |
-| 4.1  | Create `SUPPORTED_FRAMEWORKS` constant          | ✅ Complete | PrometheionConstants.isValidFramework() exists |
+| 4.1  | Create `SUPPORTED_FRAMEWORKS` constant          | ✅ Complete | ElaroConstants.isValidFramework() exists |
 | 4.2  | Add framework validation to all service classes | ⏳ Pending  | Use constant for validation                   |
 
 **Implementation Pattern**:
 
 ```apex
-public class PrometheionComplianceScorer {
+public class ElaroComplianceScorer {
     private static final Set<String> SUPPORTED_FRAMEWORKS = new Set<String>{
         'HIPAA', 'SOC2', 'NIST', 'FedRAMP', 'GDPR', 'SOX',
         'PCI-DSS', 'CCPA', 'GLBA', 'ISO27001'
@@ -128,8 +128,8 @@ public class PrometheionComplianceScorer {
 | Item | Trigger                            | Status      | Notes                                              |
 | ---- | ---------------------------------- | ----------- | -------------------------------------------------- |
 | 5.1  | `PerformanceAlertEventTrigger`     | ✅ Complete | TriggerRecursionGuard added with try/finally       |
-| 5.2  | `PrometheionPCIAccessAlertTrigger` | ✅ Complete | TriggerRecursionGuard added with try/finally       |
-| 5.3  | `PrometheionEventCaptureTrigger`   | ✅ Complete | TriggerRecursionGuard added with try/finally       |
+| 5.2  | `ElaroPCIAccessAlertTrigger` | ✅ Complete | TriggerRecursionGuard added with try/finally       |
+| 5.3  | `ElaroEventCaptureTrigger`   | ✅ Complete | TriggerRecursionGuard added with try/finally       |
 
 **Note**: All triggers now have recursion guards
 
@@ -141,8 +141,8 @@ public class PrometheionComplianceScorer {
 
 | Item | Class                         | Current        | Target                                  | Status     |
 | ---- | ----------------------------- | -------------- | --------------------------------------- | ---------- |
-| 5.1  | `PrometheionComplianceScorer` | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
-| 5.2  | `PrometheionGraphIndexer`     | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
+| 5.1  | `ElaroComplianceScorer` | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
+| 5.2  | `ElaroGraphIndexer`     | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
 | 5.3  | `EvidenceCollectionService`   | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
 | 5.4  | `PerformanceAlertPublisher`   | `System.debug` | Structured logging with correlation IDs | ⏳ Pending |
 
@@ -153,13 +153,13 @@ private static void logError(String correlationId, String category, Exception e)
     System.debug(LoggingLevel.ERROR,
         String.format(
             '[{0}] {1} | CorrelationId: {2} | Error: {3}',
-            new List<String>{ 'Prometheion', category, correlationId, e.getMessage() }
+            new List<String>{ 'Elaro', category, correlationId, e.getMessage() }
         )
     );
 
-    // Optionally log to Prometheion_Audit_Log__c
+    // Optionally log to Elaro_Audit_Log__c
     try {
-        Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c(
+        Elaro_Audit_Log__c log = new Elaro_Audit_Log__c(
             Action__c = 'ERROR',
             Entity_Type__c = category,
             Details__c = e.getMessage(),
@@ -178,13 +178,13 @@ private static void logError(String correlationId, String category, Exception e)
 
 | Item | Class                               | Status      | Notes                                      |
 | ---- | ----------------------------------- | ----------- | ------------------------------------------ |
-| 6.1  | `PrometheionLegalDocumentGenerator` | ⏳ Pending  | Implement rate limiting via Platform Cache |
+| 6.1  | `ElaroLegalDocumentGenerator` | ⏳ Pending  | Implement rate limiting via Platform Cache |
 | 6.2  | `PerformanceAlertPublisher`         | ✅ Complete | Already implemented                        |
 
 **Implementation Pattern** (see `PerformanceAlertPublisher.cls` for reference):
 
 ```apex
-private static final String RATE_LIMIT_PARTITION = 'local.PrometheionCache';
+private static final String RATE_LIMIT_PARTITION = 'local.ElaroCache';
 private static final Integer RATE_LIMIT_MAX_CALLS = 100;
 private static final Integer RATE_LIMIT_WINDOW_SECONDS = 3600; // 1 hour
 
@@ -207,7 +207,7 @@ private static Boolean checkRateLimit(String key) {
 
 | Item | Feature                       | Status      | Notes                                                    |
 | ---- | ----------------------------- | ----------- | -------------------------------------------------------- |
-| 7.1  | AI Settings changes           | ✅ Complete | Already implemented in `PrometheionAISettingsController` |
+| 7.1  | AI Settings changes           | ✅ Complete | Already implemented in `ElaroAISettingsController` |
 | 7.2  | Evidence pack generation      | ⏳ Pending  | Log when evidence packs are generated/exported           |
 | 7.3  | Compliance score calculations | ⏳ Pending  | Log when scores are calculated/updated                   |
 
@@ -216,7 +216,7 @@ private static Boolean checkRateLimit(String key) {
 ```apex
 private static void logAuditEvent(String action, String entityType, String entityId, String details) {
     try {
-        Prometheion_Audit_Log__c log = new Prometheion_Audit_Log__c(
+        Elaro_Audit_Log__c log = new Elaro_Audit_Log__c(
             Action__c = action,
             Entity_Type__c = entityType,
             Entity_Id__c = entityId,
@@ -227,10 +227,10 @@ private static void logAuditEvent(String action, String entityType, String entit
 
         SObjectAccessDecision decision = Security.stripInaccessible(
             AccessType.CREATABLE,
-            new List<Prometheion_Audit_Log__c>{ log }
+            new List<Elaro_Audit_Log__c>{ log }
         );
 
-        List<Prometheion_Audit_Log__c> sanitized = decision.getRecords();
+        List<Elaro_Audit_Log__c> sanitized = decision.getRecords();
         if (!sanitized.isEmpty()) {
             insert sanitized[0];
         }
@@ -288,8 +288,8 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 **Files to Update**:
 
-- `PrometheionDynamicReportController.cls`
-- `PrometheionDrillDownController.cls`
+- `ElaroDynamicReportController.cls`
+- `ElaroDrillDownController.cls`
 - `ComplianceDashboardController.cls`
 
 ---
@@ -312,7 +312,7 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 | Item | Location                      | Current | Target Constant                | Status     |
 | ---- | ----------------------------- | ------- | ------------------------------ | ---------- |
-| 11.1 | `PrometheionComplianceScorer` | `0.85`  | `DEFAULT_CONFIDENCE_THRESHOLD` | ⏳ Pending |
+| 11.1 | `ElaroComplianceScorer` | `0.85`  | `DEFAULT_CONFIDENCE_THRESHOLD` | ⏳ Pending |
 | 11.2 | `PerformanceRuleEngine`       | `8000`  | `DEFAULT_CPU_WARN_THRESHOLD`   | ⏳ Pending |
 | 11.3 | `PerformanceRuleEngine`       | `9000`  | `DEFAULT_CPU_CRIT_THRESHOLD`   | ⏳ Pending |
 
@@ -334,11 +334,11 @@ private static void logAuditEvent(String action, String entityType, String entit
 
 | Item | Service                              | Status      | Notes       |
 | ---- | ------------------------------------ | ----------- | ----------- |
-| 13.1 | `PrometheionSOC2ComplianceService`   | ✅ Complete | Implemented |
-| 13.2 | `PrometheionHIPAAComplianceService`  | ✅ Complete | Implemented |
-| 13.3 | `PrometheionGDPRComplianceService`   | ✅ Complete | Implemented |
-| 13.4 | `PrometheionCCPAComplianceService`   | ✅ Complete | Implemented |
-| 13.5 | `PrometheionPCIDSSComplianceService` | ✅ Complete | Implemented |
+| 13.1 | `ElaroSOC2ComplianceService`   | ✅ Complete | Implemented |
+| 13.2 | `ElaroHIPAAComplianceService`  | ✅ Complete | Implemented |
+| 13.3 | `ElaroGDPRComplianceService`   | ✅ Complete | Implemented |
+| 13.4 | `ElaroCCPAComplianceService`   | ✅ Complete | Implemented |
+| 13.5 | `ElaroPCIDSSComplianceService` | ✅ Complete | Implemented |
 
 ---
 
@@ -389,7 +389,7 @@ private static void logAuditEvent(String action, String entityType, String entit
 ~~1. **Trigger Recursion Guards** (Items 5.1-5.3)~~ ✅ COMPLETE (2026-01-13)
 
 2. **Framework Validation** (Item 4.2)
-   - Add validation to remaining service classes using `PrometheionConstants.isValidFramework()`
+   - Add validation to remaining service classes using `ElaroConstants.isValidFramework()`
 
 ~~3. **Input Validation** (Items 1.1-1.3)~~ ✅ COMPLETE
 ~~4. **USER_MODE Enforcement** (Items 2.1-2.4)~~ ✅ COMPLETE
