@@ -66,9 +66,7 @@ describe("c-prometheion-ai-settings", () => {
   // Helper to find input by label
   function findInputByLabel(element, labelText) {
     const inputs = element.shadowRoot.querySelectorAll("lightning-input");
-    return Array.from(inputs).find(
-      (input) => input.label && input.label.includes(labelText)
-    );
+    return Array.from(inputs).find((input) => input.label && input.label.includes(labelText));
   }
 
   // Helper to find button by label
@@ -439,9 +437,7 @@ describe("c-prometheion-ai-settings", () => {
 
       // Should dispatch error toast
       expect(dispatchEventSpy).toHaveBeenCalled();
-      const toastEvent = dispatchEventSpy.mock.calls.find(
-        (call) => call[0].type === "showtoast"
-      );
+      const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
       expect(toastEvent).toBeDefined();
 
       dispatchEventSpy.mockRestore();

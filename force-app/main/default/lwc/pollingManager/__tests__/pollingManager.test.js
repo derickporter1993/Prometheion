@@ -208,10 +208,7 @@ describe("PollingManager", () => {
 
       manager.setupVisibilityHandling();
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith(
-        "visibilitychange",
-        expect.any(Function)
-      );
+      expect(addEventListenerSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
 
       addEventListenerSpy.mockRestore();
     });
@@ -275,10 +272,7 @@ describe("PollingManager", () => {
 
       expect(manager.isRunning).toBe(false);
       expect(manager.timerId).toBeNull();
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        "visibilitychange",
-        expect.any(Function)
-      );
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
       expect(manager.visibilityHandler).toBeNull();
 
       removeEventListenerSpy.mockRestore();

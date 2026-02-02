@@ -81,9 +81,7 @@ describe("c-risk-heatmap", () => {
 
   describe("Risk Classes", () => {
     it("assigns risk-critical class for CRITICAL severity", async () => {
-      const risks = [
-        { id: "r1", framework: "SOC2", severity: "CRITICAL", score: 9 },
-      ];
+      const risks = [{ id: "r1", framework: "SOC2", severity: "CRITICAL", score: 9 }];
 
       const element = await createComponent({ risks });
       await Promise.resolve();

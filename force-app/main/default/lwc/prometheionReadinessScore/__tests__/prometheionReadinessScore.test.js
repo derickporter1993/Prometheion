@@ -130,7 +130,9 @@ describe("c-prometheion-readiness-score", () => {
 
       // Check no error message container is shown (hasError is false)
       // The error div has a lightning-icon with utility:error
-      const errorContainer = element.shadowRoot.querySelector(".slds-text-color_error lightning-icon[icon-name='utility:error']");
+      const errorContainer = element.shadowRoot.querySelector(
+        ".slds-text-color_error lightning-icon[icon-name='utility:error']"
+      );
       expect(errorContainer).toBeNull();
 
       // Check score is displayed via lightning-formatted-number
@@ -282,9 +284,7 @@ describe("c-prometheion-readiness-score", () => {
       });
 
       // Check that success toast was dispatched
-      const toastEvent = dispatchEventSpy.mock.calls.find(
-        (call) => call[0].type === "showtoast"
-      );
+      const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
       expect(toastEvent).toBeDefined();
       expect(toastEvent[0].detail.variant).toBe("success");
 
@@ -337,9 +337,7 @@ describe("c-prometheion-readiness-score", () => {
       await flushPromises();
 
       expect(dispatchEventSpy).toHaveBeenCalled();
-      const toastEvent = dispatchEventSpy.mock.calls.find(
-        (call) => call[0].type === "showtoast"
-      );
+      const toastEvent = dispatchEventSpy.mock.calls.find((call) => call[0].type === "showtoast");
       expect(toastEvent).toBeDefined();
       expect(toastEvent[0].detail.variant).toBe("error");
 

@@ -179,19 +179,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values via DOM events
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -223,9 +217,7 @@ describe("c-audit-report-generator", () => {
 
       // Clear the default framework value
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "" } }));
 
       await flushPromises();
 
@@ -256,19 +248,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -299,19 +285,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -355,19 +335,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values and generate report first
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -409,19 +383,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 
@@ -458,19 +426,13 @@ describe("c-audit-report-generator", () => {
 
       // Set form values
       const combobox = element.shadowRoot.querySelector("lightning-combobox");
-      combobox.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "SOC2" } })
-      );
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "SOC2" } }));
 
       const startDateInput = findInputByLabel(element, "Start Date");
       const endDateInput = findInputByLabel(element, "End Date");
 
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-01-01" } })
-      );
-      endDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2025-03-31" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-01-01" } }));
+      endDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2025-03-31" } }));
 
       await flushPromises();
 

@@ -146,9 +146,7 @@ describe("c-prometheion-trend-analyzer", () => {
 
       // Date field combobox should have options
       const comboboxes = element.shadowRoot.querySelectorAll("lightning-combobox");
-      const dateFieldCombobox = Array.from(comboboxes).find(
-        (cb) => cb.label === "Date Field"
-      );
+      const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
       expect(dateFieldCombobox).toBeDefined();
       expect(dateFieldCombobox.options.length).toBe(2);
     });
@@ -168,9 +166,7 @@ describe("c-prometheion-trend-analyzer", () => {
 
       // Metric field combobox should have options
       const comboboxes = element.shadowRoot.querySelectorAll("lightning-combobox");
-      const metricFieldCombobox = Array.from(comboboxes).find(
-        (cb) => cb.label === "Metric Field"
-      );
+      const metricFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Metric Field");
       expect(metricFieldCombobox).toBeDefined();
       expect(metricFieldCombobox.options.length).toBe(2);
     });
@@ -182,9 +178,7 @@ describe("c-prometheion-trend-analyzer", () => {
       await Promise.resolve();
 
       const comboboxes = element.shadowRoot.querySelectorAll("lightning-combobox");
-      const objectCombobox = Array.from(comboboxes).find(
-        (cb) => cb.label === "Object"
-      );
+      const objectCombobox = Array.from(comboboxes).find((cb) => cb.label === "Object");
 
       objectCombobox.dispatchEvent(
         new CustomEvent("change", {
@@ -202,9 +196,7 @@ describe("c-prometheion-trend-analyzer", () => {
       await Promise.resolve();
 
       const comboboxes = element.shadowRoot.querySelectorAll("lightning-combobox");
-      const dateFieldCombobox = Array.from(comboboxes).find(
-        (cb) => cb.label === "Date Field"
-      );
+      const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
 
       dateFieldCombobox.dispatchEvent(
         new CustomEvent("change", {
@@ -221,9 +213,7 @@ describe("c-prometheion-trend-analyzer", () => {
       await Promise.resolve();
 
       const comboboxes = element.shadowRoot.querySelectorAll("lightning-combobox");
-      const granularityCombobox = Array.from(comboboxes).find(
-        (cb) => cb.label === "Granularity"
-      );
+      const granularityCombobox = Array.from(comboboxes).find((cb) => cb.label === "Granularity");
 
       granularityCombobox.dispatchEvent(
         new CustomEvent("change", {
@@ -274,10 +264,14 @@ describe("c-prometheion-trend-analyzer", () => {
       objectCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
 
       const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
-      dateFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "CreatedDate" } }));
+      dateFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "CreatedDate" } })
+      );
 
       const metricFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Metric Field");
-      metricFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "AnnualRevenue" } }));
+      metricFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "AnnualRevenue" } })
+      );
 
       await Promise.resolve();
 
@@ -327,10 +321,14 @@ describe("c-prometheion-trend-analyzer", () => {
       objectCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
 
       const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
-      dateFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "CreatedDate" } }));
+      dateFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "CreatedDate" } })
+      );
 
       const metricFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Metric Field");
-      metricFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "AnnualRevenue" } }));
+      metricFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "AnnualRevenue" } })
+      );
 
       await Promise.resolve();
 
@@ -372,10 +370,14 @@ describe("c-prometheion-trend-analyzer", () => {
       objectCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
 
       const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
-      dateFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "CreatedDate" } }));
+      dateFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "CreatedDate" } })
+      );
 
       const metricFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Metric Field");
-      metricFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "AnnualRevenue" } }));
+      metricFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "AnnualRevenue" } })
+      );
 
       await Promise.resolve();
 
@@ -414,10 +416,14 @@ describe("c-prometheion-trend-analyzer", () => {
       objectCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
 
       const dateFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Date Field");
-      dateFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "CreatedDate" } }));
+      dateFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "CreatedDate" } })
+      );
 
       const metricFieldCombobox = Array.from(comboboxes).find((cb) => cb.label === "Metric Field");
-      metricFieldCombobox.dispatchEvent(new CustomEvent("change", { detail: { value: "AnnualRevenue" } }));
+      metricFieldCombobox.dispatchEvent(
+        new CustomEvent("change", { detail: { value: "AnnualRevenue" } })
+      );
 
       await Promise.resolve();
 

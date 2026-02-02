@@ -137,9 +137,7 @@ describe("c-prometheion-comparative-analytics", () => {
 
       const combobox = getObjectCombobox(element);
       if (combobox) {
-        combobox.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Account" } })
-        );
+        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
         await Promise.resolve();
 
         // Verify the combobox value is updated
@@ -162,9 +160,7 @@ describe("c-prometheion-comparative-analytics", () => {
 
       const combobox = getRowFieldCombobox(element);
       if (combobox) {
-        combobox.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Industry" } })
-        );
+        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
         await Promise.resolve();
 
         expect(combobox.value).toBe("Industry");
@@ -178,9 +174,7 @@ describe("c-prometheion-comparative-analytics", () => {
 
       const combobox = getColumnFieldCombobox(element);
       if (combobox) {
-        combobox.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Region" } })
-        );
+        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
         await Promise.resolve();
 
         expect(combobox.value).toBe("Region");
@@ -208,15 +202,9 @@ describe("c-prometheion-comparative-analytics", () => {
       const colCombo = getColumnFieldCombobox(element);
 
       if (objectCombo && rowCombo && colCombo) {
-        objectCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Account" } })
-        );
-        rowCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Industry" } })
-        );
-        colCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Region" } })
-        );
+        objectCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
+        rowCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
+        colCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
         await Promise.resolve();
 
         // Click generate button
@@ -255,15 +243,9 @@ describe("c-prometheion-comparative-analytics", () => {
       const colCombo = getColumnFieldCombobox(element);
 
       if (objectCombo && rowCombo && colCombo) {
-        objectCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Account" } })
-        );
-        rowCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Industry" } })
-        );
-        colCombo.dispatchEvent(
-          new CustomEvent("change", { detail: { value: "Region" } })
-        );
+        objectCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
+        rowCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
+        colCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
         await Promise.resolve();
 
         // Click generate button

@@ -54,7 +54,8 @@ export default class FlowExecutionMonitor extends LightningElement {
     } catch (error) {
       this.isLoading = false;
       this.hasError = true;
-      this.errorMessage = error?.body?.message || error?.message || "Failed to load flow execution data";
+      this.errorMessage =
+        error?.body?.message || error?.message || "Failed to load flow execution data";
       this.rows = [];
     }
   }

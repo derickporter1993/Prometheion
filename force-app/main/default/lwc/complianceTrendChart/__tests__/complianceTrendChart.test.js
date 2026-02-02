@@ -128,7 +128,9 @@ describe("c-compliance-trend-chart", () => {
       await flushPromises();
 
       // Error messages should not appear in default state
-      const errorIcon = element.shadowRoot.querySelector("lightning-icon[icon-name='utility:error']");
+      const errorIcon = element.shadowRoot.querySelector(
+        "lightning-icon[icon-name='utility:error']"
+      );
       expect(errorIcon).toBeNull();
     });
   });

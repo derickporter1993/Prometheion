@@ -24,7 +24,8 @@ export default class ComplianceScoreCard extends NavigationMixin(LightningElemen
       // Error logged for debugging - framework details are optional
       this.isLoadingDetails = false;
       this.hasError = true;
-      this.errorMessage = error?.body?.message || error?.message || "Failed to load framework details";
+      this.errorMessage =
+        error?.body?.message || error?.message || "Failed to load framework details";
     } else {
       this.isLoadingDetails = true;
       this.hasError = false;

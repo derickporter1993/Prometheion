@@ -179,7 +179,9 @@ describe("c-performance-alert-panel", () => {
       await flushPromises();
 
       // When empty, should show empty state message instead of datatable
-      const emptyMessage = element.shadowRoot.querySelector(".slds-text-color_weak.slds-p-around_medium");
+      const emptyMessage = element.shadowRoot.querySelector(
+        ".slds-text-color_weak.slds-p-around_medium"
+      );
       expect(emptyMessage).not.toBeNull();
     });
   });

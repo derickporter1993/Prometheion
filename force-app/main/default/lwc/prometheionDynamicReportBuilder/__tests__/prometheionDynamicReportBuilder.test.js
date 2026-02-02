@@ -149,7 +149,13 @@ describe("c-prometheion-dynamic-report-builder", () => {
     it("loads field metadata when object is selected", async () => {
       const mockFields = [
         { label: "Name", apiName: "Name", type: "string", isFilterable: true, isSortable: true },
-        { label: "Industry", apiName: "Industry", type: "picklist", isFilterable: true, isSortable: true },
+        {
+          label: "Industry",
+          apiName: "Industry",
+          type: "picklist",
+          isFilterable: true,
+          isSortable: true,
+        },
       ];
 
       getFieldMetadata.mockResolvedValue(mockFields);
@@ -175,7 +181,13 @@ describe("c-prometheion-dynamic-report-builder", () => {
     it("shows dual listbox after fields are loaded", async () => {
       const mockFields = [
         { label: "Name", apiName: "Name", type: "string", isFilterable: true, isSortable: true },
-        { label: "Industry", apiName: "Industry", type: "picklist", isFilterable: true, isSortable: true },
+        {
+          label: "Industry",
+          apiName: "Industry",
+          type: "picklist",
+          isFilterable: true,
+          isSortable: true,
+        },
       ];
 
       getFieldMetadata.mockResolvedValue(mockFields);
