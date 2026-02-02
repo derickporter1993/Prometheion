@@ -553,7 +553,8 @@ elaro/
 │       └── Elaro_Admin.permissionset-meta.xml
 ├── scripts/                         # Automation scripts
 │   ├── orgInit.sh                   # Scratch org initialization
-│   └── scheduleApiSnapshot.sh       # Schedule periodic scans
+│   ├── scheduleApiSnapshot.sh       # Schedule periodic scans
+│   └── get-all-prs-to-main.sh       # Get all PRs targeting main branch
 ├── config/                          # Salesforce project config
 │   └── project-scratch-def.json     # Scratch org definition
 ├── examples/                        # Sample outputs
