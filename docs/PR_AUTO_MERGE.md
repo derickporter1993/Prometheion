@@ -1,5 +1,17 @@
 # Pull Request Auto-Merge Documentation
 
+## Quick Summary
+
+**Problem**: Open PRs weren't being automatically merged to main  
+**Root Cause**: No auto-merge automation existed  
+**Solution**: Added two workflows:
+1. `auto-merge-pr.yml` - Automatically merges PRs when checks pass
+2. `pr-status-monitor.yml` - Provides hourly PR status reports
+
+**Impact**: PRs now merge automatically, reducing manual work and improving developer experience.
+
+---
+
 ## Problem
 
 Open pull requests were not being automatically merged to the `main` branch, resulting in a backlog of approved PRs.
