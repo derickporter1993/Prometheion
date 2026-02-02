@@ -4,7 +4,7 @@
  * Technical safeguards per HIPAA Security Rule (45 CFR 164.312).
  * Evaluates access controls, audit controls, integrity, and transmission security.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase {

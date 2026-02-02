@@ -60,13 +60,13 @@
 **Issue:** Clickable elements and datatables need mobile accessibility improvements.
 
 **Resolution:**
-- ✅ Added `aria-label` to all buttons in `prometheionDashboard.html`
+- ✅ Added `aria-label` to all buttons in `elaroDashboard.html`
 - ✅ Added `aria-hidden="true"` to all decorative SVG icons
 - ✅ Added mobile-responsive wrappers for all `lightning-datatable` components
 - ✅ Created CSS files with mobile breakpoints for all datatable components
 
 **Files Updated:**
-- `prometheionDashboard.html` - All buttons have aria-labels
+- `elaroDashboard.html` - All buttons have aria-labels
 - `performanceAlertPanel.html` - Mobile wrapper + CSS
 - `apiUsageDashboard.html` - Mobile wrapper + CSS
 - `flowExecutionMonitor.html` - Mobile wrapper + CSS
@@ -107,7 +107,7 @@
 - `force-app/main/default/lwc/complianceCopilot/__tests__/complianceCopilot.test.js` - Added suppression comments
 
 ### Accessibility Improvements
-- `force-app/main/default/lwc/prometheionDashboard/prometheionDashboard.html` - Added aria-labels to SVGs
+- `force-app/main/default/lwc/elaroDashboard/elaroDashboard.html` - Added aria-labels to SVGs
 - `force-app/main/default/lwc/performanceAlertPanel/performanceAlertPanel.html` - Mobile wrapper
 - `force-app/main/default/lwc/apiUsageDashboard/apiUsageDashboard.html` - Mobile wrapper
 - `force-app/main/default/lwc/flowExecutionMonitor/flowExecutionMonitor.html` - Mobile wrapper

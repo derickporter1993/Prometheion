@@ -2,7 +2,7 @@
  * Test class for PCIAccessControlService
  * Tests RBAC enforcement, privileged access review, credential rotation, access auditing
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

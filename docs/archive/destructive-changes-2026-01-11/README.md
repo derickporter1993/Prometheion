@@ -1,15 +1,15 @@
-# Archived Destructive Changes - Sentinel → Prometheion Rebranding
+# Archived Destructive Changes - Sentinel → Elaro Rebranding
 
 **Archived Date:** 2026-01-11
 **Original Location:** `/destructiveChanges/`
-**Reason:** Historical cleanup manifests from Sentinel→Prometheion rebrand, already applied
+**Reason:** Historical cleanup manifests from Sentinel→Elaro rebrand, already applied
 **Archived By:** Claude Code (AppExchange preparation cleanup)
 
 ---
 
 ## Overview
 
-This directory contains historical destructive changes XML manifests from the Sentinel→Prometheion rebranding effort. These manifests were used to remove legacy Sentinel components during the migration to Prometheion v3.0.
+This directory contains historical destructive changes XML manifests from the Sentinel→Elaro rebranding effort. These manifests were used to remove legacy Sentinel components during the migration to Elaro v3.0.
 
 ## Contents
 
@@ -43,9 +43,9 @@ The file `destructiveChanges-unused-objects.xml` listed `Executive_KPI__mdt` (Cu
 
 ### Why This Is a Problem
 
-**The current Prometheion codebase actively uses `Executive_KPI__mdt`:**
+**The current Elaro codebase actively uses `Executive_KPI__mdt`:**
 
-**File:** `force-app/main/default/classes/PrometheionExecutiveKPIController.cls`
+**File:** `force-app/main/default/classes/ElaroExecutiveKPIController.cls`
 **Lines:** 29-32
 
 ```apex
@@ -57,15 +57,15 @@ List<Executive_KPI__mdt> kpis = [
 
 ### Impact
 
-If `destructiveChanges-unused-objects.xml` were applied to a Prometheion org:
+If `destructiveChanges-unused-objects.xml` were applied to a Elaro org:
 - ❌ `Executive_KPI__mdt` would be deleted
-- ❌ `PrometheionExecutiveKPIController.cls` would throw SOQL errors
+- ❌ `ElaroExecutiveKPIController.cls` would throw SOQL errors
 - ❌ Executive KPI dashboard would fail to load
-- ❌ Deployment of Prometheion package would fail
+- ❌ Deployment of Elaro package would fail
 
 ### Resolution
 
-**DO NOT apply `destructiveChanges-unused-objects.xml` to any Prometheion org.**
+**DO NOT apply `destructiveChanges-unused-objects.xml` to any Elaro org.**
 
 Instead, Cursor AI is creating the missing `Executive_KPI__mdt` metadata type definition as part of the AppExchange preparation (see Task 3 in the combined plan).
 
@@ -75,7 +75,7 @@ Instead, Cursor AI is creating the missing `Executive_KPI__mdt` metadata type de
 
 ### Why Archive Instead of Delete?
 
-1. **Historical Context**: Provides audit trail of Sentinel→Prometheion migration
+1. **Historical Context**: Provides audit trail of Sentinel→Elaro migration
 2. **Documentation**: Shows what was removed and why
 3. **Conflict Evidence**: Preserves proof of Executive_KPI__mdt deletion attempt
 4. **AppExchange Review**: Demonstrates intentional cleanup vs. accidental deletion
@@ -93,9 +93,9 @@ Instead, Cursor AI is creating the missing `Executive_KPI__mdt` metadata type de
 
 ### What Were Destructive Changes?
 
-During the Sentinel→Prometheion rebrand, the following components were removed:
+During the Sentinel→Elaro rebrand, the following components were removed:
 - Legacy Sentinel-branded custom objects
-- Old LWC components replaced by Prometheion versions
+- Old LWC components replaced by Elaro versions
 - Deprecated tabs and app pages
 - Unused metadata types (except Executive_KPI__mdt)
 
@@ -130,7 +130,7 @@ For new component removal, use:
 
 ## For Future Reference
 
-If you need to understand what was removed during the Sentinel→Prometheion migration:
+If you need to understand what was removed during the Sentinel→Elaro migration:
 
 1. Read the XML files in `destructiveChanges/` directory
 2. Check git history: `git log --all --full-history -- destructiveChanges/`
@@ -150,11 +150,11 @@ git add destructiveChanges/
 git commit -m "Restore destructiveChanges from archive"
 ```
 
-**Warning**: This is only recommended if you need to apply these changes to a Sentinel-era org. For Prometheion orgs, this is dangerous.
+**Warning**: This is only recommended if you need to apply these changes to a Sentinel-era org. For Elaro orgs, this is dangerous.
 
 ---
 
 **Archived by:** Claude Code AppExchange Preparation Workflow
 **Archive Date:** 2026-01-11
-**Branch:** `claude/review-prometheion-app-0BLu9`
+**Branch:** `claude/review-elaro-app-0BLu9`
 **Related Issue:** Executive_KPI__mdt metadata type creation (Cursor AI Task 3)

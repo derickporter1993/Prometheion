@@ -1,7 +1,7 @@
 /**
  * SchedulerErrorHandlerTest - Test class for SchedulerErrorHandler utility
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @isTest

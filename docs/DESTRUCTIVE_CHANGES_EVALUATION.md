@@ -51,7 +51,7 @@ The `destructiveChanges/` directory contains **6 XML manifests** for removing le
 ```
 
 **Analysis:**
-- Removes old "Sentinel" branding (Prometheion's former name)
+- Removes old "Sentinel" branding (Elaro's former name)
 - All these classes/components are no longer in the codebase
 - **Status:** ✅ Already applied (safe to archive)
 
@@ -64,7 +64,7 @@ The `destructiveChanges/` directory contains **6 XML manifests** for removing le
 **Contents:**
 ```xml
 <types>
-    <members>Prometheion_Claude_Settings__c</members>
+    <members>Elaro_Claude_Settings__c</members>
     <members>Executive_KPI__mdt</members>
     <name>CustomObject</name>
 </types>
@@ -72,7 +72,7 @@ The `destructiveChanges/` directory contains **6 XML manifests** for removing le
 
 **Analysis:**
 - 🚨 **CRITICAL ISSUE:** Lists `Executive_KPI__mdt` for DELETION
-- But `PrometheionExecutiveKPIController.cls:129` QUERIES this object!
+- But `ElaroExecutiveKPIController.cls:129` QUERIES this object!
 - This is a metadata mismatch that will cause deployment failures
 
 **Root Cause:**
@@ -97,7 +97,7 @@ git log --oneline -- destructiveChanges/
 ae1c33f Fix: Remove Solentra references, update package.xml, fix LWC and Apex errors
 ```
 
-**Last Activity:** Multiple commits during Sentinel → Prometheion rebranding
+**Last Activity:** Multiple commits during Sentinel → Elaro rebranding
 
 **Inference:** These manifests were used during the rebranding effort to clean up old orgs. They appear to have served their purpose and are now historical artifacts.
 
@@ -125,7 +125,7 @@ git rm -r destructiveChanges/
 git add docs/archive/
 git commit -m "chore: Archive historical destructive changes manifests
 
-These manifests were used during Sentinel→Prometheion rebranding
+These manifests were used during Sentinel→Elaro rebranding
 and have already been applied. Archiving to prevent confusion and
 avoid conflicts with current metadata (e.g., Executive_KPI__mdt)."
 ```
@@ -215,7 +215,7 @@ git commit -m "chore: Remove historical destructive changes manifests"
 **Action:** **Archive** (Option 1)
 
 **Reasoning:**
-1. These manifests have served their purpose (Sentinel → Prometheion cleanup)
+1. These manifests have served their purpose (Sentinel → Elaro cleanup)
 2. Keeping them active creates confusion
 3. The `Executive_KPI__mdt` conflict is a real risk
 4. Archiving preserves history without risk
@@ -243,7 +243,7 @@ mv destructiveChanges docs/archive/destructive-changes-2026-01-11/
 
 # Document archive
 cat > docs/archive/destructive-changes-2026-01-11/README.md << 'EOF'
-# Archived Destructive Changes - Sentinel → Prometheion Rebranding
+# Archived Destructive Changes - Sentinel → Elaro Rebranding
 
 **Archived Date:** 2026-01-11
 **Original Location:** `/destructiveChanges/`
@@ -251,7 +251,7 @@ cat > docs/archive/destructive-changes-2026-01-11/README.md << 'EOF'
 
 ## Purpose
 
-These manifests were used during the Sentinel → Prometheion rebranding effort to remove old metadata from existing orgs.
+These manifests were used during the Sentinel → Elaro rebranding effort to remove old metadata from existing orgs.
 
 ## Files
 
@@ -263,7 +263,7 @@ These manifests were used during the Sentinel → Prometheion rebranding effort 
 
 ## Important Note
 
-`destructiveChanges-unused-objects.xml` listed `Executive_KPI__mdt` for deletion, but this object is now required by `PrometheionExecutiveKPIController.cls`. Do NOT apply this destructive change in current orgs.
+`destructiveChanges-unused-objects.xml` listed `Executive_KPI__mdt` for deletion, but this object is now required by `ElaroExecutiveKPIController.cls`. Do NOT apply this destructive change in current orgs.
 
 ## If You Need These
 
@@ -286,7 +286,7 @@ git add docs/archive/ .gitignore
 git commit -m "chore: Archive historical destructive changes manifests
 
 Moved destructiveChanges/ to docs/archive/:
-- These manifests were used during Sentinel→Prometheion rebranding
+- These manifests were used during Sentinel→Elaro rebranding
 - All changes have been applied to existing orgs
 - Keeping in active codebase creates confusion
 - Notable conflict: Executive_KPI__mdt listed for deletion but required by code

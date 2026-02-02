@@ -1,7 +1,7 @@
 {
-  "name": "prometheion-enterprise",
+  "name": "elaro-enterprise",
   "version": "3.0.0",
-  "description": "Prometheion - Court-defensible compliance & AI governance platform for Salesforce",
+  "description": "Elaro - Court-defensible compliance & AI governance platform for Salesforce",
   "type": "module",
   "private": true,
   "scripts": {
@@ -17,14 +17,14 @@
     "security-scan": "echo '⚠️  SFDX Scanner not installed, skipping...'",
     "precommit": "npm run fmt:check && npm run lint && npm run test:unit",
     "validate": "npm run precommit",
-    "build": "echo '✅ Prometheion build validation complete'",
-    "org:create": "sf org create scratch -f config/prometheion-scratch-def.json -a prometheion-dev -d 30",
-    "org:open": "sf org open -o prometheion-dev",
-    "org:delete": "sf org delete scratch -o prometheion-dev -p",
-    "sf:deploy": "sf project deploy start -o prometheion-dev",
-    "sf:deploy:validate": "sf project deploy start -o prometheion-dev --dry-run",
-    "sf:retrieve": "sf project retrieve start -o prometheion-dev",
-    "test:apex": "sf apex run test -o prometheion-dev -c -r human -w 10",
+    "build": "echo '✅ Elaro build validation complete'",
+    "org:create": "sf org create scratch -f config/elaro-scratch-def.json -a elaro-dev -d 30",
+    "org:open": "sf org open -o elaro-dev",
+    "org:delete": "sf org delete scratch -o elaro-dev -p",
+    "sf:deploy": "sf project deploy start -o elaro-dev",
+    "sf:deploy:validate": "sf project deploy start -o elaro-dev --dry-run",
+    "sf:retrieve": "sf project retrieve start -o elaro-dev",
+    "test:apex": "sf apex run test -o elaro-dev -c -r human -w 10",
     "test:all": "npm run test && npm run test:apex",
     "cli:build": "cd platform && npm run build --filter=@platform/cli",
     "cli:install": "cd platform/packages/cli && npm link",
@@ -59,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/derickporter1993/prometheion.git"
+    "url": "git+https://github.com/derickporter1993/elaro.git"
   },
   "keywords": [
     "salesforce",
@@ -67,9 +67,9 @@
     "ai-governance",
     "audit",
     "security",
-    "prometheion"
+    "elaro"
   ],
-  "author": "Prometheion Compliance Team",
+  "author": "Elaro Compliance Team",
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0",

@@ -1,6 +1,6 @@
 /**
  * @description Test class for EscalationPathController
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest
@@ -11,18 +11,18 @@ private class EscalationPathControllerTest {
         Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User testUser = new User(
             Alias = 'escpath',
-            Email = 'escpathuser@prometheion.test',
+            Email = 'escpathuser@elaro.test',
             EmailEncodingKey = 'UTF-8',
             LastName = 'EscPath',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
             ProfileId = p.Id,
             TimeZoneSidKey = 'America/New_York',
-            UserName = 'escpathuser' + Datetime.now().getTime() + '@prometheion.test'
+            UserName = 'escpathuser' + Datetime.now().getTime() + '@elaro.test'
         );
         insert testUser;
 
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 1,
             Active__c = true,
@@ -36,7 +36,7 @@ private class EscalationPathControllerTest {
     @isTest
     static void testGetPaths() {
         Test.startTest();
-        List<Prometheion_Escalation_Path__c> paths = EscalationPathController.getPaths();
+        List<Elaro_Escalation_Path__c> paths = EscalationPathController.getPaths();
         Test.stopTest();
 
         System.assertEquals(1, paths.size(), 'Should return one path');
@@ -47,7 +47,7 @@ private class EscalationPathControllerTest {
     static void testCreatePath() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c newPath = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c newPath = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 2,
             Active__c = true,
@@ -62,39 +62,39 @@ private class EscalationPathControllerTest {
 
         System.assertNotEquals(null, pathId, 'Path ID should be returned');
 
-        List<Prometheion_Escalation_Path__c> paths = [SELECT Level__c FROM Prometheion_Escalation_Path__c WHERE Id = :pathId];
+        List<Elaro_Escalation_Path__c> paths = [SELECT Level__c FROM Elaro_Escalation_Path__c WHERE Id = :pathId];
         System.assertEquals(1, paths.size(), 'Path should exist');
         System.assertEquals(2, paths[0].Level__c, 'Level should match');
     }
 
     @isTest
     static void testUpdatePath() {
-        Prometheion_Escalation_Path__c path = [SELECT Id, Role__c FROM Prometheion_Escalation_Path__c LIMIT 1];
+        Elaro_Escalation_Path__c path = [SELECT Id, Role__c FROM Elaro_Escalation_Path__c LIMIT 1];
         path.Role__c = 'Senior Team Lead';
 
         Test.startTest();
         EscalationPathController.updatePath(path);
         Test.stopTest();
 
-        Prometheion_Escalation_Path__c updated = [SELECT Role__c FROM Prometheion_Escalation_Path__c WHERE Id = :path.Id];
+        Elaro_Escalation_Path__c updated = [SELECT Role__c FROM Elaro_Escalation_Path__c WHERE Id = :path.Id];
         System.assertEquals('Senior Team Lead', updated.Role__c, 'Role should be updated');
     }
 
     @isTest
     static void testDeletePath() {
-        Prometheion_Escalation_Path__c path = [SELECT Id FROM Prometheion_Escalation_Path__c LIMIT 1];
+        Elaro_Escalation_Path__c path = [SELECT Id FROM Elaro_Escalation_Path__c LIMIT 1];
 
         Test.startTest();
         EscalationPathController.deletePath(path.Id);
         Test.stopTest();
 
-        List<Prometheion_Escalation_Path__c> paths = [SELECT Id FROM Prometheion_Escalation_Path__c WHERE Id = :path.Id];
+        List<Elaro_Escalation_Path__c> paths = [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :path.Id];
         System.assertEquals(0, paths.size(), 'Path should be deleted');
     }
 
     @isTest
     static void testCreatePath_MissingUser() {
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = null,
             Level__c = 1,
             Active__c = true,
@@ -116,7 +116,7 @@ private class EscalationPathControllerTest {
     static void testCreatePath_InvalidLevel_Zero() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 0,
             Active__c = true,
@@ -138,7 +138,7 @@ private class EscalationPathControllerTest {
     static void testCreatePath_InvalidLevel_TooHigh() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 5,
             Active__c = true,
@@ -160,7 +160,7 @@ private class EscalationPathControllerTest {
     static void testCreatePath_InvalidDelay() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 1,
             Active__c = true,
@@ -182,7 +182,7 @@ private class EscalationPathControllerTest {
     static void testCreatePath_NullDelay() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c path = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 1,
             Active__c = true,
@@ -204,7 +204,7 @@ private class EscalationPathControllerTest {
     static void testCreateMultipleLevels() {
         User testUser = [SELECT Id FROM User WHERE LastName = 'EscPath' LIMIT 1];
 
-        Prometheion_Escalation_Path__c path2 = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path2 = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 2,
             Active__c = true,
@@ -213,7 +213,7 @@ private class EscalationPathControllerTest {
             Escalation_Delay_Minutes__c = 30
         );
 
-        Prometheion_Escalation_Path__c path3 = new Prometheion_Escalation_Path__c(
+        Elaro_Escalation_Path__c path3 = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
             Level__c = 3,
             Active__c = true,
@@ -227,7 +227,7 @@ private class EscalationPathControllerTest {
         EscalationPathController.createPath(path3);
         Test.stopTest();
 
-        List<Prometheion_Escalation_Path__c> paths = EscalationPathController.getPaths();
+        List<Elaro_Escalation_Path__c> paths = EscalationPathController.getPaths();
         System.assertEquals(3, paths.size(), 'Should have 3 paths');
     }
 }

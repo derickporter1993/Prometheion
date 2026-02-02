@@ -1,4 +1,4 @@
-# Prometheion v3.0 Installation Guide
+# Elaro v3.0 Installation Guide
 
 **Version:** 3.0
 **Last Updated:** 2026-01-11
@@ -41,7 +41,7 @@
 ### User Requirements
 
 - **Installing User:** System Administrator profile
-- **End Users:** Minimum of Standard User profile with assigned Prometheion permission sets
+- **End Users:** Minimum of Standard User profile with assigned Elaro permission sets
 
 ### Optional Service Accounts
 
@@ -57,7 +57,7 @@ For full functionality, you may need accounts with:
 
 ## Pre-Installation Checklist
 
-Before installing Prometheion, complete these steps:
+Before installing Elaro, complete these steps:
 
 ### 1. Review System Requirements
 
@@ -75,10 +75,10 @@ Before installing Prometheion, complete these steps:
 
 ### 3. Plan User Access
 
-- [ ] Identify users who need Prometheion Admin access
-- [ ] Identify users who need Prometheion Auditor access
-- [ ] Identify users who need Prometheion AI access
-- [ ] Identify users who need standard Prometheion User access
+- [ ] Identify users who need Elaro Admin access
+- [ ] Identify users who need Elaro Auditor access
+- [ ] Identify users who need Elaro AI access
+- [ ] Identify users who need standard Elaro User access
 
 ### 4. Prepare External Service Credentials (Optional)
 
@@ -97,7 +97,7 @@ If you plan to use AI or external integrations:
 ### Step 1: Install the Managed Package
 
 1. **Obtain Package Installation URL**
-   - AppExchange listing: [Search "Prometheion" on AppExchange]
+   - AppExchange listing: [Search "Elaro" on AppExchange]
    - Or use direct installation link provided by vendor
 
 2. **Navigate to Installation URL**
@@ -122,11 +122,11 @@ If you plan to use AI or external integrations:
 
 6. **Monitor Installation Progress**
    - Navigate to: **Setup → Installed Packages**
-   - Verify **Prometheion** appears with status **Installed**
+   - Verify **Elaro** appears with status **Installed**
 
 ### Step 2: Post-Install Handler Execution
 
-After installation completes, the `PrometheionInstallHandler` automatically executes:
+After installation completes, the `ElaroInstallHandler` automatically executes:
 
 **Automatic Configuration:**
 - ✅ Creates default AI settings (AI disabled until you configure API key)
@@ -138,14 +138,14 @@ After installation completes, the `PrometheionInstallHandler` automatically exec
 
 ```apex
 // Execute Anonymous Apex to verify
-Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getOrgDefaults();
+Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getOrgDefaults();
 System.debug('AI Enabled: ' + settings.AI_Enabled__c); // Should be false
 System.debug('Model: ' + settings.Model_Name__c); // Should be claude-sonnet-4-20250514
 
 // Check audit logs
-List<Prometheion_Audit_Log__c> logs = [
+List<Elaro_Audit_Log__c> logs = [
     SELECT Id, Action__c, Description__c
-    FROM Prometheion_Audit_Log__c
+    FROM Elaro_Audit_Log__c
     WHERE Action__c = 'Package Installation'
     ORDER BY CreatedDate DESC
     LIMIT 1
@@ -167,8 +167,8 @@ System.debug('Install Log: ' + logs[0].Description__c);
 
 1. Navigate to: **Setup → Named Credentials → New Legacy**
 2. Enter configuration:
-   - **Label:** Prometheion Claude API
-   - **Name:** `Prometheion_Claude_API`
+   - **Label:** Elaro Claude API
+   - **Name:** `Elaro_Claude_API`
    - **URL:** `https://api.anthropic.com`
    - **Identity Type:** Named Principal
    - **Authentication Protocol:** Password Authentication
@@ -194,7 +194,7 @@ System.debug('Install Log: ' + logs[0].Description__c);
 // Execute Anonymous Apex
 Http http = new Http();
 HttpRequest req = new HttpRequest();
-req.setEndpoint('callout:Prometheion_Claude_API');
+req.setEndpoint('callout:Elaro_Claude_API');
 req.setMethod('GET');
 System.debug('Response Code: ' + http.send(req).getStatusCode()); // Should be 200 or 400 (method not allowed, but connection works)
 ```
@@ -208,7 +208,7 @@ System.debug('Response Code: ' + http.send(req).getStatusCode()); // Should be 2
 1. Create Slack Incoming Webhook:
    - Go to [Slack API Apps](https://api.slack.com/apps)
    - Click **Create New App** → **From Scratch**
-   - Name: `Prometheion Compliance Alerts`
+   - Name: `Elaro Compliance Alerts`
    - Select your workspace
    - Navigate to **Incoming Webhooks** → Toggle **On**
    - Click **Add New Webhook to Workspace**
@@ -227,7 +227,7 @@ System.debug('Response Code: ' + http.send(req).getStatusCode()); // Should be 2
 3. **Test Notification:**
 
 ```apex
-SlackIntegration.sendMessage('Test message from Prometheion!');
+SlackIntegration.sendMessage('Test message from Elaro!');
 // Check your Slack channel for message
 ```
 
@@ -239,12 +239,12 @@ SlackIntegration.sendMessage('Test message from Prometheion!');
 
 1. **Configure Custom Metadata** (PagerDuty uses Custom Metadata, not Named Credential):
 
-Navigate to: **Setup → Custom Metadata Types → Prometheion API Config → Manage Records**
+Navigate to: **Setup → Custom Metadata Types → Elaro API Config → Manage Records**
 
 If "PagerDuty" record doesn't exist:
    - Click **New**
    - **Label:** PagerDuty
-   - **Prometheion API Config Name:** PagerDuty
+   - **Elaro API Config Name:** PagerDuty
    - **API Key:** [Your PagerDuty Routing Key from Events API v2]
    - **Is Active:** ✅ Checked
    - Click **Save**
@@ -266,7 +266,7 @@ PagerDutyIntegration.triggerIncident('{"alertId":"TEST-001","eventType":"Test Al
 
 ### Step 2: Enable AI Features
 
-1. Navigate to: **Setup → Custom Settings → Prometheion AI Settings → Manage**
+1. Navigate to: **Setup → Custom Settings → Elaro AI Settings → Manage**
 2. Click **Edit** next to organization defaults
 3. Update settings:
    - **AI Enabled:** ✅ Checked (only after configuring Claude API Named Credential)
@@ -284,9 +284,9 @@ PagerDutyIntegration.triggerIncident('{"alertId":"TEST-001","eventType":"Test Al
 
 ### Step 3: Configure Compliance Frameworks
 
-Navigate to **Prometheion** app and configure active compliance frameworks:
+Navigate to **Elaro** app and configure active compliance frameworks:
 
-1. Click **Prometheion Dashboard**
+1. Click **Elaro Dashboard**
 2. Click **Settings** gear icon
 3. Select frameworks to enable:
    - [ ] HIPAA (Healthcare)
@@ -307,7 +307,7 @@ Navigate to **Prometheion** app and configure active compliance frameworks:
 
 Run your first compliance baseline scan:
 
-1. Navigate to **Prometheion** app
+1. Navigate to **Elaro** app
 2. Click **Run Compliance Scan**
 3. Select frameworks to scan
 4. Click **Start Scan**
@@ -320,17 +320,17 @@ Run your first compliance baseline scan:
 
 ## Permission Set Assignment
 
-Prometheion includes 5 permission sets. Assign users to appropriate permission sets based on their role.
+Elaro includes 5 permission sets. Assign users to appropriate permission sets based on their role.
 
 ### Permission Set Overview
 
 | Permission Set | Purpose | Typical Users |
 |----------------|---------|---------------|
-| **Prometheion_Admin** | Full administrative access to all Prometheion features | Compliance Managers, System Administrators |
-| **Prometheion_Auditor** | Read-only access to audit data and reports | Internal Auditors, Compliance Officers |
-| **Prometheion_User** | Standard access to compliance dashboards and evidence | Compliance Team Members, Department Heads |
-| **Prometheion_AI_User** | Access to AI-powered compliance analysis features | Compliance Analysts, Risk Managers |
-| **Prometheion_API_User** | API access for external integrations | Integration Users, Service Accounts |
+| **Elaro_Admin** | Full administrative access to all Elaro features | Compliance Managers, System Administrators |
+| **Elaro_Auditor** | Read-only access to audit data and reports | Internal Auditors, Compliance Officers |
+| **Elaro_User** | Standard access to compliance dashboards and evidence | Compliance Team Members, Department Heads |
+| **Elaro_AI_User** | Access to AI-powered compliance analysis features | Compliance Analysts, Risk Managers |
+| **Elaro_API_User** | API access for external integrations | Integration Users, Service Accounts |
 
 ### Assigning Permission Sets
 
@@ -339,29 +339,29 @@ Prometheion includes 5 permission sets. Assign users to appropriate permission s
 1. Navigate to: **Setup → Users → [Select User]**
 2. Scroll to **Permission Set Assignments**
 3. Click **Edit Assignments**
-4. Add desired Prometheion permission sets
+4. Add desired Elaro permission sets
 5. Click **Save**
 
 **Via Permission Set Groups (Recommended for Large Deployments):**
 
 1. Create permission set groups:
-   - **Prometheion_Full_Access:** Includes Admin + AI User
-   - **Prometheion_Read_Only:** Includes Auditor only
+   - **Elaro_Full_Access:** Includes Admin + AI User
+   - **Elaro_Read_Only:** Includes Auditor only
 2. Assign users to groups instead of individual permission sets
 
 **Bulk Assignment via Data Loader:**
 
 ```csv
 AssigneeId,PermissionSetId
-005000000000001AAA,[Prometheion_Admin_Id]
-005000000000002AAA,[Prometheion_Auditor_Id]
+005000000000001AAA,[Elaro_Admin_Id]
+005000000000002AAA,[Elaro_Auditor_Id]
 ```
 
 **Via Apex:**
 
 ```apex
 Id userId = '005000000000001AAA';
-Id permSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Prometheion_Admin' LIMIT 1].Id;
+Id permSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Elaro_Admin' LIMIT 1].Id;
 insert new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permSetId);
 ```
 
@@ -372,16 +372,16 @@ insert new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permSe
 ### 1. Verify Installation
 
 - [ ] Navigate to **Setup → Installed Packages**
-- [ ] Confirm **Prometheion v3.0** appears with status **Installed**
+- [ ] Confirm **Elaro v3.0** appears with status **Installed**
 - [ ] Verify installation date and installer name
 
 ### 2. Verify Package Components
 
 ```apex
 // Execute Anonymous Apex
-System.debug('Apex Classes: ' + [SELECT COUNT() FROM ApexClass WHERE NamespacePrefix = 'prometheion']);
-System.debug('Custom Objects: ' + [SELECT COUNT() FROM EntityDefinition WHERE NamespacePrefix = 'prometheion']);
-System.debug('Permission Sets: ' + [SELECT COUNT() FROM PermissionSet WHERE NamespacePrefix = 'prometheion']);
+System.debug('Apex Classes: ' + [SELECT COUNT() FROM ApexClass WHERE NamespacePrefix = 'elaro']);
+System.debug('Custom Objects: ' + [SELECT COUNT() FROM EntityDefinition WHERE NamespacePrefix = 'elaro']);
+System.debug('Permission Sets: ' + [SELECT COUNT() FROM PermissionSet WHERE NamespacePrefix = 'elaro']);
 ```
 
 Expected output:
@@ -392,17 +392,17 @@ Expected output:
 ### 3. Verify Permission Sets
 
 - [ ] Navigate to: **Setup → Permission Sets**
-- [ ] Confirm all 5 Prometheion permission sets exist:
-  - Prometheion_Admin
-  - Prometheion_Auditor
-  - Prometheion_User
-  - Prometheion_AI_User
-  - Prometheion_API_User
+- [ ] Confirm all 5 Elaro permission sets exist:
+  - Elaro_Admin
+  - Elaro_Auditor
+  - Elaro_User
+  - Elaro_AI_User
+  - Elaro_API_User
 
 ### 4. Verify Custom Settings
 
 ```apex
-Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getOrgDefaults();
+Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getOrgDefaults();
 System.assertNotEquals(null, settings, 'AI Settings should exist');
 System.assertEquals('claude-sonnet-4-20250514', settings.Model_Name__c, 'Model should be claude-sonnet-4');
 ```
@@ -410,9 +410,9 @@ System.assertEquals('claude-sonnet-4-20250514', settings.Model_Name__c, 'Model s
 ### 5. Verify Audit Logging
 
 ```apex
-List<Prometheion_Audit_Log__c> logs = [
+List<Elaro_Audit_Log__c> logs = [
     SELECT Id, Action__c, Status__c
-    FROM Prometheion_Audit_Log__c
+    FROM Elaro_Audit_Log__c
     WHERE Action__c = 'Package Installation'
     LIMIT 1
 ];
@@ -420,11 +420,11 @@ System.assertEquals(1, logs.size(), 'Install audit log should exist');
 System.assertEquals('Completed', logs[0].Status__c, 'Install should be completed');
 ```
 
-### 6. Access Prometheion App
+### 6. Access Elaro App
 
 - [ ] Navigate to **App Launcher**
-- [ ] Search for **Prometheion**
-- [ ] Click **Prometheion** app
+- [ ] Search for **Elaro**
+- [ ] Click **Elaro** app
 - [ ] Verify dashboard loads without errors
 
 ### 7. Test AI Features (If Configured)
@@ -432,13 +432,13 @@ System.assertEquals('Completed', logs[0].Status__c, 'Install should be completed
 ```apex
 // Only run if Claude API Named Credential is configured
 String query = 'Analyze recent login patterns for compliance risks';
-String result = PrometheionComplianceCopilotService.analyzeCompliance(query, 'HIPAA');
+String result = ElaroComplianceCopilotService.analyzeCompliance(query, 'HIPAA');
 System.assertNotEquals(null, result, 'AI analysis should return result');
 ```
 
 ### 8. Test Compliance Scan
 
-- [ ] Navigate to **Prometheion** app → **Compliance Dashboard**
+- [ ] Navigate to **Elaro** app → **Compliance Dashboard**
 - [ ] Click **Run Compliance Scan**
 - [ ] Select **HIPAA** (or your primary framework)
 - [ ] Click **Start Scan**
@@ -453,7 +453,7 @@ System.assertNotEquals(null, result, 'AI analysis should return result');
 
 1. Create Teams Incoming Webhook:
    - Go to Teams channel → **Connectors** → **Incoming Webhook**
-   - Name: `Prometheion Alerts`
+   - Name: `Elaro Alerts`
    - Copy webhook URL
 
 2. Create Named Credential:
@@ -464,7 +464,7 @@ System.assertNotEquals(null, result, 'AI analysis should return result');
 
 3. Test:
    ```apex
-   PrometheionTeamsNotifierQueueable.sendNotification('Test Teams alert');
+   ElaroTeamsNotifierQueueable.sendNotification('Test Teams alert');
    ```
 
 ### ServiceNow GRC Integration
@@ -497,14 +497,14 @@ System.assertNotEquals(null, result, 'AI analysis should return result');
 1. Verify org meets all prerequisites (Edition, API version, My Domain)
 2. Check available storage (Data and File storage)
 3. Review installation error details in email notification
-4. Contact Prometheion support with error details
+4. Contact Elaro support with error details
 
 #### Issue: "Third-Party Access Not Approved"
 
 **Symptoms:** Installation blocked waiting for approval
 
 **Resolution:**
-1. Check **Setup → Installed Packages → Prometheion → View Components**
+1. Check **Setup → Installed Packages → Elaro → View Components**
 2. Click **Approve Third-Party Access**
 3. Resume installation
 
@@ -519,19 +519,19 @@ System.assertNotEquals(null, result, 'AI analysis should return result');
 **Diagnosis:**
 ```apex
 // Check AI settings
-Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getOrgDefaults();
+Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getOrgDefaults();
 System.debug('AI Enabled: ' + settings.AI_Enabled__c);
 
 // Check Named Credential
 Http http = new Http();
 HttpRequest req = new HttpRequest();
-req.setEndpoint('callout:Prometheion_Claude_API');
+req.setEndpoint('callout:Elaro_Claude_API');
 req.setMethod('GET');
 System.debug('NC Status: ' + http.send(req).getStatusCode());
 ```
 
 **Resolution:**
-1. Verify Named Credential `Prometheion_Claude_API` exists
+1. Verify Named Credential `Elaro_Claude_API` exists
 2. Check API key is valid (test at api.anthropic.com)
 3. Verify `anthropic-version` header is set to `2023-06-01`
 4. Confirm AI settings `AI_Enabled__c` is **true**
@@ -564,14 +564,14 @@ curl -X POST -H 'Content-Type: application/json' \
 
 **Diagnosis:**
 ```apex
-List<Prometheion_Audit_Log__c> errors = [
+List<Elaro_Audit_Log__c> errors = [
     SELECT Description__c, Severity__c
-    FROM Prometheion_Audit_Log__c
+    FROM Elaro_Audit_Log__c
     WHERE Severity__c = 'ERROR'
     AND CreatedDate = TODAY
     ORDER BY CreatedDate DESC
 ];
-for (Prometheion_Audit_Log__c log : errors) {
+for (Elaro_Audit_Log__c log : errors) {
     System.debug(log.Description__c);
 }
 ```
@@ -606,14 +606,14 @@ for (Prometheion_Audit_Log__c log : errors) {
 
 ## Uninstallation
 
-⚠️ **Warning:** Uninstalling Prometheion will delete all compliance data, audit logs, evidence items, and configuration. This action cannot be undone.
+⚠️ **Warning:** Uninstalling Elaro will delete all compliance data, audit logs, evidence items, and configuration. This action cannot be undone.
 
 ### Before Uninstalling
 
 1. **Export Critical Data:**
    ```bash
    sf data export --query "SELECT * FROM Compliance_Score__c" --output-file compliance_scores.csv
-   sf data export --query "SELECT * FROM Prometheion_Audit_Log__c" --output-file audit_logs.csv
+   sf data export --query "SELECT * FROM Elaro_Audit_Log__c" --output-file audit_logs.csv
    sf data export --query "SELECT * FROM Compliance_Evidence__c" --output-file evidence.csv
    ```
 
@@ -623,13 +623,13 @@ for (Prometheion_Audit_Log__c log : errors) {
 
 3. **Remove Permission Set Assignments:**
    ```apex
-   delete [SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.NamespacePrefix = 'prometheion'];
+   delete [SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.NamespacePrefix = 'elaro'];
    ```
 
 ### Uninstallation Steps
 
 1. Navigate to: **Setup → Installed Packages**
-2. Click **Uninstall** next to **Prometheion**
+2. Click **Uninstall** next to **Elaro**
 3. Review components to be deleted
 4. Click **Uninstall**
 5. Confirm deletion
@@ -638,9 +638,9 @@ for (Prometheion_Audit_Log__c log : errors) {
 
 ### Post-Uninstallation Cleanup
 
-1. Remove any custom code references to Prometheion classes
-2. Delete any custom reports/dashboards using Prometheion objects
-3. Update any flows/process builders that referenced Prometheion
+1. Remove any custom code references to Elaro classes
+2. Delete any custom reports/dashboards using Elaro objects
+3. Update any flows/process builders that referenced Elaro
 
 ---
 
@@ -656,10 +656,10 @@ for (Prometheion_Audit_Log__c log : errors) {
 
 ### Getting Help
 
-- **Email Support:** support@prometheion.io
-- **Documentation:** https://docs.prometheion.io
-- **Community Forum:** https://community.prometheion.io
-- **GitHub Issues:** https://github.com/prometheion/prometheion/issues
+- **Email Support:** support@elaro.io
+- **Documentation:** https://docs.elaro.io
+- **Community Forum:** https://community.elaro.io
+- **GitHub Issues:** https://github.com/elaro/elaro/issues
 
 ### Reporting Installation Issues
 
@@ -690,6 +690,6 @@ When reporting issues, please include:
 **Document Version:** 1.0
 **Last Updated:** 2026-01-11
 **Next Review:** Before AppExchange Submission
-**Maintained By:** Prometheion Engineering Team
+**Maintained By:** Elaro Engineering Team
 
-© 2026 Prometheion. All rights reserved.
+© 2026 Elaro. All rights reserved.

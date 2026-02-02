@@ -1,13 +1,13 @@
-# Prometheion Documentation Images
+# Elaro Documentation Images
 
-This directory contains screenshots and images for Prometheion documentation.
+This directory contains screenshots and images for Elaro documentation.
 
 ## Screenshot Files
 
 The following screenshot files are referenced in the documentation:
 
 ### User Guide Screenshots
-- `dashboard-overview.png` - Main Prometheion dashboard showing compliance scores and metrics
+- `dashboard-overview.png` - Main Elaro dashboard showing compliance scores and metrics
 - `compliance-scorecard.png` - Framework-specific compliance score cards
 - `framework-selector.png` - Framework selection interface
 - `gap-analysis.png` - Compliance gap list view
@@ -26,7 +26,7 @@ The following screenshot files are referenced in the documentation:
 ## Screenshot Capture Instructions
 
 ### Prerequisites
-- Access to a Salesforce org with Prometheion installed
+- Access to a Salesforce org with Elaro installed
 - Browser with developer tools for responsive design testing
 - Screenshot tool (browser extension, OS screenshot, or design tool)
 
@@ -58,10 +58,10 @@ The following screenshot files are referenced in the documentation:
 
 ## Placeholder Status
 
-**Current Status**: All screenshot files are placeholders. Actual screenshots need to be captured from a Salesforce org with Prometheion installed.
+**Current Status**: All screenshot files are placeholders. Actual screenshots need to be captured from a Salesforce org with Elaro installed.
 
 **Next Steps**:
-1. Install Prometheion in a Salesforce org
+1. Install Elaro in a Salesforce org
 2. Populate with sample compliance data
 3. Capture screenshots following the guidelines above
 4. Replace placeholder references with actual images

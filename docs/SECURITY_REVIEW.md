@@ -1,4 +1,4 @@
-# Prometheion AppExchange Security Review Documentation
+# Elaro AppExchange Security Review Documentation
 **Version**: 1.0
 **Generated**: January 2026
 **Target**: AppExchange Security Review Submission
@@ -10,7 +10,7 @@
 | Metric | Status | Notes |
 |--------|--------|-------|
 | Entry Point Audit | COMPLETE | 11 @AuraEnabled methods, 1 @InvocableMethod |
-| Without Sharing Classes | 1 | PrometheionReasoningEngine (documented) |
+| Without Sharing Classes | 1 | ElaroReasoningEngine (documented) |
 | Dynamic SOQL | 0 | All queries use static SOQL with bind variables |
 | LWC Syntax Issues | 0 | No quoted template expressions found |
 | Secrets Hardcoded | 0 | No hardcoded credentials detected |
@@ -23,18 +23,18 @@
 
 | Entry Point | Class | Access Pattern | Intended Users | Permission Set |
 |-------------|-------|----------------|----------------|----------------|
-| `getSettings()` | `PrometheionAISettingsController` | `cacheable=true` | All Users | `Prometheion_User` |
-| `saveSettings()` | `PrometheionAISettingsController` | Read/Write | Admins Only | `Prometheion_Admin` |
-| `calculateReadinessScore()` | `PrometheionComplianceScorer` | `cacheable=true` | All Users | `Prometheion_User` |
-| `publish()` | `PerformanceAlertPublisher` | Read/Write | All Users | `Prometheion_User` |
-| `generateLegalAttestation()` | `PrometheionLegalDocumentGenerator` | Read/Write | Compliance Officers | `Prometheion_Compliance` |
-| `getSnapshot()` | `ApiUsageDashboardController` | Read Only | All Users | `Prometheion_User` |
-| `getRecentAlerts()` | `AlertHistoryService` | `cacheable=true` | All Users | `Prometheion_User` |
-| `capture()` | `LimitMetrics` | `cacheable=true` | All Users | `Prometheion_User` |
-| `getRecentDeployments()` | `DeploymentMetrics` | `cacheable=true` | All Users | `Prometheion_User` |
-| `evaluate()` | `PerformanceRuleEngine` | Read/Write | All Users | `Prometheion_User` |
-| `log()` | `FlowExecutionLogger` | Read/Write | System/Flow | `Prometheion_System` |
-| `topFlows()` | `FlowExecutionStats` | `cacheable=true` | All Users | `Prometheion_User` |
+| `getSettings()` | `ElaroAISettingsController` | `cacheable=true` | All Users | `Elaro_User` |
+| `saveSettings()` | `ElaroAISettingsController` | Read/Write | Admins Only | `Elaro_Admin` |
+| `calculateReadinessScore()` | `ElaroComplianceScorer` | `cacheable=true` | All Users | `Elaro_User` |
+| `publish()` | `PerformanceAlertPublisher` | Read/Write | All Users | `Elaro_User` |
+| `generateLegalAttestation()` | `ElaroLegalDocumentGenerator` | Read/Write | Compliance Officers | `Elaro_Compliance` |
+| `getSnapshot()` | `ApiUsageDashboardController` | Read Only | All Users | `Elaro_User` |
+| `getRecentAlerts()` | `AlertHistoryService` | `cacheable=true` | All Users | `Elaro_User` |
+| `capture()` | `LimitMetrics` | `cacheable=true` | All Users | `Elaro_User` |
+| `getRecentDeployments()` | `DeploymentMetrics` | `cacheable=true` | All Users | `Elaro_User` |
+| `evaluate()` | `PerformanceRuleEngine` | Read/Write | All Users | `Elaro_User` |
+| `log()` | `FlowExecutionLogger` | Read/Write | System/Flow | `Elaro_System` |
+| `topFlows()` | `FlowExecutionStats` | `cacheable=true` | All Users | `Elaro_User` |
 
 ### 1.2 @InvocableMethod Inventory
 
@@ -56,15 +56,15 @@
 
 | Class | Justification | Risk Accepted By | Mitigations |
 |-------|---------------|------------------|-------------|
-| `PrometheionReasoningEngine` | AI reasoning requires access to compliance graph data across all records for accurate risk scoring. System context needed to query Big Object data that may span multiple users' data. | Security Team | 1. All inputs are validated before processing. 2. Output is sanitized before returning to UI. 3. Audit trail logged for all operations. 4. No user-controlled query parameters. |
+| `ElaroReasoningEngine` | AI reasoning requires access to compliance graph data across all records for accurate risk scoring. System context needed to query Big Object data that may span multiple users' data. | Security Team | 1. All inputs are validated before processing. 2. Output is sanitized before returning to UI. 3. Audit trail logged for all operations. 4. No user-controlled query parameters. |
 
 ### 2.2 With Sharing Classes (Default)
 
 All other classes use `with sharing`:
-- `PrometheionAISettingsController`
-- `PrometheionComplianceScorer`
+- `ElaroAISettingsController`
+- `ElaroComplianceScorer`
 - `PerformanceAlertPublisher`
-- `PrometheionLegalDocumentGenerator`
+- `ElaroLegalDocumentGenerator`
 - `ApiUsageDashboardController`
 - `AlertHistoryService`
 - `LimitMetrics`
@@ -72,7 +72,7 @@ All other classes use `with sharing`:
 - `PerformanceRuleEngine`
 - `FlowExecutionLogger`
 - `FlowExecutionStats`
-- `PrometheionGraphIndexer`
+- `ElaroGraphIndexer`
 - `SlackNotifier`
 
 ---
@@ -90,10 +90,10 @@ All other classes use `with sharing`:
 ### 3.2 Sample Query Audit
 
 ```apex
-// PrometheionLegalDocumentGenerator.cls:33-41 - SAFE
-List<Prometheion_Compliance_Graph__b> entries = [
+// ElaroLegalDocumentGenerator.cls:33-41 - SAFE
+List<Elaro_Compliance_Graph__b> entries = [
     SELECT Graph_Node_Id__c, Entity_Type__c, Risk_Score__c, ...
-    FROM Prometheion_Compliance_Graph__b
+    FROM Elaro_Compliance_Graph__b
     WHERE Compliance_Framework__c = :framework
     AND Timestamp__c >= :startDate
     AND Timestamp__c <= :endDate
@@ -125,8 +125,8 @@ List<Prometheion_Compliance_Graph__b> entries = [
 - `deploymentMonitorDashboard`
 - `flowExecutionMonitor`
 - `performanceAlertPanel`
-- `prometheionAiSettings`
-- `prometheionReadinessScore`
+- `elaroAiSettings`
+- `elaroReadinessScore`
 - `systemMonitorDashboard`
 
 **Status**: All components use standard LWC patterns with no high-risk DOM manipulation.
@@ -159,14 +159,14 @@ grep -rn "apiKey|password|secret|token" force-app/ --include="*.cls" --include="
 
 | Class | Pattern | Status |
 |-------|---------|--------|
-| `PrometheionAISettingsController` | `AuraHandledException` with message | COMPLIANT |
-| `PrometheionLegalDocumentGenerator` | `AuraHandledException` with message | COMPLIANT |
-| `PrometheionReasoningEngine` | Custom `ReasoningException` | COMPLIANT |
+| `ElaroAISettingsController` | `AuraHandledException` with message | COMPLIANT |
+| `ElaroLegalDocumentGenerator` | `AuraHandledException` with message | COMPLIANT |
+| `ElaroReasoningEngine` | Custom `ReasoningException` | COMPLIANT |
 
 ### 6.2 Sample Error Handling
 
 ```apex
-// PrometheionAISettingsController.cls:19-23 - COMPLIANT
+// ElaroAISettingsController.cls:19-23 - COMPLIANT
 try {
     upsert settings;
 } catch (Exception e) {
@@ -185,11 +185,11 @@ try {
 
 | Class | Test Class | Coverage Status |
 |-------|------------|-----------------|
-| `PrometheionAISettingsController` | `PrometheionAISettingsControllerTest` | NEW |
-| `PrometheionComplianceScorer` | `PrometheionComplianceScorerTest` | EXISTING |
-| `PrometheionReasoningEngine` | `PrometheionReasoningEngineTest` | EXISTING |
-| `PrometheionLegalDocumentGenerator` | `PrometheionLegalDocumentGeneratorTest` | NEW |
-| `PrometheionGraphIndexer` | `PrometheionGraphIndexerTest` | EXISTING |
+| `ElaroAISettingsController` | `ElaroAISettingsControllerTest` | NEW |
+| `ElaroComplianceScorer` | `ElaroComplianceScorerTest` | EXISTING |
+| `ElaroReasoningEngine` | `ElaroReasoningEngineTest` | EXISTING |
+| `ElaroLegalDocumentGenerator` | `ElaroLegalDocumentGeneratorTest` | NEW |
+| `ElaroGraphIndexer` | `ElaroGraphIndexerTest` | EXISTING |
 | `FlowExecutionLogger` | `FlowExecutionLoggerTest` | EXISTING |
 | `FlowExecutionStats` | `FlowExecutionStatsTest` | NEW |
 | `PerformanceAlertPublisher` | `PerformanceAlertPublisherTest` | EXISTING |
@@ -212,15 +212,15 @@ try {
 
 ## 8. Recommended Permission Set Structure
 
-### 8.1 Prometheion_User (Base Access)
+### 8.1 Elaro_User (Base Access)
 
 ```xml
-<!-- Prometheion_User.permissionset-meta.xml -->
+<!-- Elaro_User.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Prometheion User</label>
-    <description>Base access for all Prometheion users</description>
+    <label>Elaro User</label>
+    <description>Base access for all Elaro users</description>
     <classAccesses>
-        <apexClass>PrometheionComplianceScorer</apexClass>
+        <apexClass>ElaroComplianceScorer</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -235,33 +235,33 @@ try {
 </PermissionSet>
 ```
 
-### 8.2 Prometheion_Admin (Administrative Access)
+### 8.2 Elaro_Admin (Administrative Access)
 
 ```xml
-<!-- Prometheion_Admin.permissionset-meta.xml -->
+<!-- Elaro_Admin.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Prometheion Admin</label>
-    <description>Administrative access for Prometheion configuration</description>
+    <label>Elaro Admin</label>
+    <description>Administrative access for Elaro configuration</description>
     <classAccesses>
-        <apexClass>PrometheionAISettingsController</apexClass>
+        <apexClass>ElaroAISettingsController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <!-- Includes all Prometheion_User permissions -->
+    <!-- Includes all Elaro_User permissions -->
 </PermissionSet>
 ```
 
-### 8.3 Prometheion_Compliance (Compliance Officer Access)
+### 8.3 Elaro_Compliance (Compliance Officer Access)
 
 ```xml
-<!-- Prometheion_Compliance.permissionset-meta.xml -->
+<!-- Elaro_Compliance.permissionset-meta.xml -->
 <PermissionSet>
-    <label>Prometheion Compliance Officer</label>
+    <label>Elaro Compliance Officer</label>
     <description>Access for compliance evidence generation</description>
     <classAccesses>
-        <apexClass>PrometheionLegalDocumentGenerator</apexClass>
+        <apexClass>ElaroLegalDocumentGenerator</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <!-- Includes all Prometheion_User permissions -->
+    <!-- Includes all Elaro_User permissions -->
 </PermissionSet>
 ```
 
@@ -299,7 +299,7 @@ try {
 
 ### 10.2 Known Limitations
 
-1. **Big Object Queries**: `Prometheion_Compliance_Graph__b` queries cannot use USER_MODE due to Big Object limitations
+1. **Big Object Queries**: `Elaro_Compliance_Graph__b` queries cannot use USER_MODE due to Big Object limitations
 2. **Einstein AI Integration**: Requires Named Credential setup in production
 
 ### 10.3 Future Security Enhancements

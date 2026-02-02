@@ -74,13 +74,13 @@ sfdx force:package:install --package 04t... --wait 10 --targetusername myOrg
 
 ### Step 2: Assign Permission Sets
 \`\`\`bash
-sfdx force:user:permset:assign -n Prometheion_Admin -u admin@company.com
-sfdx force:user:permset:assign -n Prometheion_User -u user@company.com
+sfdx force:user:permset:assign -n Elaro_Admin -u admin@company.com
+sfdx force:user:permset:assign -n Elaro_User -u user@company.com
 \`\`\`
 
 ### Step 3: Configure Custom Settings
 1. Navigate to Setup > Custom Settings
-2. Click "Manage" next to "Prometheion AI Settings"
+2. Click "Manage" next to "Elaro AI Settings"
 3. Click "New" to create org defaults
 4. Configure:
    - Enable AI Reasoning: ✓
@@ -114,8 +114,8 @@ sfdx force:apex:execute -f scripts/scheduleCCPAMonitor.apex
 
 ### Verify Installation
 1. Navigate to App Launcher
-2. Search for "Prometheion"
-3. Open "Prometheion Compliance Hub"
+2. Search for "Elaro"
+3. Open "Elaro Compliance Hub"
 4. Verify dashboard loads without errors
 ```
 
@@ -155,14 +155,14 @@ sfdx force:apex:execute -f scripts/scheduleCCPAMonitor.apex
 
 #### 1. Getting Started
 ```markdown
-# Prometheion User Guide
+# Elaro User Guide
 
 ## Getting Started
 
-### Accessing Prometheion
+### Accessing Elaro
 1. Click the App Launcher (9 dots) in the top-left
-2. Search for "Prometheion"
-3. Click "Prometheion Compliance Hub"
+2. Search for "Elaro"
+3. Click "Elaro Compliance Hub"
 
 ### Dashboard Overview
 [Screenshot: Main dashboard with numbered callouts]
@@ -188,7 +188,7 @@ sfdx force:apex:execute -f scripts/scheduleCCPAMonitor.apex
 ### HIPAA
 [Screenshot: HIPAA dashboard view]
 
-Prometheion monitors:
+Elaro monitors:
 - Access Controls (45 CFR § 164.312)
 - Audit Controls (45 CFR § 164.312(b))
 - Transmission Security
@@ -293,7 +293,7 @@ Key requirements:
 
 #### 1. Permission Management
 ```markdown
-# Prometheion Admin Guide
+# Elaro Admin Guide
 
 ## Permission Management
 
@@ -301,14 +301,14 @@ Key requirements:
 
 | Permission Set | Use Case | Key Permissions |
 |----------------|----------|-----------------|
-| Prometheion_Admin | Full admin access | All objects, all classes |
-| Prometheion_Admin_Extended | Power users | Extended reporting |
-| Prometheion_User | Standard users | Read most, edit gaps |
+| Elaro_Admin | Full admin access | All objects, all classes |
+| Elaro_Admin_Extended | Power users | Extended reporting |
+| Elaro_User | Standard users | Read most, edit gaps |
 
 ### Assigning Permission Sets
 \`\`\`bash
 # Via CLI
-sfdx force:user:permset:assign -n Prometheion_Admin -u user@company.com
+sfdx force:user:permset:assign -n Elaro_Admin -u user@company.com
 
 # Via Setup
 Setup > Users > [User] > Permission Set Assignments > Edit > Add
@@ -317,9 +317,9 @@ Setup > Users > [User] > Permission Set Assignments > Edit > Add
 ### Custom Permissions
 | Permission | Description |
 |------------|-------------|
-| Prometheion_AI_Copilot | Access AI copilot feature |
-| Prometheion_Auto_Remediate | Allow auto-remediation |
-| Prometheion_Export_Data | Export compliance data |
+| Elaro_AI_Copilot | Access AI copilot feature |
+| Elaro_Auto_Remediate | Allow auto-remediation |
+| Elaro_Export_Data | Export compliance data |
 ```
 
 #### 2. Scheduled Jobs
@@ -331,9 +331,9 @@ Setup > Users > [User] > Permission Set Assignments > Edit > Add
 | Job Name | Schedule | Purpose |
 |----------|----------|---------|
 | WeeklyScorecardScheduler | Mon 9 AM | Generate weekly scorecard |
-| PrometheionCCPASLAMonitorScheduler | Daily 8 AM | Monitor CCPA SLAs |
-| PrometheionDormantAccountAlertScheduler | Daily 5 AM | Detect dormant accounts |
-| PrometheionGLBAAnnualNoticeScheduler | Daily 6 AM | GLBA annual notices |
+| ElaroCCPASLAMonitorScheduler | Daily 8 AM | Monitor CCPA SLAs |
+| ElaroDormantAccountAlertScheduler | Daily 5 AM | Detect dormant accounts |
+| ElaroGLBAAnnualNoticeScheduler | Daily 6 AM | GLBA annual notices |
 | ISO27001QuarterlyReviewScheduler | Quarterly | ISO 27001 reviews |
 
 ### Managing Scheduled Jobs
@@ -342,7 +342,7 @@ Setup > Users > [User] > Permission Set Assignments > Edit > Add
 List<CronTrigger> jobs = [
     SELECT Id, CronJobDetail.Name, NextFireTime, State
     FROM CronTrigger
-    WHERE CronJobDetail.Name LIKE 'Prometheion%'
+    WHERE CronJobDetail.Name LIKE 'Elaro%'
 ];
 
 // Abort a job
@@ -354,7 +354,7 @@ WeeklyScorecardScheduler.scheduleWeekly();
 
 ### Modifying Schedules
 1. Navigate to Setup > Custom Metadata Types
-2. Click "Manage Records" next to "Prometheion Scheduler Config"
+2. Click "Manage Records" next to "Elaro Scheduler Config"
 3. Edit the appropriate record
 4. Update CRON expression
 5. Abort existing job and reschedule
@@ -364,7 +364,7 @@ WeeklyScorecardScheduler.scheduleWeekly();
 ```markdown
 ## Custom Settings
 
-### Prometheion AI Settings
+### Elaro AI Settings
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
@@ -376,7 +376,7 @@ WeeklyScorecardScheduler.scheduleWeekly();
 ### Configuring Settings
 \`\`\`apex
 // Get current settings
-Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getOrgDefaults();
+Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getOrgDefaults();
 
 // Update settings
 settings.Enable_AI_Reasoning__c = true;
@@ -410,7 +410,7 @@ upsert settings;
 
 ### External API (Score Callback)
 
-Endpoint: `/services/apexrest/prometheion/score/callback`
+Endpoint: `/services/apexrest/elaro/score/callback`
 
 Headers:
 - `X-API-Key`: [Your API key]
@@ -476,11 +476,11 @@ delete oldSnapshots;
 ### Required Sections
 
 ```markdown
-# Prometheion API Reference
+# Elaro API Reference
 
 ## REST Endpoints
 
-### POST /services/apexrest/prometheion/score/callback
+### POST /services/apexrest/elaro/score/callback
 
 Receives compliance scores from external systems.
 
@@ -565,7 +565,7 @@ public static List<FrameworkScore> getFrameworkScores()
 
 #### App Title
 ```
-Prometheion - Enterprise Compliance & AI Governance Platform
+Elaro - Enterprise Compliance & AI Governance Platform
 ```
 
 #### Short Description (80 chars)
@@ -575,7 +575,7 @@ Automated compliance monitoring for HIPAA, SOC2, GDPR, PCI-DSS & more.
 
 #### Long Description (4000 chars)
 ```markdown
-Prometheion is the leading compliance automation platform for Salesforce,
+Elaro is the leading compliance automation platform for Salesforce,
 providing court-defensible audit evidence and AI-powered governance for
 regulated organizations.
 
@@ -601,7 +601,7 @@ and security events. Get alerted before issues become violations.
 Beautiful, actionable dashboards for executives, auditors, and
 compliance teams. Track trends and demonstrate progress.
 
-**Why Prometheion?**
+**Why Elaro?**
 
 • Reduce audit prep time by 80%
 • Catch compliance gaps before auditors do
@@ -633,7 +633,7 @@ in under 30 minutes. No coding required.
 #### Demo Video Script (2 minutes)
 
 ```
-0:00-0:15 - Opening: "Meet Prometheion, your compliance co-pilot"
+0:00-0:15 - Opening: "Meet Elaro, your compliance co-pilot"
 0:15-0:30 - Dashboard overview, framework tiles
 0:30-0:45 - Click into HIPAA, show gaps
 0:45-1:00 - Demonstrate AI Copilot query

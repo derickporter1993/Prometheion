@@ -2,7 +2,7 @@
  * Test class for WeeklyScorecardScheduler
  * Provides comprehensive coverage with meaningful assertions
  * 
- * @author Prometheion Enterprise
+ * @author Elaro Enterprise
  * @version 1.1
  */
 @isTest
@@ -19,14 +19,14 @@ private class WeeklyScorecardSchedulerTest {
         
         // Assert result contains expected confirmation text
         System.assertNotEquals(null, result, 'Schedule should return a result message');
-        System.assert(result.contains('Weekly scorecard scheduled') || result.contains('Prometheion Weekly Scorecard'), 
+        System.assert(result.contains('Weekly scorecard scheduled') || result.contains('Elaro Weekly Scorecard'), 
             'Result should confirm scheduling: ' + result);
         
         // Verify job was actually scheduled
         List<CronTrigger> scheduledJobs = [
             SELECT Id, CronJobDetail.Name, NextFireTime 
             FROM CronTrigger 
-            WHERE CronJobDetail.Name LIKE 'Prometheion Weekly Scorecard%'
+            WHERE CronJobDetail.Name LIKE 'Elaro Weekly Scorecard%'
         ];
         System.assert(!scheduledJobs.isEmpty(), 'At least one scheduled job should exist');
     }

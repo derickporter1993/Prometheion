@@ -7,8 +7,8 @@ private class NaturalLanguageQueryServiceTest {
     
     @testSetup
     static void setupTestData() {
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('HIPAA');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 5);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('HIPAA');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 5);
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -184,7 +184,7 @@ private class NaturalLanguageQueryServiceTest {
                 'content' =&gt; new List&lt;Map&lt;String, Object&gt;&gt;{
                     new Map&lt;String, Object&gt;{
                         'type' =&gt; 'text',
-                        'text' =&gt; 'SELECT Id, Name FROM Prometheion_Audit_Package__c LIMIT 100'
+                        'text' =&gt; 'SELECT Id, Name FROM Elaro_Audit_Package__c LIMIT 100'
                     }
                 }
             };

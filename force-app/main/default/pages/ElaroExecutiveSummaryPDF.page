@@ -1,0 +1,288 @@
+<apex:page standardController="Elaro_Audit_Package__c" 
+           extensions="ElaroPDFController"
+           renderAs="pdf" 
+           showHeader="false" 
+           sidebar="false"
+           applyBodyTag="false"
+           applyHtmlTag="false">
+<html>
+<head>
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 1in;
+            @top-center {
+                content: "CONFIDENTIAL - EXECUTIVE SUMMARY";
+                font-size: 9pt;
+                color: #666;
+            }
+            @bottom-center {
+                content: "Page " counter(page);
+                font-size: 9pt;
+            }
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 11pt;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #032d60;
+            font-size: 28pt;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 14pt;
+            color: #666;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #032d60;
+            color: white;
+            text-align: center;
+            margin: 30px auto;
+            padding-top: 40px;
+        }
+        
+        .score-value {
+            font-size: 48pt;
+            font-weight: bold;
+        }
+        
+        .score-label {
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+        
+        .key-metrics {
+            background-color: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .key-metrics table {
+            width: 100%;
+        }
+        
+        .key-metrics td {
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .metric-number {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #032d60;
+        }
+        
+        .metric-label {
+            font-size: 9pt;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .section {
+            margin: 30px 0;
+        }
+        
+        .section-title {
+            font-size: 16pt;
+            color: #032d60;
+            border-bottom: 2px solid #032d60;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .risk-bar {
+            height: 30px;
+            margin: 5px 0;
+            display: table;
+            width: 100%;
+        }
+        
+        .risk-segment {
+            display: table-cell;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 9pt;
+            vertical-align: middle;
+        }
+        
+        .critical-segment { background-color: #c23934; }
+        .high-segment { background-color: #e87722; }
+        .medium-segment { background-color: #f7b924; color: #333; }
+        .low-segment { background-color: #4bca81; }
+        
+        .recommendation-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Executive Summary</h1>
+        <div class="subtitle">{!auditPackage.Framework__c} Compliance Assessment</div>
+        <div class="subtitle" style="margin-top: 10px;">
+            {!auditPackage.Package_Name__c}
+        </div>
+    </div>
+    
+    <!-- Compliance Score -->
+    <div class="score-circle">
+        <div class="score-value">{!complianceScore}%</div>
+        <div class="score-label">Compliance Score</div>
+    </div>
+    
+    <!-- Key Metrics -->
+    <div class="key-metrics">
+        <table>
+            <tr>
+                <td>
+                    <div class="metric-number">{!evidenceCount}</div>
+                    <div class="metric-label">Total Evidence Items</div>
+                </td>
+                <td>
+                    <div class="metric-number">{!criticalCount + highCount}</div>
+                    <div class="metric-label">High Priority Items</div>
+                </td>
+                <td>
+                    <div class="metric-number">{!controlSummary.size}</div>
+                    <div class="metric-label">Control Categories</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- Risk Distribution -->
+    <div class="section">
+        <div class="section-title">Risk Distribution</div>
+        <div class="risk-bar">
+            <apex:outputPanel layout="none" rendered="{!criticalCount > 0}">
+                <div class="risk-segment critical-segment" style="width: {!ROUND((criticalCount / evidenceCount) * 100, 0)}%">
+                    Critical ({!criticalCount})
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!highCount > 0}">
+                <div class="risk-segment high-segment" style="width: {!ROUND((highCount / evidenceCount) * 100, 0)}%">
+                    High ({!highCount})
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!mediumCount > 0}">
+                <div class="risk-segment medium-segment" style="width: {!ROUND((mediumCount / evidenceCount) * 100, 0)}%">
+                    Medium ({!mediumCount})
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!lowCount > 0}">
+                <div class="risk-segment low-segment" style="width: {!ROUND((lowCount / evidenceCount) * 100, 0)}%">
+                    Low ({!lowCount})
+                </div>
+            </apex:outputPanel>
+        </div>
+    </div>
+    
+    <!-- Audit Period -->
+    <div class="section">
+        <div class="section-title">Audit Details</div>
+        <table>
+            <tr>
+                <td><strong>Audit Period:</strong></td>
+                <td>{!dateRange}</td>
+            </tr>
+            <tr>
+                <td><strong>Framework:</strong></td>
+                <td>{!auditPackage.Framework__c}</td>
+            </tr>
+            <tr>
+                <td><strong>Status:</strong></td>
+                <td>{!auditPackage.Status__c}</td>
+            </tr>
+            <tr>
+                <td><strong>Generated:</strong></td>
+                <td><apex:outputText value="{0,date,MMMM d, yyyy}">
+                    <apex:param value="{!generatedAt}"/>
+                </apex:outputText></td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- Key Findings -->
+    <div class="section">
+        <div class="section-title">Key Findings</div>
+        
+        <apex:outputPanel rendered="{!criticalCount > 0}">
+            <div class="recommendation-box" style="background-color: #f8d7da; border-color: #c23934;">
+                <strong>Critical Items Requiring Immediate Attention:</strong><br/>
+                {!criticalCount} critical risk event(s) detected during the audit period. 
+                These include user impersonation, large data exports, or content distribution events 
+                that require immediate review and remediation.
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!highCount > 0}">
+            <div class="recommendation-box" style="background-color: #fff3cd; border-color: #e87722;">
+                <strong>High Priority Items:</strong><br/>
+                {!highCount} high risk event(s) identified. These API access and permission change 
+                events should be reviewed within the next 30 days.
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!criticalCount == 0 && highCount == 0}">
+            <div class="recommendation-box" style="background-color: #d4edda; border-color: #4bca81;">
+                <strong>No Critical Issues Identified:</strong><br/>
+                The audit period shows no critical or high-risk events. Continue monitoring 
+                and maintain current security controls.
+            </div>
+        </apex:outputPanel>
+    </div>
+    
+    <!-- Top Event Categories -->
+    <div class="section">
+        <div class="section-title">Top Event Categories</div>
+        <table>
+            <tr style="background-color: #032d60; color: white;">
+                <th style="padding: 10px;">Event Type</th>
+                <th style="padding: 10px;">Count</th>
+                <th style="padding: 10px;">Risk Level</th>
+            </tr>
+            <apex:repeat value="{!controlSummary}" var="cs" rows="5">
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">{!cs.controlName}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center;">{!cs.evidenceCount}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;" class="{!getRiskColorClass(cs.riskLevel)}">{!cs.riskLevel}</td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>Generated by Elaro Compliance Platform | {!generatedBy}</p>
+        <p style="font-size: 8pt;">Document Hash: {!LEFT(documentHash, 32)}...</p>
+    </div>
+</body>
+</html>
+</apex:page>

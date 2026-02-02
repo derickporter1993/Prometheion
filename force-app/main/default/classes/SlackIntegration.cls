@@ -1,8 +1,8 @@
 /**
- * @description Slack integration service for Prometheion
+ * @description Slack integration service for Elaro
  * Provides alert notifications, audit package sharing, and daily digest delivery
  * @group Integrations
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class SlackIntegration {
     
@@ -28,7 +28,7 @@ public with sharing class SlackIntegration {
                             'type' => 'header',
                             'text' => new Map<String, Object>{
                                 'type' => 'plain_text',
-                                'text' => '⚠️ Prometheion Compliance Alert',
+                                'text' => '⚠️ Elaro Compliance Alert',
                                 'emoji' => true
                             }
                         },
@@ -54,7 +54,7 @@ public with sharing class SlackIntegration {
                                 new Map<String, Object>{
                                     'type' => 'button',
                                     'text' => new Map<String, Object>{'type' => 'plain_text', 'text' => 'View in Salesforce'},
-                                    'url' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/r/Prometheion_Evidence_Item__c/' + alertData.get('eventId') + '/view'
+                                    'url' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/r/Elaro_Evidence_Item__c/' + alertData.get('eventId') + '/view'
                                 }
                             }
                         }
@@ -73,9 +73,9 @@ public with sharing class SlackIntegration {
      */
     @future(callout=true)
     public static void sendAuditPackageNotification(String packageId, String channel) {
-        Prometheion_Audit_Package__c pkg = [
+        Elaro_Audit_Package__c pkg = [
             SELECT Id, Name, Package_Name__c, Framework__c, Status__c
-            FROM Prometheion_Audit_Package__c
+            FROM Elaro_Audit_Package__c
             WHERE Id = :packageId
             LIMIT 1
         ];
@@ -106,7 +106,7 @@ public with sharing class SlackIntegration {
                             'type' => 'button',
                             'text' => new Map<String, Object>{'type' => 'plain_text', 'text' => 'View Package'},
                             'style' => 'primary',
-                            'url' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/r/Prometheion_Audit_Package__c/' + packageId + '/view'
+                            'url' => URL.getOrgDomainUrl().toExternalForm() + '/lightning/r/Elaro_Audit_Package__c/' + packageId + '/view'
                         }
                     }
                 }
@@ -159,7 +159,7 @@ public with sharing class SlackIntegration {
                     'elements' => new List<Object>{
                         new Map<String, Object>{
                             'type' => 'mrkdwn',
-                            'text' => 'Sent by Prometheion Compliance Platform'
+                            'text' => 'Sent by Elaro Compliance Platform'
                         }
                     }
                 }

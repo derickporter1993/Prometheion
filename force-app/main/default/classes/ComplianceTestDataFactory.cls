@@ -3,7 +3,7 @@
  * 
  * Test data factory for creating compliance test data across all frameworks
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest
@@ -156,8 +156,8 @@ public class ComplianceTestDataFactory {
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
-            Email = 'testuser' + System.now().getTime() + '@prometheion.test',
-            Username = 'testuser' + System.now().getTime() + '@prometheion.test',
+            Email = 'testuser' + System.now().getTime() + '@elaro.test',
+            Username = 'testuser' + System.now().getTime() + '@elaro.test',
             Alias = 'tuser',
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',

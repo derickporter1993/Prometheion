@@ -1,6 +1,6 @@
-# Prometheion Setup Guide
+# Elaro Setup Guide
 
-Complete setup instructions for deploying and configuring Prometheion in your Salesforce org.
+Complete setup instructions for deploying and configuring Elaro in your Salesforce org.
 
 ---
 
@@ -19,8 +19,8 @@ Complete setup instructions for deploying and configuring Prometheion in your Sa
 
 ```bash
 # Clone the repo (if not already done)
-git clone https://github.com/derickporter1993/Prometheion.git
-cd prometheion
+git clone https://github.com/derickporter1993/Elaro.git
+cd elaro
 
 # Authenticate to your Salesforce org
 sf org login web --alias myorg
@@ -29,7 +29,7 @@ sf org login web --alias myorg
 sf project deploy start --target-org myorg
 
 # Assign permissions
-sf org assign permset --name Prometheion_Admin --target-org myorg
+sf org assign permset --name Elaro_Admin --target-org myorg
 
 # Open the org
 sf org open --target-org myorg
@@ -44,7 +44,7 @@ sf org open --target-org myorg
 # This will:
 # - Create a 7-day scratch org
 # - Push source code
-# - Assign Prometheion_Admin permission set
+# - Assign Elaro_Admin permission set
 # - Open the org in your browser
 ```
 
@@ -54,7 +54,7 @@ sf org open --target-org myorg
 
 ### 1. Configure Named Credentials
 
-Prometheion requires Named Credentials for Slack and Teams integrations.
+Elaro requires Named Credentials for Slack and Teams integrations.
 
 #### Slack Webhook Setup
 
@@ -97,7 +97,7 @@ Prometheion requires Named Credentials for Slack and Teams integrations.
 1. Navigate to **Setup → Apex → Schedule Apex**
 2. Click **Schedule Apex**
 3. **Apex Class:** `WeeklyScorecardScheduler`
-4. **Job Name:** `Prometheion Weekly Scorecard`
+4. **Job Name:** `Elaro Weekly Scorecard`
 5. **Frequency:** Weekly
 6. **Preferred Start Time:** 9:00 AM
 7. **Preferred Start Day:** Monday
@@ -149,19 +149,19 @@ Check your Slack/Teams channel for the scorecard notification.
 
 ```apex
 // Test Slack notification
-SlackNotifier.notifyAsync('🧪 Test notification from Prometheion');
+SlackNotifier.notifyAsync('🧪 Test notification from Elaro');
 
 // Test Teams notification
-TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
+TeamsNotifier.notifyAsync('🧪 Test notification from Elaro');
 ```
 
 ---
 
 ## 📊 Run Your First Compliance Scan
 
-1. **Navigate to Prometheion** in the App Launcher
+1. **Navigate to Elaro** in the App Launcher
 2. **Click "Run Baseline Scan"** on the dashboard
-3. **Wait 30-60 seconds** while Prometheion analyzes your org
+3. **Wait 30-60 seconds** while Elaro analyzes your org
 4. **View your Audit Readiness Score** and top risks
 5. **Export the report** (Markdown or PDF) for your compliance team
 
@@ -187,7 +187,7 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
 - Verify Named Credentials are configured correctly
 - Check Apex Debug Logs for errors
 - Run `WeeklyScorecardScheduler.sendTestScorecard()` to test manually
-- Verify score calculation: `PrometheionComplianceScorer.calculateReadinessScore()`
+- Verify score calculation: `ElaroComplianceScorer.calculateReadinessScore()`
 
 ### Compliance Copilot Not Responding
 
@@ -195,21 +195,21 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
 
 **Solutions:**
 - Check browser console for JavaScript errors
-- Verify user has `Prometheion_Admin` permission set assigned
+- Verify user has `Elaro_Admin` permission set assigned
 - Check Apex Debug Logs for errors
-- Ensure `Prometheion_Compliance_Graph__b` BigObject has data (for some queries)
+- Ensure `Elaro_Compliance_Graph__b` BigObject has data (for some queries)
 
 ### Permission Errors
 
 **Problem:** "Insufficient Privileges" errors
 
 **Solutions:**
-- Assign `Prometheion_Admin` permission set to user
+- Assign `Elaro_Admin` permission set to user
 - Verify user has access to required objects:
-  - `Prometheion_Compliance_Graph__b`
+  - `Elaro_Compliance_Graph__b`
   - `PermissionSetAssignment`
   - `User`
-  - Custom objects used by Prometheion
+  - Custom objects used by Elaro
 
 ---
 
@@ -223,9 +223,9 @@ TeamsNotifier.notifyAsync('🧪 Test notification from Prometheion');
 
 ## 🆘 Support
 
-- **Issues:** [GitHub Issues](https://github.com/derickporter1993/Prometheion/issues)
+- **Issues:** [GitHub Issues](https://github.com/derickporter1993/Elaro/issues)
 - **Documentation:** [docs/](../docs/)
-- **Discussions:** [GitHub Discussions](https://github.com/derickporter1993/Prometheion/discussions)
+- **Discussions:** [GitHub Discussions](https://github.com/derickporter1993/Elaro/discussions)
 
 ---
 

@@ -2,7 +2,7 @@
  * Test class for GDPRBreachNotificationService
  * Tests breach reporting, severity assessment, DPA and data subject notifications
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 @IsTest

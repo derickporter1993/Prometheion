@@ -1,40 +1,40 @@
-# Next Steps for Prometheion Migration
+# Next Steps for Elaro Migration
 
 ## Overview
-The codebase has been updated with best practices and security improvements. The following steps are recommended to complete the migration from Sentinel/OpsGuardian to Prometheion.
+The codebase has been updated with best practices and security improvements. The following steps are recommended to complete the migration from Sentinel/OpsGuardian to Elaro.
 
 ## Priority 1: File Cleanup & Renaming
 
 ### A. Remove Duplicate Class Files
-Several classes exist in both old (Sentinel*) and new (Prometheion*) versions. The new versions have the latest code:
+Several classes exist in both old (Sentinel*) and new (Elaro*) versions. The new versions have the latest code:
 
 **Files to DELETE (old versions with updated content):**
-- `force-app/main/default/classes/SentinelAISettingsController.cls` (replaced by `PrometheionAISettingsController.cls`)
-- `force-app/main/default/classes/SentinelComplianceScorer.cls` (replaced by `PrometheionComplianceScorer.cls`)
-- `force-app/main/default/classes/SentinelLegalDocumentGenerator.cls` (content updated to Prometheion)
+- `force-app/main/default/classes/SentinelAISettingsController.cls` (replaced by `ElaroAISettingsController.cls`)
+- `force-app/main/default/classes/SentinelComplianceScorer.cls` (replaced by `ElaroComplianceScorer.cls`)
+- `force-app/main/default/classes/SentinelLegalDocumentGenerator.cls` (content updated to Elaro)
 
 **Files to RENAME (content updated but filename unchanged):**
-- `SentinelGraphIndexer.cls` → `PrometheionGraphIndexer.cls`
-- `SentinelReasoningEngine.cls` → `PrometheionReasoningEngine.cls`
-- `SentinelComplianceScorerTest.cls` → `PrometheionComplianceScorerTest.cls`
-- `SentinelGraphIndexerTest.cls` → `PrometheionGraphIndexerTest.cls`
-- `SentinelReasoningEngineTest.cls` → `PrometheionReasoningEngineTest.cls`
-- `SentinelAlertTriggerTest.cls` → `PrometheionAlertTriggerTest.cls`
+- `SentinelGraphIndexer.cls` → `ElaroGraphIndexer.cls`
+- `SentinelReasoningEngine.cls` → `ElaroReasoningEngine.cls`
+- `SentinelComplianceScorerTest.cls` → `ElaroComplianceScorerTest.cls`
+- `SentinelGraphIndexerTest.cls` → `ElaroGraphIndexerTest.cls`
+- `SentinelReasoningEngineTest.cls` → `ElaroReasoningEngineTest.cls`
+- `SentinelAlertTriggerTest.cls` → `ElaroAlertTriggerTest.cls`
 
 ### B. Update Configuration Files
 
 1. **Scratch Org Definition**
-   - Rename: `config/sentinel-scratch-def.json` → `config/prometheion-scratch-def.json`
+   - Rename: `config/sentinel-scratch-def.json` → `config/elaro-scratch-def.json`
    - Update content (orgName, etc.)
 
 2. **Workspace File**
-   - `Sentinel.code-workspace` → `Prometheion.code-workspace`
+   - `Sentinel.code-workspace` → `Elaro.code-workspace`
 
 ### C. Update LWC Components
 
 **Folders to RENAME:**
-- `sentinelAiSettings/` → `prometheionAiSettings/`
-- `sentinelReadinessScore/` → `prometheionReadinessScore/`
+- `sentinelAiSettings/` → `elaroAiSettings/`
+- `sentinelReadinessScore/` → `elaroReadinessScore/`
 
 **Files to UPDATE:**
 - Update import paths in any components that reference these LWCs
@@ -42,16 +42,16 @@ Several classes exist in both old (Sentinel*) and new (Prometheion*) versions. T
 ### D. Update Triggers & Objects
 
 **Triggers:**
-- `SentinelAlertTrigger.trigger` → `PrometheionAlertTrigger.trigger`
-- Update trigger content to use `Prometheion_Alert_Event__e`
+- `SentinelAlertTrigger.trigger` → `ElaroAlertTrigger.trigger`
+- Update trigger content to use `Elaro_Alert_Event__e`
 
 **Permission Sets:**
-- `Sentinel_Admin.permissionset-meta.xml` → `Prometheion_Admin.permissionset-meta.xml`
+- `Sentinel_Admin.permissionset-meta.xml` → `Elaro_Admin.permissionset-meta.xml`
 - Update label and references
 
 **Note:** Object API names (Sentinel_*__c) cannot be renamed in Salesforce without data migration. Consider:
 - Option A: Keep object names as-is (recommended for production)
-- Option B: Create new objects with Prometheion naming and migrate data
+- Option B: Create new objects with Elaro naming and migrate data
 
 ## Priority 2: Testing & Validation
 
@@ -75,9 +75,9 @@ Several classes exist in both old (Sentinel*) and new (Prometheion*) versions. T
 ## Priority 3: Deployment Preparation
 
 ### A. Platform Cache Setup
-1. Create Platform Cache partition: `PrometheionCompliance`
+1. Create Platform Cache partition: `ElaroCompliance`
    - Setup → Platform Cache → Partitions
-   - Create new partition: `PrometheionCompliance`
+   - Create new partition: `ElaroCompliance`
    - Allocate cache capacity (recommended: 5MB minimum)
 
 ### B. Named Credentials
@@ -85,21 +85,21 @@ Several classes exist in both old (Sentinel*) and new (Prometheion*) versions. T
 2. Test connectivity to Slack endpoint
 
 ### C. Custom Settings
-1. Verify `Prometheion_AI_Settings__c` custom settings exist
+1. Verify `Elaro_AI_Settings__c` custom settings exist
 2. Create org default record if needed
 3. Verify `CCX_Settings__c` has appropriate values
 
 ### D. Permission Sets
-1. Deploy `Prometheion_Admin` permission set
+1. Deploy `Elaro_Admin` permission set
 2. Assign to appropriate users
 3. Verify field-level security settings
 
 ## Priority 4: Documentation Updates
 
 ### A. Update Documentation Files
-- `README.md` - Update all references from Sentinel to Prometheion
+- `README.md` - Update all references from Sentinel to Elaro
 - `docs/code-review.md` - Mark completed items
-- `ROADMAP.md` - Update with Prometheion branding
+- `ROADMAP.md` - Update with Elaro branding
 
 ### B. API Documentation
 - Update any API documentation with new class names
@@ -147,7 +147,7 @@ Several classes exist in both old (Sentinel*) and new (Prometheion*) versions. T
 
 ## Important Notes
 
-⚠️ **Object API Names:** Changing object API names (Sentinel_*__c → Prometheion_*__c) requires:
+⚠️ **Object API Names:** Changing object API names (Sentinel_*__c → Elaro_*__c) requires:
 - Data migration scripts
 - Updating all references in code
 - Potential data loss if not done carefully

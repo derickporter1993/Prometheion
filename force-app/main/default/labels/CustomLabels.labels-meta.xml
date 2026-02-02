@@ -6,7 +6,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Copilot Welcome Message</shortDescription>
-        <value>Welcome to Prometheion Copilot</value>
+        <value>Welcome to Elaro Copilot</value>
     </labels>
     <labels>
         <fullName>Copilot_Welcome_Subtitle</fullName>
@@ -102,84 +102,84 @@
 
     <!-- UI Labels -->
     <labels>
-        <fullName>Prometheion_Quick_Commands</fullName>
+        <fullName>Elaro_Quick_Commands</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Quick Commands Title</shortDescription>
         <value>Quick Commands</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Ask_Question</fullName>
+        <fullName>Elaro_Ask_Question</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Ask Question Label</shortDescription>
         <value>Ask a question</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Input_Placeholder</fullName>
+        <fullName>Elaro_Input_Placeholder</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Input Placeholder</shortDescription>
         <value>Ask about compliance, violations, or generate evidence...</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Send</fullName>
+        <fullName>Elaro_Send</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Send Button</shortDescription>
         <value>Send</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Clear_Chat</fullName>
+        <fullName>Elaro_Clear_Chat</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Clear Chat Button</shortDescription>
         <value>Clear Chat</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Evidence</fullName>
+        <fullName>Elaro_Evidence</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Evidence Section Title</shortDescription>
         <value>Evidence</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Risk_Score</fullName>
+        <fullName>Elaro_Risk_Score</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Risk Score Label</shortDescription>
         <value>Risk: {0}/10</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Error_Title</fullName>
+        <fullName>Elaro_Error_Title</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Error Toast Title</shortDescription>
         <value>Error</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Info_Title</fullName>
+        <fullName>Elaro_Info_Title</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Info Toast Title</shortDescription>
         <value>Information</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Auto_Fix_Coming</fullName>
+        <fullName>Elaro_Auto_Fix_Coming</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Auto Fix Coming Soon</shortDescription>
         <value>Auto-fix functionality will be available in the next release.</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Export_Coming</fullName>
+        <fullName>Elaro_Export_Coming</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Export Coming Soon</shortDescription>
         <value>Export functionality will be available in the next release.</value>
     </labels>
     <labels>
-        <fullName>Prometheion_Processing_Error</fullName>
+        <fullName>Elaro_Processing_Error</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Processing Error Message</shortDescription>
@@ -199,7 +199,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Scorecard Title</shortDescription>
-        <value>Prometheion Weekly Compliance Report</value>
+        <value>Elaro Weekly Compliance Report</value>
     </labels>
     <labels>
         <fullName>Scorecard_Overall_Score</fullName>

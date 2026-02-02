@@ -2,7 +2,7 @@
  * Batch class for enforcing data retention policies
  * Identifies data that has exceeded retention periods and triggers erasure workflows
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 3.0
  */
 public with sharing class RetentionEnforcementBatch implements Database.Batchable<SObject> {

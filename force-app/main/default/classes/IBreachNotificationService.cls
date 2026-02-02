@@ -4,7 +4,7 @@
  * Interface for breach notification operations across compliance frameworks.
  * Implementations handle breach assessment, notification tracking, and reporting.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public interface IBreachNotificationService {

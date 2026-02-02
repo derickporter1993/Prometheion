@@ -36,7 +36,7 @@ private class SlackIntegrationTest {
     @TestSetup
     static void setup() {
         // Create test audit package
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Test Package for Slack',
             Framework__c = 'SOC2',
             Status__c = 'DRAFT',
@@ -97,7 +97,7 @@ private class SlackIntegrationTest {
     static void testSendAuditPackageNotification() {
         // Arrange
         Test.setMock(HttpCalloutMock.class, new SlackMock());
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
 
         // Act
         Test.startTest();
@@ -139,7 +139,7 @@ private class SlackIntegrationTest {
 
         // Act
         Test.startTest();
-        SlackIntegration.sendMessage('#general', 'Test message from Prometheion');
+        SlackIntegration.sendMessage('#general', 'Test message from Elaro');
         Test.stopTest();
 
         // Assert

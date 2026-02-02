@@ -2,7 +2,7 @@
  * @description Test class for JiraIntegrationService
  * Provides comprehensive coverage for Jira integration functionality
  *
- * @author Prometheion Development Team
+ * @author Elaro Development Team
  * @since 2026-01
  */
 @isTest
@@ -14,7 +14,7 @@ private class JiraIntegrationServiceTest {
     @TestSetup
     static void setupTestData() {
         // Create test settings
-        Prometheion_Jira_Settings__c settings = new Prometheion_Jira_Settings__c(
+        Elaro_Jira_Settings__c settings = new Elaro_Jira_Settings__c(
             SetupOwnerId = UserInfo.getOrganizationId(),
             Jira_Instance_URL__c = 'https://test.atlassian.net',
             Project_Key__c = 'COMPLIANCE',
@@ -329,7 +329,7 @@ private class JiraIntegrationServiceTest {
     @isTest
     static void testIsConfigured_False() {
         // Clear settings
-        delete [SELECT Id FROM Prometheion_Jira_Settings__c];
+        delete [SELECT Id FROM Elaro_Jira_Settings__c];
 
         Test.startTest();
         Boolean configured = JiraIntegrationService.isConfigured();

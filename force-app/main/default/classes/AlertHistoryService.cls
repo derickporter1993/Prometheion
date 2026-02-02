@@ -18,7 +18,7 @@ public with sharing class AlertHistoryService {
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> recent(Integer limitSize) {
         // Validate read access
-        if (!PrometheionSecurityUtils.hasReadAccess('Performance_Alert_History__c')) {
+        if (!ElaroSecurityUtils.hasReadAccess('Performance_Alert_History__c')) {
             throw new AuraHandledException('Insufficient access to Performance Alert History');
         }
         
@@ -26,7 +26,7 @@ public with sharing class AlertHistoryService {
         List<String> queriedFields = new List<String>{
             'Metric__c', 'Value__c', 'Threshold__c', 'Context_Record__c', 'CreatedDate'
         };
-        PrometheionSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
+        ElaroSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
         
         Integer limit = Math.max(1, limitSize);
         List<AlertRow> out = new List<AlertRow>();

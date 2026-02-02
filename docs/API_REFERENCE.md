@@ -1,18 +1,18 @@
-# Prometheion API Reference
+# Elaro API Reference
 
 ## Overview
 
-This document provides a comprehensive reference for all Prometheion APIs, including REST endpoints and Apex controllers accessible from Lightning Web Components.
+This document provides a comprehensive reference for all Elaro APIs, including REST endpoints and Apex controllers accessible from Lightning Web Components.
 
 ---
 
 ## REST Endpoints
 
-### POST /services/apexrest/prometheion/score/callback
+### POST /services/apexrest/elaro/score/callback
 
 Receives compliance scores from external systems (e.g., AWS Lambda) and updates the `Compliance_Score__c` records. Also publishes Platform Events for real-time UI updates.
 
-**URL:** `/services/apexrest/prometheion/score/callback`
+**URL:** `/services/apexrest/elaro/score/callback`
 
 **Method:** `POST`
 
@@ -22,7 +22,7 @@ Receives compliance scores from external systems (e.g., AWS Lambda) and updates 
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `X-Prometheion-Api-Key` | Yes | API key configured in `Prometheion_API_Config__mdt` |
+| `X-Elaro-Api-Key` | Yes | API key configured in `Elaro_API_Config__mdt` |
 | `Content-Type` | Yes | Must be `application/json` |
 
 #### Request Body
@@ -110,7 +110,7 @@ The endpoint automatically calculates risk level based on score:
 
 #### Platform Event
 
-Upon successful score update, a `Prometheion_Score_Result__e` Platform Event is published with:
+Upon successful score update, a `Elaro_Score_Result__e` Platform Event is published with:
 
 ```json
 {
@@ -203,7 +203,7 @@ public static FrameworkDashboardData getFrameworkDashboard(String framework)
 
 ---
 
-### PrometheionExecutiveKPIController
+### ElaroExecutiveKPIController
 
 Metadata-driven KPI dashboard with real-time Platform Event refresh.
 
@@ -259,7 +259,7 @@ public static KPIMetric getKPIByName(String kpiName)
 
 ---
 
-### PrometheionComplianceScorer
+### ElaroComplianceScorer
 
 Calculates real-time compliance scores across frameworks.
 
@@ -309,7 +309,7 @@ public static ScoreResult calculateReadinessScore()
 
 ---
 
-### PrometheionComplianceCopilot
+### ElaroComplianceCopilot
 
 AI-powered natural language interface for compliance queries.
 
@@ -343,7 +343,7 @@ public static CopilotResponse askQuestion(String question)
     {
       "label": "View HIPAA Gaps",
       "type": "navigation",
-      "target": "/lightning/n/Prometheion_Gaps?framework=HIPAA"
+      "target": "/lightning/n/Elaro_Gaps?framework=HIPAA"
     }
   ],
   "relatedRecords": [
@@ -358,7 +358,7 @@ public static CopilotResponse askQuestion(String question)
 
 ---
 
-### PrometheionDrillDownController
+### ElaroDrillDownController
 
 Provides drill-down functionality for compliance metrics.
 
@@ -383,7 +383,7 @@ public static DrillDownResult getDrillDownData(String metricType, String framewo
 
 ---
 
-### PrometheionTrendController
+### ElaroTrendController
 
 Provides trend analysis data for compliance scores.
 
@@ -470,7 +470,7 @@ public static ReportResult generateReport(ReportRequest request)
 
 ---
 
-### PrometheionGDPRDataErasureService
+### ElaroGDPRDataErasureService
 
 Handles GDPR Right to Erasure (Article 17) requests.
 
@@ -503,7 +503,7 @@ public static ErasureResult initiateErasure(Id contactId, String reason)
 
 ---
 
-### PrometheionISO27001AccessReviewService
+### ElaroISO27001AccessReviewService
 
 Manages ISO 27001 access reviews.
 
@@ -667,7 +667,7 @@ String sanitizedInput = input.replaceAll('[^a-zA-Z0-9_]+', '');
 Configure API keys in Custom Metadata:
 
 1. Navigate to Setup > Custom Metadata Types
-2. Find `Prometheion_API_Config__mdt`
+2. Find `Elaro_API_Config__mdt`
 3. Create a record with `DeveloperName = 'Default'`
 4. Set `API_Key__c` and `Is_Active__c = true`
 

@@ -230,7 +230,7 @@ async function runTests(options: TestOptions): Promise<void> {
     }
 
     console.log();
-    console.log(chalk.bold.cyan("Prometheion Test Results"));
+    console.log(chalk.bold.cyan("Elaro Test Results"));
     console.log(chalk.gray("═".repeat(50)));
 
     for (const result of results) {
@@ -266,7 +266,7 @@ async function runTests(options: TestOptions): Promise<void> {
 }
 
 export const testCommand = new Command("test")
-  .description("Run Prometheion tests")
+  .description("Run Elaro tests")
   .option("-o, --target-org <alias>", "Target Salesforce org alias (for Apex tests)")
   .option("-a, --apex", "Run Apex tests only")
   .option("-l, --lwc", "Run LWC tests only")

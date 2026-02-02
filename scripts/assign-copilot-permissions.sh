@@ -1,11 +1,11 @@
 #!/bin/bash
-# Assign Prometheion Admin permission set to current user
+# Assign Elaro Admin permission set to current user
 # Usage: ./scripts/assign-copilot-permissions.sh [org-alias]
 
 ORG_ALIAS=${1:-"prod-org"}
 
 echo "=========================================="
-echo "Assigning Prometheion Admin Permissions"
+echo "Assigning Elaro Admin Permissions"
 echo "=========================================="
 echo "Target Org: $ORG_ALIAS"
 echo ""
@@ -24,11 +24,11 @@ echo "✅ Current User ID: $CURRENT_USER"
 echo ""
 
 # Get permission set ID
-echo "Step 2: Getting Prometheion Admin permission set..."
-PERM_SET_ID=$(sf data query --query "SELECT Id, Name FROM PermissionSet WHERE Name = 'Prometheion_Admin' OR Name = 'Prometheion_Admin_Extended'" --target-org $ORG_ALIAS --use-tooling-api --json 2>/dev/null | grep -o '"Id":"[^"]*"' | head -1 | cut -d'"' -f4)
+echo "Step 2: Getting Elaro Admin permission set..."
+PERM_SET_ID=$(sf data query --query "SELECT Id, Name FROM PermissionSet WHERE Name = 'Elaro_Admin' OR Name = 'Elaro_Admin_Extended'" --target-org $ORG_ALIAS --use-tooling-api --json 2>/dev/null | grep -o '"Id":"[^"]*"' | head -1 | cut -d'"' -f4)
 
 if [ -z "$PERM_SET_ID" ]; then
-    echo "ERROR: Could not find Prometheion Admin permission set."
+    echo "ERROR: Could not find Elaro Admin permission set."
     echo "Please verify the permission set is deployed."
     exit 1
 fi
@@ -80,7 +80,7 @@ else
     echo ""
     echo "Manual Steps:"
     echo "1. Go to Setup → Users → Permission Sets"
-    echo "2. Find 'Prometheion Admin' or 'Prometheion Admin Extended'"
+    echo "2. Find 'Elaro Admin' or 'Elaro Admin Extended'"
     echo "3. Click 'Manage Assignments'"
     echo "4. Click 'Add Assignments'"
     echo "5. Select your user and click 'Assign'"

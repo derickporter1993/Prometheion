@@ -1,4 +1,4 @@
-# Prometheion Framework Integration - Verification Guide
+# Elaro Framework Integration - Verification Guide
 
 ## ✅ Step 1: Verify Compliance Policies (30 Total)
 
@@ -73,27 +73,27 @@ sf data query --query "SELECT DeveloperName, Framework__c FROM Compliance_Policy
 
 ---
 
-## ✅ Step 2: Navigate to Prometheion Compliance Hub
+## ✅ Step 2: Navigate to Elaro Compliance Hub
 
 ### Access Methods:
 
 **Option 1: Via App Launcher**
 
 1. Click the **App Launcher** (9-dot menu) in the top-left
-2. Search for **"Prometheion"**
-3. Click **Prometheion** app
+2. Search for **"Elaro"**
+3. Click **Elaro** app
 4. You should see the **Compliance Hub** tab
 
 **Option 2: Via Direct URL**
 
 ```
-https://[your-instance].salesforce.com/lightning/n/Prometheion_Compliance_Hub
+https://[your-instance].salesforce.com/lightning/n/Elaro_Compliance_Hub
 ```
 
 **Option 3: Via Setup**
 
 1. Setup → **Lightning App Builder**
-2. Search for **"Prometheion Compliance Hub"**
+2. Search for **"Elaro Compliance Hub"**
 3. Click **Edit** to view the page
 
 ---
@@ -208,8 +208,8 @@ On the Compliance Hub with "All Frameworks" selected, you should see **10 framew
 ### If Framework Filter Doesn't Work:
 
 - Check browser console for JavaScript errors
-- Verify `prometheionDashboard` component is deployed
-- Check that `PrometheionComplianceScorer.calculateReadinessScore` is returning framework scores
+- Verify `elaroDashboard` component is deployed
+- Check that `ElaroComplianceScorer.calculateReadinessScore` is returning framework scores
 
 ### If Policies Don't Show:
 
@@ -219,8 +219,8 @@ On the Compliance Hub with "All Frameworks" selected, you should see **10 framew
 
 ### If Dashboard Doesn't Load:
 
-- Check that `Prometheion_Compliance_Hub` FlexiPage is deployed
-- Verify `prometheionDashboard` LWC component is in the page
+- Check that `Elaro_Compliance_Hub` FlexiPage is deployed
+- Verify `elaroDashboard` LWC component is in the page
 - Check for Apex errors in Setup → Apex Debug Logs
 
 ---

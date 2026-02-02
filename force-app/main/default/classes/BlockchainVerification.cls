@@ -2,7 +2,7 @@
  * @description Blockchain-based evidence verification service
  * Provides tamper-proof evidence anchoring using third-party services
  * @group Enterprise Features
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class BlockchainVerification {
     
@@ -75,9 +75,9 @@ public with sharing class BlockchainVerification {
             result.currentHash = currentHashHex;
             
             // Look up stored anchor
-            List<Prometheion_Evidence_Anchor__c> anchors = [
+            List<Elaro_Evidence_Anchor__c> anchors = [
                 SELECT Id, Content_Hash__c, Transaction_Id__c, Anchored_At__c, Blockchain_Network__c
-                FROM Prometheion_Evidence_Anchor__c
+                FROM Elaro_Evidence_Anchor__c
                 WHERE Content_Version_Id__c = :contentVersionId
                 ORDER BY Anchored_At__c DESC
                 LIMIT 1
@@ -88,7 +88,7 @@ public with sharing class BlockchainVerification {
                 result.status = 'NOT_ANCHORED';
                 result.message = 'No blockchain anchor found for this evidence';
             } else {
-                Prometheion_Evidence_Anchor__c anchor = anchors[0];
+                Elaro_Evidence_Anchor__c anchor = anchors[0];
                 result.anchoredHash = anchor.Content_Hash__c;
                 result.transactionId = anchor.Transaction_Id__c;
                 result.anchoredAt = anchor.Anchored_At__c;
@@ -166,15 +166,15 @@ public with sharing class BlockchainVerification {
         }
         
         // Get anchors
-        List<Prometheion_Evidence_Anchor__c> anchors = [
+        List<Elaro_Evidence_Anchor__c> anchors = [
             SELECT Id, Name, Content_Version_Id__c, Content_Hash__c, Transaction_Id__c,
                    Anchored_At__c, Blockchain_Network__c, File_Name__c
-            FROM Prometheion_Evidence_Anchor__c
+            FROM Elaro_Evidence_Anchor__c
             WHERE Content_Version_Id__c IN :versionIds
             ORDER BY Anchored_At__c DESC
         ];
         
-        for (Prometheion_Evidence_Anchor__c anchor : anchors) {
+        for (Elaro_Evidence_Anchor__c anchor : anchors) {
             VerificationRecord record = new VerificationRecord();
             record.id = anchor.Id;
             record.fileName = anchor.File_Name__c;
@@ -228,7 +228,7 @@ public with sharing class BlockchainVerification {
     }
     
     private static void storeVerificationRecord(AnchorResult result, String fileName) {
-        Prometheion_Evidence_Anchor__c anchor = new Prometheion_Evidence_Anchor__c(
+        Elaro_Evidence_Anchor__c anchor = new Elaro_Evidence_Anchor__c(
             Name = 'ANCHOR-' + result.contentVersionId.left(10),
             Content_Version_Id__c = result.contentVersionId,
             Content_Hash__c = result.contentHash,

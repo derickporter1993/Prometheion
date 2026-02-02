@@ -2,7 +2,7 @@
  * @description Unit tests for BenchmarkingService
  * Tests industry benchmarks, comparisons, maturity assessment, and recommendations
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
 private class BenchmarkingServiceTest {
@@ -10,8 +10,8 @@ private class BenchmarkingServiceTest {
     @testSetup
     static void setupTestData() {
         // Create audit package and evidence for compliance scoring
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 20);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 20);
     }
     
     // ═══════════════════════════════════════════════════════════════

@@ -2,7 +2,7 @@
 # Script to close all open pull requests in the Sentinel repository
 # Usage: GITHUB_TOKEN=your_token ./scripts/close-prs.sh
 
-REPO="derickporter1993/prometheion"
+REPO="derickporter1993/elaro"
 PR_NUMBERS=(57 73 76 77 78 79 80)
 
 if [ -z "$GITHUB_TOKEN" ]; then

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <eventType>PlatformEvent</eventType>
+    <label>Elaro Alert Event</label>
+    <pluralLabel>Elaro Alert Events</pluralLabel>
+    <fields>
+        <fullName>Alert_Id__c</fullName>
+        <label>Alert ID</label>
+        <type>Text</type>
+        <length>50</length>
+    </fields>
+    <fields>
+        <fullName>Alert_Type__c</fullName>
+        <label>Alert Type</label>
+        <type>Text</type>
+        <length>50</length>
+    </fields>
+    <fields>
+        <fullName>Severity__c</fullName>
+        <label>Severity</label>
+        <type>Text</type>
+        <length>50</length>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <label>Alert Title</label>
+        <type>Text</type>
+        <length>255</length>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <label>Alert Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+    </fields>
+</CustomObject>

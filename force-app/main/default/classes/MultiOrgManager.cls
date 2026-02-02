@@ -2,7 +2,7 @@
  * @description Multi-org management service for enterprise deployments
  * Manages connected orgs, policy sync, and cross-org compliance status
  * @group Enterprise Features
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class MultiOrgManager {
     
@@ -15,7 +15,7 @@ public with sharing class MultiOrgManager {
     public static Id registerOrg(Map<String, Object> orgConfig) {
         validateOrgConfig(orgConfig);
         
-        Prometheion_Connected_Org__c connectedOrg = new Prometheion_Connected_Org__c(
+        Elaro_Connected_Org__c connectedOrg = new Elaro_Connected_Org__c(
             Name = (String)orgConfig.get('name'),
             Org_Id__c = (String)orgConfig.get('orgId'),
             Instance_URL__c = (String)orgConfig.get('instanceUrl'),
@@ -45,11 +45,11 @@ public with sharing class MultiOrgManager {
         status.connectedOrgs = new List<OrgStatus>();
         status.aggregateScore = 0;
         
-        List<Prometheion_Connected_Org__c> orgs = [
+        List<Elaro_Connected_Org__c> orgs = [
             SELECT Id, Name, Org_Id__c, Instance_URL__c, Environment_Type__c, 
                    Region__c, Is_Active__c, Last_Sync__c, Connection_Status__c,
                    Compliance_Score__c
-            FROM Prometheion_Connected_Org__c
+            FROM Elaro_Connected_Org__c
             WHERE Is_Active__c = true
             ORDER BY Name
         ];
@@ -57,7 +57,7 @@ public with sharing class MultiOrgManager {
         Decimal totalScore = status.currentOrg.complianceScore;
         Integer orgCount = 1;
         
-        for (Prometheion_Connected_Org__c org : orgs) {
+        for (Elaro_Connected_Org__c org : orgs) {
             OrgStatus os = new OrgStatus();
             os.orgId = org.Id;
             os.name = org.Name;
@@ -85,9 +85,9 @@ public with sharing class MultiOrgManager {
      */
     @future(callout=true)
     public static void syncPolicies(List<String> policyIds) {
-        List<Prometheion_Connected_Org__c> activeOrgs = [
+        List<Elaro_Connected_Org__c> activeOrgs = [
             SELECT Id, Instance_URL__c, Org_Id__c
-            FROM Prometheion_Connected_Org__c
+            FROM Elaro_Connected_Org__c
             WHERE Is_Active__c = true AND Connection_Status__c = 'Connected'
         ];
         
@@ -98,7 +98,7 @@ public with sharing class MultiOrgManager {
             WHERE Id IN :policyIds OR DeveloperName IN :policyIds
         ];
         
-        for (Prometheion_Connected_Org__c org : activeOrgs) {
+        for (Elaro_Connected_Org__c org : activeOrgs) {
             syncPoliciesToOrg(org, policies);
         }
     }
@@ -109,8 +109,8 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled
     public static void removeOrg(String orgId) {
-        Prometheion_Connected_Org__c org = [
-            SELECT Id FROM Prometheion_Connected_Org__c WHERE Id = :orgId LIMIT 1
+        Elaro_Connected_Org__c org = [
+            SELECT Id FROM Elaro_Connected_Org__c WHERE Id = :orgId LIMIT 1
         ];
         delete org;
     }
@@ -120,11 +120,11 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled
     public static void refreshAllConnections() {
-        List<Prometheion_Connected_Org__c> orgs = [
-            SELECT Id FROM Prometheion_Connected_Org__c WHERE Is_Active__c = true
+        List<Elaro_Connected_Org__c> orgs = [
+            SELECT Id FROM Elaro_Connected_Org__c WHERE Is_Active__c = true
         ];
         
-        for (Prometheion_Connected_Org__c org : orgs) {
+        for (Elaro_Connected_Org__c org : orgs) {
             testOrgConnection(org.Id);
         }
     }
@@ -138,18 +138,18 @@ public with sharing class MultiOrgManager {
         AggregateMetrics metrics = new AggregateMetrics();
         
         // Get current org metrics
-        Map<String, Object> currentScore = PrometheionComplianceScorer.calculateComplianceScore();
+        Map<String, Object> currentScore = ElaroComplianceScorer.calculateComplianceScore();
         metrics.totalEvents = 0;
         metrics.totalAlerts = 0;
         metrics.avgComplianceScore = (Decimal)currentScore.get('overallScore');
         
         // Count events
-        metrics.totalEvents = [SELECT COUNT() FROM Prometheion_Evidence_Item__c WHERE CreatedDate >= LAST_N_DAYS:30 WITH USER_MODE];
+        metrics.totalEvents = [SELECT COUNT() FROM Elaro_Evidence_Item__c WHERE CreatedDate >= LAST_N_DAYS:30 WITH USER_MODE];
         
         // Get connected org metrics
-        List<Prometheion_Connected_Org__c> orgs = [
+        List<Elaro_Connected_Org__c> orgs = [
             SELECT Compliance_Score__c, Event_Count__c, Alert_Count__c
-            FROM Prometheion_Connected_Org__c
+            FROM Elaro_Connected_Org__c
             WHERE Is_Active__c = true
             WITH USER_MODE
         ];
@@ -157,7 +157,7 @@ public with sharing class MultiOrgManager {
         Decimal scoreSum = metrics.avgComplianceScore;
         Integer count = 1;
         
-        for (Prometheion_Connected_Org__c org : orgs) {
+        for (Elaro_Connected_Org__c org : orgs) {
             if (org.Compliance_Score__c != null) {
                 scoreSum += org.Compliance_Score__c;
                 count++;
@@ -198,7 +198,7 @@ public with sharing class MultiOrgManager {
         status.connectionStatus = 'Connected';
         status.lastSync = Datetime.now();
         
-        Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
+        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
         status.complianceScore = (Decimal)scoreData.get('overallScore');
         
         return status;
@@ -206,8 +206,8 @@ public with sharing class MultiOrgManager {
     
     @future(callout=true)
     private static void testOrgConnection(Id orgRecordId) {
-        Prometheion_Connected_Org__c org = [
-            SELECT Id, Instance_URL__c FROM Prometheion_Connected_Org__c WHERE Id = :orgRecordId
+        Elaro_Connected_Org__c org = [
+            SELECT Id, Instance_URL__c FROM Elaro_Connected_Org__c WHERE Id = :orgRecordId
             WITH USER_MODE
         ];
         
@@ -229,7 +229,7 @@ public with sharing class MultiOrgManager {
         update org;
     }
     
-    private static void syncPoliciesToOrg(Prometheion_Connected_Org__c org, List<Compliance_Policy__mdt> policies) {
+    private static void syncPoliciesToOrg(Elaro_Connected_Org__c org, List<Compliance_Policy__mdt> policies) {
         // In production, this would call the connected org's API
         // to create/update policy records
         System.debug(LoggingLevel.INFO, 'Syncing ' + policies.size() + ' policies to ' + org.Name);

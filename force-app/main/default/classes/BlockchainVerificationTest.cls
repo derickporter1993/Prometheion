@@ -9,7 +9,7 @@ private class BlockchainVerificationTest {
 
     @TestSetup
     static void setup() {
-        Prometheion_Audit_Package__c pkg = new Prometheion_Audit_Package__c(
+        Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Blockchain Test Package',
             Framework__c = 'SOC2',
             Status__c = 'DRAFT',
@@ -117,7 +117,7 @@ private class BlockchainVerificationTest {
 
     @isTest
     static void testGetVerificationHistory() {
-        Prometheion_Audit_Package__c pkg = [SELECT Id FROM Prometheion_Audit_Package__c LIMIT 1];
+        Elaro_Audit_Package__c pkg = [SELECT Id FROM Elaro_Audit_Package__c LIMIT 1];
         ContentVersion cv = [SELECT Id FROM ContentVersion WHERE Title = 'Test Evidence Document' LIMIT 1];
 
         // Anchor the evidence first

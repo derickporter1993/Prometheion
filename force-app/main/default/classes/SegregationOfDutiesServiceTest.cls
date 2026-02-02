@@ -3,7 +3,7 @@
  * 
  * Test class for SegregationOfDutiesService
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest
@@ -29,7 +29,7 @@ private class SegregationOfDutiesServiceTest {
     
     @IsTest
     static void testDetectViolations_NoViolations() {
-        User testUser = [SELECT Id FROM User WHERE Email LIKE '%@prometheion.test' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Email LIKE '%@elaro.test' LIMIT 1];
         
         Test.startTest();
         List<SegregationOfDutiesService.SoDViolation> violations = 

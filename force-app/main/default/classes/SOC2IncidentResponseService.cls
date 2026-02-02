@@ -4,7 +4,7 @@
  * Handles SOC2 CC7.x incident management controls.
  * Manages security incident lifecycle, escalation, and reporting.
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class SOC2IncidentResponseService extends ComplianceServiceBase implements IBreachNotificationService {
@@ -235,7 +235,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             VersionData = Blob.valueOf(report),
             Origin = 'H'
         );
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
         insert cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];

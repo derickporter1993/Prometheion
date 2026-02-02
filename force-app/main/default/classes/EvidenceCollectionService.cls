@@ -3,7 +3,7 @@
  * 
  * Automated evidence collection for compliance audits
  * 
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 public with sharing class EvidenceCollectionService {
@@ -44,8 +44,8 @@ public with sharing class EvidenceCollectionService {
         // Insert all evidence records
         if (!evidenceList.isEmpty()) {
             // Validate CRUD access before DML
-            PrometheionSecurityUtils.validateCRUDAccess('Compliance_Evidence__c',
-                PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+            ElaroSecurityUtils.validateCRUDAccess('Compliance_Evidence__c',
+                ElaroSecurityUtils.DmlOperation.DML_INSERT);
             try {
                 insert evidenceList;
             } catch (DmlException e) {

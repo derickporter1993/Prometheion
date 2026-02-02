@@ -2,7 +2,7 @@
  * Test class for ComplianceReportScheduler
  * Provides comprehensive coverage with meaningful assertions
  *
- * @author Prometheion
+ * @author Elaro
  * @version 1.0
  */
 @IsTest

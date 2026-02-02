@@ -2,7 +2,7 @@
  * @description Unit tests for MultiOrgManager
  * Tests org registration, status retrieval, policy sync, and aggregate metrics
  * @group Tests
- * @author Prometheion Team
+ * @author Elaro Team
  */
 @isTest
 private class MultiOrgManagerTest {
@@ -10,10 +10,10 @@ private class MultiOrgManagerTest {
     @testSetup
     static void setupTestData() {
         // Create test connected orgs
-        List<Prometheion_Connected_Org__c> orgs = new List<Prometheion_Connected_Org__c>();
+        List<Elaro_Connected_Org__c> orgs = new List<Elaro_Connected_Org__c>();
         
         for (Integer i = 0; i < 5; i++) {
-            orgs.add(new Prometheion_Connected_Org__c(
+            orgs.add(new Elaro_Connected_Org__c(
                 Name = 'Test Org ' + i,
                 Org_Id__c = '00D' + String.valueOf(1000000000000000L + i),
                 Instance_URL__c = 'https://test' + i + '.salesforce.com',
@@ -29,8 +29,8 @@ private class MultiOrgManagerTest {
         insert orgs;
         
         // Create audit package for evidence items
-        Prometheion_Audit_Package__c pkg = PrometheionTestDataFactory.createAuditPackage('SOC2');
-        PrometheionTestDataFactory.createEvidenceItems(pkg.Id, 10);
+        Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
+        ElaroTestDataFactory.createEvidenceItems(pkg.Id, 10);
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -53,9 +53,9 @@ private class MultiOrgManagerTest {
         
         System.assertNotEquals(null, orgId, 'Should return org ID');
         
-        Prometheion_Connected_Org__c org = [
+        Elaro_Connected_Org__c org = [
             SELECT Id, Name, Org_Id__c, Instance_URL__c, Is_Active__c, Connection_Status__c
-            FROM Prometheion_Connected_Org__c
+            FROM Elaro_Connected_Org__c
             WHERE Id = :orgId
         ];
         
@@ -170,10 +170,10 @@ private class MultiOrgManagerTest {
     @isTest
     static void testSyncPolicies_NoActiveOrgs() {
         // Deactivate all orgs
-        List<Prometheion_Connected_Org__c> orgs = [
-            SELECT Id FROM Prometheion_Connected_Org__c
+        List<Elaro_Connected_Org__c> orgs = [
+            SELECT Id FROM Elaro_Connected_Org__c
         ];
-        for (Prometheion_Connected_Org__c org : orgs) {
+        for (Elaro_Connected_Org__c org : orgs) {
             org.Is_Active__c = false;
         }
         update orgs;
@@ -196,8 +196,8 @@ private class MultiOrgManagerTest {
     
     @isTest
     static void testRemoveOrg() {
-        Prometheion_Connected_Org__c org = [
-            SELECT Id FROM Prometheion_Connected_Org__c LIMIT 1
+        Elaro_Connected_Org__c org = [
+            SELECT Id FROM Elaro_Connected_Org__c LIMIT 1
         ];
         
         Test.startTest();
@@ -205,8 +205,8 @@ private class MultiOrgManagerTest {
         Test.stopTest();
         
         // Verify org was deleted
-        List<Prometheion_Connected_Org__c> remainingOrgs = [
-            SELECT Id FROM Prometheion_Connected_Org__c WHERE Id = :org.Id
+        List<Elaro_Connected_Org__c> remainingOrgs = [
+            SELECT Id FROM Elaro_Connected_Org__c WHERE Id = :org.Id
         ];
         
         System.assertEquals(0, remainingOrgs.size(), 'Org should be deleted');
@@ -285,8 +285,8 @@ private class MultiOrgManagerTest {
         System.assertEquals(10, orgIds.size(), 'Should create 10 orgs');
         
         // Verify all orgs were created
-        List<Prometheion_Connected_Org__c> createdOrgs = [
-            SELECT Id FROM Prometheion_Connected_Org__c
+        List<Elaro_Connected_Org__c> createdOrgs = [
+            SELECT Id FROM Elaro_Connected_Org__c
             WHERE Name LIKE 'Bulk Org%'
         ];
         
@@ -300,7 +300,7 @@ private class MultiOrgManagerTest {
     @isTest
     static void testGetMultiOrgStatus_WithSharing() {
         // Test with different user context
-        User testUser = PrometheionTestUserFactory.createPrometheionUser();
+        User testUser = ElaroTestUserFactory.createElaroUser();
         
         System.runAs(testUser) {
             Test.startTest();

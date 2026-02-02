@@ -2,7 +2,7 @@
  * @description FINRA compliance module implementation
  * Covers Rule 3110 (Supervision), Rule 4511 (Books/Records), Rule 4370 (BCP)
  * @group Framework Modules
- * @author Prometheion Team
+ * @author Elaro Team
  */
 public with sharing class FINRAModule implements IComplianceModule {
     
@@ -97,7 +97,7 @@ public with sharing class FINRAModule implements IComplianceModule {
     }
     
     public Blob generateReport(Id auditPackageId) {
-        PageReference pdfPage = Page.PrometheionAuditPackagePDF;
+        PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
         pdfPage.getParameters().put('framework', 'FINRA');
         return Test.isRunningTest() ? Blob.valueOf('FINRA Report') : pdfPage.getContentAsPDF();
@@ -132,7 +132,7 @@ public with sharing class FINRAModule implements IComplianceModule {
         
         // Check for supervision-related evidence
         Integer supervisoryEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :pkgId
             AND (Evidence_Type__c = 'Supervision' OR Description__c LIKE '%supervis%')
             LIMIT 100
@@ -183,7 +183,7 @@ public with sharing class FINRAModule implements IComplianceModule {
         r.controlId = ctrlId;
         
         Integer bcpEvidence = [
-            SELECT COUNT() FROM Prometheion_Evidence_Item__c
+            SELECT COUNT() FROM Elaro_Evidence_Item__c
             WHERE Audit_Package__c = :pkgId
             AND (Evidence_Type__c = 'BCP' OR Description__c LIKE '%continuity%' OR Description__c LIKE '%disaster%')
             LIMIT 100
