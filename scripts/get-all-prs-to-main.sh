@@ -106,13 +106,30 @@ elif [ -n "$GITHUB_TOKEN" ]; then
     
     if [ "$STATE" = "all" ]; then
         # Fetch both open and closed
+        OPEN_COUNT=0
+        CLOSED_COUNT=0
+        
         for current_state in open closed; do
             response=$(curl -s "https://api.github.com/repos/$REPO/pulls?state=$current_state&base=main&per_page=100" \
                 -H "Authorization: token $GITHUB_TOKEN" \
                 -H "Accept: application/vnd.github.v3+json")
             
             echo "$response" | format_pr_python
+            
+            # Count PRs
+            if [ "$current_state" = "open" ]; then
+                OPEN_COUNT=$(echo "$response" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+            else
+                CLOSED_COUNT=$(echo "$response" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+            fi
         done
+        
+        # Print summary
+        echo "=================================="
+        echo "Summary:"
+        echo "  Open PRs: $OPEN_COUNT"
+        echo "  Closed PRs: $CLOSED_COUNT"
+        echo "  Total PRs: $((OPEN_COUNT + CLOSED_COUNT))"
     else
         response=$(curl -s "https://api.github.com/repos/$REPO/pulls?state=$STATE&base=main&per_page=100" \
             -H "Authorization: token $GITHUB_TOKEN" \
