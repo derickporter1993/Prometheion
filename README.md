@@ -32,13 +32,14 @@ Elaro makes your Salesforce org **audit-ready and protected from configuration d
 
 **Grade: B+ (86/100)** - Significant improvements from code review remediation
 
-### Recent Improvements (January 2026)
+### Recent Improvements (January-February 2026)
 
 - ✅ **Security**: Integrated ElaroSecurityUtils across all classes
 - ✅ **Deployment**: 207/207 Apex classes deployed (100% - up from 55%)
 - ✅ **Git**: Main branch synced, cleaned up abandoned branches
 - ✅ **Tests**: Added critical test coverage for security utilities
 - ✅ **Code Quality**: Removed dead code, fixed all compilation errors
+- ✅ **CI/CD**: Automated PR merging and status monitoring ([docs](docs/PR_AUTO_MERGE.md))
 
 ### Component Status
 
