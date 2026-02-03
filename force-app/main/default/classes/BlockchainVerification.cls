@@ -26,6 +26,7 @@ public with sharing class BlockchainVerification {
                 SELECT Id, Title, VersionData, FileExtension, ContentSize
                 FROM ContentVersion
                 WHERE Id = :contentVersionId
+                WITH USER_MODE
                 LIMIT 1
             ];
             
@@ -66,6 +67,7 @@ public with sharing class BlockchainVerification {
                 SELECT Id, VersionData
                 FROM ContentVersion
                 WHERE Id = :contentVersionId
+                WITH USER_MODE
                 LIMIT 1
             ];
             
@@ -79,6 +81,7 @@ public with sharing class BlockchainVerification {
                 SELECT Id, Content_Hash__c, Transaction_Id__c, Anchored_At__c, Blockchain_Network__c
                 FROM Elaro_Evidence_Anchor__c
                 WHERE Content_Version_Id__c = :contentVersionId
+                WITH USER_MODE
                 ORDER BY Anchored_At__c DESC
                 LIMIT 1
             ];
@@ -144,6 +147,7 @@ public with sharing class BlockchainVerification {
             SELECT ContentDocumentId
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :auditPackageId
+            WITH USER_MODE
         ];
         
         Set<Id> docIds = new Set<Id>();
@@ -158,6 +162,7 @@ public with sharing class BlockchainVerification {
         // Get content versions
         List<ContentVersion> versions = [
             SELECT Id FROM ContentVersion WHERE ContentDocumentId IN :docIds AND IsLatest = true
+            WITH USER_MODE
         ];
         
         Set<String> versionIds = new Set<String>();
@@ -171,6 +176,7 @@ public with sharing class BlockchainVerification {
                    Anchored_At__c, Blockchain_Network__c, File_Name__c
             FROM Elaro_Evidence_Anchor__c
             WHERE Content_Version_Id__c IN :versionIds
+            WITH USER_MODE
             ORDER BY Anchored_At__c DESC
         ];
         
@@ -228,6 +234,11 @@ public with sharing class BlockchainVerification {
     }
     
     private static void storeVerificationRecord(AnchorResult result, String fileName) {
+        // CRUD check before insert
+        if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
+            throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
+        }
+
         Elaro_Evidence_Anchor__c anchor = new Elaro_Evidence_Anchor__c(
             Name = 'ANCHOR-' + result.contentVersionId.left(10),
             Content_Version_Id__c = result.contentVersionId,
@@ -237,7 +248,7 @@ public with sharing class BlockchainVerification {
             Anchored_At__c = result.anchoredAt,
             File_Name__c = fileName
         );
-        
+
         insert anchor;
     }
     

@@ -21,7 +21,7 @@
             <template lwc:if={hasCurrentOnCall}>
                 <div class="slds-box slds-box_small slds-theme_success slds-m-bottom_medium">
                     <div class="slds-text-heading_small slds-m-bottom_x-small">
-                        <lightning-icon icon-name="utility:clock" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        <lightning-icon icon-name="utility:clock" size="x-small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
                         Currently On-Call
                     </div>
                     <template for:each={currentOnCall} for:item="user">
