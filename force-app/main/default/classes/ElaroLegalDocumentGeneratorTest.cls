@@ -179,10 +179,86 @@ private class ElaroLegalDocumentGeneratorTest {
         Test.startTest();
         try {
             ElaroLegalDocumentGenerator.generateLegalAttestation(null, startDate, endDate);
-            // Document creation may succeed with null framework
+            System.assert(false, 'Should have thrown exception for null framework');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Error generating evidence pack'),
-                'Should throw AuraHandledException for null framework');
+            System.assert(e.getMessage().contains('Framework cannot be blank'),
+                'Should throw validation error for null framework');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateLegalAttestation_BlankFramework() {
+        // Given: Blank framework parameter
+        Date startDate = Date.today().addDays(-30);
+        Date endDate = Date.today();
+
+        Test.startTest();
+        try {
+            ElaroLegalDocumentGenerator.generateLegalAttestation('', startDate, endDate);
+            System.assert(false, 'Should have thrown exception for blank framework');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Framework cannot be blank'),
+                'Should throw validation error for blank framework');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateLegalAttestation_InvalidFramework() {
+        // Given: Invalid framework parameter
+        Date startDate = Date.today().addDays(-30);
+        Date endDate = Date.today();
+
+        Test.startTest();
+        try {
+            ElaroLegalDocumentGenerator.generateLegalAttestation('INVALID_FRAMEWORK', startDate, endDate);
+            System.assert(false, 'Should have thrown exception for invalid framework');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Unsupported framework'),
+                'Should throw validation error for invalid framework');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateLegalAttestation_NullStartDate() {
+        // Given: Null start date
+        Test.startTest();
+        try {
+            ElaroLegalDocumentGenerator.generateLegalAttestation('SOC2', null, Date.today());
+            System.assert(false, 'Should have thrown exception for null start date');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Start date cannot be null'),
+                'Should throw validation error for null start date');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateLegalAttestation_NullEndDate() {
+        // Given: Null end date
+        Test.startTest();
+        try {
+            ElaroLegalDocumentGenerator.generateLegalAttestation('SOC2', Date.today(), null);
+            System.assert(false, 'Should have thrown exception for null end date');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('End date cannot be null'),
+                'Should throw validation error for null end date');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testGenerateLegalAttestation_StartDateAfterEndDate() {
+        // Given: Start date after end date
+        Test.startTest();
+        try {
+            ElaroLegalDocumentGenerator.generateLegalAttestation('SOC2', Date.today(), Date.today().addDays(-30));
+            System.assert(false, 'Should have thrown exception for invalid date range');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Start date cannot be after end date'),
+                'Should throw validation error for invalid date range');
         }
         Test.stopTest();
     }

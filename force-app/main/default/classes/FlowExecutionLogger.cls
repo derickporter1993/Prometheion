@@ -42,6 +42,14 @@ public with sharing class FlowExecutionLogger {
     }
     @AuraEnabled
     public static void log(String flowName, Id primaryRecordId, String status, Integer cpu, Integer soql, Integer dml) {
+        // Input validation
+        if (String.isBlank(flowName)) {
+            throw new AuraHandledException('Flow name cannot be blank');
+        }
+        if (String.isBlank(status)) {
+            throw new AuraHandledException('Status cannot be blank');
+        }
+
         LogInput input = new LogInput();
         input.flowName = flowName;
         input.primaryRecordId = primaryRecordId;

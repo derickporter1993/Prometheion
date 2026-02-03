@@ -113,7 +113,7 @@ private class FlowExecutionLoggerTest {
     static void testInputValidation() {
         // Test input validation
         Test.startTest();
-        
+
         // Test null inputs
         try {
             FlowExecutionLogger.logInvocable(null);
@@ -121,7 +121,7 @@ private class FlowExecutionLoggerTest {
         } catch (IllegalArgumentException e) {
             System.assert(true, 'Expected exception for null inputs');
         }
-        
+
         // Test empty inputs
         try {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>());
@@ -129,7 +129,7 @@ private class FlowExecutionLoggerTest {
         } catch (IllegalArgumentException e) {
             System.assert(true, 'Expected exception for empty inputs');
         }
-        
+
         // Test blank flow name
         FlowExecutionLogger.LogInput invalidInput = new FlowExecutionLogger.LogInput();
         invalidInput.flowName = '';
@@ -140,7 +140,7 @@ private class FlowExecutionLoggerTest {
         } catch (IllegalArgumentException e) {
             System.assert(true, 'Expected exception for blank flow name');
         }
-        
+
         // Test negative CPU
         FlowExecutionLogger.LogInput negativeInput = new FlowExecutionLogger.LogInput();
         negativeInput.flowName = 'TestFlow';
@@ -152,7 +152,47 @@ private class FlowExecutionLoggerTest {
         } catch (IllegalArgumentException e) {
             System.assert(true, 'Expected exception for negative CPU');
         }
-        
+
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testLogAuraEnabledInputValidation() {
+        // Test AuraEnabled method input validation
+        Test.startTest();
+
+        // Test blank flow name
+        try {
+            FlowExecutionLogger.log('', null, 'SUCCESS', 100, 5, 2);
+            System.assert(false, 'Should have thrown exception for blank flow name');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
+        }
+
+        // Test null flow name
+        try {
+            FlowExecutionLogger.log(null, null, 'SUCCESS', 100, 5, 2);
+            System.assert(false, 'Should have thrown exception for null flow name');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
+        }
+
+        // Test blank status
+        try {
+            FlowExecutionLogger.log('TestFlow', null, '', 100, 5, 2);
+            System.assert(false, 'Should have thrown exception for blank status');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
+        }
+
+        // Test null status
+        try {
+            FlowExecutionLogger.log('TestFlow', null, null, 100, 5, 2);
+            System.assert(false, 'Should have thrown exception for null status');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
+        }
+
         Test.stopTest();
     }
 }

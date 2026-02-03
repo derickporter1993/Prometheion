@@ -28,14 +28,14 @@ public with sharing class AlertHistoryService {
         };
         ElaroSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
         
-        Integer limit = Math.max(1, limitSize);
+        Integer recordLimit = Math.max(1, limitSize);
         List<AlertRow> out = new List<AlertRow>();
         for (Performance_Alert_History__c r : [
             SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
             FROM Performance_Alert_History__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY CreatedDate DESC
-            LIMIT :limit
+            LIMIT :recordLimit
         ]) {
             out.add(new AlertRow(r));
         }

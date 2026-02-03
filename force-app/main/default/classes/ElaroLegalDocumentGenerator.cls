@@ -1,6 +1,23 @@
 public with sharing class ElaroLegalDocumentGenerator {
     @AuraEnabled
     public static String generateLegalAttestation(String framework, Date startDate, Date endDate) {
+        // Input validation
+        if (String.isBlank(framework)) {
+            throw new AuraHandledException('Framework cannot be blank');
+        }
+        if (!ElaroConstants.isValidFramework(framework)) {
+            throw new AuraHandledException('Unsupported framework: ' + framework + '. Supported frameworks: ' + ElaroConstants.SUPPORTED_FRAMEWORKS);
+        }
+        if (startDate == null) {
+            throw new AuraHandledException('Start date cannot be null');
+        }
+        if (endDate == null) {
+            throw new AuraHandledException('End date cannot be null');
+        }
+        if (startDate > endDate) {
+            throw new AuraHandledException('Start date cannot be after end date');
+        }
+
         try {
             // Generate compliance evidence pack
             String documentContent = generateEvidencePackContent(framework, startDate, endDate);

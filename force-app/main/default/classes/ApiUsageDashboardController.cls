@@ -23,8 +23,8 @@ public with sharing class ApiUsageDashboardController {
     @AuraEnabled(cacheable = true)
     public static List<Row> recent(Integer limitSize) {
         List<Row> out = new List<Row>();
-        Integer limit = Math.max(1, limitSize);
-        
+        Integer recordLimit = Math.max(1, limitSize);
+
         for (API_Usage_Snapshot__c r : [
             SELECT
                 Taken_On__c,
@@ -33,9 +33,9 @@ public with sharing class ApiUsageDashboardController {
                 Percent_Used__c,
                 Projected_Exhaustion__c
             FROM API_Usage_Snapshot__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Taken_On__c DESC
-            LIMIT :limit
+            LIMIT :recordLimit
         ]) {
             out.add(new Row(r));
         }
