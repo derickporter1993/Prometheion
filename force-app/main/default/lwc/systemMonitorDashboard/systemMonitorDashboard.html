@@ -22,7 +22,11 @@
         </div>
         <p class="slds-m-top_medium">SOQL: {stats.soql} / 100 • DML: {stats.dml} / 150</p>
       </template>
-      <template lwc:if={isLoading}><p>Loading...</p></template>
+      <template lwc:if={isLoading}>
+        <div class="slds-align_absolute-center slds-p-around_medium">
+          <lightning-spinner alternative-text="Loading governor stats" size="medium"></lightning-spinner>
+        </div>
+      </template>
       <div class="slds-m-top_medium">
         <lightning-button label="Refresh" onclick={refresh}></lightning-button>
       </div>
