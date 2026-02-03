@@ -114,6 +114,27 @@ describe("c-api-usage-dashboard", () => {
       expect(card).toBeTruthy();
     });
 
+    it("shows loading spinner initially", async () => {
+      // Create element but don't wait for promises to flush
+      const element = createElement("c-api-usage-dashboard", {
+        is: ApiUsageDashboard,
+      });
+      document.body.appendChild(element);
+
+      // Check for spinner before data loads
+      const spinner = element.shadowRoot.querySelector("lightning-spinner");
+      expect(spinner).not.toBeNull();
+      expect(spinner.alternativeText).toBe("Loading API usage data");
+
+      // Now flush promises and verify spinner is gone
+      await flushPromises();
+      await Promise.resolve();
+      await flushPromises();
+
+      const spinnerAfterLoad = element.shadowRoot.querySelector("lightning-spinner");
+      expect(spinnerAfterLoad).toBeNull();
+    });
+
     it("loads API usage data on connected", async () => {
       const element = await createComponent();
       await flushPromises();

@@ -1,11 +1,18 @@
 <template>
   <lightning-card title="API Usage & Forecasting">
     <div class="slds-var-p-around_medium">
-      <template if:true={hasRows}>
-        <lightning-datatable key-field="id" data={rows} columns={columns}></lightning-datatable>
+      <template if:true={isLoading}>
+        <div class="slds-align_absolute-center slds-var-p-around_medium">
+          <lightning-spinner alternative-text="Loading API usage data" size="medium"></lightning-spinner>
+        </div>
       </template>
-      <template if:false={hasRows}>
-        <p>No snapshots yet.</p>
+      <template if:false={isLoading}>
+        <template if:true={hasRows}>
+          <lightning-datatable key-field="id" data={rows} columns={columns}></lightning-datatable>
+        </template>
+        <template if:false={hasRows}>
+          <p>No snapshots yet.</p>
+        </template>
       </template>
     </div>
   </lightning-card>
