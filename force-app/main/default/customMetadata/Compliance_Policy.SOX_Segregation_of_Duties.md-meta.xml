@@ -8,19 +8,19 @@
     </values>
     <values>
         <field>Policy_Description__c</field>
-        <value xsi:type="xsd:string">Sarbanes-Oxley Act Section 302 and 404 require segregation of duties to prevent fraud and errors. Users should not have conflicting permissions such as the ability to both create financial transactions and approve them, or create users and modify permissions.</value>
+        <value xsi:type="xsd:string">No single individual should have the ability to both initiate and approve financial transactions. Duties must be segregated to prevent fraud and errors.</value>
     </values>
     <values>
         <field>Legal_Citation__c</field>
-        <value xsi:type="xsd:string">Sarbanes-Oxley Act Section 302 - Corporate Responsibility for Financial Reports, Section 404 - Management Assessment of Internal Controls</value>
+        <value xsi:type="xsd:string">SOX Section 404 - ITGC</value>
     </values>
     <values>
         <field>Remediation_Steps__c</field>
-        <value xsi:type="xsd:string">1. Identify users with conflicting permissions (e.g., financial data entry + approval).
-2. Create separate permission sets for data entry and approval roles.
-3. Remove conflicting permissions from individual users.
-4. Implement maker-checker approval workflows for financial transactions.
-5. Document segregation of duties controls and review quarterly.</value>
+        <value xsi:type="xsd:string">1. Identify SoD conflicts in user permissions
+2. Separate initiation and approval roles
+3. Implement approval workflows
+4. Monitor for SoD violations
+5. Remediate conflicts promptly</value>
     </values>
     <values>
         <field>Risk_Weight__c</field>
@@ -28,11 +28,11 @@
     </values>
     <values>
         <field>Entity_Types__c</field>
-        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE,PERMISSION_SET_ASSIGNMENT,USER</value>
+        <value xsi:type="xsd:string">PERMISSION_SET,PROFILE</value>
     </values>
     <values>
         <field>Auto_Remediation_Allowed__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Severity__c</field>
@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Detection_Pattern__c</field>
-        <value xsi:type="xsd:string">{"segregationViolations":["EditFinancial+ApproveFinancial","CreateUser+ModifyPermissions","CreateTransaction+ApproveTransaction"],"financialObjects":["Account","Opportunity","Invoice","Payment"]}</value>
+        <value xsi:type="xsd:string">{"pattern": "sod_violation", "required": ["initiation", "approval"], "threshold": 0}</value>
     </values>
     <values>
         <field>Is_Active__c</field>

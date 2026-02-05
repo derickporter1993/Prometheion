@@ -8,28 +8,27 @@
     </values>
     <values>
         <field>Policy_Description__c</field>
-        <value xsi:type="xsd:string">CCPA Section 1798.100 requires businesses to provide consumers with access to their personal information upon request. Organizations must be able to generate data inventory reports within 45 days and track all consumer data requests to ensure timely response.</value>
+        <value xsi:type="xsd:string">Consumers have the right to know what personal information is collected, used, shared, or sold. Organizations must provide clear disclosure of data collection practices.</value>
     </values>
     <values>
         <field>Legal_Citation__c</field>
-        <value xsi:type="xsd:string">CCPA Section 1798.100 - Right to Know, Section 1798.130 - Methods for Submitting Consumer Requests</value>
+        <value xsi:type="xsd:string">CCPA Section 1798.100(a)</value>
     </values>
     <values>
         <field>Remediation_Steps__c</field>
-        <value xsi:type="xsd:string">1. Implement data inventory tracking for all personal information collected.
-2. Create automated workflows to respond to consumer requests within 45 days.
-3. Document data sources and categories of personal information.
-4. Establish SLA monitoring for CCPA request completion.
-5. Train staff on CCPA request handling procedures.
-6. Maintain audit trail of all consumer requests and responses.</value>
+        <value xsi:type="xsd:string">1. Document all data collection points in Salesforce
+2. Create privacy policy that lists collected data categories
+3. Implement data inventory tracking
+4. Provide opt-out mechanisms
+5. Train staff on CCPA requirements</value>
     </values>
     <values>
         <field>Risk_Weight__c</field>
-        <value xsi:type="xsd:double">8.5</value>
+        <value xsi:type="xsd:double">8.0</value>
     </values>
     <values>
         <field>Entity_Types__c</field>
-        <value xsi:type="xsd:string">OBJECT,FIELD,USER</value>
+        <value xsi:type="xsd:string">CUSTOM_OBJECT,CUSTOM_FIELD,FLOW,INTEGRATION</value>
     </values>
     <values>
         <field>Auto_Remediation_Allowed__c</field>
@@ -41,7 +40,7 @@
     </values>
     <values>
         <field>Detection_Pattern__c</field>
-        <value xsi:type="xsd:string">{"ccpaRequestTracking":true,"slaDeadlineDays":45,"personalInformationFields":["Email","Phone","Address","SSN","DateOfBirth"]}</value>
+        <value xsi:type="xsd:string">{"pattern": "personal_data_collection", "fields": ["Email", "Phone", "SSN", "Address"], "threshold": 1}</value>
     </values>
     <values>
         <field>Is_Active__c</field>
