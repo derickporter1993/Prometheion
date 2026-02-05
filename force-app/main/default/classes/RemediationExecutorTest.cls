@@ -383,4 +383,178 @@ private class RemediationExecutorTest {
         System.assertEquals(false, result.success, 'Should fail with invalid payload');
         System.assert(result.errorMessage.contains('Execution failed'), 'Error should mention execution failure');
     }
+
+    @isTest
+    static void testBulkExecute_LargeVolume() {
+        // Create 55 gaps and suggestions to test bulk operations
+        Integer recordCount = 55;
+        List<Compliance_Gap__c> gaps = new List<Compliance_Gap__c>();
+
+        for (Integer i = 0; i < recordCount; i++) {
+            gaps.add(new Compliance_Gap__c(
+                Framework__c = 'SOX',
+                Policy_Reference__c = 'SOX_BULK_TEST_' + i,
+                Severity__c = 'HIGH',
+                Status__c = 'OPEN',
+                Gap_Description__c = 'Bulk test gap ' + i,
+                Entity_Type__c = 'PERMISSION_SET',
+                Entity_Id__c = '0PS00000000000' + String.valueOf(i).leftPad(1, '0'),
+                Detected_Date__c = Datetime.now()
+            ));
+        }
+        insert gaps;
+
+        List<Remediation_Suggestion__c> suggestions = new List<Remediation_Suggestion__c>();
+        String[] suggestionTypes = new String[]{ 'PERMISSION_CHANGE', 'FIELD_LEVEL_SECURITY', 'PROFILE_UPDATE' };
+
+        for (Integer i = 0; i < recordCount; i++) {
+            String suggestionType = suggestionTypes[Math.mod(i, 3)];
+            Map<String, Object> payload = new Map<String, Object>{
+                'suggestionType' => suggestionType,
+                'action' => 'BULK_TEST_ACTION_' + i
+            };
+
+            if (suggestionType == 'PERMISSION_CHANGE') {
+                payload.put('targetPermissionSet', '0PS00000000000' + i);
+            } else if (suggestionType == 'FIELD_LEVEL_SECURITY') {
+                payload.put('targetObject', 'Account');
+            } else {
+                payload.put('targetProfile', '00e00000000000' + i);
+            }
+
+            suggestions.add(new Remediation_Suggestion__c(
+                Compliance_Gap__c = gaps[i].Id,
+                Suggestion_Type__c = suggestionType,
+                Framework__c = 'SOX',
+                Status__c = 'APPROVED',
+                Auto_Remediation_Available__c = true,
+                Auto_Remediation_Payload__c = JSON.serialize(payload),
+                Description__c = 'Bulk test suggestion ' + i,
+                Confidence_Score__c = 0.85,
+                Risk_Reduction_Score__c = 7.0,
+                Effort_Estimate__c = 'LOW',
+                Priority_Score__c = 10.0
+            ));
+        }
+        insert suggestions;
+
+        List<String> suggestionIds = new List<String>();
+        for (Remediation_Suggestion__c s : suggestions) {
+            suggestionIds.add(s.Id);
+        }
+
+        Test.startTest();
+        // This should NOT hit governor limits with bulkified code
+        RemediationExecutor.BulkExecutionResult result = RemediationExecutor.bulkExecute(suggestionIds);
+        Test.stopTest();
+
+        System.assertEquals(recordCount, result.totalProcessed, 'Should process all records');
+        System.assertEquals(recordCount, result.successCount, 'All should succeed');
+        System.assertEquals(0, result.failureCount, 'None should fail');
+        System.assertEquals(recordCount, result.results.size(), 'Should have result for each');
+
+        // Verify suggestions were updated
+        List<Remediation_Suggestion__c> updatedSuggestions = [
+            SELECT Id, Status__c FROM Remediation_Suggestion__c
+            WHERE Id IN :suggestionIds AND Status__c = 'APPLIED'
+        ];
+        System.assertEquals(recordCount, updatedSuggestions.size(), 'All suggestions should be APPLIED');
+
+        // Verify gaps were updated
+        Set<Id> gapIds = new Set<Id>();
+        for (Compliance_Gap__c g : gaps) {
+            gapIds.add(g.Id);
+        }
+        List<Compliance_Gap__c> updatedGaps = [
+            SELECT Id, Status__c FROM Compliance_Gap__c
+            WHERE Id IN :gapIds AND Status__c = 'REMEDIATED'
+        ];
+        System.assertEquals(recordCount, updatedGaps.size(), 'All gaps should be REMEDIATED');
+    }
+
+    @isTest
+    static void testBulkExecute_EmptyList() {
+        Test.startTest();
+        RemediationExecutor.BulkExecutionResult result = RemediationExecutor.bulkExecute(new List<String>());
+        Test.stopTest();
+
+        System.assertEquals(0, result.totalProcessed, 'Should process zero records');
+        System.assertEquals(0, result.successCount, 'No successes');
+        System.assertEquals(0, result.failureCount, 'No failures');
+    }
+
+    @isTest
+    static void testBulkExecute_NullList() {
+        Test.startTest();
+        RemediationExecutor.BulkExecutionResult result = RemediationExecutor.bulkExecute(null);
+        Test.stopTest();
+
+        System.assertEquals(0, result.totalProcessed, 'Should process zero records');
+    }
+
+    @isTest
+    static void testBulkExecute_MixedResults() {
+        Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
+
+        // Create one valid, one not approved, one without auto-remediation
+        List<Remediation_Suggestion__c> testSuggestions = new List<Remediation_Suggestion__c>();
+
+        // Valid - will succeed
+        testSuggestions.add(new Remediation_Suggestion__c(
+            Compliance_Gap__c = gap.Id,
+            Suggestion_Type__c = 'PERMISSION_CHANGE',
+            Framework__c = 'SOX',
+            Status__c = 'APPROVED',
+            Auto_Remediation_Available__c = true,
+            Auto_Remediation_Payload__c = JSON.serialize(new Map<String, Object>{
+                'suggestionType' => 'PERMISSION_CHANGE',
+                'action' => 'TEST_ACTION',
+                'targetPermissionSet' => '0PS000000000099'
+            }),
+            Description__c = 'Valid suggestion'
+        ));
+
+        // Not approved - will fail
+        testSuggestions.add(new Remediation_Suggestion__c(
+            Compliance_Gap__c = gap.Id,
+            Suggestion_Type__c = 'PERMISSION_CHANGE',
+            Framework__c = 'SOX',
+            Status__c = 'PENDING',
+            Auto_Remediation_Available__c = true,
+            Auto_Remediation_Payload__c = JSON.serialize(new Map<String, Object>{
+                'suggestionType' => 'PERMISSION_CHANGE',
+                'action' => 'TEST_ACTION',
+                'targetPermissionSet' => '0PS000000000098'
+            }),
+            Description__c = 'Not approved suggestion'
+        ));
+
+        // No auto-remediation - will fail
+        testSuggestions.add(new Remediation_Suggestion__c(
+            Compliance_Gap__c = gap.Id,
+            Suggestion_Type__c = 'MANUAL_REVIEW',
+            Framework__c = 'SOX',
+            Status__c = 'APPROVED',
+            Auto_Remediation_Available__c = false,
+            Description__c = 'Manual only suggestion'
+        ));
+
+        insert testSuggestions;
+
+        List<String> suggestionIds = new List<String>();
+        for (Remediation_Suggestion__c s : testSuggestions) {
+            suggestionIds.add(s.Id);
+        }
+
+        // Add a non-existent ID
+        suggestionIds.add('a00000000000000AAA');
+
+        Test.startTest();
+        RemediationExecutor.BulkExecutionResult result = RemediationExecutor.bulkExecute(suggestionIds);
+        Test.stopTest();
+
+        System.assertEquals(4, result.totalProcessed, 'Should process all 4');
+        System.assertEquals(1, result.successCount, 'One should succeed');
+        System.assertEquals(3, result.failureCount, 'Three should fail');
+    }
 }
