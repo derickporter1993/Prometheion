@@ -52,81 +52,158 @@ public with sharing class ElaroComplianceCopilot {
      */
     @AuraEnabled
     public static CopilotResponse askCopilot(String query) {
-        CopilotResponse response = new CopilotResponse();
-
         try {
-            // Validate input - handle null/blank queries gracefully
-            if (String.isBlank(query)) {
-                response.answer = Label.Copilot_General_Help;
-                response.queryType = ElaroConstants.QUERY_GENERAL;
-                return response;
+            // Step 1: Validate input
+            ValidationResult validation = validateQuery(query);
+            if (!validation.isValid) {
+                return createErrorResponse(validation.message);
             }
 
-            // Validate input length (prevent abuse)
-            if (query.length() > 5000) {
-                throw new AuraHandledException('Query exceeds maximum length of 5000 characters');
+            // Step 2: Check rate limiting
+            RateLimitResult rateLimit = checkRateLimit();
+            if (!rateLimit.allowed) {
+                throw new AuraHandledException(rateLimit.message);
             }
 
-            // Rate limiting check using Platform Cache
-            String cacheKey = 'copilot_query_' + UserInfo.getUserId();
-            try {
-                Cache.OrgPartition orgCache = Cache.Org.getPartition('local.ElaroCompliance');
-                Integer queryCount = (Integer) orgCache.get(cacheKey);
-
-                if (queryCount != null && queryCount > 10) {
-                    throw new AuraHandledException('Rate limit exceeded. Please wait before submitting another query.');
-                }
-
-                // Increment counter with 5-minute TTL
-                orgCache.put(cacheKey, (queryCount == null ? 1 : queryCount + 1), 300);
-            } catch (Cache.Org.OrgCacheException e) {
-                // Cache not configured, continue without rate limiting
-                System.debug(LoggingLevel.WARN, 'ElaroComplianceCopilot: Cache not available for rate limiting');
-            }
-
-            // Classify the query type
+            // Step 3: Classify and route
             QueryClassification classification = classifyQuery(query);
-            response.queryType = classification.queryType;
-
-            // Route to appropriate handler
-            switch on classification.queryType {
-                when 'SCORE_CHANGE' {
-                    response = handleScoreChangeQuery(query, classification);
-                }
-                when 'VIOLATION_SEARCH' {
-                    response = handleViolationSearch(query, classification);
-                }
-                when 'EVIDENCE_REQUEST' {
-                    response = handleEvidenceRequest(query, classification);
-                }
-                when 'RISKY_FLOWS' {
-                    response = handleRiskyFlowsQuery(query, classification);
-                }
-                when 'USER_ACCESS' {
-                    response = handleUserAccessQuery(query, classification);
-                }
-                when 'FRAMEWORK_STATUS' {
-                    response = handleFrameworkStatus(query, classification);
-                }
-                when else {
-                    response = handleGeneralQuery(query, classification);
-                }
-            }
+            return buildResponse(query, classification);
 
         } catch (Exception e) {
-            String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
-            response.answer = Label.Copilot_Error_General.replace('{0}', errorMsg);
-            response.confidence = 0.0;
-            // Structured logging without stack traces in production
-            String correlationId = 'COPILOT-' + System.now().getTime();
-            String errorMessage = ElaroConstants.LOG_PREFIX + 'askCopilot error: ' + e.getTypeName() + ' - ' + e.getMessage() + ' [CorrelationId: ' + correlationId + ']';
+            return handleError(e);
+        }
+    }
 
-            // Only include stack trace in test mode
-            if (Test.isRunningTest()) {
-                System.debug(LoggingLevel.ERROR, errorMessage + '\n' + e.getStackTraceString());
-            } else {
-                System.debug(LoggingLevel.ERROR, errorMessage);
+    /**
+     * Validation result structure
+     */
+    private class ValidationResult {
+        public Boolean isValid;
+        public String message;
+
+        public ValidationResult(Boolean isValid, String message) {
+            this.isValid = isValid;
+            this.message = message;
+        }
+    }
+
+    /**
+     * Validate query input
+     */
+    private static ValidationResult validateQuery(String query) {
+        // Handle null/blank queries
+        if (String.isBlank(query)) {
+            return new ValidationResult(false, Label.Copilot_General_Help);
+        }
+
+        // Check length limit (prevent abuse)
+        if (query.length() > 5000) {
+            return new ValidationResult(false, 'Query exceeds maximum length of 5000 characters');
+        }
+
+        return new ValidationResult(true, null);
+    }
+
+    /**
+     * Rate limiting result structure
+     */
+    private class RateLimitResult {
+        public Boolean allowed;
+        public String message;
+
+        public RateLimitResult(Boolean allowed, String message) {
+            this.allowed = allowed;
+            this.message = message;
+        }
+    }
+
+    /**
+     * Check rate limiting using Platform Cache
+     */
+    private static RateLimitResult checkRateLimit() {
+        String cacheKey = 'copilot_query_' + UserInfo.getUserId();
+
+        try {
+            Cache.OrgPartition orgCache = Cache.Org.getPartition('local.ElaroCompliance');
+            Integer queryCount = (Integer) orgCache.get(cacheKey);
+
+            if (queryCount != null && queryCount > 10) {
+                return new RateLimitResult(false, 'Rate limit exceeded. Please wait before submitting another query.');
             }
+
+            // Increment counter with 5-minute TTL
+            orgCache.put(cacheKey, (queryCount == null ? 1 : queryCount + 1), 300);
+            return new RateLimitResult(true, null);
+
+        } catch (Cache.Org.OrgCacheException e) {
+            // Cache not configured, continue without rate limiting
+            System.debug(LoggingLevel.WARN, 'ElaroComplianceCopilot: Cache not available for rate limiting');
+            return new RateLimitResult(true, null);
+        }
+    }
+
+    /**
+     * Build response based on query classification
+     */
+    private static CopilotResponse buildResponse(String query, QueryClassification classification) {
+        CopilotResponse response;
+
+        switch on classification.queryType {
+            when 'SCORE_CHANGE' {
+                response = handleScoreChangeQuery(query, classification);
+            }
+            when 'VIOLATION_SEARCH' {
+                response = handleViolationSearch(query, classification);
+            }
+            when 'EVIDENCE_REQUEST' {
+                response = handleEvidenceRequest(query, classification);
+            }
+            when 'RISKY_FLOWS' {
+                response = handleRiskyFlowsQuery(query, classification);
+            }
+            when 'USER_ACCESS' {
+                response = handleUserAccessQuery(query, classification);
+            }
+            when 'FRAMEWORK_STATUS' {
+                response = handleFrameworkStatus(query, classification);
+            }
+            when else {
+                response = handleGeneralQuery(query, classification);
+            }
+        }
+
+        response.queryType = classification.queryType;
+        return response;
+    }
+
+    /**
+     * Create error response for validation failures
+     */
+    private static CopilotResponse createErrorResponse(String message) {
+        CopilotResponse response = new CopilotResponse();
+        response.answer = message;
+        response.queryType = ElaroConstants.QUERY_GENERAL;
+        return response;
+    }
+
+    /**
+     * Handle exceptions with structured logging
+     */
+    private static CopilotResponse handleError(Exception e) {
+        CopilotResponse response = new CopilotResponse();
+        String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
+        response.answer = Label.Copilot_Error_General.replace('{0}', errorMsg);
+        response.confidence = 0.0;
+
+        // Structured logging without stack traces in production
+        String correlationId = 'COPILOT-' + System.now().getTime();
+        String errorMessage = ElaroConstants.LOG_PREFIX + 'askCopilot error: ' + e.getTypeName() + ' - ' + e.getMessage() + ' [CorrelationId: ' + correlationId + ']';
+
+        // Only include stack trace in test mode
+        if (Test.isRunningTest()) {
+            System.debug(LoggingLevel.ERROR, errorMessage + '\n' + e.getStackTraceString());
+        } else {
+            System.debug(LoggingLevel.ERROR, errorMessage);
         }
 
         return response;
