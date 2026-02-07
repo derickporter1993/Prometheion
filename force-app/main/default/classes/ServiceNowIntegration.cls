@@ -169,7 +169,8 @@ public with sharing class ServiceNowIntegration {
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
         req.setBody(JSON.serialize(complianceStatus));
-        
+        req.setTimeout(60000);
+
         try {
             Http http = new Http();
             http.send(req);
@@ -213,7 +214,8 @@ public with sharing class ServiceNowIntegration {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setBody(JSON.serialize(snowControl));
-        
+        req.setTimeout(60000);
+
         try {
             Http http = new Http();
             http.send(req);

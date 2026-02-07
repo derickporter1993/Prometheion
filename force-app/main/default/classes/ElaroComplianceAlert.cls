@@ -236,11 +236,12 @@ public with sharing class ElaroComplianceAlert {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setBody(JSON.serialize(slackMessage));
-        
+        req.setTimeout(10000);
+
         Http http = new Http();
         http.send(req);
     }
-    
+
     private static void sendPagerDutyAlert(Map<String, Object> alertData) {
         String severity = (String)alertData.get('severity');
         String pdSeverity = severity == 'CRITICAL' ? 'critical' : 
@@ -263,7 +264,8 @@ public with sharing class ElaroComplianceAlert {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setBody(JSON.serialize(pdEvent));
-        
+        req.setTimeout(10000);
+
         Http http = new Http();
         http.send(req);
     }

@@ -291,7 +291,8 @@ public with sharing class ElaroDailyDigest implements Schedulable {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setBody(JSON.serialize(slackMessage));
-        
+        req.setTimeout(10000);
+
         try {
             Http http = new Http();
             http.send(req);

@@ -195,4 +195,22 @@ private class FlowExecutionLoggerTest {
 
         Test.stopTest();
     }
+
+    @IsTest
+    static void testRateLimitingGracefulDegradation() {
+        // Test that rate limiting degrades gracefully when cache is unavailable
+        // The rate limit check should not block execution if cache fails
+        Test.startTest();
+
+        // This should work even if cache partition doesn't exist
+        // (graceful degradation - logs warning but doesn't throw)
+        FlowExecutionLogger.log('RateLimitTest', null, 'SUCCESS', 100, 5, 2);
+
+        Test.stopTest();
+
+        List<Flow_Execution__c> logs = [
+            SELECT Id FROM Flow_Execution__c WHERE Flow_Name__c = 'RateLimitTest'
+        ];
+        System.assertEquals(1, logs.size(), 'Should create record even if rate limit cache unavailable');
+    }
 }

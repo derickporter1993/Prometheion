@@ -12,7 +12,7 @@ trigger PerformanceAlertEventTrigger on Performance_Alert__e (after insert) {
                 Stack__c = e.Stack__c
             ));
         }
-        if (!hist.isEmpty()) {
+        if (!hist.isEmpty() && Schema.sObjectType.Performance_Alert_History__c.isCreateable()) {
             insert hist;
         }
         // Bulk Slack notification (single future call for all events)

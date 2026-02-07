@@ -93,6 +93,7 @@ public with sharing class SlackNotifier {
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setBody(jsonPayload);
+                req.setTimeout(10000);
                 HttpResponse res = new Http().send(req);
                 if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
                     String errorCorrelationId = correlationId + '-' + index;
