@@ -8,15 +8,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Technology Stack
 
-| Layer | Technology |
-|-------|------------|
-| Backend | Apex (Salesforce API v65.0) |
-| Frontend | Lightning Web Components (LWC) |
-| Testing | Jest (LWC) + Apex Test Classes |
-| Linting | ESLint v9 with LWC plugin |
-| Formatting | Prettier |
-| Monorepo | Turborepo (platform/) |
-| Node.js | v20.0.0+ required |
+| Layer      | Technology                     |
+| ---------- | ------------------------------ |
+| Backend    | Apex (Salesforce API v65.0)    |
+| Frontend   | Lightning Web Components (LWC) |
+| Testing    | Jest (LWC) + Apex Test Classes |
+| Linting    | ESLint v9 with LWC plugin      |
+| Formatting | Prettier                       |
+| Monorepo   | Turborepo (platform/)          |
+| Node.js    | v20.0.0+ required              |
 
 ## Development Commands
 
@@ -79,29 +79,30 @@ elaro/
 ### Compliance Framework Services
 
 Each framework has dedicated service classes:
+
 - `ElaroHIPAAComplianceService`, `ElaroGDPRComplianceService`, `ElaroCCPAComplianceService`
 - `ElaroPCIDSSComplianceService`, `ElaroSOC2ComplianceService`, `ElaroGLBAPrivacyNoticeService`
 
 ### Key LWC Components
 
-| Component | Purpose |
-|-----------|---------|
-| `elaroDashboard` | Main compliance dashboard |
-| `complianceCopilot` | AI compliance assistant |
+| Component                | Purpose                    |
+| ------------------------ | -------------------------- |
+| `elaroDashboard`         | Main compliance dashboard  |
+| `complianceCopilot`      | AI compliance assistant    |
 | `systemMonitorDashboard` | Governor limits monitoring |
-| `apiUsageDashboard` | API usage tracking |
-| `flowExecutionMonitor` | Flow performance tracking |
-| `performanceAlertPanel` | Real-time alerts |
+| `apiUsageDashboard`      | API usage tracking         |
+| `flowExecutionMonitor`   | Flow performance tracking  |
+| `performanceAlertPanel`  | Real-time alerts           |
 
 ### Key Custom Objects
 
-| Object | Purpose |
-|--------|---------|
-| `Compliance_Score__c` | Framework compliance scores |
-| `Compliance_Gap__c` | Gap tracking & remediation |
-| `API_Usage_Snapshot__c` | API limit monitoring |
-| `Elora_AI_Settings__c` | AI configuration *(Salesforce API name; product is Elaro)* |
-| `Elaro_Audit_Log__c` | Audit trail |
+| Object                  | Purpose                                                    |
+| ----------------------- | ---------------------------------------------------------- |
+| `Compliance_Score__c`   | Framework compliance scores                                |
+| `Compliance_Gap__c`     | Gap tracking & remediation                                 |
+| `API_Usage_Snapshot__c` | API limit monitoring                                       |
+| `Elora_AI_Settings__c`  | AI configuration _(Salesforce API name; product is Elaro)_ |
+| `Elaro_Audit_Log__c`    | Audit trail                                                |
 
 ## Critical Development Rules
 
@@ -127,7 +128,7 @@ Never quote template bindings - this causes LWC1034 compilation errors:
 <lightning-datatable data="{rows}"></lightning-datatable>
 
 <!-- CORRECT - no quotes around bindings -->
-<lightning-datatable data={rows}></lightning-datatable>
+<lightning-datatable data="{rows}"></lightning-datatable>
 ```
 
 **Note**: Prettier is configured to skip LWC HTML files (`.prettierignore`) to prevent corrupting bindings.
@@ -173,19 +174,19 @@ static void testMethod_scenario_expectedResult() {
 
 ```javascript
 // Always add { virtual: true } to Salesforce module mocks
-jest.mock(
-  "@salesforce/apex/Controller.method",
-  () => ({ default: jest.fn() }),
-  { virtual: true }
-);
+jest.mock("@salesforce/apex/Controller.method", () => ({ default: jest.fn() }), { virtual: true });
 
 // Use factory functions for class mocks
-jest.mock("c/pollingManager", () => {
-  return class MockPollingManager {
-    start() {}
-    stop() {}
-  };
-}, { virtual: true });
+jest.mock(
+  "c/pollingManager",
+  () => {
+    return class MockPollingManager {
+      start() {}
+      stop() {}
+    };
+  },
+  { virtual: true }
+);
 ```
 
 ## CI/CD Pipeline
