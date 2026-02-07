@@ -252,7 +252,7 @@ export default class EscalationPathConfig extends LightningElement {
   handleError(error) {
     const message = error.body?.message || error.message || "An error occurred";
     this.showToast("Error", message, "error");
-    console.error("Error:", error);
+    // toast already shown above
   }
 
   handleRefresh() {
