@@ -1,4 +1,5 @@
 # DML Security Audit Report
+
 ## Elaro Production Readiness - Tier 1
 
 **Date**: 2026-02-02
@@ -12,6 +13,7 @@
 This audit reviewed all production Apex classes for DML operations and ensured proper CRUD security checks using `ElaroSecurityUtils.validateCRUDAccess()`.
 
 **Key Metrics**:
+
 - **Total Production Files with DML**: 53 files
 - **Files Now Using validateCRUDAccess**: 21 files (40%)
 - **Files Using AccessLevel.USER_MODE**: 10 files (19%)
@@ -24,15 +26,18 @@ This audit reviewed all production Apex classes for DML operations and ensured p
 ## Security Patterns Identified
 
 ### ✅ Pattern 1: ElaroSecurityUtils.validateCRUDAccess() [RECOMMENDED]
+
 **Status**: Implemented in 21 files
 
 **Example**:
+
 ```apex
 ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
 insert gap;
 ```
 
 **Advantages**:
+
 - Centralized security enforcement
 - Consistent error handling
 - Throws SecurityException on access denial
@@ -41,25 +46,30 @@ insert gap;
 ---
 
 ### ✅ Pattern 2: Database DML with AccessLevel.USER_MODE [SECURE]
+
 **Status**: Used in 10 files
 
 **Example**:
+
 ```apex
 Database.insert(auditLog, AccessLevel.USER_MODE);
 ```
 
 **Advantages**:
+
 - Native Salesforce security enforcement
 - Respects CRUD/FLS automatically
 - No additional code required
-- Recommended for Database.* methods
+- Recommended for Database.\* methods
 
 ---
 
 ### ⚠️ Pattern 3: Schema.sObjectType checks [LEGACY - CONVERTED]
+
 **Status**: Converted to validateCRUDAccess()
 
 **Example (Old)**:
+
 ```apex
 if (Schema.sObjectType.API_Usage_Snapshot__c.isCreateable()) {
     insert snapshot;
@@ -67,12 +77,14 @@ if (Schema.sObjectType.API_Usage_Snapshot__c.isCreateable()) {
 ```
 
 **Example (New)**:
+
 ```apex
 ElaroSecurityUtils.validateCRUDAccess('API_Usage_Snapshot__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
 insert snapshot;
 ```
 
 **Files Converted**:
+
 - ApiUsageSnapshot.cls
 - ComplianceServiceBase.cls (3 operations)
 - ElaroInstallHandler.cls (removed manual checks)
@@ -84,23 +96,23 @@ insert snapshot;
 ### Priority Files (CRITICAL) - COMPLETED ✅
 
 1. **ApiUsageSnapshot.cls**
-   - Added validateCRUDAccess for API_Usage_Snapshot__c insert
+   - Added validateCRUDAccess for API_Usage_Snapshot\_\_c insert
    - Removed manual Schema.sObjectType check
    - **DML Operations**: 1 insert
 
 2. **BlockchainVerification.cls**
-   - Added validateCRUDAccess for Elaro_Evidence_Anchor__c insert
+   - Added validateCRUDAccess for Elaro_Evidence_Anchor\_\_c insert
    - **DML Operations**: 1 insert
 
 3. **ComplianceServiceBase.cls** (Base Class - HIGH IMPACT)
    - Converted 3 DML operations to use validateCRUDAccess
-   - `createGap()`: Compliance_Gap__c insert
-   - `createEvidence()`: Compliance_Evidence__c insert
-   - `logAuditEntry()`: Elaro_Audit_Log__c insert
+   - `createGap()`: Compliance_Gap\_\_c insert
+   - `createEvidence()`: Compliance_Evidence\_\_c insert
+   - `logAuditEntry()`: Elaro_Audit_Log\_\_c insert
    - **DML Operations**: 3 inserts
 
 4. **ElaroComplianceAlert.cls**
-   - Added validateCRUDAccess for Elaro_Alert_Config__c insert
+   - Added validateCRUDAccess for Elaro_Alert_Config\_\_c insert
    - **DML Operations**: 1 insert
 
 5. **ElaroDeliveryService.cls**
@@ -108,14 +120,14 @@ insert snapshot;
    - **DML Operations**: 1 insert
 
 6. **ElaroGraphIndexer.cls**
-   - Added validateCRUDAccess for Elaro_Graph_Node__c insert
+   - Added validateCRUDAccess for Elaro_Graph_Node\_\_c insert
    - **DML Operations**: 1 insert
 
 7. **ElaroInstallHandler.cls** (Post-Install Handler)
    - Added validateCRUDAccess for 4 insert operations:
-     - Elaro_AI_Settings__c (default settings)
-     - Elaro_Audit_Log__c (welcome log)
-     - Elaro_Audit_Log__c (error log)
+     - Elaro_AI_Settings\_\_c (default settings)
+     - Elaro_Audit_Log\_\_c (welcome log)
+     - Elaro_Audit_Log\_\_c (error log)
      - FeedItem (Chatter notification)
    - Removed manual Schema.sObjectType checks
    - **DML Operations**: 4 inserts
@@ -278,6 +290,7 @@ insert snapshot;
 ## DML Operations Statistics
 
 ### By Operation Type:
+
 - **INSERT**: ~85 operations (52%)
 - **UPDATE**: ~45 operations (27%)
 - **DELETE**: ~20 operations (12%)
@@ -285,6 +298,7 @@ insert snapshot;
 - **Total**: ~164 DML operations
 
 ### By Security Coverage:
+
 - **Secured with validateCRUDAccess**: ~65 operations (40%)
 - **Secured with AccessLevel.USER_MODE**: ~45 operations (27%)
 - **Total Secured**: ~110 operations (67%)
@@ -322,6 +336,7 @@ insert snapshot;
 ### Code Review Checklist
 
 Before production deployment:
+
 - [ ] All DML operations have security checks (validateCRUDAccess or USER_MODE)
 - [ ] No hardcoded Salesforce IDs in any class
 - [ ] All SOQL uses WITH SECURITY_ENFORCED or WITH USER_MODE
@@ -335,9 +350,11 @@ Before production deployment:
 ### Testing Strategy
 
 1. **Unit Tests**
+
    ```bash
    npm run test:apex
    ```
+
    - Target: 95%+ coverage
    - Verify all security exceptions are thrown correctly
 
@@ -364,23 +381,27 @@ Before production deployment:
 ## Edge Cases & Special Considerations
 
 ### 1. Post-Install Handler (ElaroInstallHandler.cls)
+
 - **Context**: Runs during package installation
 - **Security**: Must handle cases where objects don't exist yet
 - **Solution**: Wrapped DML in try-catch, throws SecurityException appropriately
 
 ### 2. GDPR Data Erasure (ElaroGDPRDataErasureService.cls)
+
 - **Context**: Critical data deletion operation
 - **Security**: Uses AccessLevel.USER_MODE for all operations
 - **Audit Trail**: Immutable audit log via Platform Events
 
 ### 3. Quick Actions (ElaroQuickActionsService.cls)
+
 - **Context**: Modifies PermissionSets and Profiles
 - **Security**: HIGH RISK - needs immediate attention
 - **Recommendation**: Add validateCRUDAccess before all DML operations
 
 ### 4. Integration Error Logging
+
 - **Files**: SchedulerErrorHandler, ElaroGDPRDataErasureService (error catch)
-- **Pattern**: insert Integration_Error__c without security check
+- **Pattern**: insert Integration_Error\_\_c without security check
 - **Risk**: Low (logging failures shouldn't block operations)
 - **Action**: Add validateCRUDAccess wrapped in try-catch
 
@@ -389,6 +410,7 @@ Before production deployment:
 ## Implementation Examples
 
 ### Example 1: Simple Insert
+
 ```apex
 // BEFORE
 insert gap;
@@ -399,6 +421,7 @@ insert gap;
 ```
 
 ### Example 2: Bulk Insert
+
 ```apex
 // BEFORE
 insert reviews;
@@ -409,6 +432,7 @@ insert reviews;
 ```
 
 ### Example 3: Update
+
 ```apex
 // BEFORE
 update gap;
@@ -419,6 +443,7 @@ update gap;
 ```
 
 ### Example 4: Delete
+
 ```apex
 // BEFORE
 delete oldRecords;
@@ -429,6 +454,7 @@ delete oldRecords;
 ```
 
 ### Example 5: Upsert
+
 ```apex
 // BEFORE
 upsert settings;
@@ -438,7 +464,8 @@ ElaroSecurityUtils.validateCRUDAccess('Elaro_AI_Settings__c', ElaroSecurityUtils
 upsert settings;
 ```
 
-### Example 6: Database.* with USER_MODE (Alternative)
+### Example 6: Database.\* with USER_MODE (Alternative)
+
 ```apex
 // Preferred for Database.* methods
 Database.insert(auditLog, AccessLevel.USER_MODE);
@@ -451,24 +478,28 @@ Database.delete(items, AccessLevel.USER_MODE);
 ## Next Steps
 
 ### Phase 1: Complete Remaining Files (Est. 4-5 hours)
+
 1. Process high priority service classes
 2. Process integration classes
 3. Process controller classes
 4. Process scheduler/alert classes
 
 ### Phase 2: Testing & Validation (Est. 2-3 hours)
+
 1. Run full Apex test suite
 2. Create negative test cases for security exceptions
 3. Manual testing with restricted users
 4. Review code coverage reports
 
 ### Phase 3: Documentation (Est. 1 hour)
+
 1. Update developer documentation
 2. Create security guidelines for new code
 3. Document validateCRUDAccess usage patterns
 4. Create onboarding guide for new developers
 
 ### Phase 4: Deployment Preparation (Est. 1 hour)
+
 1. Create deployment checklist
 2. Prepare rollback plan
 3. Schedule deployment window
@@ -479,16 +510,19 @@ Database.delete(items, AccessLevel.USER_MODE);
 ## Risk Assessment
 
 ### Low Risk (Can Deploy As-Is)
+
 - Files with AccessLevel.USER_MODE ✅
 - Files already using validateCRUDAccess ✅
 - Files modified in this audit ✅
 
 ### Medium Risk (Should Fix Before Production)
+
 - Integration classes (Jira, Slack)
 - Scheduler classes
 - Alert publishers
 
 ### High Risk (MUST Fix Before Production)
+
 - **ElaroQuickActionsService.cls** - Permission management
 - GDPR/CCPA compliance services
 - RemediationOrchestrator.cls - Workflow automation
@@ -500,6 +534,7 @@ Database.delete(items, AccessLevel.USER_MODE);
 This audit has significantly improved the security posture of the Elaro platform:
 
 **Achievements**:
+
 - ✅ 31 files now have proper CRUD security (58% of files with DML)
 - ✅ ~110 DML operations secured (67% of all operations)
 - ✅ Established consistent security patterns
@@ -507,6 +542,7 @@ This audit has significantly improved the security posture of the Elaro platform
 - ✅ Identified and prioritized remaining work
 
 **Remaining Work**:
+
 - ⚠️ 22 files require security additions (42% of files)
 - ⚠️ ~54 DML operations need protection (33% of operations)
 - ⚠️ High priority: 4 service classes
