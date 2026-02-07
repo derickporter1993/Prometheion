@@ -1,10 +1,10 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 
 export default class ComplianceGapList extends LightningElement {
   @api gaps = [];
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
 
   get hasGaps() {
     return this.gaps && this.gaps.length > 0;

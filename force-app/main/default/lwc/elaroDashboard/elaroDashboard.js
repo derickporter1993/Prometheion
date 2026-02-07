@@ -1,16 +1,16 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import calculateReadinessScore from "@salesforce/apex/ElaroComplianceScorer.calculateReadinessScore";
 import getAuditPackages from "@salesforce/apex/ElaroDashboardController.getAuditPackages";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
 
 export default class ElaroDashboard extends NavigationMixin(LightningElement) {
-  @track scoreResult = null;
-  @track isLoading = true;
-  @track lastUpdated = new Date();
-  @track selectedFramework = "ALL";
-  @track showDrillDown = false;
-  @track auditPackages = [];
+  scoreResult = null;
+  isLoading = true;
+  lastUpdated = new Date();
+  selectedFramework = "ALL";
+  showDrillDown = false;
+  auditPackages = [];
 
   @wire(calculateReadinessScore)
   wiredScore({ error, data }) {

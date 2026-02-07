@@ -1,4 +1,4 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import createIssue from "@salesforce/apex/JiraIntegrationService.createIssue";
 import isConfigured from "@salesforce/apex/JiraIntegrationService.isConfigured";
@@ -6,11 +6,11 @@ import isConfigured from "@salesforce/apex/JiraIntegrationService.isConfigured";
 export default class JiraCreateModal extends LightningElement {
   @api recordId; // Compliance_Gap__c Id
 
-  @track isOpen = false;
-  @track isLoading = false;
-  @track isConfigured = false;
-  @track selectedPriority = "";
-  @track error = null;
+  isOpen = false;
+  isLoading = false;
+  isJiraConfigured = false;
+  selectedPriority = "";
+  error = null;
 
   get priorityOptions() {
     return [
@@ -23,11 +23,11 @@ export default class JiraCreateModal extends LightningElement {
   }
 
   get isCreateDisabled() {
-    return this.isLoading || !this.isConfigured;
+    return this.isLoading || !this.isJiraConfigured;
   }
 
   get isNotConfigured() {
-    return !this.isConfigured;
+    return !this.isJiraConfigured;
   }
 
   connectedCallback() {
@@ -36,9 +36,9 @@ export default class JiraCreateModal extends LightningElement {
 
   async checkConfiguration() {
     try {
-      this.isConfigured = await isConfigured();
+      this.isJiraConfigured = await isConfigured();
     } catch (_e) {
-      this.isConfigured = false;
+      this.isJiraConfigured = false;
     }
   }
 

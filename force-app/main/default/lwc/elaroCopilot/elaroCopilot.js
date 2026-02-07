@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import askCopilot from "@salesforce/apex/ElaroComplianceCopilot.askCopilot";
 import getQuickCommands from "@salesforce/apex/ElaroComplianceCopilot.getQuickCommands";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -7,10 +7,10 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 const DEBOUNCE_DELAY = 300;
 
 export default class ElaroCopilot extends LightningElement {
-  @track query = "";
-  @track messages = [];
-  @track isLoading = false;
-  @track quickCommands = [];
+  query = "";
+  messages = [];
+  isLoading = false;
+  quickCommands = [];
 
   // Debounce timer
   _debounceTimer;

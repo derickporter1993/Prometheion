@@ -1,11 +1,11 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 
 export default class ComplianceTrendChart extends LightningElement {
   @api framework;
   @api data = [];
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
 
   get chartData() {
     // Format data for chart library (Chart.js or similar)

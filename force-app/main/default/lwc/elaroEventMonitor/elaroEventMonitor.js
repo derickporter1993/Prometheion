@@ -1,4 +1,4 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement } from "lwc";
 import { subscribe, unsubscribe, onError } from "lightning/empApi";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 

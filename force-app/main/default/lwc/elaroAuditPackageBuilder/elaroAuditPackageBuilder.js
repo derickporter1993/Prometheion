@@ -1,14 +1,14 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement } from "lwc";
 import generateAuditPackage from "@salesforce/apex/ElaroAuditPackageGenerator.generateAuditPackage";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
 
 export default class ElaroAuditPackageBuilder extends NavigationMixin(LightningElement) {
-  @track framework = "SOC2";
-  @track packageName = "";
-  @track startDate;
-  @track endDate;
-  @track isLoading = false;
+  framework = "SOC2";
+  packageName = "";
+  startDate;
+  endDate;
+  isLoading = false;
 
   frameworks = [
     { label: "SOC 2", value: "SOC2" },

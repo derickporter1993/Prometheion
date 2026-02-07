@@ -1,12 +1,12 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement } from "lwc";
 import getRecentDeployments from "@salesforce/apex/DeploymentMetrics.getRecentDeployments";
 import PollingManager from "c/pollingManager";
 
 export default class DeploymentMonitorDashboard extends LightningElement {
-  @track rows = [];
-  @track isLoading = true;
-  @track hasError = false;
-  @track errorMessage = "";
+  rows = [];
+  isLoading = true;
+  hasError = false;
+  errorMessage = "";
   columns = [
     { label: "Name", fieldName: "name" },
     { label: "Status", fieldName: "status" },

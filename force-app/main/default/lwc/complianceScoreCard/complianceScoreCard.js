@@ -1,13 +1,13 @@
-import { LightningElement, api, wire, track } from "lwc";
+import { LightningElement, api, wire } from "lwc";
 import getFrameworkDetails from "@salesforce/apex/ComplianceScoreCardController.getFrameworkDetails";
 import { NavigationMixin } from "lightning/navigation";
 
 export default class ComplianceScoreCard extends NavigationMixin(LightningElement) {
   @api framework;
-  @track frameworkDetails = null;
-  @track isLoadingDetails = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  frameworkDetails = null;
+  isLoadingDetails = false;
+  hasError = false;
+  errorMessage = "";
 
   get frameworkKey() {
     return this.framework?.framework || this.framework?.key || null;

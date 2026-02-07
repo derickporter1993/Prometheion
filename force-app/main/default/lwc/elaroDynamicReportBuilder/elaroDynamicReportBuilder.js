@@ -1,27 +1,27 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getAvailableObjects from "@salesforce/apex/ElaroDynamicReportController.getAvailableObjects";
 import getFieldMetadata from "@salesforce/apex/ElaroDynamicReportController.getFieldMetadata";
 import executeReport from "@salesforce/apex/ElaroDynamicReportController.executeReport";
 
 export default class ElaroDynamicReportBuilder extends LightningElement {
-  @track selectedObject = "";
-  @track objectOptions = [];
-  @track availableFields = [];
-  @track selectedFields = [];
-  @track fieldsLoaded = false;
-  @track filters = [];
-  @track filterableFields = [];
-  @track sortableFields = [];
-  @track sortBy = "";
-  @track sortDirection = "ASC";
-  @track maxRows = 1000;
-  @track reportData = [];
-  @track columns = [];
-  @track recordCount = 0;
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  selectedObject = "";
+  objectOptions = [];
+  availableFields = [];
+  selectedFields = [];
+  fieldsLoaded = false;
+  filters = [];
+  filterableFields = [];
+  sortableFields = [];
+  sortBy = "";
+  sortDirection = "ASC";
+  maxRows = 1000;
+  reportData = [];
+  columns = [];
+  recordCount = 0;
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
 
   operatorOptions = [
     { label: "Equals", value: "=" },

@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getRealtimeStats from "@salesforce/apex/ElaroRealtimeMonitor.getRealtimeStats";
 import getEventRiskLevels from "@salesforce/apex/ElaroShieldService.getEventRiskLevels";
@@ -58,28 +58,28 @@ const COLUMNS = [
 ];
 
 export default class ElaroEventExplorer extends LightningElement {
-  @track events = [];
-  @track filteredEvents = [];
-  @track isLoading = true;
-  @track showModal = false;
-  @track selectedEvent = null;
+  events = [];
+  filteredEvents = [];
+  isLoading = true;
+  showModal = false;
+  selectedEvent = null;
 
   // Filters
-  @track selectedEventType = "";
-  @track selectedRiskLevel = "";
-  @track startDate = "";
-  @track endDate = "";
-  @track searchTerm = "";
+  selectedEventType = "";
+  selectedRiskLevel = "";
+  startDate = "";
+  endDate = "";
+  searchTerm = "";
 
   // Sorting
-  @track sortedBy = "formattedTimestamp";
-  @track sortedDirection = "desc";
+  sortedBy = "formattedTimestamp";
+  sortedDirection = "desc";
 
   // Statistics
-  @track totalEvents = 0;
-  @track criticalCount = 0;
-  @track highRiskCount = 0;
-  @track mediumRiskCount = 0;
+  totalEvents = 0;
+  criticalCount = 0;
+  highRiskCount = 0;
+  mediumRiskCount = 0;
 
   columns = COLUMNS;
   eventRiskLevels = {};

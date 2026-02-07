@@ -135,7 +135,7 @@
 
   <!-- Comment Modal -->
   <template lwc:if={showCommentModal}>
-    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true" aria-labelledby="comment-modal-heading">
       <div class="slds-modal__container">
         <header class="slds-modal__header">
           <button
@@ -145,7 +145,7 @@
           >
             <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
           </button>
-          <h2 class="slds-modal__title slds-hyphenate">Add Comment to {jiraKey}</h2>
+          <h2 id="comment-modal-heading" class="slds-modal__title slds-hyphenate">Add Comment to {jiraKey}</h2>
         </header>
         <div class="slds-modal__content slds-p-around_medium">
           <lightning-textarea
@@ -172,7 +172,7 @@
 
   <!-- Transition Modal -->
   <template lwc:if={showTransitionModal}>
-    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true" aria-labelledby="transition-modal-heading">
       <div class="slds-modal__container">
         <header class="slds-modal__header">
           <button
@@ -182,7 +182,7 @@
           >
             <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
           </button>
-          <h2 class="slds-modal__title slds-hyphenate">Transition {jiraKey}</h2>
+          <h2 id="transition-modal-heading" class="slds-modal__title slds-hyphenate">Transition {jiraKey}</h2>
         </header>
         <div class="slds-modal__content slds-p-around_medium">
           <p class="slds-m-bottom_small">Current Status: <strong>{issue.status}</strong></p>

@@ -1,4 +1,4 @@
-import { LightningElement, track, api } from "lwc";
+import { LightningElement, api } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
 import getRecords from "@salesforce/apex/ElaroDrillDownController.getRecords";
@@ -6,15 +6,15 @@ import exportToCSV from "@salesforce/apex/ElaroDrillDownController.exportToCSV";
 
 export default class ElaroDrillDownViewer extends NavigationMixin(LightningElement) {
   @api contextJson;
-  @track records = [];
-  @track columns = [];
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
-  @track totalCount = 0;
-  @track pageSize = 50;
-  @track currentOffset = 0;
-  @track hasMore = false;
+  records = [];
+  columns = [];
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
+  totalCount = 0;
+  pageSize = 50;
+  currentOffset = 0;
+  hasMore = false;
   _context;
 
   connectedCallback() {

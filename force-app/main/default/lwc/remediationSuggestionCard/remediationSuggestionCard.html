@@ -212,14 +212,14 @@
 
     <!-- Reject Modal -->
     <template lwc:if={isRejectModalOpen}>
-        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true" aria-labelledby="reject-modal-heading">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeRejectModal}>
                         <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-modal__title">Reject Suggestion</h2>
+                    <h2 id="reject-modal-heading" class="slds-modal__title">Reject Suggestion</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <p class="slds-m-bottom_medium">
@@ -249,14 +249,14 @@
 
     <!-- Manual Apply Modal -->
     <template lwc:if={isManualApplyModalOpen}>
-        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true" aria-labelledby="manual-apply-modal-heading">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeManualApplyModal}>
                         <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-modal__title">Mark as Manually Applied</h2>
+                    <h2 id="manual-apply-modal-heading" class="slds-modal__title">Mark as Manually Applied</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <p class="slds-m-bottom_medium">

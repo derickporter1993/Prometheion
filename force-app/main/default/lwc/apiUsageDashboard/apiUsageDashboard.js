@@ -1,11 +1,11 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getSnapshots from "@salesforce/apex/ApiUsageDashboardController.getRecentSnapshots";
 import PollingManager from "c/pollingManager";
 
 export default class ApiUsageDashboard extends LightningElement {
-  @track rows = [];
-  @track isLoading = true;
+  rows = [];
+  isLoading = true;
   pollingManager = null;
   pollInterval = 60000; // Base poll interval (60s)
   currentInterval = 60000; // Current interval with backoff

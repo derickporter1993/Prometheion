@@ -1,4 +1,4 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
 const FRAMEWORK_OPTIONS = [
@@ -91,19 +91,21 @@ const CONTROL_MAPPINGS = {
 };
 
 export default class ControlMappingMatrix extends LightningElement {
-  @track sourceFramework = "NIST";
-  @track targetFrameworks = ["HIPAA", "SOC2", "FedRAMP"];
-  @track mappingRows = [];
-  @track isLoading = false;
-  @track showMappingModal = false;
-  @track selectedMapping = null;
+  sourceFramework = "NIST";
+  targetFrameworks = ["HIPAA", "SOC2", "FedRAMP"];
+  mappingRows = [];
+  isLoading = false;
+  showMappingModal = false;
+  selectedMapping = null;
 
   // Statistics
-  @track totalControls = 0;
-  @track directMappings = 0;
-  @track partialMappings = 0;
-  @track unmappedControls = 0;
+  totalControls = 0;
+  directMappings = 0;
+  partialMappings = 0;
+  unmappedControls = 0;
 
+  _modalFocusTimer = null;
+  _focusRestoreTimer = null;
   frameworkOptions = FRAMEWORK_OPTIONS;
 
   get availableTargetFrameworks() {
@@ -135,6 +137,15 @@ export default class ControlMappingMatrix extends LightningElement {
 
   connectedCallback() {
     this.loadMappings();
+  }
+
+  disconnectedCallback() {
+    if (this._modalFocusTimer) {
+      clearTimeout(this._modalFocusTimer);
+    }
+    if (this._focusRestoreTimer) {
+      clearTimeout(this._focusRestoreTimer);
+    }
   }
 
   handleSourceChange(event) {
@@ -269,7 +280,7 @@ export default class ControlMappingMatrix extends LightningElement {
 
       this.showMappingModal = true;
       // Focus modal after it renders
-      setTimeout(() => {
+      this._modalFocusTimer = setTimeout(() => {
         this.focusModalCloseButton();
       }, 100);
     }
@@ -368,7 +379,7 @@ export default class ControlMappingMatrix extends LightningElement {
 
     // Restore focus to the element that opened the modal
     if (this._previousActiveElement) {
-      setTimeout(() => {
+      this._focusRestoreTimer = setTimeout(() => {
         this._previousActiveElement.focus();
         this._previousActiveElement = null;
       }, 0);

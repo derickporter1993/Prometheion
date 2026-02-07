@@ -1,26 +1,26 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getDimensionFields from "@salesforce/apex/ElaroMatrixController.getDimensionFields";
 import executeMatrixQuery from "@salesforce/apex/ElaroMatrixController.executeMatrixQuery";
 
 export default class ElaroComparativeAnalytics extends LightningElement {
-  @track selectedObject = "";
-  @track objectOptions = [
+  selectedObject = "";
+  objectOptions = [
     { label: "Account", value: "Account" },
     { label: "Opportunity", value: "Opportunity" },
     { label: "Case", value: "Case" },
   ];
-  @track dimensionFields = [];
-  @track rowField = "";
-  @track columnField = "";
-  @track aggregateExpression = "SUM(Amount)";
-  @track matrixData = {};
-  @track matrixRows = [];
-  @track matrixColumns = [];
-  @track computedMatrixData = [];
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  dimensionFields = [];
+  rowField = "";
+  columnField = "";
+  aggregateExpression = "SUM(Amount)";
+  matrixData = {};
+  matrixRows = [];
+  matrixColumns = [];
+  computedMatrixData = [];
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
 
   @wire(getDimensionFields, { objectApiName: "$selectedObject" })
   wiredDimensionFields({ error, data }) {

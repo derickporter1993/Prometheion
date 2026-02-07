@@ -1,10 +1,10 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 
 export default class ComplianceTimeline extends LightningElement {
   @api events = [];
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = "";
+  isLoading = false;
+  hasError = false;
+  errorMessage = "";
 
   get sortedEvents() {
     if (!this.events || this.events.length === 0) {

@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, wire } from "lwc";
 import askCopilot from "@salesforce/apex/ElaroComplianceCopilot.askCopilot";
 import getQuickCommands from "@salesforce/apex/ElaroComplianceCopilot.getQuickCommands";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -23,11 +23,11 @@ import PROCESSING_ERROR from "@salesforce/label/c.Elaro_Processing_Error";
 const DEBOUNCE_DELAY = 300;
 
 export default class ComplianceCopilot extends LightningElement {
-  @track query = "";
-  @track messages = [];
-  @track isLoading = false;
-  @track quickCommands = [];
-  @track showQuickCommands = true;
+  query = "";
+  messages = [];
+  isLoading = false;
+  quickCommands = [];
+  showQuickCommands = true;
 
   // Expose labels to template
   labels = {
