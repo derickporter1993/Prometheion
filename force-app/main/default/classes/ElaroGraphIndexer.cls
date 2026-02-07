@@ -193,8 +193,8 @@ public with sharing class ElaroGraphIndexer {
         
         // Allowed field list - only include non-sensitive metadata
         Set<String> allowedFields = new Set<String>{
-            'name', 'apiName', 'triggerType', 'objectPermissionCount', 
-            'fieldPermissionCount', 'type', 'status'
+            'name', 'apiname', 'triggertype', 'objectpermissioncount', 
+            'fieldpermissioncount', 'type', 'status'
         };
         
         for (String key : metadata.keySet()) {
