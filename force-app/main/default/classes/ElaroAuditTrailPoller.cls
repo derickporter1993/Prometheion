@@ -137,6 +137,7 @@ public without sharing class ElaroAuditTrailPoller implements Schedulable {
                 settings = new Elaro_Settings__c(SetupOwnerId = UserInfo.getOrganizationId());
             }
             settings.Last_Audit_Trail_Poll__c = pollTime;
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Settings__c', ElaroSecurityUtils.DmlOperation.DML_UPSERT);
             upsert settings;
         } catch (Exception e) {
             ElaroLogger.error( 'ElaroAuditTrailPoller: Failed to update last poll time: ' + e.getMessage());

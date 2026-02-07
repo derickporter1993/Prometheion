@@ -351,10 +351,10 @@ global without sharing class ElaroScoreCallback {
      * Prevents replay attacks by ensuring requests are recent and unique
      */
     private static Boolean validateReplayProtection(String timestamp, String nonce) {
-        // If headers not provided, allow (backward compatibility, but log warning)
+        // Timestamp and nonce headers are required for replay protection
         if (String.isBlank(timestamp) || String.isBlank(nonce)) {
-            ElaroLogger.warn( 'ElaroScoreCallback: Replay protection headers missing');
-            return true; // Allow for backward compatibility, but should be required in production
+            ElaroLogger.warn( 'ElaroScoreCallback: Replay protection headers missing - rejecting request');
+            return false;
         }
         
         try {
@@ -414,10 +414,19 @@ global without sharing class ElaroScoreCallback {
             
             // Calculate HMAC-SHA256
             Blob hmacData = Crypto.generateMac('HmacSHA256', Blob.valueOf(requestBody), Blob.valueOf(secret));
-            String calculatedSignature = EncodingUtil.base64Encode(hmacData);
-            
+            String calculatedHex = EncodingUtil.convertToHex(hmacData);
+            String providedHex = EncodingUtil.convertToHex(EncodingUtil.base64Decode(providedSignature));
+
             // Constant-time comparison to prevent timing attacks
-            return calculatedSignature.equals(providedSignature);
+            // Compare character-by-character without short-circuiting
+            if (calculatedHex.length() != providedHex.length()) {
+                return false;
+            }
+            Integer result = 0;
+            for (Integer i = 0; i < calculatedHex.length(); i++) {
+                result |= calculatedHex.charAt(i) ^ providedHex.charAt(i);
+            }
+            return result == 0;
         } catch (Exception e) {
             ElaroLogger.error( 'HMAC validation error: ' + e.getMessage());
             return false;

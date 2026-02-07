@@ -158,6 +158,7 @@ public without sharing class ElaroReasoningEngine {
         );
 
         try {
+            // Big Object (__b): standard CRUD/FLS checks not enforced by platform for Big Objects
             insert adjudication;
             return adjudicationHash;
         } catch (DmlException e) {

@@ -176,7 +176,7 @@ public with sharing class ElaroDynamicReportController {
         result.data = data;
         result.recordCount = rows.size();
         result.hasMore = rows.size() >= cfg.maxRows;
-        result.queryExecuted = soql;
+        // Removed: exposing SOQL to client creates information disclosure risk
 
         return result;
     }
