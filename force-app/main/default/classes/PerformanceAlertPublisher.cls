@@ -65,11 +65,11 @@ public with sharing class PerformanceAlertPublisher {
             
         } catch (IllegalArgumentException e) {
             ElaroLogger.error( 'PerformanceAlertPublisher: Validation error: ' + e.getMessage());
-            throw new AuraHandledException('Invalid input: ' + e.getMessage());
+            throw new AuraHandledException('Unable to publish the alert due to invalid input. Please verify the parameters and try again.');
         } catch (DmlException e) {
             String correlationId = 'ALERT-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
             ElaroLogger.error( 'PerformanceAlertPublisher: DML error: ' + e.getMessage() + '. CorrelationId: ' + correlationId);
-            
+
             // Log to Integration_Error__c for error tracking
             try {
                 Integration_Error__c error = new Integration_Error__c(
@@ -85,11 +85,11 @@ public with sharing class PerformanceAlertPublisher {
             } catch (Exception logError) {
                 ElaroLogger.warn( 'Failed to log PerformanceAlertPublisher error: ' + logError.getMessage());
             }
-            
-            throw new AuraHandledException('Failed to publish alert: ' + e.getMessage());
+
+            throw new AuraHandledException('Unable to publish the performance alert. Please try again or contact your administrator.');
         } catch (Exception e) {
             ElaroLogger.error( 'PerformanceAlertPublisher: Unexpected error: ' + e.getMessage() + ', Stack: ' + e.getStackTraceString());
-            throw new AuraHandledException('Failed to publish alert: ' + e.getMessage());
+            throw new AuraHandledException('Unable to publish the performance alert. Please try again or contact your administrator.');
         }
     }
     

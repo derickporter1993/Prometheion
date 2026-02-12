@@ -40,7 +40,7 @@ public inherited sharing class AIDetectionEngine {
             }
         } catch (Exception e) {
             ElaroLogger.error('AIDetectionEngine.discoverAISystems', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to discover AI systems: ' + e.getMessage());
+            throw new AuraHandledException('Unable to discover AI systems. Please verify you have the required permissions and try again.');
         }
 
         return detectedSystems;

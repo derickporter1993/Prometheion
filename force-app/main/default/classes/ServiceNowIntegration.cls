@@ -102,10 +102,12 @@ public with sharing class ServiceNowIntegration {
                 Map<String, Object> result = (Map<String, Object>)response.get('result');
                 return (String)result.get('sys_id');
             } else {
-                throw new AuraHandledException('ServiceNow incident creation failed: ' + res.getBody());
+                ElaroLogger.error('ServiceNowIntegration.createIncident', 'ServiceNow incident creation failed with status ' + res.getStatusCode() + ': ' + res.getBody(), '');
+                throw new AuraHandledException('ServiceNow incident creation failed. Please verify your ServiceNow configuration and try again.');
             }
         } catch (CalloutException e) {
-            throw new AuraHandledException('ServiceNow connection failed: ' + e.getMessage());
+            ElaroLogger.error('ServiceNowIntegration.createIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to connect to ServiceNow. Please verify your connection settings and try again.');
         }
     }
     

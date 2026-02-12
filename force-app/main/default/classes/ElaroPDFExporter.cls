@@ -57,7 +57,8 @@ public with sharing class ElaroPDFExporter {
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating PDF: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateAuditPackagePDF', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the PDF. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -98,7 +99,8 @@ public with sharing class ElaroPDFExporter {
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating executive summary: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateExecutiveSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the executive summary. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -144,7 +146,8 @@ public with sharing class ElaroPDFExporter {
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating evidence report: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateEvidenceReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the evidence report. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -203,7 +206,8 @@ public with sharing class ElaroPDFExporter {
             return csv;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating CSV: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateCSVExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the CSV export. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -266,7 +270,8 @@ public with sharing class ElaroPDFExporter {
             return JSON.serializePretty(exportData);
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating JSON: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateJSONExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the JSON export. Please verify you have the required permissions and try again.');
         }
     }
     

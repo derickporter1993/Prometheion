@@ -57,7 +57,7 @@ public inherited sharing class AILicenseDetector {
             }
         } catch (Exception e) {
             ElaroLogger.error('AILicenseDetector.detectAILicenses', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to detect AI licenses: ' + e.getMessage());
+            throw new AuraHandledException('Unable to detect AI licenses. Please verify you have the required permissions and try again.');
         }
 
         return assignments;

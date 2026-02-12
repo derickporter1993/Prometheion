@@ -54,9 +54,11 @@ public with sharing class ElaroDrillDownController {
         try {
             ctx = (FilterContext)JSON.deserialize(contextJson, FilterContext.class);
         } catch (JSONException e) {
-            throw new AuraHandledException('Invalid drill-down context format: ' + e.getMessage());
+            ElaroLogger.error('ElaroDrillDownController.getRecords', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the drill-down context. Please verify the request format and try again.');
         } catch (Exception e) {
-            throw new AuraHandledException('Invalid drill-down context format');
+            ElaroLogger.error('ElaroDrillDownController.getRecords', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the drill-down context. Please verify the request format and try again.');
         }
 
         // Validate context
@@ -74,7 +76,8 @@ public with sharing class ElaroDrillDownController {
         try {
             records = Database.query(soql);
         } catch (QueryException e) {
-            throw new AuraHandledException('Query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroDrillDownController.getRecords', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the drill-down query. Please verify you have the required permissions and try again.');
         }
 
         // Strip inaccessible fields for FLS security
@@ -112,9 +115,11 @@ public with sharing class ElaroDrillDownController {
         try {
             ctx = (FilterContext)JSON.deserialize(contextJson, FilterContext.class);
         } catch (JSONException e) {
-            throw new AuraHandledException('Invalid export context format: ' + e.getMessage());
+            ElaroLogger.error('ElaroDrillDownController.exportToCSV', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the export context. Please verify the request format and try again.');
         } catch (Exception e) {
-            throw new AuraHandledException('Invalid export context format');
+            ElaroLogger.error('ElaroDrillDownController.exportToCSV', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the export context. Please verify the request format and try again.');
         }
 
         validateFilterContext(ctx);

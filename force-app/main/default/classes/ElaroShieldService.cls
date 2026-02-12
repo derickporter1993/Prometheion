@@ -77,7 +77,8 @@ public with sharing class ElaroShieldService {
                 LIMIT 1000
             ];
         } catch (QueryException e) {
-            throw new AuraHandledException('Error querying EventLogFile: ' + e.getMessage());
+            ElaroLogger.error('ElaroShieldService.getEventLogFiles', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to query event log files. Please verify you have Shield Event Monitoring access and try again.');
         }
     }
     
@@ -110,7 +111,8 @@ public with sharing class ElaroShieldService {
         } catch (QueryException e) {
             throw new AuraHandledException('EventLogFile not found: ' + logFileId);
         } catch (Exception e) {
-            throw new AuraHandledException('Error parsing EventLogFile: ' + e.getMessage());
+            ElaroLogger.error('ElaroShieldService.parseEventLogContent', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse event log content. Please try again or contact your administrator.');
         }
     }
     
@@ -135,7 +137,8 @@ public with sharing class ElaroShieldService {
             );
             return Database.executeBatch(batch, 10);
         } catch (Exception e) {
-            throw new AuraHandledException('Error starting batch process: ' + e.getMessage());
+            ElaroLogger.error('ElaroShieldService.processHistoricalEvents', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to start the batch process. Please try again or contact your administrator.');
         }
     }
     

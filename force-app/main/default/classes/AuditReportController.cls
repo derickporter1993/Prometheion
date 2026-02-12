@@ -115,7 +115,8 @@ public with sharing class AuditReportController {
             cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH SECURITY_ENFORCED];
             return cv.ContentDocumentId;
         } catch (Exception e) {
-            throw new AuraHandledException('Error exporting report: ' + e.getMessage());
+            ElaroLogger.error('AuditReportController.exportReportAsPDF', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to export the report. Please verify you have the required permissions and try again.');
         }
     }
     

@@ -123,9 +123,11 @@ public with sharing class ElaroDynamicReportController {
         try {
             cfg = (ReportConfiguration)JSON.deserialize(reportConfigJson, ReportConfiguration.class);
         } catch (JSONException e) {
-            throw new AuraHandledException('Invalid report configuration format: ' + e.getMessage());
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the report configuration. Please verify the request format and try again.');
         } catch (Exception e) {
-            throw new AuraHandledException('Invalid report configuration format');
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the report configuration. Please verify the request format and try again.');
         }
 
         // Validate configuration security
@@ -138,7 +140,8 @@ public with sharing class ElaroDynamicReportController {
         try {
             rows = Database.query(soql);
         } catch (QueryException e) {
-            throw new AuraHandledException('Query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the report query. Please verify you have the required permissions and try again.');
         }
 
         // Strip inaccessible fields for FLS security

@@ -50,9 +50,11 @@ public with sharing class ElaroMatrixController {
         try {
             cfg = (MatrixConfiguration)JSON.deserialize(configJson, MatrixConfiguration.class);
         } catch (JSONException e) {
-            throw new AuraHandledException('Invalid matrix configuration format: ' + e.getMessage());
+            ElaroLogger.error('ElaroMatrixController.executeMatrixQuery', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the matrix configuration. Please verify the request format and try again.');
         } catch (Exception e) {
-            throw new AuraHandledException('Invalid matrix configuration format');
+            ElaroLogger.error('ElaroMatrixController.executeMatrixQuery', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the matrix configuration. Please verify the request format and try again.');
         }
 
         // Validate configuration
@@ -352,12 +354,14 @@ public with sharing class ElaroMatrixController {
         try {
             results = Database.query(soql);
         } catch (QueryException e) {
-            throw new AuraHandledException('Matrix query syntax error: ' + e.getMessage());
+            ElaroLogger.error('ElaroMatrixController.queryDirect', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the matrix query. Please verify your configuration and try again.');
         } catch (System.SecurityException e) {
-            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
+            ElaroLogger.error('ElaroMatrixController.queryDirect', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the matrix query. You do not have sufficient access to the requested data.');
         } catch (Exception e) {
-            ElaroLogger.error( 'ElaroMatrixController: Unexpected query error: ' + e.getStackTraceString());
-            throw new AuraHandledException('Matrix query failed');
+            ElaroLogger.error('ElaroMatrixController.queryDirect', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the matrix query. Please try again or contact your administrator.');
         }
 
         return transformToMatrix(results, cfg);
@@ -393,12 +397,14 @@ public with sharing class ElaroMatrixController {
         try {
             summaryRecords = Database.query(soql);
         } catch (QueryException e) {
-            throw new AuraHandledException('Summary query syntax error: ' + e.getMessage());
+            ElaroLogger.error('ElaroMatrixController.queryFromSummaryObject', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the summary query. Please verify your configuration and try again.');
         } catch (System.SecurityException e) {
-            throw new AuraHandledException('Access denied to query data: ' + e.getMessage());
+            ElaroLogger.error('ElaroMatrixController.queryFromSummaryObject', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the summary query. You do not have sufficient access to the requested data.');
         } catch (Exception e) {
-            ElaroLogger.error( 'ElaroMatrixController: Unexpected summary query error: ' + e.getStackTraceString());
-            throw new AuraHandledException('Summary query failed');
+            ElaroLogger.error('ElaroMatrixController.queryFromSummaryObject', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the summary query. Please try again or contact your administrator.');
         }
 
         return transformSummaryToMatrix(summaryRecords, cfg);

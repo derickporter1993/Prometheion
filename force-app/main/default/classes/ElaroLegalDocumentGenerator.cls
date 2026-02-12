@@ -69,7 +69,8 @@ public with sharing class ElaroLegalDocumentGenerator {
 
             return cv.ContentDocumentId;
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating evidence pack: ' + e.getMessage());
+            ElaroLogger.error('ElaroLegalDocumentGenerator.generateLegalAttestation', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the evidence pack. Please verify you have the required permissions and try again.');
         }
     }
 

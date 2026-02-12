@@ -62,7 +62,7 @@ public inherited sharing class AIAuditTrailScanner {
             }
         } catch (Exception e) {
             ElaroLogger.error('AIAuditTrailScanner.scanAIChanges', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to scan AI audit trail: ' + e.getMessage());
+            throw new AuraHandledException('Unable to scan the AI audit trail. Please verify you have the required permissions and try again.');
         }
 
         return auditEntries;

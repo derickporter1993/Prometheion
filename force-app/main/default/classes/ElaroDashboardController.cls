@@ -46,7 +46,8 @@ public with sharing class ElaroDashboardController {
                 packages
             );
         } catch (Exception e) {
-            throw new AuraHandledException('Error querying audit packages: ' + e.getMessage());
+            ElaroLogger.error('ElaroDashboardController.getAuditPackages', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve audit packages. Please verify you have the required permissions and try again.');
         }
         
         List<AuditPackageInfo> result = new List<AuditPackageInfo>();

@@ -47,7 +47,7 @@ public inherited sharing class AIRiskClassificationEngine {
 
         } catch (Exception e) {
             ElaroLogger.error('AIRiskClassificationEngine.classifySystem', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to classify AI system: ' + e.getMessage());
+            throw new AuraHandledException('Unable to classify the AI system. Please verify you have the required permissions and try again.');
         }
     }
 

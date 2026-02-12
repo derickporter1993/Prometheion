@@ -23,7 +23,7 @@ public with sharing class AIGovernanceController {
             return AIDetectionEngine.discoverAISystems();
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.discoverAISystems', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to discover AI systems: ' + e.getMessage());
+            throw new AuraHandledException('Unable to discover AI systems. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -65,7 +65,7 @@ public with sharing class AIGovernanceController {
 
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.registerAISystem', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to register AI system: ' + e.getMessage());
+            throw new AuraHandledException('Unable to register the AI system. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -87,7 +87,7 @@ public with sharing class AIGovernanceController {
             ];
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.getRegisteredSystems', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to retrieve registered systems: ' + e.getMessage());
+            throw new AuraHandledException('Unable to retrieve registered AI systems. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -119,7 +119,7 @@ public with sharing class AIGovernanceController {
 
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.getGovernanceSummary', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to generate governance summary: ' + e.getMessage());
+            throw new AuraHandledException('Unable to generate the governance summary. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -153,7 +153,7 @@ public with sharing class AIGovernanceController {
 
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.recordOversightDecision', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to record oversight decision: ' + e.getMessage());
+            throw new AuraHandledException('Unable to record the oversight decision. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -170,7 +170,7 @@ public with sharing class AIGovernanceController {
             return AIAuditTrailScanner.scanAIChanges(lookbackDays);
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.getAIAuditTrail', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to retrieve AI audit trail: ' + e.getMessage());
+            throw new AuraHandledException('Unable to retrieve the AI audit trail. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -186,7 +186,7 @@ public with sharing class AIGovernanceController {
             return AILicenseDetector.detectAILicenses();
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.getAILicenses', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to retrieve AI licenses: ' + e.getMessage());
+            throw new AuraHandledException('Unable to retrieve AI license information. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -223,7 +223,7 @@ public with sharing class AIGovernanceController {
 
         } catch (Exception e) {
             ElaroLogger.error('AIGovernanceController.updateRiskLevel', e.getMessage(), e.getStackTraceString());
-            throw new AuraHandledException('Failed to update risk level: ' + e.getMessage());
+            throw new AuraHandledException('Unable to update the risk level. Please verify you have the required permissions and try again.');
         }
     }
 

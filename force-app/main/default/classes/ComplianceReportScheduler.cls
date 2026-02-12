@@ -159,7 +159,8 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
             System.abortJob(jobId);
             ElaroLogger.info( LOG_PREFIX + 'Cancelled scheduled report: ' + jobId);
         } catch (Exception e) {
-            throw new AuraHandledException('Failed to cancel report: ' + e.getMessage());
+            ElaroLogger.error('ComplianceReportScheduler.cancelScheduledReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to cancel the scheduled report. Please try again or contact your administrator.');
         }
     }
 
@@ -216,7 +217,7 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
 
         } catch (Exception e) {
             ElaroLogger.error( LOG_PREFIX + 'Error generating/sending report: ' + e.getMessage());
-            throw new AuraHandledException('Failed to generate report: ' + e.getMessage());
+            throw new AuraHandledException('Unable to generate the compliance report. Please try again or contact your administrator.');
         }
     }
 

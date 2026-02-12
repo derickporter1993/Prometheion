@@ -146,7 +146,7 @@ public with sharing class ElaroComplianceCopilotService {
 
         } catch (Exception e) {
             ElaroLogger.error('Error generating summary: ' + e.getMessage(), e);
-            throw new AuraHandledException('Error generating summary: ' + e.getMessage());
+            throw new AuraHandledException('Unable to generate the audit summary. Please try again or contact your administrator.');
         }
     }
     

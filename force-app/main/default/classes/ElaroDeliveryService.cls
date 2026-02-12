@@ -72,7 +72,8 @@ public with sharing class ElaroDeliveryService {
             }
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error delivering audit package: ' + e.getMessage());
+            ElaroLogger.error('ElaroDeliveryService.deliverAuditPackage', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to deliver the audit package. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -111,7 +112,8 @@ public with sharing class ElaroDeliveryService {
             return System.schedule(jobName, cronExpression, scheduler);
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error scheduling delivery: ' + e.getMessage());
+            ElaroLogger.error('ElaroDeliveryService.scheduleRecurringDelivery', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to schedule the delivery. Please try again or contact your administrator.');
         }
     }
     
@@ -175,7 +177,8 @@ public with sharing class ElaroDeliveryService {
             return cd.DistributionPublicUrl;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating shareable link: ' + e.getMessage());
+            ElaroLogger.error('ElaroDeliveryService.generateShareableLink', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate a shareable link. Please verify you have the required permissions and try again.');
         }
     }
     
