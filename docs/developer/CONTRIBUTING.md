@@ -1,5 +1,15 @@
 # Contributing to Elaro
 
+> **⚠️ DEPRECATION NOTICE**  
+> This contributing guide is being deprecated. Please refer to the updated **[CONTRIBUTING.md](../../CONTRIBUTING.md)** in the repository root for the most current guidelines.
+>
+> **Key Updates in the New Guide:**
+> - Spring '26 security standards (`WITH USER_MODE` instead of deprecated `WITH SECURITY_ENFORCED`)
+> - Modern Assert class usage (replaces deprecated `System.assertEquals`)
+> - Governor limit optimization patterns
+> - Updated testing requirements (85% coverage)
+> - Comprehensive bulkification examples
+
 Thank you for your interest in contributing to Elaro! This document provides guidelines and best practices for contributing to the project.
 
 ---
@@ -189,13 +199,15 @@ public with sharing class ClassName {
    public with sharing class MyClass { }
    ```
 
-2. **Include `WITH SECURITY_ENFORCED` on SOQL queries**
+2. **Include `WITH USER_MODE` on SOQL queries (Spring '26 standard)**
    ```apex
    List<Account> accounts = [
        SELECT Id, Name FROM Account
-       WITH SECURITY_ENFORCED
+       WITH USER_MODE
    ];
    ```
+   
+   **Note:** `WITH SECURITY_ENFORCED` is deprecated. Always use `WITH USER_MODE`.
 
 3. **Use ElaroSecurityUtils for CRUD/FLS checks**
    ```apex
@@ -677,7 +689,7 @@ We will respond within 48 hours.
 3. **Use security utilities**
    - `ElaroSecurityUtils.validateCRUDAccess()`
    - `Security.stripInaccessible()`
-   - `WITH SECURITY_ENFORCED` on all SOQL
+   - `WITH USER_MODE` on all SOQL (Spring '26 standard)
 
 4. **Run security scans**
    ```bash
