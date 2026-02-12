@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Correlation Rule</label>
+    <pluralLabel>Correlation Rules</pluralLabel>
+    <description>Defines event correlation patterns for breach detection. Each rule specifies an event sequence, time window, and severity used by the EventCorrelationEngine to identify potential security breaches.</description>
+    <visibility>Public</visibility>
+</CustomObject>

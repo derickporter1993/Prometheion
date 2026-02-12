@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Unauthorized Config Change</label>
+    <protected>false</protected>
+    <values>
+        <field>Rule_Name__c</field>
+        <value xsi:type="xsd:string">Unauthorized Configuration Change</value>
+    </values>
+    <values>
+        <field>Event_Sequence__c</field>
+        <value xsi:type="xsd:string">["SECURITY_SETTING_CHANGE","MFA_POLICY_CHANGE"]</value>
+    </values>
+    <values>
+        <field>Time_Window_Minutes__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Detects security setting changes combined with MFA policy modifications within 30 minutes that may weaken the org security posture.</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>
