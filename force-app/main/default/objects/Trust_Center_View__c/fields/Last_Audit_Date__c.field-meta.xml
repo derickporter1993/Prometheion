@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Audit_Date__c</fullName>
+    <label>Last Audit Date</label>
+    <required>false</required>
+    <type>Date</type>
+    <description>Most recent audit or assessment date for this framework</description>
+</Field>

@@ -820,4 +820,166 @@
         <shortDescription>No events message</shortDescription>
         <value>No timeline events</value>
     </labels>
+    <!-- Trust Center Labels -->
+    <labels>
+        <fullName>TC_DashboardTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Trust Center Dashboard title</shortDescription>
+        <value>Trust Center</value>
+    </labels>
+    <labels>
+        <fullName>TC_ComplianceStatus</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance status section heading</shortDescription>
+        <value>Compliance Status</value>
+    </labels>
+    <labels>
+        <fullName>TC_CreateLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create shareable link button</shortDescription>
+        <value>Create Shareable Link</value>
+    </labels>
+    <labels>
+        <fullName>TC_ShareableLinks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Shareable links section heading</shortDescription>
+        <value>Shareable Links</value>
+    </labels>
+    <labels>
+        <fullName>TC_NoViews</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No compliance views message</shortDescription>
+        <value>No compliance data available. Run aggregation to generate views.</value>
+    </labels>
+    <labels>
+        <fullName>TC_RunAggregation</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Run aggregation button</shortDescription>
+        <value>Aggregate Compliance Data</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkCreated</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link created success message</shortDescription>
+        <value>Shareable link created successfully</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkRevoked</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link revoked success message</shortDescription>
+        <value>Link has been revoked</value>
+    </labels>
+    <labels>
+        <fullName>TC_AggregationComplete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Aggregation complete message</shortDescription>
+        <value>Compliance data aggregation complete</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessTierPublic</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Public access tier label</shortDescription>
+        <value>Public</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessTierEmailGated</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email gated access tier label</shortDescription>
+        <value>Email Gated</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessTierNDA</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>NDA required access tier label</shortDescription>
+        <value>NDA Required</value>
+    </labels>
+    <labels>
+        <fullName>TC_ExpirationDays</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link expiration days field label</shortDescription>
+        <value>Expiration (Days)</value>
+    </labels>
+    <labels>
+        <fullName>TC_CreatedFor</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Created for field label</shortDescription>
+        <value>Created For</value>
+    </labels>
+    <labels>
+        <fullName>TC_RevokeLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Revoke link button</shortDescription>
+        <value>Revoke</value>
+    </labels>
+    <labels>
+        <fullName>TC_CopyLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Copy link button</shortDescription>
+        <value>Copy Link</value>
+    </labels>
+    <labels>
+        <fullName>TC_InvalidToken</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid token error message</shortDescription>
+        <value>This link is invalid, expired, or has been revoked.</value>
+    </labels>
+    <labels>
+        <fullName>TC_Loading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading message</shortDescription>
+        <value>Loading compliance data...</value>
+    </labels>
+    <labels>
+        <fullName>TC_ErrorGeneric</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Generic error message</shortDescription>
+        <value>An error occurred. Please try again or contact your administrator.</value>
+    </labels>
+    <labels>
+        <fullName>TC_Certified</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Certified status</shortDescription>
+        <value>Certified</value>
+    </labels>
+    <labels>
+        <fullName>TC_InProgress</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>In progress status</shortDescription>
+        <value>In Progress</value>
+    </labels>
+    <labels>
+        <fullName>TC_RenewalRequired</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Renewal required status</shortDescription>
+        <value>Renewal Required</value>
+    </labels>
+    <labels>
+        <fullName>TC_NotStarted</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not started status</shortDescription>
+        <value>Not Started</value>
+    </labels>
 </CustomLabels>

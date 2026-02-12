@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Certification_Status__c</fullName>
+    <label>Certification Status</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Certified</fullName>
+                <default>false</default>
+                <label>Certified</label>
+            </value>
+            <value>
+                <fullName>In_Progress</fullName>
+                <default>false</default>
+                <label>In Progress</label>
+            </value>
+            <value>
+                <fullName>Not_Started</fullName>
+                <default>false</default>
+                <label>Not Started</label>
+            </value>
+            <value>
+                <fullName>Renewal_Required</fullName>
+                <default>false</default>
+                <label>Renewal Required</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</Field>

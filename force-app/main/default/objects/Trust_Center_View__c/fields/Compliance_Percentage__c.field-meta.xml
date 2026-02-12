@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Compliance_Percentage__c</fullName>
+    <label>Compliance Percentage</label>
+    <precision>5</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <type>Number</type>
+    <description>Overall compliance percentage for this framework (0-100)</description>
+</Field>

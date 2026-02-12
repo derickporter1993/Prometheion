@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Public__c</fullName>
+    <label>Is Public</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <description>SECURITY CONTROL: Only records with Is_Public=true are exposed via Sites</description>
+</Field>

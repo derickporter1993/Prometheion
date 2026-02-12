@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Trust Center Link</label>
+    <pluralLabel>Trust Center Links</pluralLabel>
+    <nameField>
+        <displayFormat>TCL-{0000}</displayFormat>
+        <label>Link Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableReports>true</enableReports>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableBulkApi>true</enableBulkApi>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <sharingModel>ReadWrite</sharingModel>
+    <description>Manages shareable Trust Center links with expiration, access tiers, and usage tracking. SECURITY CRITICAL: Each link access validates token, expiration, and access tier before displaying data.</description>
+</CustomObject>

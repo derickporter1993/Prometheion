@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Accessed_Date__c</fullName>
+    <label>Last Accessed Date</label>
+    <required>false</required>
+    <type>DateTime</type>
+    <description>Timestamp of most recent link access</description>
+</Field>

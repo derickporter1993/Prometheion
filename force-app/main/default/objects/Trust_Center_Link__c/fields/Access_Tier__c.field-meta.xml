@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Access_Tier__c</fullName>
+    <label>Access Tier</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Public</fullName>
+                <default>true</default>
+                <label>Public</label>
+            </value>
+            <value>
+                <fullName>Email_Gated</fullName>
+                <default>false</default>
+                <label>Email Gated</label>
+            </value>
+            <value>
+                <fullName>NDA_Required</fullName>
+                <default>false</default>
+                <label>NDA Required</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <description>Access tier determines what data is visible and whether user identification is required</description>
+</Field>

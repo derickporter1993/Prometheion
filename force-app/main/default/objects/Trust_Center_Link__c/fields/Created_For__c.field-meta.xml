@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Created_For__c</fullName>
+    <label>Created For</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <description>Optional: Company or individual this link was created for (audit trail)</description>
+</Field>
