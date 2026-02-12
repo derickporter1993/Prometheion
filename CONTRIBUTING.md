@@ -29,17 +29,20 @@ We are committed to providing a welcoming and inclusive environment. Please be r
 ### Initial Setup
 
 1. **Fork and clone the repository**:
+
    ```bash
    git clone https://github.com/derickporter1993/elaro.git
    cd elaro
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Create a scratch org** (recommended for development):
+
    ```bash
    ./scripts/orgInit.sh
    ```
@@ -62,6 +65,7 @@ Use descriptive branch names that follow this pattern:
 - `test/[test-scope]` - Test additions/improvements
 
 Examples:
+
 - `feature/ai-governance-module`
 - `fix/governor-limit-soql-loop`
 - `docs/update-readme-installation`
@@ -79,6 +83,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -88,6 +93,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```
 feat(health-check): add security baseline scanner
 
@@ -105,29 +111,30 @@ test(ai-governance): add edge case tests for AI system registry
 #### 1. Security First (CRITICAL)
 
 **SOQL Security:**
+
 ```apex
 // ✅ CORRECT - Use WITH USER_MODE (Spring '26 standard)
 List<Account> accounts = [
-    SELECT Id, Name 
-    FROM Account 
-    WHERE Industry = 'Healthcare' 
+    SELECT Id, Name
+    FROM Account
+    WHERE Industry = 'Healthcare'
     WITH USER_MODE
 ];
 
 // ❌ WRONG - Never use WITH SECURITY_ENFORCED (deprecated)
 List<Account> accounts = [
-    SELECT Id, Name 
-    FROM Account 
+    SELECT Id, Name
+    FROM Account
     WITH SECURITY_ENFORCED
 ];
 
 // ✅ CORRECT - Dynamic SOQL with Database.queryWithBinds()
-Map<String, Object> binds = new Map<String, Object>{ 
-    'status' => 'Active' 
+Map<String, Object> binds = new Map<String, Object>{
+    'status' => 'Active'
 };
 List<SObject> results = Database.queryWithBinds(
     'SELECT Id FROM Account WHERE Status__c = :status WITH USER_MODE',
-    binds, 
+    binds,
     AccessLevel.USER_MODE
 );
 
@@ -136,6 +143,7 @@ String query = 'SELECT Id FROM Account WHERE Name = \'' + userInput + '\'';
 ```
 
 **DML Security:**
+
 ```apex
 // ✅ CORRECT - Always use 'as user'
 insert as user newRecords;
@@ -170,6 +178,7 @@ public without sharing class MyEventPublisher { }
 #### 3. Bulkification (Governor Limit Best Practices)
 
 **✅ CORRECT - Bulkified Pattern:**
+
 ```apex
 public class BulkifiedHandler {
     public void processRecords(List<Account> accounts) {
@@ -178,13 +187,13 @@ public class BulkifiedHandler {
         for (Account acc : accounts) {
             accountIds.add(acc.Id);
         }
-        
+
         // Step 2: Single SOQL query outside loop
         Map<Id, List<Contact>> contactsByAccount = new Map<Id, List<Contact>>();
         for (Contact c : [
-            SELECT Id, AccountId, Email 
-            FROM Contact 
-            WHERE AccountId IN :accountIds 
+            SELECT Id, AccountId, Email
+            FROM Contact
+            WHERE AccountId IN :accountIds
             WITH USER_MODE
         ]) {
             if (!contactsByAccount.containsKey(c.AccountId)) {
@@ -192,7 +201,7 @@ public class BulkifiedHandler {
             }
             contactsByAccount.get(c.AccountId).add(c);
         }
-        
+
         // Step 3: Process and collect DML operations
         List<Contact> contactsToUpdate = new List<Contact>();
         for (Account acc : accounts) {
@@ -204,7 +213,7 @@ public class BulkifiedHandler {
                 }
             }
         }
-        
+
         // Step 4: Single DML operation
         if (!contactsToUpdate.isEmpty()) {
             update as user contactsToUpdate;
@@ -214,17 +223,18 @@ public class BulkifiedHandler {
 ```
 
 **❌ WRONG - Non-Bulkified Pattern:**
+
 ```apex
 public class NonBulkifiedHandler {
     public void processRecords(List<Account> accounts) {
         for (Account acc : accounts) {
             // ❌ SOQL in loop - will hit governor limits
             List<Contact> contacts = [
-                SELECT Id FROM Contact 
-                WHERE AccountId = :acc.Id 
+                SELECT Id FROM Contact
+                WHERE AccountId = :acc.Id
                 WITH USER_MODE
             ];
-            
+
             for (Contact c : contacts) {
                 c.Description = 'Updated';
                 // ❌ DML in loop - will hit governor limits
@@ -244,9 +254,9 @@ String value = a ?? b ?? c ?? 'default';
 
 // ✅ Use safe navigation (?.)
 String ownerName = [
-    SELECT Owner.Name 
-    FROM Case 
-    WHERE Id = :caseId 
+    SELECT Owner.Name
+    FROM Case
+    WHERE Id = :caseId
     LIMIT 1
 ]?.Owner?.Name ?? 'Unassigned';
 ```
@@ -295,7 +305,7 @@ public static ComplianceResult runScan() {
     } catch (Exception e) {
         // Use ElaroLogger for structured logging
         ElaroLogger.error('ComplianceController.runScan', e.getMessage(), e.getStackTraceString());
-        
+
         // Throw user-friendly message
         throw new AuraHandledException(
             'Unable to complete the compliance scan. Please verify permissions and try again.'
@@ -310,11 +320,11 @@ public static ComplianceResult runScan() {
 // ✅ PREFERRED - Queueable (NOT @future)
 public class ScanProcessor implements Queueable {
     private List<Account> accounts;
-    
+
     public ScanProcessor(List<Account> accounts) {
         this.accounts = accounts;
     }
-    
+
     public void execute(QueueableContext ctx) {
         // Process accounts
         for (Account acc : accounts) {
@@ -334,18 +344,18 @@ System.enqueueJob(new ScanProcessor(accountList));
 ```html
 <!-- ✅ CORRECT - Use lwc:if / lwc:elseif / lwc:else -->
 <template lwc:if="{isLoading}">
-    <lightning-spinner alternative-text="Loading"></lightning-spinner>
+  <lightning-spinner alternative-text="Loading"></lightning-spinner>
 </template>
 <template lwc:elseif="{hasError}">
-    <c-error-panel message="{errorMessage}"></c-error-panel>
+  <c-error-panel message="{errorMessage}"></c-error-panel>
 </template>
 <template lwc:else>
-    <!-- Main content -->
+  <!-- Main content -->
 </template>
 
 <!-- ❌ WRONG - Never use if:true / if:false -->
 <template if:true="{isLoading}">
-    <lightning-spinner></lightning-spinner>
+  <lightning-spinner></lightning-spinner>
 </template>
 ```
 
@@ -414,7 +424,7 @@ private class HealthCheckScannerTest {
             'Score should be 0-100, got: ' + result.overallScore
         );
     }
-    
+
     @IsTest
     static void shouldHandleGovernorLimitEdgeCases() {
         // Create bulk test data
@@ -423,12 +433,12 @@ private class HealthCheckScannerTest {
             accounts.add(new Account(Name = 'Test ' + i));
         }
         insert as user accounts;
-        
+
         Test.startTest();
         // Test with 200 records
         HealthCheckResult result = HealthCheckController.runBulkScan(accounts);
         Test.stopTest();
-        
+
         Assert.isNotNull(result, 'Bulk scan should complete');
     }
 }
@@ -453,27 +463,25 @@ System.assert(condition);  // Deprecated
 ### LWC Testing (Jest)
 
 ```javascript
-import { createElement } from 'lwc';
-import MyComponent from 'c/myComponent';
+import { createElement } from "lwc";
+import MyComponent from "c/myComponent";
 
 // Mock Salesforce modules with { virtual: true }
-jest.mock(
-    '@salesforce/apex/HealthCheckController.runFullScan',
-    () => ({ default: jest.fn() }),
-    { virtual: true }
-);
+jest.mock("@salesforce/apex/HealthCheckController.runFullScan", () => ({ default: jest.fn() }), {
+  virtual: true,
+});
 
-describe('c-my-component', () => {
-    // Note: DOM cleanup is handled globally in lwc/__tests__/setupTests.js
-    // Use safeCleanupDom() for wire-adapter disconnect edge cases if needed
-    
-    it('renders loading state', () => {
-        const element = createElement('c-my-component', { is: MyComponent });
-        document.body.appendChild(element);
-        
-        const spinner = element.shadowRoot.querySelector('lightning-spinner');
-        expect(spinner).not.toBeNull();
-    });
+describe("c-my-component", () => {
+  // Note: DOM cleanup is handled globally in lwc/__tests__/setupTests.js
+  // Use safeCleanupDom() for wire-adapter disconnect edge cases if needed
+
+  it("renders loading state", () => {
+    const element = createElement("c-my-component", { is: MyComponent });
+    document.body.appendChild(element);
+
+    const spinner = element.shadowRoot.querySelector("lightning-spinner");
+    expect(spinner).not.toBeNull();
+  });
 });
 ```
 
@@ -498,16 +506,19 @@ sf apex run test --target-org <org> --tests HealthCheckScannerTest
 ### Before Submitting
 
 1. **Run all quality checks**:
+
    ```bash
    npm run precommit  # Formatting, linting, unit tests
    ```
 
 2. **Run Apex tests** (if you modified Apex code):
+
    ```bash
    sf apex run test --target-org <org> --code-coverage
    ```
 
 3. **Run Code Analyzer**:
+
    ```bash
    sf scanner run --target force-app/ --severity-threshold 2
    ```
@@ -523,9 +534,11 @@ Use this template when creating a pull request:
 
 ```markdown
 ## Description
+
 Brief description of changes and why they're needed.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
@@ -533,12 +546,14 @@ Brief description of changes and why they're needed.
 - [ ] Code refactoring
 
 ## Testing
+
 - [ ] All existing tests pass
 - [ ] New tests added for new functionality
 - [ ] Tested in scratch org
 - [ ] Code coverage >85% for new/modified classes
 
 ## Security Checklist
+
 - [ ] All SOQL queries use WITH USER_MODE
 - [ ] All DML operations use 'as user'
 - [ ] No hardcoded credentials or sensitive data
@@ -546,9 +561,11 @@ Brief description of changes and why they're needed.
 - [ ] Governor limits considered (bulkified code)
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes.
 
 ## Related Issues
+
 Fixes #[issue number]
 ```
 
@@ -571,6 +588,7 @@ Clear description of what went wrong.
 
 **To Reproduce**
 Steps to reproduce:
+
 1. Go to '...'
 2. Click on '...'
 3. See error
@@ -582,6 +600,7 @@ What should have happened.
 If applicable, add screenshots.
 
 **Environment**
+
 - Salesforce Edition: [e.g., Enterprise, Unlimited]
 - API Version: [e.g., v66.0]
 - Browser: [e.g., Chrome 120]
@@ -623,7 +642,7 @@ We use Husky to enforce code quality:
 ```bash
 # Runs automatically on git commit
 - npm run fmt:check  # Prettier formatting
-- npm run lint       # ESLint validation  
+- npm run lint       # ESLint validation
 - npm run test:unit  # LWC Jest tests
 ```
 

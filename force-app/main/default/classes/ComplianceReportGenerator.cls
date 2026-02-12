@@ -90,15 +90,17 @@ public with sharing class ComplianceReportGenerator {
         query += 'FROM Compliance_Gap__c ';
         query += 'WHERE Status__c != \'Resolved\' ';
 
+        Map<String, Object> binds = new Map<String, Object>();
         if (framework != 'ALL' && String.isNotBlank(framework)) {
-            query += 'AND Framework__c = :framework ';
+            query += 'AND Framework__c = :frameworkVal ';
+            binds.put('frameworkVal', framework);
         }
 
         query += 'WITH USER_MODE ';
         query += 'ORDER BY Severity__c DESC, CreatedDate DESC ';
         query += 'LIMIT 200';
 
-        return Database.query(query);
+        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
 
     /**

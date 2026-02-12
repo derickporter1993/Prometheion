@@ -58,19 +58,15 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Asynchronously creates a Jira issue (for trigger/batch contexts)
+     * Asynchronously creates a Jira issue by enqueuing a {@link JiraIntegrationQueueable}.
+     * Replaces the legacy {@code @future(callout=true)} pattern with a Queueable that
+     * supports retry logic via a Transaction Finalizer.
+     *
      * @param gapId The Salesforce ID of the Compliance_Gap__c record
      * @param priority Optional priority override
      */
-    @future(callout=true)
     public static void createIssueAsync(String gapId, String priority) {
-        try {
-            createIssue(gapId, priority);
-        } catch (Exception e) {
-            ElaroLogger.error('Async Jira issue creation failed: ' + e.getMessage(), e);
-            // Log to custom object for monitoring
-            logError('createIssueAsync', gapId, e.getMessage());
-        }
+        System.enqueueJob(new JiraIntegrationQueueable(gapId, priority));
     }
 
     /**

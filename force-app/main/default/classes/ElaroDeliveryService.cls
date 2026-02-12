@@ -180,49 +180,25 @@ public with sharing class ElaroDeliveryService {
     }
     
     /**
-     * @description Send audit package notification to Slack
+     * Enqueues an asynchronous Slack notification for the given audit package.
+     * Uses {@link ElaroDeliveryQueueable} instead of the legacy {@code @future} pattern,
+     * enabling retry logic via Transaction Finalizers.
+     *
      * @param packageId The audit package ID
-     * @param channel The Slack channel
+     * @param channel The Slack channel to post the notification to
+     * @throws AuraHandledException if the job cannot be enqueued
      */
     @AuraEnabled
-    @future(callout=true)
     public static void sendToSlack(String packageId, String channel) {
         if (String.isBlank(packageId) || String.isBlank(channel)) {
             return;
         }
-        
+
         try {
-            // Query package details
-            Elaro_Audit_Package__c pkg = [
-                SELECT Id, Package_Name__c, Framework__c, Status__c
-                FROM Elaro_Audit_Package__c
-                WHERE Id = :packageId
-                LIMIT 1
-            ];
-            
-            // Build Slack Block Kit message
-            Map&lt;String, Object&gt; slackMessage = buildSlackMessage(pkg, channel);
-            
-            // Send to Slack webhook
-            // In production, use Named Credential
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint('callout:Elaro_Slack_Webhook');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setBody(JSON.serialize(slackMessage));
-            req.setTimeout(30000);
-            
-            if (!Test.isRunningTest()) {
-                Http http = new Http();
-                HttpResponse res = http.send(req);
-                
-                if (res.getStatusCode() != 200) {
-                    ElaroLogger.error( 'Slack notification failed: ' + res.getBody());
-                }
-            }
-            
+            System.enqueueJob(new ElaroDeliveryQueueable(packageId, channel));
         } catch (Exception e) {
-            ElaroLogger.error( 'Error sending Slack notification: ' + e.getMessage());
+            ElaroLogger.error('ElaroDeliveryService.sendToSlack: Error enqueuing Slack delivery: ' + e.getMessage());
+            throw new AuraHandledException('Unable to send Slack notification. Please try again.');
         }
     }
     
@@ -318,60 +294,4 @@ public with sharing class ElaroDeliveryService {
                '&lt;/body&gt;&lt;/html&gt;';
     }
     
-    /**
-     * @description Build Slack Block Kit message
-     * @param pkg The audit package
-     * @param channel The Slack channel
-     * @return Slack message object
-     */
-    private static Map&lt;String, Object&gt; buildSlackMessage(Elaro_Audit_Package__c pkg, String channel) {
-        List&lt;Object&gt; blocks = new List&lt;Object&gt;{
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'header',
-                'text' =&gt; new Map&lt;String, Object&gt;{
-                    'type' =&gt; 'plain_text',
-                    'text' =&gt; '📋 Audit Package Generated',
-                    'emoji' =&gt; true
-                }
-            },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'section',
-                'fields' =&gt; new List&lt;Object&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Package:*\n' + pkg.Package_Name__c
-                    },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Framework:*\n' + pkg.Framework__c
-                    },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Status:*\n' + pkg.Status__c
-                    },
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; '*Generated:*\n' + Datetime.now().format()
-                    }
-                }
-            },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'divider'
-            },
-            new Map&lt;String, Object&gt;{
-                'type' =&gt; 'context',
-                'elements' =&gt; new List&lt;Object&gt;{
-                    new Map&lt;String, Object&gt;{
-                        'type' =&gt; 'mrkdwn',
-                        'text' =&gt; 'Sent from *Elaro Compliance Platform*'
-                    }
-                }
-            }
-        };
-        
-        return new Map&lt;String, Object&gt;{
-            'channel' =&gt; channel,
-            'blocks' =&gt; blocks
-        };
-    }
 }

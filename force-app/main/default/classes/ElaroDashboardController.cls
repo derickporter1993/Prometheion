@@ -25,8 +25,10 @@ public with sharing class ElaroDashboardController {
                       'Created_By__r.Name, LastModifiedDate ' +
                       'FROM Elaro_Audit_Package__c ';
 
+        Map<String, Object> binds = new Map<String, Object>();
         if (framework != null) {
-            soql += 'WHERE Framework__c = :framework ';
+            soql += 'WHERE Framework__c = :frameworkVal ';
+            binds.put('frameworkVal', framework);
         }
 
         soql += 'WITH USER_MODE ORDER BY CreatedDate DESC LIMIT 10';
@@ -34,11 +36,7 @@ public with sharing class ElaroDashboardController {
         List<Elaro_Audit_Package__c> packages = new List<Elaro_Audit_Package__c>();
 
         try {
-            if (framework != null) {
-                packages = Database.query(soql);
-            } else {
-                packages = Database.query(soql.replace('WHERE Framework__c = :framework ', ''));
-            }
+            packages = Database.queryWithBinds(soql, binds, AccessLevel.USER_MODE);
 
             // Strip inaccessible fields for FLS security
             packages = (List<Elaro_Audit_Package__c>) ElaroSecurityUtils.stripInaccessibleFields(

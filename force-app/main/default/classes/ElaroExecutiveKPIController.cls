@@ -120,7 +120,7 @@ public with sharing class ElaroExecutiveKPIController {
         String safeQuery = validateAndSecureQuery(config.SOQL_Query__c);
 
         // Execute the query
-        List<AggregateResult> queryResults = Database.query(safeQuery);
+        List<AggregateResult> queryResults = Database.query(safeQuery, AccessLevel.USER_MODE);
 
         if (queryResults.isEmpty()) {
             return null;

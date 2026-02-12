@@ -4,8 +4,8 @@
       "path": "force-app",
       "default": true,
       "package": "elaro",
-      "versionName": "v3.0 Enterprise",
-      "versionNumber": "3.0.0.NEXT",
+      "versionName": "Spring 26",
+      "versionNumber": "3.1.0.NEXT",
       "definitionFile": "config/elaro-scratch-def.json"
     },
     {

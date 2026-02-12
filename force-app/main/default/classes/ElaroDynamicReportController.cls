@@ -136,7 +136,7 @@ public with sharing class ElaroDynamicReportController {
 
         List<SObject> rows;
         try {
-            rows = Database.query(soql);
+            rows = Database.query(soql, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Query failed: ' + e.getMessage());
         }

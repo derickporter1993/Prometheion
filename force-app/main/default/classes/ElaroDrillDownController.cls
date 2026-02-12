@@ -72,7 +72,7 @@ public with sharing class ElaroDrillDownController {
 
         List<SObject> records;
         try {
-            records = Database.query(soql);
+            records = Database.query(soql, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Query failed: ' + e.getMessage());
         }
@@ -121,7 +121,7 @@ public with sharing class ElaroDrillDownController {
 
         // Build query with export limit
         String soql = buildSecureQuery(ctx, MAX_TOTAL_RECORDS, 0);
-        List<SObject> records = Database.query(soql);
+        List<SObject> records = Database.query(soql, AccessLevel.USER_MODE);
 
         // Build CSV
         List<String> csvLines = new List<String>();

@@ -305,14 +305,14 @@ public with sharing class ElaroMatrixController {
             String rowCountQuery = 'SELECT COUNT_DISTINCT(' + rowField + ') distinctCount ' +
                                    'FROM ' + cfg.objectName + baseFilter +
                                    ' WITH USER_MODE';
-            List<AggregateResult> rowResults = Database.query(rowCountQuery);
+            List<AggregateResult> rowResults = Database.query(rowCountQuery, AccessLevel.USER_MODE);
             Integer rowCount = rowResults.isEmpty() ? 0 : (Integer)rowResults[0].get('distinctCount');
 
             // Count distinct column values
             String colCountQuery = 'SELECT COUNT_DISTINCT(' + colField + ') distinctCount ' +
                                    'FROM ' + cfg.objectName + baseFilter +
                                    ' WITH USER_MODE';
-            List<AggregateResult> colResults = Database.query(colCountQuery);
+            List<AggregateResult> colResults = Database.query(colCountQuery, AccessLevel.USER_MODE);
             Integer colCount = colResults.isEmpty() ? 0 : (Integer)colResults[0].get('distinctCount');
 
             return rowCount * colCount;
@@ -350,7 +350,7 @@ public with sharing class ElaroMatrixController {
 
         List<AggregateResult> results;
         try {
-            results = Database.query(soql);
+            results = Database.query(soql, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Matrix query syntax error: ' + e.getMessage());
         } catch (System.SecurityException e) {
@@ -389,9 +389,10 @@ public with sharing class ElaroMatrixController {
 
         String summaryType = cfg.rowField + '_' + cfg.columnField;
 
+        Map<String, Object> binds = new Map<String, Object>{ 'summaryType' => summaryType };
         List<SObject> summaryRecords;
         try {
-            summaryRecords = Database.query(soql);
+            summaryRecords = Database.queryWithBinds(soql, binds, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Summary query syntax error: ' + e.getMessage());
         } catch (System.SecurityException e) {

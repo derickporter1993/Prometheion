@@ -155,11 +155,12 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
         try {
             String query = 'SELECT Id, Field, OldValue, NewValue, CreatedById, CreatedBy.Name, CreatedDate ' +
                           'FROM ' + historyObjectName + ' ' +
-                          'WHERE ParentId = :recordId ' +
+                          'WHERE ParentId = :recId ' +
                           'WITH USER_MODE ' +
                           'ORDER BY CreatedDate DESC LIMIT 100';
 
-            List<SObject> historyRecords = Database.query(query);
+            Map<String, Object> binds = new Map<String, Object>{ 'recId' => recordId };
+            List<SObject> historyRecords = Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
 
             for (SObject hist : historyRecords) {
                 PHIAccessLog log = new PHIAccessLog();

@@ -1,11 +1,13 @@
 /**
- * ElaroLogger
+ * Centralized structured logging service for the Elaro platform.
+ * Publishes log entries as LogEvent__e Platform Events in Publish Immediately
+ * mode so that logs survive transaction rollbacks. Falls back to System.debug
+ * when Platform Event publishing is not available.
  *
- * Centralized structured logging service for Elaro platform
- * Replaces System.debug with configurable, auditable logging
- *
- * @author Elaro
- * @version 1.0
+ * @author Elaro Team
+ * @since v1.0.0 (Spring '26)
+ * @group Core
+ * @see LogEvent__e
  */
 public with sharing class ElaroLogger {
 
@@ -41,7 +43,12 @@ public with sharing class ElaroLogger {
     }
 
     /**
-     * Main logging method
+     * Main logging method. Publishes a LogEvent__e Platform Event for
+     * durable, structured logging that survives transaction rollbacks.
+     *
+     * @param level The log severity level
+     * @param message The log message
+     * @param context Additional context data (serialized as JSON)
      */
     public static void log(Level level, String message, Map<String, Object> context) {
         if (!shouldLog(level)) {
@@ -50,14 +57,24 @@ public with sharing class ElaroLogger {
 
         LogEntry entry = new LogEntry(level, message, context);
 
-        // In production, you might want to:
-        // 1. Insert to custom object: insert new Elaro_Log__c(...)
-        // 2. Publish platform event: EventBus.publish(new Elaro_Log_Event__e(...))
-        // 3. Send to external SIEM via callout
+        // Publish LogEvent__e Platform Event (Publish Immediately mode)
+        try {
+            LogEvent__e logEvent = new LogEvent__e(
+                Level__c = entry.level.name(),
+                Message__c = entry.message?.left(131072),
+                Context__c = entry.context != null && !entry.context.isEmpty()
+                    ? JSON.serialize(entry.context)?.left(131072) : null,
+                User_Id__c = entry.userId,
+                Timestamp__c = entry.timestamp
+            );
+            EventBus.publish(logEvent);
+        } catch (Exception e) {
+            // Fall back to System.debug if Platform Event publish fails
+            System.debug(LoggingLevel.ERROR, 'ElaroLogger: Failed to publish LogEvent__e: ' + e.getMessage());
+        }
 
-        // For now, use System.debug with structured format
+        // Also emit System.debug for developer console visibility
         String logMessage = formatLogEntry(entry);
-
         if (level == Level.ERROR) {
             System.debug(LoggingLevel.ERROR, logMessage);
         } else if (level == Level.WARN) {

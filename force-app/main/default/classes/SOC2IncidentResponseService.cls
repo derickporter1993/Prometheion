@@ -434,13 +434,15 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
                        'FROM Security_Incident__c ' +
                        'WHERE Status__c NOT IN (\'RESOLVED\', \'CLOSED\') ';
 
+        Map<String, Object> binds = new Map<String, Object>();
         if (String.isNotBlank(severity)) {
-            query += 'AND Severity__c = :severity ';
+            query += 'AND Severity__c = :severityVal ';
+            binds.put('severityVal', severity);
         }
 
         query += 'WITH USER_MODE ORDER BY Severity__c, Detected_Date__c DESC LIMIT 200';
 
-        return Database.query(query);
+        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
 
     /**

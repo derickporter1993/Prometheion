@@ -67,7 +67,7 @@ public with sharing class NaturalLanguageQueryService {
             String secureSOQL = addSecurityEnforced(generatedSOQL);
             
             // Execute query with security enforcement
-            List&lt;SObject&gt; rawResults = Database.query(secureSOQL);
+            List&lt;SObject&gt; rawResults = Database.query(secureSOQL, AccessLevel.USER_MODE);
             
             // Strip inaccessible fields before returning to UI
             result.results = ElaroSecurityUtils.stripInaccessibleFields(

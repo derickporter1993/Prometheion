@@ -241,7 +241,7 @@ public class ElaroTestDataFactory {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert pkg;
+        insert as user pkg;
         return pkg;
     }
     
@@ -273,7 +273,7 @@ public class ElaroTestDataFactory {
             Description__c = 'Test evidence item',
             Status__c = 'COLLECTED'
         );
-        insert item;
+        insert as user item;
         return item;
     }
     
@@ -314,7 +314,7 @@ public class ElaroTestDataFactory {
             ));
         }
         
-        insert items;
+        insert as user items;
         return items;
     }
     
@@ -332,7 +332,7 @@ public class ElaroTestDataFactory {
             Entity_Type__c = 'PermissionSet',
             Is_Active__c = true
         );
-        insert mapping;
+        insert as user mapping;
         return mapping;
     }
     
@@ -367,7 +367,7 @@ public class ElaroTestDataFactory {
             ));
         }
         
-        insert mappings;
+        insert as user mappings;
         return mappings;
     }
     
@@ -461,7 +461,7 @@ public class ElaroTestDataFactory {
             LanguageLocaleKey = 'en_US',
             ProfileId = p.Id
         );
-        insert u;
+        insert as user u;
         return u;
     }
     
@@ -476,7 +476,7 @@ public class ElaroTestDataFactory {
         ];
         
         if (!psList.isEmpty()) {
-            insert new PermissionSetAssignment(
+            insert as user new PermissionSetAssignment(
                 AssigneeId = userId,
                 PermissionSetId = psList[0].Id
             );
@@ -544,7 +544,7 @@ public class ElaroTestDataFactory {
             DML_Warn__c = dmlWarn,
             DML_Crit__c = dmlCrit
         );
-        insert settings;
+        insert as user settings;
         return settings;
     }
     
@@ -565,7 +565,7 @@ public class ElaroTestDataFactory {
             Context_Record__c = UserInfo.getUserId(),
             Stack__c = metric + ' threshold exceeded: ' + value + ' >= ' + threshold
         );
-        insert alert;
+        insert as user alert;
         return alert;
     }
 }

@@ -78,7 +78,7 @@ public with sharing class ElaroTrendController {
 
         List<AggregateResult> results;
         try {
-            results = Database.query(soql);
+            results = Database.query(soql, AccessLevel.USER_MODE);
         } catch (Exception e) {
             throw new AuraHandledException('Trend query failed: ' + e.getMessage());
         }
