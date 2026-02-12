@@ -1,0 +1,64 @@
+<template>
+    <div class="slds-var-m-bottom_medium">
+        <h3 class="slds-text-heading_small slds-var-m-bottom_small">{label.CC_PrioritizedActions}</h3>
+
+        <template lwc:if={hasActions}>
+            <template for:each={indexedActions} for:item="action">
+                <div key={action.key} class="slds-box slds-box_x-small slds-var-m-bottom_x-small">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col slds-grow">
+                            <button
+                                class="slds-button slds-button_reset slds-text-link_reset"
+                                data-key={action.key}
+                                onclick={handleToggleExpand}
+                            >
+                                <span class={action.severityClass}>{action.severityBadge}</span>
+                                <span class="slds-var-m-left_x-small slds-text-body_regular">
+                                    {action.title}
+                                </span>
+                            </button>
+                            <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_xx-small">
+                                {action.framework} — {action.category}
+                            </p>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <template lwc:if={action.hasSetupPath}>
+                                <lightning-button
+                                    label={label.CC_GoToSetup}
+                                    variant="base"
+                                    icon-name="utility:settings"
+                                    data-path={action.setupPath}
+                                    onclick={handleGoToSetup}
+                                ></lightning-button>
+                            </template>
+                        </div>
+                    </div>
+                    <template lwc:if={action.isExpanded}>
+                        <div class="slds-var-m-top_small slds-var-p-top_small slds-border_top">
+                            <p class="slds-text-body_regular slds-var-m-bottom_x-small">
+                                {action.description}
+                            </p>
+                            <template lwc:if={action.hasRemediationSteps}>
+                                <h4 class="slds-text-title_bold slds-var-m-top_x-small">
+                                    {label.CC_RemediationSteps}
+                                </h4>
+                                <p class="slds-text-body_small">{action.remediationSteps}</p>
+                            </template>
+                            <template lwc:if={action.controlReference}>
+                                <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_x-small">
+                                    Control: {action.controlReference}
+                                </p>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small slds-text-align_center">
+                <p class="slds-text-body_regular">{label.CC_NoActions}</p>
+            </div>
+        </template>
+    </div>
+</template>

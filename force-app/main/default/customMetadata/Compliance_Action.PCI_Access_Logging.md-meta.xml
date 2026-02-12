@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PCI Access Logging</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Log All Access to Cardholder Data</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Implement comprehensive logging mechanisms to track all user access to cardholder data environments and resources. PCI DSS requires audit trails for all system components to enable forensic investigation of security incidents.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">PCI-DSS</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Monitoring</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">SecurityEvents/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">17</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">10.2</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Enable Field Audit Trail on all objects and fields that store cardholder data or sensitive authentication data. Configure Event Monitoring to capture record views, exports, and API access for payment-related objects. Set up real-time alerts for bulk data access or unusual query patterns targeting cardholder data. Retain all access logs for a minimum of one year with at least three months immediately available for analysis.</value>
+    </values>
+</CustomMetadata>

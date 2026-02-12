@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>NIST Least Privilege</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Enforce Least Privilege Principle</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Enforce the principle of least privilege by granting users only the minimum access required to perform their authorized tasks. NIST AC-6 requires that information system access is restricted to authorized users, processes, and devices at the most granular level feasible.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">NIST</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Access Control</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">PermSets/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">3</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">AC-6</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Audit all user profiles and permission sets to identify over-provisioned access including Modify All Data, View All Data, and Author Apex permissions. Migrate from broad profile-based access to targeted permission sets that grant only the specific object, field, and system permissions each role requires. Remove all direct profile assignments to the System Administrator profile for non-admin users. Implement a quarterly entitlement review process where managers certify user access levels remain appropriate for current job duties.</value>
+    </values>
+</CustomMetadata>

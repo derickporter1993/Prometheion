@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>HIPAA Audit Trail PHI Access</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Enable PHI Access Audit Trail</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Configure comprehensive audit logging for all access to Protected Health Information. HIPAA requires covered entities to implement hardware, software, and procedural mechanisms to record and examine activity in systems containing ePHI.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">HIPAA</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Audit</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">SetupAuditTrail/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">4</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">164.312(b)</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Enable Field Audit Trail on all objects and fields containing PHI to track who accessed or modified records. Configure Event Monitoring to capture report exports and data views involving PHI. Set up automated alerts for bulk PHI access patterns that may indicate unauthorized activity. Retain audit logs for a minimum of six years per HIPAA retention requirements.</value>
+    </values>
+</CustomMetadata>

@@ -1,4 +1,9 @@
-# CLAUDE.md
+# ELARO CLAUDE.md: Master Project Context
+
+**Generated:** February 11, 2026 | All 19 audit findings resolved | Spring '26 (API v66.0)
+**Standards aligned with:** Salesforce Apex Best Practices Through Spring '26 (PDF), Elaro Sovereign Architecture, Elaro Team Split Plan, Elaro Codebase Fix Report, Solentra Best Practices Guide
+
+---
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -435,19 +440,19 @@ public inherited sharing class ToolingApiService {
 
 ```html
 <!-- ONLY lwc:if / lwc:elseif / lwc:else. NEVER if:true / if:false. -->
-<template lwc:if={isLoading}>
-    <lightning-spinner alternative-text="Loading"></lightning-spinner>
+<template lwc:if="{isLoading}">
+  <lightning-spinner alternative-text="Loading"></lightning-spinner>
 </template>
-<template lwc:elseif={hasError}>
-    <c-error-panel message={errorMessage}></c-error-panel>
+<template lwc:elseif="{hasError}">
+  <c-error-panel message="{errorMessage}"></c-error-panel>
 </template>
-<template lwc:elseif={isEmpty}>
-    <div class="slds-illustration slds-illustration_small">
-        <p>{label.NoDataAvailable}</p>
-    </div>
+<template lwc:elseif="{isEmpty}">
+  <div class="slds-illustration slds-illustration_small">
+    <p>{label.NoDataAvailable}</p>
+  </div>
 </template>
 <template lwc:else>
-    <!-- Main content -->
+  <!-- Main content -->
 </template>
 ```
 
@@ -461,13 +466,13 @@ for user-triggered actions and expensive operations (like scanning, which takes 
 **Custom Labels for ALL user-facing strings** (required for i18n and AppExchange):
 
 ```javascript
-import NoDataAvailable from '@salesforce/label/c.NoDataAvailable';
-import ScanInProgress from '@salesforce/label/c.ScanInProgress';
-import ScanComplete from '@salesforce/label/c.ScanComplete';
-import ErrorGeneric from '@salesforce/label/c.ErrorGeneric';
+import NoDataAvailable from "@salesforce/label/c.NoDataAvailable";
+import ScanInProgress from "@salesforce/label/c.ScanInProgress";
+import ScanComplete from "@salesforce/label/c.ScanComplete";
+import ErrorGeneric from "@salesforce/label/c.ErrorGeneric";
 
 export default class MyComponent extends LightningElement {
-    label = { NoDataAvailable, ScanInProgress, ScanComplete, ErrorGeneric };
+  label = { NoDataAvailable, ScanInProgress, ScanComplete, ErrorGeneric };
 }
 ```
 
@@ -476,25 +481,25 @@ NEVER hardcode English strings in HTML templates or JS files.
 **LWC Jest Tests** (required for every component):
 
 ```javascript
-import { createElement } from 'lwc';
-import MyComponent from 'c/myComponent';
+import { createElement } from "lwc";
+import MyComponent from "c/myComponent";
 
 // ALWAYS use { virtual: true } for Salesforce module mocks
-jest.mock(
-    '@salesforce/apex/HealthCheckController.runFullScan',
-    () => ({ default: jest.fn() }),
-    { virtual: true }
-);
+jest.mock("@salesforce/apex/HealthCheckController.runFullScan", () => ({ default: jest.fn() }), {
+  virtual: true,
+});
 
-describe('c-my-component', () => {
-    afterEach(() => { while (document.body.firstChild) document.body.removeChild(document.body.firstChild); });
+describe("c-my-component", () => {
+  afterEach(() => {
+    while (document.body.firstChild) document.body.removeChild(document.body.firstChild);
+  });
 
-    it('renders loading state', () => {
-        const element = createElement('c-my-component', { is: MyComponent });
-        document.body.appendChild(element);
-        const spinner = element.shadowRoot.querySelector('lightning-spinner');
-        expect(spinner).not.toBeNull();
-    });
+  it("renders loading state", () => {
+    const element = createElement("c-my-component", { is: MyComponent });
+    document.body.appendChild(element);
+    const spinner = element.shadowRoot.querySelector("lightning-spinner");
+    expect(spinner).not.toBeNull();
+  });
 });
 ```
 
@@ -681,7 +686,6 @@ grep -rn 'WITH SECURITY_ENFORCED' force-app/main/default/classes/ 2>/dev/null
 grep -rn 'System.assertEquals' force-app/main/default/classes/ 2>/dev/null
 ```
 
-
 ---
 
 ## TEAM 2: AGENT BUILD PROMPTS
@@ -802,7 +806,7 @@ npm run test:unit -- --testPathPattern=healthCheck
 
 #### Build Order
 
-1. Compliance_Action__mdt Custom Metadata Type + 30-50 action records
+1. Compliance_Action\_\_mdt Custom Metadata Type + 30-50 action records
 2. ComplianceContextEngine.cls
 3. CommandCenterController.cls
 4. Custom Labels
@@ -819,9 +823,9 @@ npm run test:unit -- --testPathPattern=healthCheck
 
 #### Platform Events
 
-- **ComplianceAlert__e**: Framework, Control_Reference, Severity, Finding_Summary, Alert_Type, Source_Record_Id
-- **ConfigurationDrift__e**: Change_Type, Changed_By, Changed_Object, Old_Value, New_Value, Risk_Level, Detection_Timestamp
-- **BreachIndicator__e**: Pattern_Name, Severity, Event_Sequence (JSON), Time_Window_Minutes, Affected_User_Id
+- **ComplianceAlert\_\_e**: Framework, Control_Reference, Severity, Finding_Summary, Alert_Type, Source_Record_Id
+- **ConfigurationDrift\_\_e**: Change_Type, Changed_By, Changed_Object, Old_Value, New_Value, Risk_Level, Detection_Timestamp
+- **BreachIndicator\_\_e**: Pattern_Name, Severity, Event_Sequence (JSON), Time_Window_Minutes, Affected_User_Id
 
 #### Core Classes
 
@@ -833,7 +837,7 @@ npm run test:unit -- --testPathPattern=healthCheck
 
 #### Custom Metadata
 
-- **Correlation_Rule__mdt**: Rule_Name, Event_Sequence (JSON), Time_Window_Minutes, Severity, Description, Is_Active
+- **Correlation_Rule\_\_mdt**: Rule_Name, Event_Sequence (JSON), Time_Window_Minutes, Severity, Description, Is_Active
 
 ---
 
@@ -845,15 +849,15 @@ npm run test:unit -- --testPathPattern=healthCheck
 
 #### Custom Objects
 
-- **Compliance_Assessment_Session__c**: Session_State (JSON), Wizard_Name, Framework, Current_Stage, Current_Step, Status, Percent_Complete
+- **Compliance_Assessment_Session\_\_c**: Session_State (JSON), Wizard_Name, Framework, Current_Stage, Current_Step, Status, Percent_Complete
 
 #### Custom Metadata
 
-- **Assessment_Wizard_Config__mdt**: Wizard_Name, Framework, Stage_Order, Step_Order, Step_Type (Auto_Scan/Manual_Attestation/Evidence_Upload/Approval/Review), Control_Reference, Help_Text, Is_Required
+- **Assessment_Wizard_Config\_\_mdt**: Wizard_Name, Framework, Stage_Order, Step_Order, Step_Type (Auto_Scan/Manual_Attestation/Evidence_Upload/Approval/Review), Control_Reference, Help_Text, Is_Required
 
 #### LWC Components
 
-- **assessmentWizard** — Parent, persists state to Session__c
+- **assessmentWizard** — Parent, persists state to Session\_\_c
 - **wizardStep** — Polymorphic based on Step_Type
 - **assessmentProgressTracker** — Visual progress bar
 - **crossFrameworkPrefill** — Pre-fill from prior assessments
@@ -867,16 +871,16 @@ npm run test:unit -- --testPathPattern=healthCheck
 
 #### Custom Objects
 
-- **Materiality_Assessment__c**: Incident details, Discovery_Date, Determination_Date, Filing_Deadline (formula: +4 business days), AG_Delay fields, Qualitative impact picklists, Determination_Result, Status
-- **Disclosure_Workflow__c**: Form_Type (8-K/10-K), EDGAR_Filing_Number, multi-step Status
-- **Board_Governance_Report__c**: Annual 10-K governance reporting
-- **Incident_Timeline__c**: Event tracking with SLA indicators
-- **Holiday__c**: Business day calculation support
-- **SEC_Control_Mapping__c**: Junction to existing control objects
+- **Materiality_Assessment\_\_c**: Incident details, Discovery_Date, Determination_Date, Filing_Deadline (formula: +4 business days), AG_Delay fields, Qualitative impact picklists, Determination_Result, Status
+- **Disclosure_Workflow\_\_c**: Form_Type (8-K/10-K), EDGAR_Filing_Number, multi-step Status
+- **Board_Governance_Report\_\_c**: Annual 10-K governance reporting
+- **Incident_Timeline\_\_c**: Event tracking with SLA indicators
+- **Holiday\_\_c**: Business day calculation support
+- **SEC_Control_Mapping\_\_c**: Junction to existing control objects
 
 #### Filing Deadline Formula
 
-Filing_Deadline__c = Determination_Date + 4 business days (excludes weekends, Holiday__c checked via validation rule/flow)
+Filing_Deadline**c = Determination_Date + 4 business days (excludes weekends, Holiday**c checked via validation rule/flow)
 
 #### Approval Process
 
@@ -892,10 +896,10 @@ Multi-step declarative: CISO > Legal > CFO > CEO > Board > Filing
 
 #### Custom Objects
 
-- **AI_System_Registry__c**: System_Name, System_Type (Einstein_Prediction/Einstein_Bot/GenAI_Function/GenAI_Planner/Custom_ML), Detection_Method, Risk_Level (Unacceptable/High/Limited/Minimal per EU AI Act Annex III), Status, Use_Case_Description
-- **AI_Human_Oversight_Record__c**: Original_AI_Output, Human_Decision (Accept/Modify/Reject/Override), Justification, Reviewer
-- **AI_Classification_Rule__mdt**: Feature_Type, Use_Case_Context, Risk_Level, EU_AI_Act_Article, Rationale
-- **AI_RMF_Mapping__c**: RMF_Function (Govern/Map/Measure/Manage), Compliance_Status
+- **AI_System_Registry\_\_c**: System_Name, System_Type (Einstein_Prediction/Einstein_Bot/GenAI_Function/GenAI_Planner/Custom_ML), Detection_Method, Risk_Level (Unacceptable/High/Limited/Minimal per EU AI Act Annex III), Status, Use_Case_Description
+- **AI_Human_Oversight_Record\_\_c**: Original_AI_Output, Human_Decision (Accept/Modify/Reject/Override), Justification, Reviewer
+- **AI_Classification_Rule\_\_mdt**: Feature_Type, Use_Case_Context, Risk_Level, EU_AI_Act_Article, Rationale
+- **AI_RMF_Mapping\_\_c**: RMF_Function (Govern/Map/Measure/Manage), Compliance_Status
 
 #### Core Classes
 
@@ -914,15 +918,16 @@ Multi-step declarative: CISO > Legal > CFO > CEO > Board > Filing
 **Timeline**: Q4, Weeks 39-46
 
 **CRITICAL SECURITY**: This module exposes data publicly via Salesforce Sites.
-- NEVER expose Compliance_Finding__c, Evidence__c, or any PII
-- ONLY expose Trust_Center_View__c (materialized/aggregated data)
+
+- NEVER expose Compliance_Finding**c, Evidence**c, or any PII
+- ONLY expose Trust_Center_View\_\_c (materialized/aggregated data)
 - Guest User gets minimal field-level access
 - Every Sites page load validates shareable link expiration
 
 #### Custom Objects
 
-- **Trust_Center_View__c** (materialized view): Framework, Compliance_Percentage, Last_Audit_Date, Certification_Status, Badge_Image_URL, Is_Public
-- **Trust_Center_Link__c**: Link_Token (UUID), Expiration_Date, Access_Tier (Public/Email_Gated/NDA_Required), Access_Count, Is_Active
+- **Trust_Center_View\_\_c** (materialized view): Framework, Compliance_Percentage, Last_Audit_Date, Certification_Status, Badge_Image_URL, Is_Public
+- **Trust_Center_Link\_\_c**: Link_Token (UUID), Expiration_Date, Access_Tier (Public/Email_Gated/NDA_Required), Access_Count, Is_Active
 
 #### Core Classes
 
@@ -933,8 +938,8 @@ Multi-step declarative: CISO > Legal > CFO > CEO > Board > Filing
 
 #### Sites Configuration
 
-- Guest User Profile: ZERO access to Compliance_Finding__c, Evidence__c, __mdt, __e
-- Only Trust_Center_View__c read, only TrustCenterGuestController execute
+- Guest User Profile: ZERO access to Compliance_Finding**c, Evidence**c, **mdt, **e
+- Only Trust_Center_View\_\_c read, only TrustCenterGuestController execute
 
 ---
 

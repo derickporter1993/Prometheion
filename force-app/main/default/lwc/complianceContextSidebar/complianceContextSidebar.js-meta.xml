@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>false</isExposed>
+    <masterLabel>Compliance Context Sidebar</masterLabel>
+    <description>Displays framework summaries and recent compliance gaps in the Command Center.</description>
+</LightningComponentBundle>

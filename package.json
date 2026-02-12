@@ -7,10 +7,10 @@
   "scripts": {
     "postinstall": "test -d platform/node_modules || (cd platform && npm install --ignore-scripts)",
     "preflight": "bash scripts/preflight.sh",
-    "fmt": "prettier --write \"force-app/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app/**/lwc/**/*.js\" \"./*.{js,json,yml,yaml,md}\"",
-    "fmt:check": "prettier --check \"force-app/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app/**/lwc/**/*.js\" \"./*.{js,json,yml,yaml,md}\"",
-    "lint": "eslint \"force-app/**/*.js\" --max-warnings=3",
-    "lint:fix": "eslint \"force-app/**/*.js\" --fix",
+    "fmt": "prettier --write \"force-app/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app-healthcheck/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app/**/lwc/**/*.js\" \"force-app-healthcheck/**/lwc/**/*.js\" \"./*.{js,json,yml,yaml,md}\"",
+    "fmt:check": "prettier --check \"force-app/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app-healthcheck/**/*.{js,ts,md,json,yml,yaml,xml}\" \"force-app/**/lwc/**/*.js\" \"force-app-healthcheck/**/lwc/**/*.js\" \"./*.{js,json,yml,yaml,md}\"",
+    "lint": "eslint \"force-app/**/*.js\" \"force-app-healthcheck/**/*.js\" --max-warnings=3",
+    "lint:fix": "eslint \"force-app/**/*.js\" \"force-app-healthcheck/**/*.js\" --fix",
     "test": "jest --config jest.config.js --passWithNoTests",
     "test:unit": "jest --config jest.config.js",
     "test:unit:watch": "jest --watch",
@@ -57,6 +57,9 @@
       "prettier --write"
     ],
     "force-app/**/*.js": [
+      "eslint --fix"
+    ],
+    "force-app-healthcheck/**/*.js": [
       "eslint --fix"
     ]
   },

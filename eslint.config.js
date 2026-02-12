@@ -39,7 +39,7 @@ export default [
   },
   {
     ...lwcRecommended,
-    files: ["force-app/**/*.js"],
+    files: ["force-app/**/*.js", "force-app-healthcheck/**/*.js"],
     ignores: ["**/__tests__/**", "**/*.test.js"],
     languageOptions: {
       ...(lwcRecommended.languageOptions ?? {}),

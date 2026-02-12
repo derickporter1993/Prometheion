@@ -1,0 +1,57 @@
+<template>
+    <!-- Framework Summary -->
+    <div class="slds-var-m-bottom_medium">
+        <h3 class="slds-text-heading_small slds-var-m-bottom_small">{label.CC_FrameworkSummary}</h3>
+        <template lwc:if={hasFrameworks}>
+            <div class="slds-grid slds-wrap slds-gutters_xx-small">
+                <template for:each={indexedFrameworks} for:item="fw">
+                    <div key={fw.key} class="slds-col slds-size_1-of-3 slds-var-m-bottom_x-small">
+                        <div class="slds-box slds-box_x-small slds-text-align_center">
+                            <p class="slds-text-title_bold">{fw.framework}</p>
+                            <p class={fw.scoreClass}>
+                                <span class="slds-text-heading_medium">{fw.score}</span>
+                            </p>
+                            <p class="slds-text-body_small">{fw.gapCount} gaps</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
+    <!-- Recent Gaps -->
+    <div class="slds-var-m-bottom_medium">
+        <h3 class="slds-text-heading_small slds-var-m-bottom_small">{label.CC_RecentGaps}</h3>
+        <template lwc:if={hasGaps}>
+            <template for:each={indexedGaps} for:item="gap">
+                <div key={gap.key} class="slds-box slds-box_x-small slds-var-m-bottom_xx-small">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col slds-grow">
+                            <span class={gap.severityClass}>{gap.severity}</span>
+                            <span class="slds-var-m-left_x-small slds-text-body_small">
+                                {gap.framework}
+                            </span>
+                            <p class="slds-text-body_small slds-truncate slds-var-m-top_xx-small">
+                                {gap.description}
+                            </p>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <lightning-button-icon
+                                icon-name="utility:chevronright"
+                                alternative-text={label.CC_ViewDetails}
+                                variant="bare"
+                                data-id={gap.gapId}
+                                onclick={handleViewGap}
+                            ></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <div class="slds-text-align_center slds-var-p-around_small">
+                <p class="slds-text-body_regular slds-text-color_weak">{label.CC_NoGaps}</p>
+            </div>
+        </template>
+    </div>
+</template>

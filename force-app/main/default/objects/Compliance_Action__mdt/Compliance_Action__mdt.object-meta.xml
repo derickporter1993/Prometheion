@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Compliance Action</label>
+    <pluralLabel>Compliance Actions</pluralLabel>
+    <description>Defines actionable compliance recommendations surfaced by the Command Center. Each record represents a specific remediation or hardening action tied to a framework and severity.</description>
+    <visibility>Public</visibility>
+</CustomObject>

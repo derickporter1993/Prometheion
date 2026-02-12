@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CCPA Opt Out Mechanism</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Implement Do Not Sell Mechanism</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Provide a clear and accessible mechanism for California consumers to opt out of the sale or sharing of their personal information. CCPA requires a Do Not Sell My Personal Information link on the homepage and a process to honor opt-out requests within 15 business days.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">CCPA</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Data Protection</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string"></value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">19</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">1798.120</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Add a Do Not Sell My Personal Information link to all customer-facing pages and Experience Cloud sites. Build a flow or process to capture opt-out requests and update the Individual object with the consumer's preference. Ensure downstream integrations and third-party data sharing cease within 15 business days of receiving the opt-out request. Implement Global Privacy Control signal recognition to automatically honor browser-based opt-out preferences.</value>
+    </values>
+</CustomMetadata>

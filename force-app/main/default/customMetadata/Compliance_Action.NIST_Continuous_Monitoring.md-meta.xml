@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>NIST Continuous Monitoring</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Implement Continuous Monitoring Strategy</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Develop and implement a continuous monitoring strategy to maintain ongoing awareness of information security, vulnerabilities, and threats. NIST CA-7 requires organizations to establish metrics, monitoring frequencies, and automated assessment mechanisms to support risk-based decision making.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">NIST</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Monitoring</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">SecurityEvents/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">14</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">CA-7</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Define security monitoring metrics including login anomalies, permission changes, data export volumes, and API usage patterns. Configure Salesforce Event Monitoring and Transaction Security policies to capture and alert on defined metrics. Establish monitoring frequencies aligned with data sensitivity: real-time for critical systems and daily for standard systems. Generate monthly security posture reports and quarterly trend analyses for management review.</value>
+    </values>
+</CustomMetadata>

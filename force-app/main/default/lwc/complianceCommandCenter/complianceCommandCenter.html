@@ -1,0 +1,73 @@
+<template>
+    <lightning-card title={label.CC_DashboardTitle} icon-name="standard:dashboard">
+        <template lwc:if={isLoading}>
+            <div class="slds-align_absolute-center slds-var-p-around_large">
+                <lightning-spinner alternative-text={label.CC_Loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-around_medium" role="alert">
+                <lightning-icon icon-name="utility:error" variant="inverse" size="x-small"
+                    class="slds-var-m-right_x-small"></lightning-icon>
+                <span>{label.CC_ErrorLoading}</span>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasData}>
+            <!-- Overview Metrics -->
+            <div class="slds-var-p-around_medium">
+                <h2 class="slds-text-heading_small slds-var-m-bottom_small">{label.CC_OverviewTitle}</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="slds-box slds-box_x-small slds-text-align_center">
+                            <p class="slds-text-title_caps">{label.CC_OverallScore}</p>
+                            <p class={scoreClass}>
+                                <span class="slds-text-heading_large">{overallScore}</span>
+                            </p>
+                            <p class="slds-text-body_small">{riskRating}</p>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="slds-box slds-box_x-small slds-text-align_center">
+                            <p class="slds-text-title_caps">{label.CC_OpenGaps}</p>
+                            <p class="slds-text-heading_large">{openGaps}</p>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="slds-box slds-box_x-small slds-text-align_center">
+                            <p class="slds-text-title_caps">{label.CC_CriticalGaps}</p>
+                            <p class="slds-text-heading_large slds-text-color_error">{criticalGaps}</p>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="slds-box slds-box_x-small slds-text-align_center">
+                            <p class="slds-text-title_caps">{label.CC_Remediated}</p>
+                            <p class="slds-text-heading_large slds-text-color_success">{remediatedGaps}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="slds-grid slds-wrap slds-gutters slds-var-p-horizontal_medium">
+                <!-- Left: Actions + Gaps -->
+                <div class="slds-col slds-size_2-of-3">
+                    <c-compliance-action-card
+                        actions={prioritizedActions}
+                    ></c-compliance-action-card>
+
+                    <c-compliance-context-sidebar
+                        framework-summaries={frameworkSummaries}
+                        recent-gaps={recentGaps}
+                    ></c-compliance-context-sidebar>
+                </div>
+
+                <!-- Right: Activity Feed -->
+                <div class="slds-col slds-size_1-of-3">
+                    <c-compliance-notification-feed></c-compliance-notification-feed>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

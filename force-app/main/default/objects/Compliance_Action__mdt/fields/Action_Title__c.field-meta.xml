@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Title__c</fullName>
+    <label>Action Title</label>
+    <description>Short title displayed in the Command Center action card</description>
+    <type>Text</type>
+    <length>255</length>
+    <required>true</required>
+</CustomField>

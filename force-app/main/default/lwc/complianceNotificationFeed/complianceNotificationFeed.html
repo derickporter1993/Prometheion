@@ -1,0 +1,39 @@
+<template>
+    <div class="slds-var-m-bottom_medium">
+        <h3 class="slds-text-heading_small slds-var-m-bottom_small">{label.CC_ActivityFeed}</h3>
+        <template lwc:if={hasActivities}>
+            <div class="slds-timeline">
+                <template for:each={indexedActivities} for:item="item">
+                    <div key={item.key} class="slds-timeline__item slds-var-m-bottom_x-small">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-gutters_xx-small">
+                            <div class="slds-col slds-no-flex">
+                                <lightning-icon
+                                    icon-name={item.iconName}
+                                    size="x-small"
+                                    class="slds-var-m-right_x-small"
+                                ></lightning-icon>
+                            </div>
+                            <div class="slds-col slds-grow">
+                                <p class="slds-text-body_small slds-text-title_bold">
+                                    {item.title}
+                                </p>
+                                <p class="slds-text-body_small">
+                                    <span class={item.severityClass}>{item.severity}</span>
+                                    <span class="slds-var-m-left_xx-small">{item.detail}</span>
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_xx-small">
+                                    {item.modifiedBy} — {item.formattedTime}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="slds-text-align_center slds-var-p-around_small">
+                <p class="slds-text-body_regular slds-text-color_weak">{label.CC_NoActivity}</p>
+            </div>
+        </template>
+    </div>
+</template>
