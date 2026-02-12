@@ -9,61 +9,172 @@ public with sharing class ServiceNowIntegration {
     private static final String NAMED_CREDENTIAL = 'callout:ServiceNow_API';
     
     /**
-     * @description Sync controls from Elaro to ServiceNow GRC
+     * @description Sync controls from Elaro to ServiceNow GRC using Queueable
      * @param frameworkName Framework name (HIPAA, SOC2, etc.)
      */
-    @future(callout=true)
     public static void syncControls(String frameworkName) {
-        // Get controls based on framework
-        List<Map<String, Object>> controls = getControlsForFramework(frameworkName);
-        
-        for (Map<String, Object> control : controls) {
-            syncSingleControl(control);
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new ServiceNowSyncControlsQueueable(frameworkName));
         }
     }
     
     /**
-     * @description Push evidence to ServiceNow
+     * @description Push evidence to ServiceNow using Queueable
      * @param evidenceId Evidence item ID
      */
-    @future(callout=true)
     public static void pushEvidence(String evidenceId) {
-        Elaro_Evidence_Item__c evidence = [
-            SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c, Status__c
-            FROM Elaro_Evidence_Item__c
-            WHERE Id = :evidenceId
-            LIMIT 1
-        ];
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new ServiceNowPushEvidenceQueueable(evidenceId));
+        }
+    }
+    
+    /**
+     * @description Sync compliance status to ServiceNow using Queueable
+     * @param auditPackageId Audit package ID
+     */
+    public static void syncComplianceStatus(String auditPackageId) {
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new ServiceNowSyncStatusQueueable(auditPackageId));
+        }
+    }
+    
+    /**
+     * Queueable implementation for syncing controls to ServiceNow
+     */
+    public class ServiceNowSyncControlsQueueable implements Queueable, Database.AllowsCallouts {
+        private String frameworkName;
         
-        Map<String, Object> snowEvidence = new Map<String, Object>{
-            'u_external_id' => evidence.Id,
-            'u_evidence_type' => evidence.Evidence_Type__c,
-            'short_description' => evidence.Name,
-            'description' => evidence.Description__c,
-            'u_evidence_date' => evidence.Evidence_Date__c,
-            'u_status' => evidence.Status__c,
-            'u_source' => 'Elaro'
-        };
+        public ServiceNowSyncControlsQueueable(String frameworkName) {
+            this.frameworkName = frameworkName;
+        }
         
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(NAMED_CREDENTIAL + '/api/now/table/u_compliance_evidence');
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('Accept', 'application/json');
-        req.setBody(JSON.serialize(snowEvidence));
-        req.setTimeout(60000);
-        
-        try {
-            Http http = new Http();
-            HttpResponse res = http.send(req);
-            
-            if (res.getStatusCode() == 201) {
-                ElaroLogger.info( 'Evidence pushed to ServiceNow: ' + evidenceId);
-            } else {
-                ElaroLogger.error( 'ServiceNow push failed: ' + res.getBody());
+        public void execute(QueueableContext context) {
+            try {
+                // Get controls based on framework
+                List<Map<String, Object>> controls = getControlsForFramework(frameworkName);
+                
+                for (Map<String, Object> control : controls) {
+                    syncSingleControl(control);
+                }
+                
+                ElaroLogger.info('ServiceNowIntegration.ServiceNowSyncControlsQueueable',
+                    'Successfully synced ' + controls.size() + ' controls for ' + frameworkName);
+            } catch (Exception e) {
+                ElaroLogger.error('ServiceNowIntegration.ServiceNowSyncControlsQueueable',
+                    e.getMessage(), e.getStackTraceString());
             }
-        } catch (Exception e) {
-            ElaroLogger.error( 'ServiceNow integration error: ' + e.getMessage());
+        }
+    }
+    
+    /**
+     * Queueable implementation for pushing evidence to ServiceNow
+     */
+    public class ServiceNowPushEvidenceQueueable implements Queueable, Database.AllowsCallouts {
+        private String evidenceId;
+        
+        public ServiceNowPushEvidenceQueueable(String evidenceId) {
+            this.evidenceId = evidenceId;
+        }
+        
+        public void execute(QueueableContext context) {
+            try {
+                Elaro_Evidence_Item__c evidence = [
+                    SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c, Status__c
+                    FROM Elaro_Evidence_Item__c
+                    WHERE Id = :evidenceId
+                    LIMIT 1
+                ];
+                
+                Map<String, Object> snowEvidence = new Map<String, Object>{
+                    'u_external_id' => evidence.Id,
+                    'u_evidence_type' => evidence.Evidence_Type__c,
+                    'short_description' => evidence.Name,
+                    'description' => evidence.Description__c,
+                    'u_evidence_date' => evidence.Evidence_Date__c,
+                    'u_status' => evidence.Status__c,
+                    'u_source' => 'Elaro'
+                };
+                
+                HttpRequest req = new HttpRequest();
+                req.setEndpoint(NAMED_CREDENTIAL + '/api/now/table/u_compliance_evidence');
+                req.setMethod('POST');
+                req.setHeader('Content-Type', 'application/json');
+                req.setHeader('Accept', 'application/json');
+                req.setBody(JSON.serialize(snowEvidence));
+                req.setTimeout(60000);
+                
+                Http http = new Http();
+                HttpResponse res = http.send(req);
+                
+                if (res.getStatusCode() == 201) {
+                    ElaroLogger.info('ServiceNowIntegration.ServiceNowPushEvidenceQueueable',
+                        'Evidence pushed to ServiceNow: ' + evidenceId);
+                } else {
+                    ElaroLogger.error('ServiceNowIntegration.ServiceNowPushEvidenceQueueable',
+                        'ServiceNow push failed: ' + res.getBody(), '');
+                }
+            } catch (Exception e) {
+                ElaroLogger.error('ServiceNowIntegration.ServiceNowPushEvidenceQueueable',
+                    e.getMessage(), e.getStackTraceString());
+            }
+        }
+    }
+    
+    /**
+     * Queueable implementation for syncing compliance status to ServiceNow
+     */
+    public class ServiceNowSyncStatusQueueable implements Queueable, Database.AllowsCallouts {
+        private String auditPackageId;
+        
+        public ServiceNowSyncStatusQueueable(String auditPackageId) {
+            this.auditPackageId = auditPackageId;
+        }
+        
+        public void execute(QueueableContext context) {
+            try {
+                Elaro_Audit_Package__c pkg = [
+                    SELECT Id, Name, Package_Name__c, Framework__c, Status__c
+                    FROM Elaro_Audit_Package__c
+                    WHERE Id = :auditPackageId
+                    LIMIT 1
+                ];
+                
+                // Calculate compliance score
+                Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
+                Decimal score = (Decimal)scoreData.get('overallScore');
+                
+                Map<String, Object> complianceStatus = new Map<String, Object>{
+                    'u_framework' => pkg.Framework__c,
+                    'u_audit_package_id' => pkg.Id,
+                    'u_package_name' => pkg.Package_Name__c,
+                    'u_compliance_score' => score,
+                    'u_status' => pkg.Status__c,
+                    'u_source' => 'Elaro',
+                    'u_sync_date' => DateTime.now().format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'')
+                };
+                
+                HttpRequest req = new HttpRequest();
+                req.setEndpoint(NAMED_CREDENTIAL + '/api/now/table/u_compliance_status');
+                req.setMethod('POST');
+                req.setHeader('Content-Type', 'application/json');
+                req.setHeader('Accept', 'application/json');
+                req.setBody(JSON.serialize(complianceStatus));
+                req.setTimeout(60000);
+                
+                Http http = new Http();
+                HttpResponse res = http.send(req);
+                
+                if (res.getStatusCode() >= 200 && res.getStatusCode() < 300) {
+                    ElaroLogger.info('ServiceNowIntegration.ServiceNowSyncStatusQueueable',
+                        'Compliance status synced to ServiceNow');
+                } else {
+                    ElaroLogger.error('ServiceNowIntegration.ServiceNowSyncStatusQueueable',
+                        'ServiceNow sync failed: ' + res.getBody(), '');
+                }
+            } catch (Exception e) {
+                ElaroLogger.error('ServiceNowIntegration.ServiceNowSyncStatusQueueable',
+                    e.getMessage(), e.getStackTraceString());
+            }
         }
     }
     
@@ -138,44 +249,6 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Sync compliance status to ServiceNow
-     * @param auditPackageId Audit package ID
-     */
-    @future(callout=true)
-    public static void syncComplianceStatus(String auditPackageId) {
-        Elaro_Audit_Package__c pkg = [
-            SELECT Id, Name, Package_Name__c, Framework__c, Status__c
-            FROM Elaro_Audit_Package__c
-            WHERE Id = :auditPackageId
-            LIMIT 1
-        ];
-        
-        // Calculate compliance score
-        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
-        Decimal score = (Decimal)scoreData.get('overallScore');
-        
-        Map<String, Object> complianceStatus = new Map<String, Object>{
-            'u_framework' => pkg.Framework__c,
-            'u_audit_package_id' => pkg.Id,
-            'u_package_name' => pkg.Package_Name__c,
-            'u_compliance_score' => score,
-            'u_status' => pkg.Status__c,
-            'u_last_sync' => Datetime.now()
-        };
-        
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(NAMED_CREDENTIAL + '/api/now/table/u_compliance_status');
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('Accept', 'application/json');
-        req.setBody(JSON.serialize(complianceStatus));
-        req.setTimeout(60000);
-
-        try {
-            Http http = new Http();
-            http.send(req);
-        } catch (Exception e) {
-            ElaroLogger.error( 'ServiceNow sync error: ' + e.getMessage());
         }
     }
     
