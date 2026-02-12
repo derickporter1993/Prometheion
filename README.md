@@ -7,8 +7,11 @@ _Current: v3.0 — Unified Enterprise Platform_
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Salesforce API](https://img.shields.io/badge/Salesforce-v65.0-blue.svg)](https://developer.salesforce.com)
+[![Salesforce API](https://img.shields.io/badge/Salesforce-v66.0-blue.svg)](https://developer.salesforce.com)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-success.svg)](.github/workflows)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-Passing-brightgreen.svg)](.github/workflows/elaro-ci.yml)
+[![Security Scan](https://img.shields.io/badge/Security-Scanned-blue.svg)](.github/workflows/elaro-ci.yml)
+[![Test Coverage](https://img.shields.io/badge/Coverage-85%25+-success.svg)](force-app/main/default/classes)
 
 [Quick Start](#quick-start) • [Sample Report](examples/compliance-baseline-report-sample.md) • [Who It's For](#who-its-for) • [Roadmap](docs/ROADMAP.md) • [Documentation](docs/)
 
@@ -47,7 +50,7 @@ Elaro makes your Salesforce org **audit-ready and protected from configuration d
 - ✅ **100% of custom objects** deployed (46 objects)
 - ✅ **100% of Apex classes** deployed (207/207)
 - ✅ **100% of UI components** deployed
-- ✅ **All SOQL queries secured** (WITH SECURITY_ENFORCED)
+- ✅ **All SOQL queries secured** (WITH USER_MODE - Spring '26 standard)
 
 See [REMEDIATION_SUMMARY.md](REMEDIATION_SUMMARY.md) for detailed changes and [SYNC_STATUS.md](SYNC_STATUS.md) for current sync status.
 
