@@ -1,0 +1,103 @@
+<template>
+  <div class="slds-box slds-m-top_medium slds-theme_default">
+    <!-- Step Header -->
+    <div class="slds-m-bottom_medium">
+      <template lwc:if={controlReference}>
+        <span class="slds-badge slds-badge_inverse slds-m-right_small">
+          {controlReference}
+        </span>
+      </template>
+      <p class="slds-text-body_regular slds-m-top_x-small">{stepPrompt}</p>
+      <template lwc:if={helpText}>
+        <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+          {helpText}
+        </p>
+      </template>
+    </div>
+
+    <!-- Completed Badge -->
+    <template lwc:if={isCompleted}>
+      <div class="slds-m-bottom_medium">
+        <span class="slds-badge slds-theme_success">Completed</span>
+      </div>
+    </template>
+
+    <!-- Auto Scan Step -->
+    <template lwc:if={isAutoScan}>
+      <template lwc:if={isScanning}>
+        <div class="slds-align_absolute-center slds-p-around_medium">
+          <lightning-spinner
+            alternative-text={label.AW_AutoScanRunning}
+            size="small"
+          ></lightning-spinner>
+          <span class="slds-m-left_small">{label.AW_AutoScanRunning}</span>
+        </div>
+      </template>
+      <template lwc:elseif={scanComplete}>
+        <div class="slds-theme_success slds-p-around_small slds-m-bottom_small">
+          <lightning-icon
+            icon-name="utility:check"
+            size="x-small"
+            class="slds-m-right_x-small"
+          ></lightning-icon>
+          {label.AW_AutoScanComplete}
+        </div>
+      </template>
+    </template>
+
+    <!-- Manual Attestation Step -->
+    <template lwc:if={isManualAttestation}>
+      <lightning-input
+        type="checkbox"
+        label="I attest that this requirement has been reviewed and is compliant"
+        checked={attestationChecked}
+        onchange={handleAttestationChange}
+        disabled={isCompleted}
+      ></lightning-input>
+    </template>
+
+    <!-- Evidence Upload Step -->
+    <template lwc:if={isEvidenceUpload}>
+      <lightning-textarea
+        label="Evidence Notes"
+        value={responseValue}
+        onchange={handleTextChange}
+        placeholder="Describe the evidence or reference uploaded documents..."
+        disabled={isCompleted}
+      ></lightning-textarea>
+    </template>
+
+    <!-- Approval Step -->
+    <template lwc:if={isApproval}>
+      <lightning-textarea
+        label="Approval Comments"
+        value={responseValue}
+        onchange={handleTextChange}
+        placeholder="Enter approval comments..."
+        disabled={isCompleted}
+      ></lightning-textarea>
+    </template>
+
+    <!-- Review Step -->
+    <template lwc:if={isReview}>
+      <lightning-textarea
+        label="Review Notes"
+        value={responseValue}
+        onchange={handleTextChange}
+        placeholder="Enter review notes and observations..."
+        disabled={isCompleted}
+      ></lightning-textarea>
+    </template>
+
+    <!-- Submit Button -->
+    <template lwc:if={canSubmit}>
+      <div class="slds-m-top_medium">
+        <lightning-button
+          label={submitLabel}
+          variant="brand"
+          onclick={handleSubmit}
+        ></lightning-button>
+      </div>
+    </template>
+  </div>
+</template>

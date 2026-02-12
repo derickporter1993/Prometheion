@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Compliance Assessment Session</label>
+    <pluralLabel>Compliance Assessment Sessions</pluralLabel>
+    <nameField>
+        <type>AutoNumber</type>
+        <label>Session Number</label>
+        <displayFormat>CAS-{00000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <fields>
+        <fullName>Session_State__c</fullName>
+        <label>Session State</label>
+        <description>JSON-serialized wizard state including step responses and evidence references</description>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Wizard_Name__c</fullName>
+        <label>Wizard Name</label>
+        <description>Developer name of the assessment wizard configuration</description>
+        <type>Text</type>
+        <length>100</length>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Framework__c</fullName>
+        <label>Framework</label>
+        <description>Compliance framework being assessed (e.g., HIPAA, SOC2, PCI-DSS)</description>
+        <type>Text</type>
+        <length>50</length>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Current_Stage__c</fullName>
+        <label>Current Stage</label>
+        <description>Current stage order number in the wizard flow</description>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>0</scale>
+    </fields>
+    <fields>
+        <fullName>Current_Step__c</fullName>
+        <label>Current Step</label>
+        <description>Current step order number within the current stage</description>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>0</scale>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <description>Overall assessment session status</description>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not Started</fullName>
+                    <default>true</default>
+                    <label>Not Started</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Pending Review</fullName>
+                    <default>false</default>
+                    <label>Pending Review</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Abandoned</fullName>
+                    <default>false</default>
+                    <label>Abandoned</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Percent_Complete__c</fullName>
+        <label>Percent Complete</label>
+        <description>Calculated completion percentage (0-100)</description>
+        <type>Percent</type>
+        <precision>5</precision>
+        <scale>2</scale>
+    </fields>
+    <fields>
+        <fullName>Started_Date__c</fullName>
+        <label>Started Date</label>
+        <description>Timestamp when the assessment was first started</description>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Completed_Date__c</fullName>
+        <label>Completed Date</label>
+        <description>Timestamp when the assessment was completed</description>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_To__c</fullName>
+        <label>Assigned To</label>
+        <description>User responsible for completing this assessment</description>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Assessment_Sessions</relationshipName>
+        <relationshipLabel>Assessment Sessions</relationshipLabel>
+    </fields>
+</CustomObject>

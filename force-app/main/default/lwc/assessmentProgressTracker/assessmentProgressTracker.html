@@ -1,0 +1,38 @@
+<template>
+  <div class="slds-m-bottom_medium">
+    <!-- Progress Bar -->
+    <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+      <span class="slds-text-body_small slds-text-color_weak"
+        >{progressLabel}</span
+      >
+    </div>
+    <lightning-progress-bar
+      value={percentComplete}
+      size="medium"
+      variant={progressVariant}
+    ></lightning-progress-bar>
+
+    <!-- Stage Markers -->
+    <div class="slds-progress slds-m-top_small" role="progressbar"
+      aria-valuemin="0" aria-valuemax="100" aria-valuenow={percentComplete}
+    >
+      <ol class="slds-progress__list">
+        <template for:each={stageItems} for:item="stage">
+          <li key={stage.key} class={stage.statusClass} aria-label={stage.ariaLabel}>
+            <template lwc:if={stage.isComplete}>
+              <lightning-icon
+                icon-name="utility:check"
+                size="xx-small"
+                alternative-text="Completed"
+                class="slds-m-right_xx-small"
+              ></lightning-icon>
+            </template>
+            <span class="slds-text-body_small">
+              {stage.stageLabel}
+            </span>
+          </li>
+        </template>
+      </ol>
+    </div>
+  </div>
+</template>
