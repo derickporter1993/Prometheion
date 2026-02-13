@@ -982,6 +982,49 @@
         <shortDescription>Not started status</shortDescription>
         <value>Not Started</value>
     </labels>
+    <!-- AI Governance Dashboard Labels -->
+    <labels>
+        <fullName>AI_DashboardTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI Governance Dashboard title</shortDescription>
+        <value>AI Governance</value>
+    </labels>
+    <labels>
+        <fullName>AI_DiscoverSystems</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Discover AI systems button</shortDescription>
+        <value>Discover AI Systems</value>
+    </labels>
+    <labels>
+        <fullName>AI_SystemRegistry</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI System Registry section title</shortDescription>
+        <value>AI System Registry</value>
+    </labels>
+    <labels>
+        <fullName>AI_NoGaps</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No compliance gaps message</shortDescription>
+        <value>No compliance gaps identified</value>
+    </labels>
+    <labels>
+        <fullName>AI_AuditTrail</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI Audit Trail section title</shortDescription>
+        <value>AI Change Audit Trail</value>
+    </labels>
+    <labels>
+        <fullName>AI_NoAuditEntries</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No audit entries message</shortDescription>
+        <value>No AI-related changes detected in the audit trail</value>
+    </labels>
     <labels>
         <fullName>AI_DiscoveryInProgress</fullName>
         <language>en_US</language>

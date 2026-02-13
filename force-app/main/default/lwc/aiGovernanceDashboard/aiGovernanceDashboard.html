@@ -1,0 +1,194 @@
+<template>
+    <!-- Loading State -->
+    <template lwc:if={isLoading}>
+        <lightning-spinner alternative-text={label.AI_DiscoveryInProgress} size="medium">
+        </lightning-spinner>
+    </template>
+
+    <!-- Error State -->
+    <template lwc:elseif={error}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <h2>{error}</h2>
+        </div>
+    </template>
+
+    <!-- Main Content -->
+    <template lwc:else>
+        <!-- Page Header -->
+        <div class="slds-page-header slds-m-bottom_medium">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="standard:bot" size="large"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <span>{label.AI_DashboardTitle}</span>
+                                    <h1><span class="slds-page-header__title">{label.AI_EUAIAct} &amp; {label.AI_NISTRMF}</span></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-page-header__col-actions">
+                    <div class="slds-page-header__controls">
+                        <lightning-button
+                            label={label.AI_DiscoverSystems}
+                            variant="brand"
+                            icon-name="utility:search"
+                            onclick={handleDiscoverSystems}
+                            disabled={isDiscovering}
+                        ></lightning-button>
+                        <lightning-button
+                            label={label.AI_RefreshData}
+                            variant="neutral"
+                            icon-name="utility:refresh"
+                            onclick={handleRefresh}
+                            class="slds-m-left_x-small"
+                        ></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="slds-grid slds-gutters slds-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-4">
+                <article class="slds-card stat-card score-card">
+                    <div class="slds-card__body slds-card__body_inner slds-text-align_center">
+                        <p class="slds-text-title slds-m-bottom_xx-small">{label.AI_ComplianceScore}</p>
+                        <p class="stat-value">{formattedScore}<span class="stat-suffix">%</span></p>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <article class="slds-card stat-card">
+                    <div class="slds-card__body slds-card__body_inner slds-text-align_center">
+                        <p class="slds-text-title slds-m-bottom_xx-small">{label.AI_TotalSystems}</p>
+                        <p class="stat-value">{totalSystems}</p>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <article class="slds-card stat-card high-risk-card">
+                    <div class="slds-card__body slds-card__body_inner slds-text-align_center">
+                        <p class="slds-text-title slds-m-bottom_xx-small">{label.AI_HighRiskSystems}</p>
+                        <p class="stat-value">{highRiskCount}</p>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <article class="slds-card stat-card">
+                    <div class="slds-card__body slds-card__body_inner slds-text-align_center">
+                        <p class="slds-text-title slds-m-bottom_xx-small">{label.AI_GapsIdentified}</p>
+                        <p class="stat-value">{gapCount}</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <!-- Discovery Banner -->
+        <template lwc:if={isDiscovering}>
+            <div class="slds-notify_container slds-m-bottom_medium">
+                <div class="slds-notify slds-notify_toast slds-theme_info" role="status">
+                    <lightning-spinner alternative-text={label.AI_DiscoveryInProgress} size="small" class="slds-m-right_small">
+                    </lightning-spinner>
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small">{label.AI_DiscoveryInProgress}</h2>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Discovered Systems (shown after discovery) -->
+        <template lwc:if={hasDiscoveredSystems}>
+            <lightning-card title={label.AI_DiscoveryComplete} icon-name="utility:magicwand" class="slds-m-bottom_medium">
+                <div class="slds-p-around_medium">
+                    <p class="slds-m-bottom_small">{discoveredCountMessage}</p>
+                    <lightning-datatable
+                        key-field="systemName"
+                        data={discoveredSystems}
+                        columns={discoveredColumns}
+                        onrowaction={handleRegisterSystem}
+                        hide-checkbox-column
+                    ></lightning-datatable>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- Two-Column Layout: Registry + Gaps -->
+        <div class="slds-grid slds-gutters slds-wrap">
+            <!-- AI System Registry -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12 slds-m-bottom_medium">
+                <lightning-card title={label.AI_SystemRegistry} icon-name="standard:record_lookup">
+                    <template lwc:if={hasRegisteredSystems}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={registeredSystems}
+                            columns={registryColumns}
+                            onrowaction={handleRegistryAction}
+                            hide-checkbox-column
+                            sorted-by={sortedBy}
+                            sorted-direction={sortedDirection}
+                            onsort={handleSort}
+                        ></lightning-datatable>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-p-around_medium slds-text-align_center">
+                            <p class="slds-text-color_weak">{label.AI_NoSystemsFound}</p>
+                        </div>
+                    </template>
+                </lightning-card>
+            </div>
+
+            <!-- Compliance Gaps -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 slds-m-bottom_medium">
+                <lightning-card title={label.AI_GapsIdentified} icon-name="utility:warning">
+                    <template lwc:if={hasGaps}>
+                        <ul class="slds-has-dividers_bottom-space">
+                            <template for:each={gaps} for:item="gap">
+                                <li key={gap.id} class="slds-item">
+                                    <article class="slds-tile">
+                                        <h3 class="slds-tile__title">
+                                            <lightning-badge label={gap.severity} class={gap.badgeClass}></lightning-badge>
+                                            <span class="slds-m-left_x-small">{gap.controlName}</span>
+                                        </h3>
+                                        <div class="slds-tile__detail">
+                                            <p class="slds-text-body_small">{gap.description}</p>
+                                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">{gap.recommendation}</p>
+                                        </div>
+                                    </article>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-p-around_medium slds-text-align_center">
+                            <p class="slds-text-color_weak">{label.AI_NoGaps}</p>
+                        </div>
+                    </template>
+                </lightning-card>
+            </div>
+        </div>
+
+        <!-- Audit Trail -->
+        <lightning-card title={label.AI_AuditTrail} icon-name="standard:event" class="slds-m-bottom_medium">
+            <template lwc:if={hasAuditEntries}>
+                <lightning-datatable
+                    key-field="uniqueKey"
+                    data={auditEntries}
+                    columns={auditColumns}
+                    hide-checkbox-column
+                    max-row-selection="0"
+                ></lightning-datatable>
+            </template>
+            <template lwc:else>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">{label.AI_NoAuditEntries}</p>
+                </div>
+            </template>
+        </lightning-card>
+    </template>
+</template>

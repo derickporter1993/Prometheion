@@ -208,6 +208,34 @@
     <field>Elaro_Evidence_Item__c.Reviewed_Date__c</field>
     <readable>true</readable>
   </fieldPermissions>
+  <tabSettings>
+    <tab>AI_Governance_Dashboard</tab>
+    <visibility>Visible</visibility>
+  </tabSettings>
+  <tabSettings>
+    <tab>Event_Monitoring</tab>
+    <visibility>Visible</visibility>
+  </tabSettings>
+  <tabSettings>
+    <tab>SEC_Disclosure_Dashboard</tab>
+    <visibility>Visible</visibility>
+  </tabSettings>
+  <classAccesses>
+    <apexClass>AIGovernanceController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>ElaroRealtimeMonitor</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>ElaroShieldService</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>RootCauseAnalysisEngine</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
   <classAccesses>
     <apexClass>ElaroComplianceCopilot</apexClass>
     <enabled>true</enabled>

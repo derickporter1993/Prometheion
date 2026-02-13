@@ -26,5 +26,8 @@
     <tabs>API_Usage_Snapshot__c</tabs>
     <tabs>Flow_Execution__c</tabs>
     <tabs>Deployment_Job__c</tabs>
+    <tabs>SEC_Disclosure_Dashboard</tabs>
+    <tabs>AI_Governance_Dashboard</tabs>
+    <tabs>Event_Monitoring</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

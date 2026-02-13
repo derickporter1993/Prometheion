@@ -1,0 +1,39 @@
+.stat-card {
+    border-top: 3px solid var(--slds-g-color-brand-base-50, #0176d3);
+}
+
+.stat-card.score-card {
+    border-top-color: var(--slds-g-color-success-base-50, #2e844a);
+}
+
+.stat-card.high-risk-card {
+    border-top-color: var(--slds-g-color-error-base-40, #ea001e);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--slds-g-color-neutral-base-10, #181818);
+}
+
+.stat-suffix {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--slds-g-color-neutral-base-50, #706e6b);
+}
+
+.slds-badge_error {
+    background-color: var(--slds-g-color-error-base-40, #ea001e);
+    color: #fff;
+}
+
+.slds-badge_warning {
+    background-color: var(--slds-g-color-warning-base-50, #dd7a01);
+    color: #fff;
+}
+
+.slds-badge_success {
+    background-color: var(--slds-g-color-success-base-50, #2e844a);
+    color: #fff;
+}
