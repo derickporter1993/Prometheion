@@ -24,8 +24,8 @@ private class ComplianceScoreCardControllerTest {
             ProfileId = UserInfo.getProfileId(),
             LanguageLocaleKey = 'en_US'
         );
-        insert testUser;
-        
+        insert as user testUser;
+
         // Create test audit package
         Elaro_Audit_Package__c pkg = new Elaro_Audit_Package__c(
             Package_Name__c = 'Test SOC2 Package',
@@ -36,8 +36,8 @@ private class ComplianceScoreCardControllerTest {
             Created_By__c = testUser.Id,
             Last_Modified_By__c = testUser.Id
         );
-        insert pkg;
-        
+        insert as user pkg;
+
         // Create framework mappings
         List<Elaro_Framework_Mapping__c> mappings = new List<Elaro_Framework_Mapping__c>();
         mappings.add(new Elaro_Framework_Mapping__c(
@@ -56,8 +56,8 @@ private class ComplianceScoreCardControllerTest {
             Entity_Type__c = 'PERMISSION_SET',
             Is_Active__c = true
         ));
-        insert mappings;
-        
+        insert as user mappings;
+
         // Create evidence items
         List<Elaro_Evidence_Item__c> evidenceItems = new List<Elaro_Evidence_Item__c>();
         for (Integer i = 0; i < 3; i++) {
@@ -68,7 +68,7 @@ private class ComplianceScoreCardControllerTest {
                 Status__c = i == 0 ? 'APPROVED' : 'COLLECTED'
             ));
         }
-        insert evidenceItems;
+        insert as user evidenceItems;
     }
     
     @IsTest

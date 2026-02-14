@@ -21,7 +21,7 @@ private class ComplianceReportSchedulerTest {
                 Description__c = 'Test gap description ' + i
             ));
         }
-        insert gaps;
+        insert as user gaps;
     }
 
     /**
@@ -278,7 +278,7 @@ private class ComplianceReportSchedulerTest {
                 Status__c = 'Open'
             ));
         }
-        insert gaps;
+        insert as user gaps;
 
         Test.setMock(HttpCalloutMock.class, new ReportCalloutMock());
 

@@ -13,7 +13,7 @@ private class ElaroTrendControllerTest {
         for (Integer i = 0; i < 10; i++) {
             accounts.add(new Account(Name = 'Test Account ' + i));
         }
-        insert accounts;
+        insert as user accounts;
     }
 
     @isTest

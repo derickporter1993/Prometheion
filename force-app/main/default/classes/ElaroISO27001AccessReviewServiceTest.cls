@@ -25,7 +25,7 @@ private class ElaroISO27001AccessReviewServiceTest {
             Name = 'Test_Standard_PS',
             Label = 'Test Standard Permission Set'
         ));
-        insert testPermSets;
+        insert as user testPermSets;
         
         // Create test users with different profiles
         Profile adminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
@@ -48,8 +48,8 @@ private class ElaroISO27001AccessReviewServiceTest {
                 // Note: LastLoginDate is read-only, cannot be set in test
             ));
         }
-        insert testUsers;
-        
+        insert as user testUsers;
+
         // Assign permission sets
         List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
         assignments.add(new PermissionSetAssignment(
@@ -60,13 +60,13 @@ private class ElaroISO27001AccessReviewServiceTest {
             AssigneeId = testUsers[1].Id,
             PermissionSetId = testPermSets[1].Id
         ));
-        insert assignments;
+        insert as user assignments;
         
         // Create managers for some users
         User manager = testUsers[0];
         testUsers[1].ManagerId = manager.Id;
         testUsers[2].ManagerId = manager.Id;
-        update testUsers;
+        update as user testUsers;
     }
     
     @IsTest
@@ -211,10 +211,10 @@ private class ElaroISO27001AccessReviewServiceTest {
         for (Access_Review__c review : reviews) {
             review.Due_Date__c = Date.today().addDays(-5);
         }
-        update reviews;
-        
+        update as user reviews;
+
         Test.startTest();
-        List<Access_Review__c> overdueReviews = 
+        List<Access_Review__c> overdueReviews =
             ElaroISO27001AccessReviewService.getOverdueReviews();
         Test.stopTest();
         
@@ -330,7 +330,7 @@ private class ElaroISO27001AccessReviewServiceTest {
             review.Review_Status__c = 'Approved';
             review.Review_Date__c = System.now();
         }
-        update reviews;
+        update as user reviews;
 
         Test.startTest();
         Map<String, Object> metrics =
@@ -443,7 +443,7 @@ private class ElaroISO27001AccessReviewServiceTest {
         User randomUser = [SELECT Id FROM User WHERE IsActive = true LIMIT 1];
 
         // Delete any existing reviews for this user as reviewer
-        delete [SELECT Id FROM Access_Review__c WHERE Reviewer__c = :randomUser.Id];
+        delete as user [SELECT Id FROM Access_Review__c WHERE Reviewer__c = :randomUser.Id];
 
         Test.startTest();
         List<Access_Review__c> pendingReviews =
@@ -457,7 +457,7 @@ private class ElaroISO27001AccessReviewServiceTest {
     @IsTest
     static void testGetOverdueReviews_NoOverdue() {
         // Given: No overdue reviews
-        delete [SELECT Id FROM Access_Review__c];
+        delete as user [SELECT Id FROM Access_Review__c];
 
         Test.startTest();
         List<Access_Review__c> overdueReviews =
@@ -483,7 +483,7 @@ private class ElaroISO27001AccessReviewServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert limitedUser;
+        insert as user limitedUser;
         return limitedUser;
     }
 }

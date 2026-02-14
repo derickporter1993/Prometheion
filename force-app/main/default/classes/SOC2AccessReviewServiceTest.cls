@@ -21,7 +21,7 @@ public class SOC2AccessReviewServiceTest {
                 Due_Date__c = Date.today().addDays(30)
             ));
         }
-        insert reviews;
+        insert as user reviews;
     }
 
     @isTest
@@ -164,7 +164,7 @@ public class SOC2AccessReviewServiceTest {
                 Due_Date__c = Date.today().addDays(30)
             ));
         }
-        insert bulkReviews;
+        insert as user bulkReviews;
 
         SOC2AccessReviewService service = new SOC2AccessReviewService();
 

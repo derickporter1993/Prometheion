@@ -36,7 +36,7 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
         }
 
         ElaroSecurityUtils.validateCRUDAccess('API_Usage_Snapshot__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert new API_Usage_Snapshot__c(
+        insert as user new API_Usage_Snapshot__c(
             Taken_On__c = now,
             Daily_Used__c = used,
             Daily_Limit__c = max,

@@ -17,7 +17,7 @@ private class PerformanceAlertEventTriggerTest {
         );
         
         Test.startTest();
-        insert alert;
+        insert as user alert;
         Test.stopTest();
         
         Performance_Alert_History__c savedAlert = [
@@ -43,7 +43,7 @@ private class PerformanceAlertEventTriggerTest {
         }
         
         Test.startTest();
-        insert alerts;
+        insert as user alerts;
         Test.stopTest();
         
         Integer count = [SELECT COUNT() FROM Performance_Alert_History__c WHERE Metric__c = 'HEAP'];

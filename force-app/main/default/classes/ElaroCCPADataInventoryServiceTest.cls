@@ -21,7 +21,7 @@ private class ElaroCCPADataInventoryServiceTest {
             BillingCountry = 'US',
             BillingState = 'CA'
         );
-        insert testAccount;
+        insert as user testAccount;
         
         // Create test contacts with CCPA fields
         List<Contact> testContacts = new List<Contact>();
@@ -40,7 +40,7 @@ private class ElaroCCPADataInventoryServiceTest {
                 CCPA_OptOut_Date__c = (i == 0) ? Date.today() : null
             ));
         }
-        insert testContacts;
+        insert as user testContacts;
         
         // Create test CCPA requests
         // Note: Response_Deadline__c may be a formula field, so we set Request_Date__c
@@ -60,7 +60,7 @@ private class ElaroCCPADataInventoryServiceTest {
             Status__c = 'Pending'
             // Response_Deadline__c is likely a formula field
         ));
-        insert testRequests;
+        insert as user testRequests;
     }
     
     @IsTest
@@ -224,7 +224,7 @@ private class ElaroCCPADataInventoryServiceTest {
             LIMIT 1
         ];
         completedRequest.Status__c = 'Completed';
-        update completedRequest;
+        update as user completedRequest;
         
         Test.startTest();
         Boolean isOverdue = ElaroCCPADataInventoryService.isRequestOverdue(completedRequest);
@@ -266,7 +266,7 @@ private class ElaroCCPADataInventoryServiceTest {
             Email = 'minimal@test.com'
             // Missing: FirstName, Phone, MailingStreet, etc.
         );
-        insert minimalContact;
+        insert as user minimalContact;
 
         Test.startTest();
         ElaroCCPADataInventoryService.DataInventoryReport report =
@@ -294,7 +294,7 @@ private class ElaroCCPADataInventoryServiceTest {
                 Status = 'Not Started'
             ));
         }
-        insert tasks;
+        insert as user tasks;
 
         List<Event> events = new List<Event>();
         for (Integer i = 0; i < 3; i++) {
@@ -305,14 +305,14 @@ private class ElaroCCPADataInventoryServiceTest {
                 EndDateTime = DateTime.now().addDays(i).addHours(1)
             ));
         }
-        insert events;
+        insert as user events;
 
         Case testCase = new Case(
             Subject = 'CCPA Test Case',
             ContactId = testContact.Id,
             Status = 'New'
         );
-        insert testCase;
+        insert as user testCase;
 
         Test.startTest();
         ElaroCCPADataInventoryService.DataInventoryReport report =
@@ -385,7 +385,7 @@ private class ElaroCCPADataInventoryServiceTest {
         for (CCPA_Request__c req : existingRequests) {
             req.Status__c = 'Completed';
         }
-        update existingRequests;
+        update as user existingRequests;
 
         Test.startTest();
         List<CCPA_Request__c> requests =
@@ -440,7 +440,7 @@ private class ElaroCCPADataInventoryServiceTest {
             Request_Date__c = System.now().addDays(-46), // 46 days ago - overdue
             Status__c = 'Pending'
         );
-        insert newRequest;
+        insert as user newRequest;
 
         // Re-query to get formula fields
         CCPA_Request__c queriedRequest = [
@@ -472,7 +472,7 @@ private class ElaroCCPADataInventoryServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert limitedUser;
+        insert as user limitedUser;
         return limitedUser;
     }
 }

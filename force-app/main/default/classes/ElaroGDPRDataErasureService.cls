@@ -134,7 +134,7 @@ public with sharing class ElaroGDPRDataErasureService {
             Database.rollback(sp);
 
             // Log error
-            insert new Integration_Error__c(
+            insert as user new Integration_Error__c(
                 Error_Type__c = 'GDPR_ERASURE_FAILURE',
                 Error_Message__c = e.getMessage() != null ? e.getMessage().left(255) : 'Unknown error',
                 Stack_Trace__c = e.getStackTraceString() != null ? e.getStackTraceString().left(32000) : '',

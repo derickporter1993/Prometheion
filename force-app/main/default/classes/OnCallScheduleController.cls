@@ -40,7 +40,7 @@ public with sharing class OnCallScheduleController {
         validateSchedule(schedule);
 
         if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isCreateable()) {
-            insert schedule;
+            insert as user schedule;
             return schedule.Id;
         } else {
             throw new AuraHandledException('Insufficient permissions to create schedules');
@@ -56,7 +56,7 @@ public with sharing class OnCallScheduleController {
         validateSchedule(schedule);
 
         if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isUpdateable()) {
-            update schedule;
+            update as user schedule;
         } else {
             throw new AuraHandledException('Insufficient permissions to update schedules');
         }
@@ -69,7 +69,7 @@ public with sharing class OnCallScheduleController {
     @AuraEnabled
     public static void deleteSchedule(Id scheduleId) {
         if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isDeletable()) {
-            delete [SELECT Id FROM Elaro_On_Call_Schedule__c WHERE Id = :scheduleId WITH USER_MODE];
+            delete as user [SELECT Id FROM Elaro_On_Call_Schedule__c WHERE Id = :scheduleId WITH USER_MODE];
         } else {
             throw new AuraHandledException('Insufficient permissions to delete schedules');
         }

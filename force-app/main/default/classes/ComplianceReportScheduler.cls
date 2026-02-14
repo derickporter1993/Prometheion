@@ -456,7 +456,7 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
 
             List<Elaro_Audit_Log__c> sanitized = decision.getRecords();
             if (!sanitized.isEmpty()) {
-                insert sanitized;
+                insert as user sanitized;
             }
         } catch (Exception e) {
             // Don't fail report delivery if audit logging fails

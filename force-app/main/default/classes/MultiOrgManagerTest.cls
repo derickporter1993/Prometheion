@@ -26,7 +26,7 @@ private class MultiOrgManagerTest {
                 Alert_Count__c = 5 + i
             ));
         }
-        insert orgs;
+        insert as user orgs;
         
         // Create audit package for evidence items
         Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
@@ -176,7 +176,7 @@ private class MultiOrgManagerTest {
         for (Elaro_Connected_Org__c org : orgs) {
             org.Is_Active__c = false;
         }
-        update orgs;
+        update as user orgs;
         
         List<String> policyIds = new List<String>{'Policy1'};
         

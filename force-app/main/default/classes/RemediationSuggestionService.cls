@@ -74,7 +74,7 @@ public with sharing class RemediationSuggestionService {
 
         // Insert suggestions
         if (!suggestions.isEmpty() && Schema.sObjectType.Remediation_Suggestion__c.isCreateable()) {
-            insert suggestions;
+            insert as user suggestions;
         }
 
         return suggestions;
@@ -194,7 +194,7 @@ public with sharing class RemediationSuggestionService {
         }
 
         if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestions;
+            update as user suggestions;
         }
     }
 
@@ -573,7 +573,7 @@ public with sharing class RemediationSuggestionService {
         }
 
         if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
+            update as user suggestion;
         }
     }
 

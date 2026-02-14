@@ -19,8 +19,8 @@ private class ElaroIntegrationTest {
             Name = 'TestIntegrationPS',
             Label = 'Test Integration Permission Set'
         );
-        insert ps;
-        
+        insert as user ps;
+
         // Create test user
         Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User testUser = new User(
@@ -35,7 +35,7 @@ private class ElaroIntegrationTest {
             LanguageLocaleKey = 'en_US',
             ProfileId = p.Id
         );
-        insert testUser;
+        insert as user testUser;
     }
     
     /**
@@ -116,7 +116,7 @@ private class ElaroIntegrationTest {
             Enable_AI_Reasoning__c = false,
             Confidence_Threshold__c = 0.85
         );
-        insert initialSettings;
+        insert as user initialSettings;
         
         PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'TestIntegrationPS' LIMIT 1];
         
@@ -126,7 +126,7 @@ private class ElaroIntegrationTest {
         
         // Step 2: Enable AI and verify impact
         initialSettings.Enable_AI_Reasoning__c = true;
-        update initialSettings;
+        update as user initialSettings;
         
         // Step 3: Re-index (would use AI if configured, but falls back if not)
         String nodeHash2 = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'HIPAA');

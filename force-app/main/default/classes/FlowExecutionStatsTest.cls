@@ -20,7 +20,7 @@ private class FlowExecutionStatsTest {
                 Run_Time__c = System.now().addMinutes(-i)
             ));
         }
-        insert executions;
+        insert as user executions;
     }
     
     @IsTest
@@ -79,7 +79,7 @@ private class FlowExecutionStatsTest {
     static void testGetTopFlows_EmptyData() {
         Test.startTest();
         // Delete all test data inside test context to preserve DML limits
-        delete [SELECT Id FROM Flow_Execution__c];
+        delete as user [SELECT Id FROM Flow_Execution__c];
 
         List<FlowExecutionStats.ExecAgg> results = FlowExecutionStats.getTopFlows(5);
         Test.stopTest();

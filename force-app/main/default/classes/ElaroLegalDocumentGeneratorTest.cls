@@ -154,7 +154,7 @@ private class ElaroLegalDocumentGeneratorTest {
             TimeZoneSidKey = 'America/Los_Angeles',
             Username = 'limiteduser' + DateTime.now().getTime() + '@test.com'
         );
-        insert limitedUser;
+        insert as user limitedUser;
 
         Test.startTest();
         System.runAs(limitedUser) {

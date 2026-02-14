@@ -13,7 +13,7 @@ private class ElaroDrillDownControllerTest {
         for (Integer i = 0; i < 30; i++) {
             accounts.add(new Account(Name = 'Test Account ' + i));
         }
-        insert accounts;
+        insert as user accounts;
     }
 
     @isTest
@@ -325,9 +325,9 @@ private class ElaroDrillDownControllerTest {
     @isTest
     static void testExportToCSVRelationshipField() {
         Account acc = new Account(Name = 'Parent Account');
-        insert acc;
+        insert as user acc;
         Contact con = new Contact(FirstName = 'Test', LastName = 'Contact', AccountId = acc.Id);
-        insert con;
+        insert as user con;
 
         String contextJson = JSON.serialize(new Map<String, Object>{
             'objectApiName' => 'Contact',

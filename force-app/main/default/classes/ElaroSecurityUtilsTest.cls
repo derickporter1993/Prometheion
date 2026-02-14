@@ -15,7 +15,7 @@ private class ElaroSecurityUtilsTest {
         Account testAccount = new Account(
             Name = 'Test Account'
         );
-        insert testAccount;
+        insert as user testAccount;
     }
     
     @IsTest

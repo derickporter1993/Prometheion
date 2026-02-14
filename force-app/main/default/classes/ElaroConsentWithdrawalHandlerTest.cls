@@ -22,8 +22,8 @@ private class ElaroConsentWithdrawalHandlerTest {
                 DoNotCall = false
             ));
         }
-        insert contacts;
-        
+        insert as user contacts;
+
         // Create consent records
         List<Consent__c> consents = new List<Consent__c>();
         for (Contact c : contacts) {
@@ -40,9 +40,9 @@ private class ElaroConsentWithdrawalHandlerTest {
                 Consent_Date__c = Date.today().addDays(-30)
             ));
         }
-        insert consents;
+        insert as user consents;
     }
-    
+
     @IsTest
     static void testProcessWithdrawalsMarketing() {
         // Get test consents
@@ -58,14 +58,14 @@ private class ElaroConsentWithdrawalHandlerTest {
         for (Consent__c c : consents) {
             c.Status__c = 'Withdrawn';
         }
-        update consents;
-        
+        update as user consents;
+
         Test.startTest();
-        
+
         ElaroConsentWithdrawalHandler.processWithdrawals(consents);
-        
+
         Test.stopTest();
-        
+
         // Verify contacts updated
         List<Contact> updatedContacts = [
             SELECT Id, HasOptedOutOfEmail
@@ -95,14 +95,14 @@ private class ElaroConsentWithdrawalHandlerTest {
         for (Consent__c c : consents) {
             c.Status__c = 'Withdrawn';
         }
-        update consents;
-        
+        update as user consents;
+
         Test.startTest();
-        
+
         ElaroConsentWithdrawalHandler.processWithdrawals(consents);
-        
+
         Test.stopTest();
-        
+
         // Verify contacts updated
         List<Contact> updatedContacts = [
             SELECT Id, HasOptedOutOfEmail, DoNotCall
@@ -129,7 +129,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             Status__c = 'Withdrawn',
             Consent_Date__c = Date.today()
         );
-        insert fullConsent;
+        insert as user fullConsent;
         
         Test.startTest();
         
@@ -162,8 +162,8 @@ private class ElaroConsentWithdrawalHandlerTest {
                 Email = 'bulkcontact' + i + '@elaro.test'
             ));
         }
-        insert contacts;
-        
+        insert as user contacts;
+
         List<Consent__c> consents = new List<Consent__c>();
         for (Contact c : contacts) {
             consents.add(new Consent__c(
@@ -173,14 +173,14 @@ private class ElaroConsentWithdrawalHandlerTest {
                 Consent_Date__c = Date.today()
             ));
         }
-        insert consents;
-        
+        insert as user consents;
+
         Test.startTest();
-        
+
         ElaroConsentWithdrawalHandler.processWithdrawals(consents);
-        
+
         Test.stopTest();
-        
+
         // Verify bulk processing worked
         List<Contact> updatedContacts = [
             SELECT Id, HasOptedOutOfEmail
@@ -220,8 +220,8 @@ private class ElaroConsentWithdrawalHandlerTest {
         for (Consent__c c : consents) {
             c.Status__c = 'Withdrawn';
         }
-        update consents;
-        
+        update as user consents;
+
         Test.startTest();
 
         ElaroConsentWithdrawalHandler.processWithdrawals(consents);

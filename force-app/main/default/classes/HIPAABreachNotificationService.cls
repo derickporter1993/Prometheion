@@ -286,7 +286,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Status__c = 'Open';
 
         ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_INSERT);
-        insert breach;
+        insert as user breach;
 
         // Log audit entry
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
@@ -345,7 +345,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Individuals_Notified_Count__c = individualsNotified;
 
         ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
-        update breach;
+        update as user breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
         service.logAuditEntry('HIPAA_Individual_Notification', breachId,
@@ -370,7 +370,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.HHS_Confirmation_Number__c = hhsConfirmationNumber;
 
         ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
-        update breach;
+        update as user breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
         service.logAuditEntry('HIPAA_HHS_Notification', breachId,

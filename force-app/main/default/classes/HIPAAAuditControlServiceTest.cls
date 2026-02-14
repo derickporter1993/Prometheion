@@ -20,7 +20,7 @@ public class HIPAAAuditControlServiceTest {
                 Email = 'patient' + i + '@test.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
 
     @isTest
@@ -197,7 +197,7 @@ public class HIPAAAuditControlServiceTest {
                 Email = 'bulk' + i + '@test.com'
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
 
         Test.startTest();
         HIPAAAuditControlService.AuditComplianceResult result =

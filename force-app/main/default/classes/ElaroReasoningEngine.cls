@@ -159,7 +159,7 @@ public without sharing class ElaroReasoningEngine {
 
         try {
             // Big Object (__b): standard CRUD/FLS checks not enforced by platform for Big Objects
-            insert adjudication;
+            insert as user adjudication;
             return adjudicationHash;
         } catch (DmlException e) {
             String correlationId = generateCorrelationId(nodeHash);

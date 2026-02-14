@@ -15,7 +15,7 @@ private class DataResidencyServiceTest {
             Description__c = 'Test evidence for international transfer',
             Status__c = 'COLLECTED'
         );
-        insert item;
+        insert as user item;
     }
 
     @isTest

@@ -90,7 +90,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
         // Update escalation level on gap
         gap.Alert_Escalation_Level__c = nextLevel;
         if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
+            update as user gap;
         }
 
         // Schedule next escalation if not at max level

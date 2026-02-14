@@ -42,7 +42,7 @@ public with sharing class ElaroComplianceAlert {
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Elaro_Alert_Config__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert alertRecord;
+        insert as user alertRecord;
         return alertRecord.Id;
     }
     

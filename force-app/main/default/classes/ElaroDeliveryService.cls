@@ -163,7 +163,7 @@ public with sharing class ElaroDeliveryService {
             );
 
             ElaroSecurityUtils.validateCRUDAccess('ContentDistribution', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert cd;
+            insert as user cd;
             
             // Query for the generated URL
             cd = [

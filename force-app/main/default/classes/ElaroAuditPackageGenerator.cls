@@ -48,7 +48,7 @@ public with sharing class ElaroAuditPackageGenerator {
         );
         
         try {
-            insert auditPackage;
+            insert as user auditPackage;
             
             // Generate framework mappings
             generateFrameworkMappings(auditPackage.Id, framework);
@@ -92,7 +92,7 @@ public with sharing class ElaroAuditPackageGenerator {
         }
         
         if (!mappings.isEmpty()) {
-            insert mappings;
+            insert as user mappings;
         }
     }
     
@@ -126,7 +126,7 @@ public with sharing class ElaroAuditPackageGenerator {
         }
         
         if (!evidenceItems.isEmpty()) {
-            insert evidenceItems;
+            insert as user evidenceItems;
         }
     }
 }

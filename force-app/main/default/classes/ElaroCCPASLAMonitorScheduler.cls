@@ -94,7 +94,7 @@ public with sharing class ElaroCCPASLAMonitorScheduler implements Schedulable {
             request.Status__c = 'Overdue';
         }
 
-        List<Database.SaveResult> results = Database.update(overdueRequests, false);
+        List<Database.SaveResult> results = Database.update(overdueRequests, false, AccessLevel.USER_MODE);
         for (Database.SaveResult sr : results) {
             if (!sr.isSuccess()) {
                 for (Database.Error err : sr.getErrors()) {

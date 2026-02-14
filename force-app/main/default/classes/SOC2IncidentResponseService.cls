@@ -82,7 +82,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
         );
 
         if (Schema.sObjectType.Security_Incident__c.isCreateable()) {
-            insert incident;
+            insert as user incident;
         }
 
         // Populate assessment
@@ -236,7 +236,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             Origin = 'H'
         );
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
 
@@ -396,7 +396,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             incident.Severity__c = 'CRITICAL';
         }
 
-        update incident;
+        update as user incident;
 
         SOC2IncidentResponseService service = new SOC2IncidentResponseService();
         service.logAuditEntry('INCIDENT_ESCALATED', 'Escalated incident to ' + incident.Severity__c + '. Reason: ' + reason, incidentId);
@@ -418,7 +418,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
         incident.Resolution__c = resolution;
         incident.Resolved_Date__c = DateTime.now();
 
-        update incident;
+        update as user incident;
 
         SOC2IncidentResponseService service = new SOC2IncidentResponseService();
         service.logAuditEntry('INCIDENT_RESOLVED', 'Resolved incident: ' + resolution, incidentId);

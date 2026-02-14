@@ -112,7 +112,7 @@ public with sharing class RemediationExecutor {
         }
 
         if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
+            update as user suggestion;
         }
 
         // Update the related gap
@@ -248,7 +248,7 @@ public with sharing class RemediationExecutor {
 
         // Single DML: Update all suggestions
         if (!suggestionsToUpdate.isEmpty() && Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestionsToUpdate;
+            update as user suggestionsToUpdate;
         }
 
         // Single SOQL + Single DML: Update all gaps
@@ -365,7 +365,7 @@ public with sharing class RemediationExecutor {
         suggestion.Applied_By__c = UserInfo.getUserId();
 
         if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
+            update as user suggestion;
         }
     }
 
@@ -374,7 +374,7 @@ public with sharing class RemediationExecutor {
         suggestion.Error_Message__c = errorMessage;
 
         if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
+            update as user suggestion;
         }
     }
 
@@ -393,7 +393,7 @@ public with sharing class RemediationExecutor {
             gap.Actual_Remediation_Date__c = Date.today();
 
             if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
+                update as user gap;
             }
         }
     }
@@ -416,7 +416,7 @@ public with sharing class RemediationExecutor {
         }
 
         if (!gaps.isEmpty() && Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gaps;
+            update as user gaps;
         }
     }
 

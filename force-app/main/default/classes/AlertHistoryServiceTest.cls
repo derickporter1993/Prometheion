@@ -3,7 +3,7 @@ private class AlertHistoryServiceTest {
     @IsTest
     static void testRecentHistory() {
         // Create test data
-        insert new Performance_Alert_History__c(
+        insert as user new Performance_Alert_History__c(
             Metric__c = 'CPU',
             Value__c = 9000,
             Threshold__c = 8000,
@@ -50,7 +50,7 @@ private class AlertHistoryServiceTest {
                 Threshold__c = 100
             )
         );
-        insert alerts;
+        insert as user alerts;
 
         Test.startTest();
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(10);
@@ -81,7 +81,7 @@ private class AlertHistoryServiceTest {
                 )
             );
         }
-        insert alerts;
+        insert as user alerts;
 
         Test.startTest();
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(5);
@@ -113,7 +113,7 @@ private class AlertHistoryServiceTest {
                 )
             );
         }
-        insert alerts;
+        insert as user alerts;
 
         Test.startTest();
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(10);

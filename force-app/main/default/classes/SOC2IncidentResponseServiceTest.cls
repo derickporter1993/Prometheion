@@ -42,7 +42,7 @@ public class SOC2IncidentResponseServiceTest {
             Root_Cause__c = 'User error',
             Framework__c = 'SOC2'
         ));
-        insert incidents;
+        insert as user incidents;
     }
 
     @isTest
@@ -266,7 +266,7 @@ public class SOC2IncidentResponseServiceTest {
                 Framework__c = 'SOC2'
             ));
         }
-        insert bulkIncidents;
+        insert as user bulkIncidents;
 
         SOC2IncidentResponseService service = new SOC2IncidentResponseService();
 

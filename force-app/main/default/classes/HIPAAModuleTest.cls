@@ -52,7 +52,7 @@ private class HIPAAModuleTest {
             ));
         }
 
-        insert items;
+        insert as user items;
     }
 
     // =============================================
@@ -358,7 +358,7 @@ private class HIPAAModuleTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert cleanPkg;
+        insert as user cleanPkg;
 
         HIPAAModule module = new HIPAAModule();
 
@@ -391,7 +391,7 @@ private class HIPAAModuleTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert cleanPkg;
+        insert as user cleanPkg;
 
         HIPAAModule module = new HIPAAModule();
 
@@ -420,7 +420,7 @@ private class HIPAAModuleTest {
                 Audit_Period_End__c = Date.today()
             ));
         }
-        insert packages;
+        insert as user packages;
 
         HIPAAModule module = new HIPAAModule();
 

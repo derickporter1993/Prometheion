@@ -70,7 +70,7 @@ private class RemediationSuggestionServiceTest {
             Detected_Date__c = Datetime.now()
         ));
 
-        insert gaps;
+        insert as user gaps;
     }
 
     @isTest

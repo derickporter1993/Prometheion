@@ -24,7 +24,7 @@ private class ElaroDashboardControllerTest {
             ProfileId = UserInfo.getProfileId(),
             LanguageLocaleKey = 'en_US'
         );
-        insert testUser;
+        insert as user testUser;
         
         // Create test audit packages
         List<Elaro_Audit_Package__c> packages = new List<Elaro_Audit_Package__c>();
@@ -39,7 +39,7 @@ private class ElaroDashboardControllerTest {
                 Last_Modified_By__c = testUser.Id
             ));
         }
-        insert packages;
+        insert as user packages;
         
         // Create framework mappings
         List<Elaro_Framework_Mapping__c> mappings = new List<Elaro_Framework_Mapping__c>();
@@ -53,7 +53,7 @@ private class ElaroDashboardControllerTest {
                 Is_Active__c = true
             ));
         }
-        insert mappings;
+        insert as user mappings;
         
         // Create evidence items
         List<Elaro_Evidence_Item__c> evidenceItems = new List<Elaro_Evidence_Item__c>();
@@ -65,7 +65,7 @@ private class ElaroDashboardControllerTest {
                 Status__c = 'COLLECTED'
             ));
         }
-        insert evidenceItems;
+        insert as user evidenceItems;
     }
     
     @IsTest

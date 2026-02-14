@@ -98,7 +98,7 @@ public with sharing class ElaroGraphIndexer {
 
         try {
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Graph_Node__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert node;
+            insert as user node;
             return nodeHash;
         } catch (DmlException e) {
             String correlationId = generateCorrelationId(entityType, entityId);
@@ -223,7 +223,7 @@ public with sharing class ElaroGraphIndexer {
                     Status__c = 'NEW',
                     Timestamp__c = System.now()
                 );
-                insert error;
+                insert as user error;
             } catch (Exception logError) {
                 // Don't fail if error logging fails
                 ElaroLogger.warn( 'Failed to log Einstein error: ' + logError.getMessage());
@@ -388,7 +388,7 @@ public with sharing class ElaroGraphIndexer {
         // Bulk insert all nodes
         if (!nodesToInsert.isEmpty()) {
             try {
-                insert nodesToInsert;
+                insert as user nodesToInsert;
             } catch (DmlException e) {
                 String correlationId = generateCorrelationId('BULK', String.valueOf(nodesToInsert.size()));
                 ElaroLogger.error( 

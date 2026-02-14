@@ -20,8 +20,8 @@ private class CCPAConsumerRightsServiceTest {
                 Phone = '555-000' + String.valueOf(i).leftPad(4, '0')
             ));
         }
-        insert contacts;
-        
+        insert as user contacts;
+
         // Create CCPA requests
         List<CCPA_Request__c> requests = new List<CCPA_Request__c>();
         for (Integer i = 0; i < 50; i++) {
@@ -31,7 +31,7 @@ private class CCPAConsumerRightsServiceTest {
                 Status__c = 'Pending'
             ));
         }
-        insert requests;
+        insert as user requests;
     }
     
     @IsTest
@@ -78,8 +78,8 @@ private class CCPAConsumerRightsServiceTest {
             Request_Type__c = 'Delete',
             Status__c = 'Pending'
         );
-        insert request;
-        
+        insert as user request;
+
         Test.startTest();
         CCPAConsumerRightsService service = new CCPAConsumerRightsService();
         Map<String, Object> result = service.handleDeleteRequest(request.Id, testContact.Id);
@@ -96,8 +96,8 @@ private class CCPAConsumerRightsServiceTest {
             Request_Type__c = 'Opt-Out',
             Status__c = 'Pending'
         );
-        insert request;
-        
+        insert as user request;
+
         Test.startTest();
         CCPAConsumerRightsService service = new CCPAConsumerRightsService();
         Map<String, Object> result = service.handleOptOutRequest(request.Id, testContact.Id);
@@ -157,8 +157,8 @@ private class CCPAConsumerRightsServiceTest {
             Request_Type__c = 'Delete',
             Status__c = 'Pending'
         );
-        insert request;
-        
+        insert as user request;
+
         Test.startTest();
         CCPAConsumerRightsService service = new CCPAConsumerRightsService();
         Map<String, Object> result = service.handleErasureRequest(request.Id, testContact.Id, 'Consumer request');

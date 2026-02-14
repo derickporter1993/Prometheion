@@ -12,7 +12,7 @@ private class ElaroSOC2ComplianceServiceTest {
             Label='SOC2 Test Permission Set',
             Description='Test permission set for SOC2 compliance'
         );
-        insert ps;
+        insert as user ps;
     }
     
     @IsTest

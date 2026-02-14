@@ -18,7 +18,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
         for (Integer i = 0; i < 5; i++) {
             accounts.add(new Account(Name = 'Test Account ' + i));
         }
-        insert accounts;
+        insert as user accounts;
 
         // Create test contacts
         List<Contact> contacts = new List<Contact>();
@@ -30,7 +30,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
                 AccountId = accounts[Math.mod(i, 5)].Id
             ));
         }
-        insert contacts;
+        insert as user contacts;
 
         // Create privacy notices due for renewal
         List<Privacy_Notice__c> notices = new List<Privacy_Notice__c>();
@@ -61,7 +61,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
             ));
         }
 
-        insert notices;
+        insert as user notices;
     }
 
     // ========================================
@@ -148,13 +148,13 @@ private class ElaroGLBAAnnualNoticeBatchTest {
     @IsTest
     static void testBatch_BulkData() {
         // Delete existing test data
-        delete [SELECT Id FROM Privacy_Notice__c];
-        delete [SELECT Id FROM Contact];
-        delete [SELECT Id FROM Account];
+        delete as user [SELECT Id FROM Privacy_Notice__c];
+        delete as user [SELECT Id FROM Contact];
+        delete as user [SELECT Id FROM Account];
 
         // Create bulk test data
         Account bulkAccount = new Account(Name = 'Bulk Test Account');
-        insert bulkAccount;
+        insert as user bulkAccount;
 
         List<Contact> bulkContacts = new List<Contact>();
         for (Integer i = 0; i < 200; i++) {
@@ -165,7 +165,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
                 AccountId = bulkAccount.Id
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
 
         List<Privacy_Notice__c> bulkNotices = new List<Privacy_Notice__c>();
         for (Contact c : bulkContacts) {
@@ -178,7 +178,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
                 Next_Annual_Notice_Due__c = Date.today()
             ));
         }
-        insert bulkNotices;
+        insert as user bulkNotices;
 
         Test.startTest();
 
@@ -204,7 +204,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
     @IsTest
     static void testBatch_NoDataToProcess() {
         // Delete all notices due today
-        delete [SELECT Id FROM Privacy_Notice__c WHERE Next_Annual_Notice_Due__c <= TODAY];
+        delete as user [SELECT Id FROM Privacy_Notice__c WHERE Next_Annual_Notice_Due__c <= TODAY];
 
         Test.startTest();
 
@@ -237,7 +237,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
                     Next_Annual_Notice_Due__c = Date.today()
                 ));
             }
-            insert duplicateNotices;
+            insert as user duplicateNotices;
         }
 
         Test.startTest();
@@ -255,7 +255,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
     static void testBatch_ContactWithoutEmail() {
         // Create contact without email
         Account acc = new Account(Name = 'No Email Account');
-        insert acc;
+        insert as user acc;
 
         Contact noEmailContact = new Contact(
             FirstName = 'No',
@@ -263,7 +263,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
             AccountId = acc.Id
             // No email set
         );
-        insert noEmailContact;
+        insert as user noEmailContact;
 
         Privacy_Notice__c notice = new Privacy_Notice__c(
             Contact__c = noEmailContact.Id,
@@ -273,7 +273,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
             Delivery_Status__c = 'Delivered',
             Next_Annual_Notice_Due__c = Date.today()
         );
-        insert notice;
+        insert as user notice;
 
         Test.startTest();
 

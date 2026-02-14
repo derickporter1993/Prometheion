@@ -68,7 +68,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
         }
 
         if (!newNotices.isEmpty()) {
-            List<Database.SaveResult> results = Database.insert(newNotices, false);
+            List<Database.SaveResult> results = Database.insert(newNotices, false, AccessLevel.USER_MODE);
             for (Integer i = 0; i < results.size(); i++) {
                 if (!results[i].isSuccess()) {
                     errors++;

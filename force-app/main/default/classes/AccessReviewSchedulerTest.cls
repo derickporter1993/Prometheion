@@ -23,7 +23,7 @@ private class AccessReviewSchedulerTest {
                 Review_Scope__c = 'Full Access Review'
             ));
         }
-        insert reviews;
+        insert as user reviews;
     }
 
     @IsTest
@@ -155,7 +155,7 @@ private class AccessReviewSchedulerTest {
                 Review_Scope__c = 'Full Access Review'
             ));
         }
-        insert reviews;
+        insert as user reviews;
 
         Test.startTest();
 

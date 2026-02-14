@@ -29,7 +29,7 @@ private class ElaroAISettingsControllerTest {
             Auto_Remediation_Enabled__c = true,
             Blacklisted_Users__c = 'test@example.com'
         );
-        insert customSettings;
+        insert as user customSettings;
 
         Test.startTest();
         Elaro_AI_Settings__c settings = ElaroAISettingsController.getSettings();
@@ -71,7 +71,7 @@ private class ElaroAISettingsControllerTest {
             Enable_AI_Reasoning__c = true,
             Confidence_Threshold__c = 0.85
         );
-        insert existingSettings;
+        insert as user existingSettings;
 
         // When: Updating settings
         existingSettings.Confidence_Threshold__c = 0.95;
@@ -133,7 +133,7 @@ private class ElaroAISettingsControllerTest {
             TimeZoneSidKey = 'America/Los_Angeles',
             Username = 'limiteduser' + DateTime.now().getTime() + '@test.com'
         );
-        insert limitedUser;
+        insert as user limitedUser;
 
         Test.startTest();
         System.runAs(limitedUser) {

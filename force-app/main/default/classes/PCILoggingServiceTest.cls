@@ -24,7 +24,7 @@ private class PCILoggingServiceTest {
                 Timestamp__c = DateTime.now().addDays(-i)
             ));
         }
-        insert logs;
+        insert as user logs;
     }
     
     @IsTest

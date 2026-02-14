@@ -20,7 +20,7 @@ private class GDPRDataSubjectServiceTest {
                 Phone = '555-000' + String.valueOf(i).leftPad(4, '0')
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
     
     @IsTest

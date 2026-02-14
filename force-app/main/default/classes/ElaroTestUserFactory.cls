@@ -98,7 +98,7 @@ public class ElaroTestUserFactory {
             ProfileId = standardProfile.Id
         );
 
-        insert u;
+        insert as user u;
         return u;
     }
 
@@ -115,7 +115,7 @@ public class ElaroTestUserFactory {
                 LIMIT 1
             ];
 
-            insert new PermissionSetAssignment(
+            insert as user new PermissionSetAssignment(
                 AssigneeId = userId,
                 PermissionSetId = ps.Id
             );
@@ -160,7 +160,7 @@ public class ElaroTestUserFactory {
 
             if (previousManager != null) {
                 manager.ManagerId = previousManager.Id;
-                update manager;
+                update as user manager;
             }
 
             hierarchy.put(level, new List<User>{manager});

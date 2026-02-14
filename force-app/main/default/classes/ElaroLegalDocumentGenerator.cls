@@ -55,7 +55,7 @@ public with sharing class ElaroLegalDocumentGenerator {
             if (accessibleContent.isEmpty()) {
                 throw new AuraHandledException('Insufficient field-level security access for ContentVersion');
             }
-            insert accessibleContent;
+            insert as user accessibleContent;
             cv = (ContentVersion)accessibleContent[0];
 
             // Get ContentDocumentId
@@ -112,7 +112,7 @@ public with sharing class ElaroLegalDocumentGenerator {
                     Timestamp__c = System.now(),
                     Details__c = 'Framework: ' + framework + ', Period: ' + startDate + ' to ' + endDate + ', DocumentId: ' + documentId
                 );
-                insert auditLog;
+                insert as user auditLog;
             }
         } catch (Exception e) {
             // Don't fail the main operation if audit logging fails

@@ -25,7 +25,7 @@ private class SOC2ModuleTest {
             ));
         }
 
-        insert items;
+        insert as user items;
     }
 
     // =============================================
@@ -113,7 +113,7 @@ private class SOC2ModuleTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert cleanPkg;
+        insert as user cleanPkg;
 
         SOC2Module module = new SOC2Module();
 
@@ -156,7 +156,7 @@ private class SOC2ModuleTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert cleanPkg;
+        insert as user cleanPkg;
 
         SOC2Module module = new SOC2Module();
 
@@ -350,7 +350,7 @@ private class SOC2ModuleTest {
                 Audit_Period_End__c = Date.today()
             ));
         }
-        insert packages;
+        insert as user packages;
 
         SOC2Module module = new SOC2Module();
 

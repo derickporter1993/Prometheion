@@ -266,7 +266,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         // Get ContentDocumentId
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];

@@ -110,7 +110,7 @@ public with sharing class MobileAlertPublisher {
             gap.Alert_Acknowledged_At__c = Datetime.now();
 
             if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
+                update as user gap;
             }
         }
 
@@ -144,7 +144,7 @@ public with sharing class MobileAlertPublisher {
             gap.Alert_Snoozed_Until__c = snoozeUntil;
 
             if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
+                update as user gap;
             }
         }
 

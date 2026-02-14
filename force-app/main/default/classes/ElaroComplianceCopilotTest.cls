@@ -8,14 +8,14 @@ private class ElaroComplianceCopilotTest {
             Name = 'TestElevatedPS',
             Label = 'Test Elevated Permission Set'
         );
-        insert ps;
+        insert as user ps;
         
         // Assign permission set to current user
         PermissionSetAssignment psa = new PermissionSetAssignment(
             AssigneeId = UserInfo.getUserId(),
             PermissionSetId = ps.Id
         );
-        insert psa;
+        insert as user psa;
     }
     
     @IsTest

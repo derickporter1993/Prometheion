@@ -21,7 +21,7 @@ private class MobileAlertEscalatorTest {
             TimeZoneSidKey = 'America/New_York',
             UserName = 'escalationuser' + Datetime.now().getTime() + '@elaro.test'
         );
-        insert testUser;
+        insert as user testUser;
 
         // Create escalation paths for all levels
         List<Elaro_Escalation_Path__c> escalationPaths = new List<Elaro_Escalation_Path__c>();
@@ -49,7 +49,7 @@ private class MobileAlertEscalatorTest {
             Notification_Method__c = 'All',
             Escalation_Delay_Minutes__c = 60
         ));
-        insert escalationPaths;
+        insert as user escalationPaths;
 
         // Create test compliance gap
         Compliance_Gap__c gap = new Compliance_Gap__c(
@@ -60,7 +60,7 @@ private class MobileAlertEscalatorTest {
             Gap_Description__c = 'Critical SOX compliance gap for escalation testing',
             Detected_Date__c = Datetime.now()
         );
-        insert gap;
+        insert as user gap;
     }
 
     @isTest
@@ -86,7 +86,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_SecondLevelEscalation() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Escalation_Level__c = 1;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -106,7 +106,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_ThirdLevelEscalation() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Escalation_Level__c = 2;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -126,7 +126,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_MaxLevelReached() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Escalation_Level__c = 3;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -147,7 +147,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_AlreadyAcknowledged() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Acknowledged__c = true;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -168,7 +168,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_Snoozed() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Snoozed_Until__c = Datetime.now().addHours(2);
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -189,7 +189,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_SnoozeExpired() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Alert_Snoozed_Until__c = Datetime.now().addMinutes(-5); // Expired snooze
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -224,7 +224,7 @@ private class MobileAlertEscalatorTest {
         for (Elaro_Escalation_Path__c path : paths) {
             path.Active__c = false;
         }
-        update paths;
+        update as user paths;
 
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
 
@@ -279,7 +279,7 @@ private class MobileAlertEscalatorTest {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         // Ensure snooze is null (not set)
         gap.Alert_Snoozed_Until__c = null;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -327,7 +327,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_WithDescription() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Gap_Description__c = 'This is a very long description that should be abbreviated for the notification message. '.repeat(10);
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);
@@ -341,7 +341,7 @@ private class MobileAlertEscalatorTest {
     static void testEscalator_NullDescription() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c LIMIT 1];
         gap.Gap_Description__c = null;
-        update gap;
+        update as user gap;
 
         Test.startTest();
         MobileAlertEscalator escalator = new MobileAlertEscalator(gap.Id);

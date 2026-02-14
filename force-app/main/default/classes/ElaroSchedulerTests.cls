@@ -56,11 +56,11 @@ private class ElaroSchedulerTests {
             Completed_Date__c = Date.today()
         ));
 
-        insert ccpaRequests;
+        insert as user ccpaRequests;
 
         // Create test accounts for privacy notices
         Account testAccount = new Account(Name = 'Test Customer Account');
-        insert testAccount;
+        insert as user testAccount;
 
         // Create test privacy notices
         List<Privacy_Notice__c> notices = new List<Privacy_Notice__c>();
@@ -71,7 +71,7 @@ private class ElaroSchedulerTests {
             Delivery_Status__c = 'Delivered',
             Next_Annual_Notice_Due__c = Date.today()
         ));
-        insert notices;
+        insert as user notices;
     }
 
     // ========================================
@@ -130,7 +130,7 @@ private class ElaroSchedulerTests {
     @IsTest
     static void testCCPASLAMonitorScheduler_NoApproachingDeadlines() {
         // Delete all test CCPA requests
-        delete [SELECT Id FROM CCPA_Request__c];
+        delete as user [SELECT Id FROM CCPA_Request__c];
 
         Test.startTest();
 
@@ -356,7 +356,7 @@ private class ElaroSchedulerTests {
             ));
         }
 
-        insert bulkRequests;
+        insert as user bulkRequests;
 
         Test.startTest();
 
@@ -377,9 +377,9 @@ private class ElaroSchedulerTests {
     @IsTest
     static void testSchedulers_WithNoData() {
         // Delete all test data
-        delete [SELECT Id FROM CCPA_Request__c];
-        delete [SELECT Id FROM Privacy_Notice__c];
-        delete [SELECT Id FROM Access_Review__c];
+        delete as user [SELECT Id FROM CCPA_Request__c];
+        delete as user [SELECT Id FROM Privacy_Notice__c];
+        delete as user [SELECT Id FROM Access_Review__c];
 
         Test.startTest();
 

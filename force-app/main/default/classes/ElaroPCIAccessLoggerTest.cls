@@ -15,7 +15,7 @@ private class ElaroPCIAccessLoggerTest {
         for (Integer i = 0; i < 200; i++) {
             accounts.add(new Account(Name = 'Payment Record ' + i));
         }
-        insert accounts;
+        insert as user accounts;
     }
 
     @IsTest

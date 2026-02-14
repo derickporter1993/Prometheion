@@ -16,7 +16,7 @@ private class RemediationOrchestratorTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert pkg;
+        insert as user pkg;
 
         Elaro_Evidence_Item__c evidence = new Elaro_Evidence_Item__c(
             Audit_Package__c = pkg.Id,
@@ -25,7 +25,7 @@ private class RemediationOrchestratorTest {
             Description__c = 'Test impersonation event',
             Status__c = 'COLLECTED'
         );
-        insert evidence;
+        insert as user evidence;
     }
 
     @isTest

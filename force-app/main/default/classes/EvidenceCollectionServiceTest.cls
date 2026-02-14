@@ -126,7 +126,7 @@ private class EvidenceCollectionServiceTest {
         for (Integer i = 0; i < 200; i++) {
             accounts.add(new Account(Name = 'Bulk Test Account ' + i));
         }
-        insert accounts;
+        insert as user accounts;
 
         Date startDate = System.today().addDays(-30);
         Date endDate = System.today();

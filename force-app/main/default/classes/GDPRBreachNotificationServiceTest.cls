@@ -21,7 +21,7 @@ private class GDPRBreachNotificationServiceTest {
                 DPA_Notified__c = false
             ));
         }
-        insert breaches;
+        insert as user breaches;
     }
     
     @IsTest
@@ -68,7 +68,7 @@ private class GDPRBreachNotificationServiceTest {
             Affected_Records__c = 1500,
             Status__c = 'Detected'
         );
-        insert breach;
+        insert as user breach;
         
         Test.startTest();
         GDPRBreachNotificationService service = new GDPRBreachNotificationService();
@@ -87,7 +87,7 @@ private class GDPRBreachNotificationServiceTest {
             Affected_Records__c = 50,
             Status__c = 'Detected'
         );
-        insert breach;
+        insert as user breach;
         
         Test.startTest();
         GDPRBreachNotificationService service = new GDPRBreachNotificationService();
@@ -105,7 +105,7 @@ private class GDPRBreachNotificationServiceTest {
             Status__c = 'Detected',
             DPA_Notified__c = false
         );
-        insert breach;
+        insert as user breach;
         
         Test.startTest();
         GDPRBreachNotificationService service = new GDPRBreachNotificationService();
@@ -126,7 +126,7 @@ private class GDPRBreachNotificationServiceTest {
             Affected_Records__c = 500,
             Status__c = 'DPA Notified'
         );
-        insert breach;
+        insert as user breach;
         
         Test.startTest();
         GDPRBreachNotificationService service = new GDPRBreachNotificationService();

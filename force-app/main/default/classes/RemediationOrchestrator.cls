@@ -74,8 +74,8 @@ public with sharing class RemediationOrchestrator {
             OwnerId = UserInfo.getUserId()
         );
         
-        insert remedCase;
-        
+        insert as user remedCase;
+
         // Link case to event (if lookup field exists)
         updateEventWithCase(event.Id, remedCase.Id);
         
@@ -201,7 +201,7 @@ public with sharing class RemediationOrchestrator {
             ];
             
             if (!assignments.isEmpty()) {
-                delete assignments;
+                delete as user assignments;
                 result.success = true;
                 result.message = 'Permission set assignment removed successfully';
             } else {
@@ -220,7 +220,7 @@ public with sharing class RemediationOrchestrator {
         try {
             User u = [SELECT Id, IsActive FROM User WHERE Id = :targetId WITH USER_MODE LIMIT 1];
             u.IsActive = false;
-            update u;
+            update as user u;
             
             result.success = true;
             result.message = 'User account has been deactivated';
@@ -283,8 +283,8 @@ public with sharing class RemediationOrchestrator {
             Type = 'Compliance'
         );
         
-        insert remedCase;
-        
+        insert as user remedCase;
+
         result.success = true;
         result.message = 'Case created: ' + remedCase.Id;
         result.resultId = remedCase.Id;
@@ -308,7 +308,7 @@ public with sharing class RemediationOrchestrator {
             ];
             
             if (!sessions.isEmpty()) {
-                delete sessions;
+                delete as user sessions;
             }
             
             result.success = true;
@@ -339,7 +339,7 @@ public with sharing class RemediationOrchestrator {
                 Id = eventId,
                 Status__c = 'Under Review'
             );
-            update event;
+            update as user event;
         } catch (Exception e) {
             ElaroLogger.warn( 'Could not update event: ' + e.getMessage());
         }

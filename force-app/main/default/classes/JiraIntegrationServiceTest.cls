@@ -24,7 +24,7 @@ private class JiraIntegrationServiceTest {
             Risk_Threshold__c = 8.0,
             Sync_Enabled__c = true
         );
-        insert settings;
+        insert as user settings;
 
         // Create test compliance gap
         Compliance_Gap__c gap = new Compliance_Gap__c(
@@ -37,7 +37,7 @@ private class JiraIntegrationServiceTest {
             Risk_Score__c = 8.5,
             Detected_Date__c = Datetime.now()
         );
-        insert gap;
+        insert as user gap;
 
         // Create linked gap for sync tests
         Compliance_Gap__c linkedGap = new Compliance_Gap__c(
@@ -52,7 +52,7 @@ private class JiraIntegrationServiceTest {
             Jira_Issue_URL__c = 'https://test.atlassian.net/browse/' + MOCK_JIRA_KEY,
             Jira_Status__c = 'In Progress'
         );
-        insert linkedGap;
+        insert as user linkedGap;
     }
 
     // ============================================
@@ -240,7 +240,7 @@ private class JiraIntegrationServiceTest {
                 Detected_Date__c = Datetime.now()
             ));
         }
-        insert newGaps;
+        insert as user newGaps;
 
         List<String> gapIds = new List<String>();
         for (Compliance_Gap__c g : newGaps) {
@@ -329,7 +329,7 @@ private class JiraIntegrationServiceTest {
     @isTest
     static void testIsConfigured_False() {
         // Clear settings
-        delete [SELECT Id FROM Elaro_Jira_Settings__c];
+        delete as user [SELECT Id FROM Elaro_Jira_Settings__c];
 
         Test.startTest();
         Boolean configured = JiraIntegrationService.isConfigured();

@@ -97,7 +97,7 @@ public with sharing class ElaroConsentWithdrawalHandler {
         
         Map<Id, String> contactEmailMap = new Map<Id, String>();
         if (!contactIds.isEmpty()) {
-            for (Contact c : [SELECT Id, Email FROM Contact WHERE Id IN :contactIds]) {
+            for (Contact c : [SELECT Id, Email FROM Contact WHERE Id IN :contactIds WITH USER_MODE]) {
                 contactEmailMap.put(c.Id, c.Email);
             }
         }

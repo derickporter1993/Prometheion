@@ -24,7 +24,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert manager;
+        insert as user manager;
         
         User testUser = new User(
             FirstName = 'Test',
@@ -39,7 +39,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert testUser;
+        insert as user testUser;
     }
     
     @IsTest

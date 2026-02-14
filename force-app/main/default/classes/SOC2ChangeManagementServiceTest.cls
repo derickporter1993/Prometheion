@@ -24,7 +24,7 @@ public class SOC2ChangeManagementServiceTest {
                 Ticket_Reference__c = i < 5 ? 'JIRA-' + i : null
             ));
         }
-        insert changes;
+        insert as user changes;
     }
 
     @isTest
@@ -173,7 +173,7 @@ public class SOC2ChangeManagementServiceTest {
                 Risk_Score__c = 5.0
             ));
         }
-        insert bulkChanges;
+        insert as user bulkChanges;
 
         Test.startTest();
         SOC2ChangeManagementService.ChangeControlResult result =

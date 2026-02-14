@@ -41,17 +41,17 @@ private class ElaroSharingViolationTest {
             LanguageLocaleKey = 'en_US'
         );
         
-        insert new List<User>{owner1, owner2};
+        insert as user new List<User>{owner1, owner2};
         
         // Create accounts owned by different users
         System.runAs(owner1) {
             Account acc1 = new Account(Name = 'Owner1 Account');
-            insert acc1;
+            insert as user acc1;
         }
         
         System.runAs(owner2) {
             Account acc2 = new Account(Name = 'Owner2 Account');
-            insert acc2;
+            insert as user acc2;
         }
     }
     

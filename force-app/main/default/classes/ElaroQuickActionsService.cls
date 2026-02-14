@@ -145,7 +145,7 @@ public with sharing class ElaroQuickActionsService {
                         AccessType.CREATABLE,
                         newAssignments
                     );
-                    insert decision.getRecords();
+                    insert as user decision.getRecords();
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
@@ -159,7 +159,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission set assignments');
                 } else {
-                    delete assignmentsToRemove;
+                    delete as user assignmentsToRemove;
                     result.assignmentsRemoved.addAll(assignmentsToRemove);
                 }
             } catch (DmlException e) {
@@ -220,7 +220,7 @@ public with sharing class ElaroQuickActionsService {
                         AccessType.UPDATABLE,
                         inactiveUsers
                     );
-                    update decision.getRecords();
+                    update as user decision.getRecords();
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception updating users: ' + e.getMessage());
@@ -264,7 +264,7 @@ public with sharing class ElaroQuickActionsService {
                 
                 if (!assignments.isEmpty()) {
                     if (Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                        delete assignments;
+                        delete as user assignments;
                     } else {
                         result.messages.add('Insufficient permissions to delete permission set assignments');
                     }
@@ -279,7 +279,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSet.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission sets');
                 } else {
-                    delete setsToRemove;
+                    delete as user setsToRemove;
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting permission sets: ' + e.getMessage());
@@ -376,7 +376,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission set assignments');
                 } else {
-                    delete toRemove;
+                    delete as user toRemove;
                     result.assignmentsRemoved.addAll(toRemove);
                     result.messages.add('Removed ' + toRemove.size() +
                         ' excessive permission set assignments.');
@@ -402,7 +402,7 @@ public with sharing class ElaroQuickActionsService {
             Name = 'Elaro_Least_Privilege_' + String.valueOf(DateTime.now().getTime()),
             Label = 'Elaro Least Privilege Template'
         );
-        insert ps;
+        insert as user ps;
         
         // Note: Object and field permissions would be added here
         // This is a simplified version - full implementation would
@@ -443,8 +443,8 @@ public with sharing class ElaroQuickActionsService {
                 result.message = result.errorMessage;
                 return result;
             }
-            delete assignments;
-            
+            delete as user assignments;
+
             result.success = true;
             result.affectedRecords = assignments.size();
             result.message = 'Revoked Modify All Data permission from ' + 
@@ -499,7 +499,7 @@ public with sharing class ElaroQuickActionsService {
                 u.IsActive = false;
             }
 
-            update inactiveUsers;
+            update as user inactiveUsers;
             
             result.success = true;
             result.affectedRecords = inactiveUsers.size();
@@ -540,7 +540,7 @@ public with sharing class ElaroQuickActionsService {
                 result.message = result.errorMessage;
                 return result;
             }
-            delete psa;
+            delete as user psa;
             
             result.success = true;
             result.affectedRecords = 1;

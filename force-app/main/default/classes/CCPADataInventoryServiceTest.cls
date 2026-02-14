@@ -20,7 +20,7 @@ private class CCPADataInventoryServiceTest {
                 Data_Categories_Shared__c = 'Identifiers, Commercial Information'
             ));
         }
-        insert recipients;
+        insert as user recipients;
     }
     
     @IsTest
@@ -41,7 +41,7 @@ private class CCPADataInventoryServiceTest {
         Contact testContact = [SELECT Id FROM Contact LIMIT 1];
         if (testContact == null) {
             testContact = new Contact(FirstName = 'Test', LastName = 'Contact', Email = 'test@example.com');
-            insert testContact;
+            insert as user testContact;
         }
         
         Test.startTest();

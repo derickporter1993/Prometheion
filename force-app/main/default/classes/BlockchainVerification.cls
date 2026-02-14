@@ -192,7 +192,7 @@ public with sharing class BlockchainVerification {
                 throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
             }
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert anchorsToInsert;
+            insert as user anchorsToInsert;
         }
 
         return results;
@@ -315,7 +315,7 @@ public with sharing class BlockchainVerification {
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert anchor;
+        insert as user anchor;
     }
     
     // ═══════════════════════════════════════════════════════════════

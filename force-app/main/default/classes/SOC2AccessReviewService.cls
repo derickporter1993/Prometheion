@@ -93,7 +93,7 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
         }
 
         if (!reviews.isEmpty()) {
-            insert reviews;
+            insert as user reviews;
             logAuditEntry('ACCESS_REVIEW_INITIATED', 'Initiated ' + reviewType + ' access review for ' + reviews.size() + ' users', reviews[0].Id);
             return reviews[0].Id;
         }
@@ -253,7 +253,7 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
                         psa.AssigneeId);
                 }
 
-                delete toRevoke;
+                delete as user toRevoke;
                 result.permissionsRevoked = toRevoke.size();
             }
 

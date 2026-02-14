@@ -45,14 +45,14 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Generated audit package PDF. SHA-256: ' + documentHash
             );
-            insert cv;
-            
+            insert as user cv;
+
             // Link to the audit package record
             linkContentToRecord(cv.Id, packageId);
-            
+
             // Update package with generation timestamp
             pkg.Last_Generated__c = Datetime.now();
-            update pkg;
+            update as user pkg;
             
             return cv.Id;
             
@@ -91,12 +91,12 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Executive summary PDF. SHA-256: ' + documentHash
             );
-            insert cv;
-            
+            insert as user cv;
+
             linkContentToRecord(cv.Id, packageId);
-            
+
             return cv.Id;
-            
+
         } catch (Exception e) {
             throw new AuraHandledException('Error generating executive summary: ' + e.getMessage());
         }
@@ -137,12 +137,12 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Detailed evidence report PDF. SHA-256: ' + documentHash
             );
-            insert cv;
-            
+            insert as user cv;
+
             linkContentToRecord(cv.Id, packageId);
-            
+
             return cv.Id;
-            
+
         } catch (Exception e) {
             throw new AuraHandledException('Error generating evidence report: ' + e.getMessage());
         }
@@ -286,13 +286,13 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(csvContent),
             Description = 'CSV export of audit evidence'
         );
-        insert cv;
-        
+        insert as user cv;
+
         linkContentToRecord(cv.Id, packageId);
-        
+
         return cv.Id;
     }
-    
+
     /**
      * @description Save JSON export as ContentVersion
      * @param packageId The audit package ID
@@ -309,13 +309,13 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(jsonContent),
             Description = 'JSON export of audit package'
         );
-        insert cv;
-        
+        insert as user cv;
+
         linkContentToRecord(cv.Id, packageId);
-        
+
         return cv.Id;
     }
-    
+
     // ═══════════════════════════════════════════════════════════════
     // PRIVATE HELPER METHODS
     // ═══════════════════════════════════════════════════════════════
@@ -381,7 +381,7 @@ public with sharing class ElaroPDFExporter {
             ShareType = 'V',
             Visibility = 'AllUsers'
         );
-        insert cdl;
+        insert as user cdl;
     }
     
     /**

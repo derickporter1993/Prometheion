@@ -13,15 +13,15 @@ private class SegregationOfDutiesServiceTest {
     static void setupTestData() {
         // Create test user
         User testUser = ComplianceTestDataFactory.createTestUser();
-        insert testUser;
+        insert as user testUser;
         
         // Create permission sets
         PermissionSet ps1 = new PermissionSet(Name = 'TestPS_Create', Label = 'Test PS Create');
         PermissionSet ps2 = new PermissionSet(Name = 'TestPS_ModifyAll', Label = 'Test PS Modify All');
-        insert new List<PermissionSet>{ps1, ps2};
+        insert as user new List<PermissionSet>{ps1, ps2};
         
         // Assign permission sets to user
-        insert new List<PermissionSetAssignment>{
+        insert as user new List<PermissionSetAssignment>{
             new PermissionSetAssignment(AssigneeId = testUser.Id, PermissionSetId = ps1.Id),
             new PermissionSetAssignment(AssigneeId = testUser.Id, PermissionSetId = ps2.Id)
         };

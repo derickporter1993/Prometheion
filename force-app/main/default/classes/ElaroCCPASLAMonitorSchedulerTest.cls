@@ -15,7 +15,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
             LastName = 'Consumer',
             Email = 'test.consumer@example.com'
         );
-        insert c;
+        insert as user c;
 
         // Create CCPA requests with various deadlines
         List<CCPA_Request__c> requests = new List<CCPA_Request__c>();
@@ -47,7 +47,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
             Response_Deadline__c = Date.today().addDays(-5)
         ));
 
-        insert requests;
+        insert as user requests;
     }
 
     @isTest
@@ -98,7 +98,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
 
     @isTest
     static void testExecuteWithNoRequests() {
-        delete [SELECT Id FROM CCPA_Request__c];
+        delete as user [SELECT Id FROM CCPA_Request__c];
 
         ElaroCCPASLAMonitorScheduler scheduler = new ElaroCCPASLAMonitorScheduler();
 

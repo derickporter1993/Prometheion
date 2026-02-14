@@ -7,7 +7,7 @@ private class ElaroComplianceScorerTest {
             Label='Test Permission Set',
             Description='Test description'
         );
-        insert ps;
+        insert as user ps;
     }
 
     @IsTest
@@ -34,7 +34,7 @@ private class ElaroComplianceScorerTest {
                 Description='Description ' + i
             ));
         }
-        insert permSets;
+        insert as user permSets;
 
         Test.startTest();
         ElaroComplianceScorer.ScoreResult result = ElaroComplianceScorer.calculateReadinessScore();
@@ -56,7 +56,7 @@ private class ElaroComplianceScorerTest {
                 Description='Bulk test description ' + i
             ));
         }
-        insert permSets;
+        insert as user permSets;
         
         Test.startTest();
         ElaroComplianceScorer.ScoreResult result = ElaroComplianceScorer.calculateReadinessScore();

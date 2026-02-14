@@ -14,7 +14,7 @@ private class ElaroDynamicReportControllerTest {
         for (Integer i = 0; i < 25; i++) {
             accounts.add(new Account(Name = 'Test Account ' + i));
         }
-        insert accounts;
+        insert as user accounts;
     }
 
     @isTest
@@ -537,9 +537,9 @@ private class ElaroDynamicReportControllerTest {
     static void testExecuteReportRelationshipField() {
         // Create Account with related Contact
         Account acc = new Account(Name = 'Parent Account');
-        insert acc;
+        insert as user acc;
         Contact con = new Contact(FirstName = 'Test', LastName = 'Contact', AccountId = acc.Id);
-        insert con;
+        insert as user con;
 
         String configJson = JSON.serialize(new Map<String, Object>{
             'objectApiName' => 'Contact',

@@ -75,7 +75,7 @@ public class HIPAABreachNotificationServiceTest {
             Media_Notified__c = false
         ));
 
-        insert breaches;
+        insert as user breaches;
     }
 
     @isTest
@@ -322,7 +322,7 @@ public class HIPAABreachNotificationServiceTest {
                 Notification_Required__c = true
             ));
         }
-        insert bulkBreaches;
+        insert as user bulkBreaches;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
 

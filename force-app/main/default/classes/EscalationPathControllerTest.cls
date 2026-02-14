@@ -20,7 +20,7 @@ private class EscalationPathControllerTest {
             TimeZoneSidKey = 'America/New_York',
             UserName = 'escpathuser' + Datetime.now().getTime() + '@elaro.test'
         );
-        insert testUser;
+        insert as user testUser;
 
         Elaro_Escalation_Path__c path = new Elaro_Escalation_Path__c(
             User__c = testUser.Id,
@@ -30,7 +30,7 @@ private class EscalationPathControllerTest {
             Notification_Method__c = 'Both',
             Escalation_Delay_Minutes__c = 15
         );
-        insert path;
+        insert as user path;
     }
 
     @isTest

@@ -21,7 +21,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
             BillingCountry = 'US',
             Industry = 'Banking'
         );
-        insert testAccount;
+        insert as user testAccount;
         
         // Create test contacts
         List<Contact> testContacts = new List<Contact>();
@@ -33,7 +33,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
                 AccountId = testAccount.Id
             ));
         }
-        insert testContacts;
+        insert as user testContacts;
         
         // Create existing privacy notices for some contacts
         List<Privacy_Notice__c> existingNotices = new List<Privacy_Notice__c>();
@@ -53,7 +53,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
             Next_Annual_Notice_Due__c = Date.today().addDays(165), // Not due yet
             Notice_Version__c = '1.0'
         ));
-        insert existingNotices;
+        insert as user existingNotices;
     }
     
     @IsTest
@@ -193,7 +193,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
     static void testSendAnnualNotices_BulkOperation() {
         // Given: Many contacts due for annual notice
         Account bulkAccount = new Account(Name = 'Bulk Account');
-        insert bulkAccount;
+        insert as user bulkAccount;
         
         List<Contact> bulkContacts = new List<Contact>();
         List<Privacy_Notice__c> bulkNotices = new List<Privacy_Notice__c>();
@@ -207,7 +207,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
             );
             bulkContacts.add(c);
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
         
         // Create initial notices for all (to make them due for annual)
         for (Contact c : bulkContacts) {
@@ -220,7 +220,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
                 Notice_Version__c = '1.0'
             ));
         }
-        insert bulkNotices;
+        insert as user bulkNotices;
         
         Test.startTest();
         List<Privacy_Notice__c> annualNotices = ElaroGLBAPrivacyNoticeService.sendAnnualNotices();
@@ -245,7 +245,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert limitedUser;
+        insert as user limitedUser;
         return limitedUser;
     }
 }

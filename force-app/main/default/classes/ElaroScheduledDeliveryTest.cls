@@ -81,7 +81,7 @@ private class ElaroScheduledDeliveryTest {
         List<String> recipients = new List<String>{'test@example.com'};
         
         // Delete package to cause error
-        delete pkg;
+        delete as user pkg;
         
         ElaroScheduledDelivery scheduler = new ElaroScheduledDelivery(
             pkg.Id,

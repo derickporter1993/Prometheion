@@ -19,8 +19,8 @@ private class GDPRConsentManagementServiceTest {
                 Email = 'test' + i + '@example.com'
             ));
         }
-        insert contacts;
-        
+        insert as user contacts;
+
         // Create test consents
         List<Consent__c> consents = new List<Consent__c>();
         for (Integer i = 0; i < 100; i++) {
@@ -32,7 +32,7 @@ private class GDPRConsentManagementServiceTest {
                 Consent_Source__c = 'Web Form'
             ));
         }
-        insert consents;
+        insert as user consents;
     }
     
     @IsTest
@@ -114,10 +114,10 @@ private class GDPRConsentManagementServiceTest {
             Activity_Name__c = 'Test Activity',
             Legal_Basis__c = 'Consent'
         );
-        insert activity;
-        
+        insert as user activity;
+
         Contact testContact = [SELECT Id FROM Contact LIMIT 1];
-        
+
         // Create consent
         Consent__c consent = new Consent__c(
             Contact__c = testContact.Id,
@@ -125,7 +125,7 @@ private class GDPRConsentManagementServiceTest {
             Consent_Given__c = true,
             Consent_Date__c = Date.today()
         );
-        insert consent;
+        insert as user consent;
         
         Test.startTest();
         GDPRConsentManagementService service = new GDPRConsentManagementService();
@@ -142,8 +142,8 @@ private class GDPRConsentManagementServiceTest {
             Activity_Name__c = 'Test Activity',
             Legal_Basis__c = 'Consent'
         );
-        insert activity;
-        
+        insert as user activity;
+
         Contact testContact = [SELECT Id FROM Contact WHERE Id NOT IN (SELECT Contact__c FROM Consent__c WHERE Consent_Given__c = true) LIMIT 1];
         
         Test.startTest();

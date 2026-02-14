@@ -3,7 +3,7 @@ private class ElaroGraphIndexerTest {
     @TestSetup
     static void setup() {
         PermissionSet ps = new PermissionSet(Name='TestPS', Label='Test PS');
-        insert ps;
+        insert as user ps;
     }
 
     @IsTest
@@ -66,8 +66,8 @@ private class ElaroGraphIndexerTest {
                 Label = 'Bulk Test PS ' + i
             ));
         }
-        insert permSets;
-        
+        insert as user permSets;
+
         // Create bulk input
         List<ElaroGraphIndexer.IndexInput> inputs = new List<ElaroGraphIndexer.IndexInput>();
         for (PermissionSet ps : permSets) {
@@ -102,8 +102,8 @@ private class ElaroGraphIndexerTest {
                 Label = 'Mixed Test PS ' + i
             ));
         }
-        insert permSets;
-        
+        insert as user permSets;
+
         // Create inputs with different frameworks
         List<String> frameworks = new List<String>{'SOC2', 'HIPAA', 'GDPR', 'NIST', 'PCI_DSS'};
         List<ElaroGraphIndexer.IndexInput> inputs = new List<ElaroGraphIndexer.IndexInput>();
@@ -179,7 +179,7 @@ private class ElaroGraphIndexerTest {
         PermissionSet ps1 = new PermissionSet(Name='TestPS_Drift1', Label='Test PS Drift 1');
         PermissionSet ps2 = new PermissionSet(Name='TestPS_Drift2', Label='Test PS Drift 2');
         PermissionSet ps3 = new PermissionSet(Name='TestPS_Drift3', Label='Test PS Drift 3');
-        insert new List<PermissionSet>{ps1, ps2, ps3};
+        insert as user new List<PermissionSet>{ps1, ps2, ps3};
         
         Test.startTest();
         String nodeHash1 = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps1.Id, null, 'SOC2');
@@ -214,17 +214,17 @@ private class ElaroGraphIndexerTest {
         Elaro_AI_Settings__c aiSettings = Elaro_AI_Settings__c.getOrgDefaults();
         if (aiSettings != null && aiSettings.Enable_AI_Reasoning__c) {
             aiSettings.Enable_AI_Reasoning__c = false;
-            upsert aiSettings;
+            upsert as user aiSettings;
         }
         
         // Create permission set with object permissions to test fallback calculation
         PermissionSet ps = new PermissionSet(Name='TestPS_Fallback', Label='Test PS Fallback');
-        insert ps;
-        
+        insert as user ps;
+
         Test.startTest();
         String nodeHash = ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'SOC2');
         Test.stopTest();
-        
+
         List<Elaro_Compliance_Graph__b> nodes = [
             SELECT Graph_Node_Id__c, Risk_Score__c
             FROM Elaro_Compliance_Graph__b

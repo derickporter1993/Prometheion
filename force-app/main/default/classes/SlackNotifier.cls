@@ -142,7 +142,7 @@ public with sharing class SlackNotifier {
                     Status__c = 'NEW',
                     Timestamp__c = System.now()
                 );
-                insert error;
+                insert as user error;
             }
         } catch (Exception e) {
             ElaroLogger.error('SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
@@ -400,7 +400,7 @@ public with sharing class SlackNotifier {
                 Status__c = 'NEW',
                 Timestamp__c = System.now()
             );
-            insert error;
+            insert as user error;
         } catch (Exception e) {
             // Don't fail the main operation if error logging fails
             ElaroLogger.error( 'SlackNotifier: Failed to log integration error. Original error: ' + errorMessage + ', Logging error: ' + e.getMessage());

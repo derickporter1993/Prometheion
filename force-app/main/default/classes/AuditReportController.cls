@@ -111,7 +111,7 @@ public with sharing class AuditReportController {
         cv.IsMajorVersion = true;
         
         try {
-            insert cv;
+            insert as user cv;
             cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
             return cv.ContentDocumentId;
         } catch (Exception e) {

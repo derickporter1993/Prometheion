@@ -26,7 +26,7 @@ public with sharing class MultiOrgManager {
             Connection_Status__c = 'Pending'
         );
         
-        insert connectedOrg;
+        insert as user connectedOrg;
         
         // Test connection
         testOrgConnection(connectedOrg.Id);
@@ -112,7 +112,7 @@ public with sharing class MultiOrgManager {
         Elaro_Connected_Org__c org = [
             SELECT Id FROM Elaro_Connected_Org__c WHERE Id = :orgId LIMIT 1
         ];
-        delete org;
+        delete as user org;
     }
     
     /**
@@ -226,7 +226,7 @@ public with sharing class MultiOrgManager {
             org.Connection_Status__c = 'Error: ' + e.getMessage().left(100);
         }
         
-        update org;
+        update as user org;
     }
     
     private static void syncPoliciesToOrg(Elaro_Connected_Org__c org, List<Compliance_Policy__mdt> policies) {
