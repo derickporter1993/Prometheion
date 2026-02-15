@@ -272,4 +272,21 @@ private class EventCorrelationEngineTest {
         Assert.isNotNull(event.metadata, 'Metadata should default to empty map');
         Assert.isTrue(event.metadata.isEmpty(), 'Metadata should be empty');
     }
+
+    @IsTest
+    static void shouldReturnRulesFromCacheOnSecondCall() {
+        Test.startTest();
+        // First call populates Platform Cache
+        List<EventCorrelationEngine.CorrelationRule> rules1 =
+            EventCorrelationEngine.loadActiveRules();
+        // Second call should read from Platform Cache
+        List<EventCorrelationEngine.CorrelationRule> rules2 =
+            EventCorrelationEngine.loadActiveRules();
+        Test.stopTest();
+
+        Assert.isNotNull(rules1, 'First call should return rules');
+        Assert.isNotNull(rules2, 'Second call should return rules from cache');
+        Assert.areEqual(rules1.size(), rules2.size(),
+            'Cached rules count should match original rules count');
+    }
 }

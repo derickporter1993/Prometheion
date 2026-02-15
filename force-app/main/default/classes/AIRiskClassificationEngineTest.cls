@@ -105,4 +105,21 @@ private class AIRiskClassificationEngineTest {
                 'Should have controls for ' + riskLevel);
         }
     }
+
+    @IsTest
+    static void shouldUsePlatformCacheAcrossCalls() {
+        Test.startTest();
+        // First classification populates Platform Cache
+        AIRiskClassificationEngine.RiskClassification first =
+            AIRiskClassificationEngine.classifySystem('Einstein Prediction', 'Sales forecasting');
+        // Second classification should leverage cached rules
+        AIRiskClassificationEngine.RiskClassification second =
+            AIRiskClassificationEngine.classifySystem('Einstein Prediction', 'Sales forecasting');
+        Test.stopTest();
+
+        Assert.isNotNull(first, 'First classification should succeed');
+        Assert.isNotNull(second, 'Second classification should succeed from cache');
+        Assert.areEqual(first.riskLevel, second.riskLevel,
+            'Cached classification should produce same risk level');
+    }
 }

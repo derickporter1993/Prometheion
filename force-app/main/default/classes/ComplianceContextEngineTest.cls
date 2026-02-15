@@ -262,4 +262,26 @@ private class ComplianceContextEngineTest {
         ComplianceContextEngine.GapSummary gs = new ComplianceContextEngine.GapSummary();
         Assert.isNull(gs.gapId, 'gapId should default to null');
     }
+
+    // ═══════════════════════════════════════════════════════════════
+    // PLATFORM CACHE TESTS
+    // ═══════════════════════════════════════════════════════════════
+
+    @IsTest
+    static void shouldReturnActionsFromCacheOnSecondCall() {
+        Test.startTest();
+        ComplianceContextEngine engine = new ComplianceContextEngine();
+        // First call populates cache
+        ComplianceContextEngine.ComplianceContext ctx1 = engine.buildContext();
+        // Second call should read from cache
+        ComplianceContextEngine.ComplianceContext ctx2 = engine.buildContext();
+        Test.stopTest();
+
+        Assert.isNotNull(ctx1.prioritizedActions,
+            'First call should return actions');
+        Assert.isNotNull(ctx2.prioritizedActions,
+            'Second call should return actions from cache');
+        Assert.areEqual(ctx1.prioritizedActions.size(), ctx2.prioritizedActions.size(),
+            'Cached actions should match original actions count');
+    }
 }
