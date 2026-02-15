@@ -161,7 +161,7 @@ private class ElaroConstantsTest {
     
     @IsTest
     static void testVersionAndLogging() {
-        Assert.areEqual('64.0', ElaroConstants.SALESFORCE_API_VERSION);
+        Assert.areEqual('66.0', ElaroConstants.SALESFORCE_API_VERSION);
         Assert.areEqual('3.0.0', ElaroConstants.ELARO_VERSION);
         Assert.areEqual('[Elaro] ', ElaroConstants.LOG_PREFIX);
     }

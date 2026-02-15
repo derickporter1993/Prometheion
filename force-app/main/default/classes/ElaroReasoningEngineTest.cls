@@ -52,33 +52,39 @@ private class ElaroReasoningEngineTest {
     }
 
     @IsTest
-    static void testPredictionResult_Constructor() {
+    static void testReasoningResult_NullOptionalFields() {
         Test.startTest();
-        ElaroReasoningEngine.PredictionResult prediction = new ElaroReasoningEngine.PredictionResult(
+        ElaroReasoningEngine.ReasoningResult result = new ElaroReasoningEngine.ReasoningResult(
             true,
             0.88,
-            'POLICY_001'
+            'TEST_POLICY',
+            null,
+            'Test explanation',
+            null,
+            false
         );
         Test.stopTest();
 
-        Assert.areEqual(true, prediction.isViolation, 'isViolation should be true');
-        Assert.areEqual(0.88, prediction.confidence, 'confidence should match');
-        Assert.areEqual('POLICY_001', prediction.policyId, 'policyId should match');
+        Assert.areEqual(null, result.legalCitation, 'Null legalCitation should be preserved');
+        Assert.areEqual(null, result.auditTrailId, 'Null auditTrailId should be preserved');
+        Assert.areEqual(true, result.isViolation, 'isViolation should be true');
     }
 
     @IsTest
-    static void testPredictionResult_NoViolation() {
+    static void testReasoningResult_BoundaryConfidence() {
         Test.startTest();
-        ElaroReasoningEngine.PredictionResult prediction = new ElaroReasoningEngine.PredictionResult(
-            false,
-            0.0,
-            null
+        ElaroReasoningEngine.ReasoningResult zeroConf = new ElaroReasoningEngine.ReasoningResult(
+            false, 0.0, 'POLICY', 'N/A', 'Zero confidence', 'audit0', true
+        );
+        ElaroReasoningEngine.ReasoningResult maxConf = new ElaroReasoningEngine.ReasoningResult(
+            true, 1.0, 'POLICY', 'N/A', 'Max confidence', 'audit1', false
         );
         Test.stopTest();
 
-        Assert.areEqual(false, prediction.isViolation, 'isViolation should be false');
-        Assert.areEqual(0.0, prediction.confidence, 'confidence should be zero');
-        Assert.areEqual(null, prediction.policyId, 'policyId should be null');
+        Assert.areEqual(0.0, zeroConf.confidence, 'Zero confidence should be preserved');
+        Assert.areEqual(true, zeroConf.requiresHumanReview, 'Zero confidence should require review');
+        Assert.areEqual(1.0, maxConf.confidence, 'Maximum confidence should be preserved');
+        Assert.areEqual(false, maxConf.requiresHumanReview, 'Max confidence should not require review');
     }
 
     @IsTest
@@ -99,7 +105,8 @@ private class ElaroReasoningEngineTest {
             ElaroReasoningEngine.explainViolation('nonexistent_hash', 'SOC2');
             Assert.fail( 'Should have thrown ReasoningException');
         } catch (ElaroReasoningEngine.ReasoningException e) {
-            Assert.areEqual('Node not found', e.getMessage(), 'Should throw node not found error');
+            Assert.isTrue(e.getMessage().startsWith('Node not found:'),
+                'Should throw node not found error, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
@@ -130,31 +137,26 @@ private class ElaroReasoningEngineTest {
     }
 
     @IsTest
-    static void testPredictionResult_ZeroConfidence() {
+    static void testReasoningResult_AllFieldsPopulated() {
         Test.startTest();
-        ElaroReasoningEngine.PredictionResult prediction = new ElaroReasoningEngine.PredictionResult(
-            false,
-            0.0,
-            'NO_VIOLATION_POLICY'
-        );
-        Test.stopTest();
-
-        Assert.areEqual(false, prediction.isViolation, 'No violation expected');
-        Assert.areEqual(0.0, prediction.confidence, 'Zero confidence expected');
-    }
-
-    @IsTest
-    static void testPredictionResult_HighConfidence() {
-        Test.startTest();
-        ElaroReasoningEngine.PredictionResult prediction = new ElaroReasoningEngine.PredictionResult(
+        ElaroReasoningEngine.ReasoningResult result = new ElaroReasoningEngine.ReasoningResult(
             true,
-            1.0,
-            'HIGH_RISK_POLICY'
+            0.99,
+            'FULL_POLICY',
+            'PCI-DSS-3.2',
+            'All fields populated test',
+            'fullAudit123',
+            false
         );
         Test.stopTest();
 
-        Assert.areEqual(true, prediction.isViolation, 'Violation expected');
-        Assert.areEqual(1.0, prediction.confidence, 'Maximum confidence expected');
+        Assert.areEqual(true, result.isViolation, 'isViolation should be true');
+        Assert.areEqual(0.99, result.confidence, 'Confidence should be 0.99');
+        Assert.areEqual('FULL_POLICY', result.policy, 'Policy should match');
+        Assert.areEqual('PCI-DSS-3.2', result.legalCitation, 'Legal citation should match');
+        Assert.areEqual('All fields populated test', result.explanation, 'Explanation should match');
+        Assert.areEqual('fullAudit123', result.auditTrailId, 'Audit trail ID should match');
+        Assert.areEqual(false, result.requiresHumanReview, 'Should not require human review');
     }
 
     @IsTest
@@ -207,26 +209,21 @@ private class ElaroReasoningEngineTest {
     }
 
     @IsTest
-    static void testBuildSafeExplanation_AddsReviewPrefixWhenBelowThreshold() {
-        Compliance_Policy__mdt policy = new Compliance_Policy__mdt(
-            Policy_Description__c = 'Policy description',
-            Legal_Citation__c = 'CIT-123',
-            Remediation_Steps__c = 'Remediate quickly'
-        );
+    static void testBuildSimpleExplanation_HighRisk() {
         Elaro_Compliance_Graph__b node = new Elaro_Compliance_Graph__b(
             Entity_Type__c = 'FLOW',
             Entity_Record_Id__c = 'Flow123',
             Risk_Score__c = 9
         );
-        ElaroReasoningEngine.PredictionResult prediction = new ElaroReasoningEngine.PredictionResult(true, 0.5, 'POLICY');
-        Elaro_AI_Settings__c settings = new Elaro_AI_Settings__c(Confidence_Threshold__c = 0.75);
 
         Test.startTest();
-        String explanation = ElaroReasoningEngine.buildSafeExplanation(policy, node, prediction, settings);
+        String explanation = ElaroReasoningEngine.buildSimpleExplanation(node, 9.0, 'SOC2');
         Test.stopTest();
 
-        Assert.isTrue(explanation.startsWith('[REVIEW REQUIRED] '), 'Explanation should include review prefix when below threshold');
+        Assert.isTrue(explanation.contains('FLOW'), 'Explanation should include entity type');
         Assert.isTrue(explanation.contains('Flow123'), 'Explanation should include entity record id');
-        Assert.isTrue(explanation.contains('Policy description'), 'Explanation should reference policy description');
+        Assert.isTrue(explanation.contains('HIGH RISK'), 'Should be flagged as HIGH RISK for score 9.0');
+        Assert.isTrue(explanation.contains('SOC2'), 'Explanation should include framework');
+        Assert.isTrue(explanation.contains('Immediate review required'), 'Should include high-risk remediation');
     }
 }

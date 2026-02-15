@@ -159,7 +159,7 @@ public with sharing class ElaroConstants {
     // ============================================
     // API & VERSION INFO
     // ============================================
-    public static final String SALESFORCE_API_VERSION = '64.0';
+    public static final String SALESFORCE_API_VERSION = '66.0';
     public static final String ELARO_VERSION = '3.0.0';
     
     // ============================================

@@ -35,6 +35,7 @@ public without sharing class ElaroReasoningEngine {
         return settings;
     }
 
+    @TestVisible
     private static Decimal getConfidenceThreshold(Elaro_AI_Settings__c settings) {
         if (settings == null || settings.Confidence_Threshold__c == null) {
             return MIN_CONFIDENCE;
@@ -100,6 +101,7 @@ public without sharing class ElaroReasoningEngine {
      * Build safe explanation with HTML/Markdown escaping and null-safe formatting
      * Prevents XSS and malformed strings from raw node metadata
      */
+    @TestVisible
     private static String buildSimpleExplanation(Elaro_Compliance_Graph__b node, Decimal riskScore, String framework) {
         // Null-safe extraction with escaping
         String entityType = escapeHtml(String.isNotBlank(node.Entity_Type__c) ? node.Entity_Type__c : 'UNKNOWN');
@@ -176,11 +178,11 @@ public without sharing class ElaroReasoningEngine {
 
     private static ReasoningResult generateFallbackReasoning(Elaro_Compliance_Graph__b node, String framework) {
         return new ReasoningResult(
-            node.Risk_Score__c >= 8.0,
+            (node.Risk_Score__c ?? 0.0) >= 8.0,
             0.0,
             'MANUAL_REVIEW',
             'N/A',
-            'Manual review required for ' + node.Entity_Record_Id__c,
+            'Manual review required for ' + escapeHtml(node.Entity_Record_Id__c ?? 'UNKNOWN'),
             node.Graph_Node_Id__c,
             true
         );
