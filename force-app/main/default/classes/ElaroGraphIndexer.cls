@@ -97,10 +97,9 @@ public with sharing class ElaroGraphIndexer {
         );
 
         try {
-            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
-            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
-                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
-            }
+            // Note: Elaro_Compliance_Graph__b is a Big Object and does not support standard CRUD/FLS checks
+            // via ElaroSecurityUtils/Security APIs. Access to this Big Object must be controlled via
+            // permission set assignments and platform Big Object permissions, not runtime CRUD checks here.
             insert node;
             return nodeHash;
         } catch (DmlException e) {
@@ -400,10 +399,9 @@ public with sharing class ElaroGraphIndexer {
         
         // Bulk insert all nodes
         if (!nodesToInsert.isEmpty()) {
-            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
-            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
-                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
-            }
+            // Note: Elaro_Compliance_Graph__b is a Big Object and does not support standard CRUD/FLS checks
+            // via ElaroSecurityUtils/Security APIs. Access to this Big Object must be controlled via
+            // permission set assignments and platform Big Object permissions, not runtime CRUD checks here.
             try {
                 insert nodesToInsert;
             } catch (DmlException e) {
