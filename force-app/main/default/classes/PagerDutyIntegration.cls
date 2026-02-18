@@ -13,9 +13,7 @@ public with sharing class PagerDutyIntegration {
      * @param alertDataJson Alert information as JSON
      */
     public static void triggerIncident(String alertDataJson) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyTriggerQueueable(alertDataJson, 'trigger'));
-        }
+        System.enqueueJob(new PagerDutyTriggerQueueable(alertDataJson, 'trigger'));
     }
     
     /**
@@ -23,9 +21,7 @@ public with sharing class PagerDutyIntegration {
      * @param dedupKey The dedup key used when triggering
      */
     public static void resolveIncident(String dedupKey) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'resolve'));
-        }
+        System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'resolve'));
     }
     
     /**
@@ -33,9 +29,7 @@ public with sharing class PagerDutyIntegration {
      * @param dedupKey The dedup key used when triggering
      */
     public static void acknowledgeIncident(String dedupKey) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'acknowledge'));
-        }
+        System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'acknowledge'));
     }
     
     /**

@@ -28,10 +28,10 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Format Check
-        run: npm run fmt:check || echo "⚠️  Format check failed"
+        run: npm run fmt:check
 
       - name: Lint Code
-        run: npm run lint || echo "⚠️  Lint check failed"
+        run: npm run lint
 
   unit-tests:
     runs-on: ubuntu-latest
