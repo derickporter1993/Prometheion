@@ -8,66 +8,75 @@ Elaro is an enterprise compliance automation platform for Salesforce that detect
 **Primary Language:** Apex, Lightning Web Components (LWC), TypeScript
 
 ## Tech Stack
-- **Platform:** Salesforce (API v65.0)
-- **Backend:** Apex classes (207 deployed)
-- **Frontend:** Lightning Web Components (34 active)
-- **Database:** Custom Salesforce Objects (46 objects)
-- **Testing:** Jest (LWC), Apex Test Classes
-- **CI/CD:** GitHub Actions, CircleCI
-- **Packaging:** AppExchange (managed package)
+- **Platform:** Salesforce (API v66.0 - Spring '26)
+- **Backend:** Apex classes (299 classes)
+- **Frontend:** Lightning Web Components (41 components)
+- **Database:** Custom Salesforce Objects (54 objects), 8 Platform Events
+- **Testing:** Jest (LWC), Apex Test Classes (85%+ coverage target)
+- **CI/CD:** GitHub Actions
+- **Packaging:** 2GP managed packages (Main + Health Check)
 
 ## Architecture
 ```
-force-app/main/default/
-├── classes/           # 207 Apex classes (security utils, compliance engines)
-├── lwc/              # 34 Lightning Web Components
-├── objects/          # 46 custom objects (compliance metadata)
-├── triggers/         # Audit trail automation
-└── staticresources/  # UI assets and libraries
+force-app/main/default/          # Main Elaro 2GP package
+├── classes/                     # 299 Apex classes
+├── lwc/                        # 41 Lightning Web Components
+├── objects/                    # 54 custom objects + 8 Platform Events
+├── triggers/                   # 5 Apex triggers
+└── permissionsets/             # 5 Permission Sets
 
-platform/             # Node.js tooling
-├── packages/types/   # TypeScript definitions
-└── packages/masking/ # Data privacy utilities
+force-app-healthcheck/          # Separate Health Check 2GP
+├── classes/                    # Health Check Apex classes
+├── lwc/                        # Health Check LWC components
+└── permissionsets/             # Health Check Permission Sets
+
+platform/                       # TypeScript monorepo (Turborepo)
+├── packages/cli/               # elaro CLI
+├── packages/sf-client/         # Salesforce API client
+├── packages/types/             # Shared TypeScript types
+└── packages/masking/           # Data masking utilities
 ```
 
 ## Key Capabilities
 1. **Configuration Drift Detection** - Monitors Salesforce metadata changes
-2. **Permission Intelligence** - Analyzes profile/permission set sprawl
+2. **Compliance Automation** - Multi-framework support (HIPAA, SOC2, PCI-DSS, GDPR, etc.)
 3. **Audit Evidence Generation** - Automated compliance documentation
-4. **Compliance Baseline Reports** - Regulatory-ready reporting
-5. **Security-First Design** - All queries use WITH SECURITY_ENFORCED
+4. **Security Health Check** - Org security scanning (separate 2GP)
+5. **AI Governance** - EU AI Act and NIST AI RMF compliance
+6. **Assessment Wizards** - Guided compliance assessments
+7. **Event-Driven Monitoring** - Real-time compliance monitoring
+8. **Trust Center** - Public-facing compliance transparency
 
 ## Development Guidelines
 
 ### Salesforce Commands
 - Always use the SF CLI v2 syntax (`sf` not `sfdx`)
-- Default org alias: `elaro-dev`
-- Dev Hub: `prod-org`
+- Default org alias: `elaro-dev` (or your preferred org)
 - Scratch org config: `config/project-scratch-def.json`
 
-### Code Standards
-- **Security:** Use ElaroSecurityUtils for all CRUD/FLS checks
-- **SOQL:** All queries MUST include `WITH SECURITY_ENFORCED`
-- **Testing:** Minimum 75% code coverage (target: 85%+)
-- **Naming:** Classes use ElaroXxx prefix
-- **Documentation:** JSDoc for Apex, TSDoc for TypeScript
+### Code Standards (Spring '26 / API v66.0)
+- **Security:** ALL SOQL uses `WITH USER_MODE` (NOT `WITH SECURITY_ENFORCED`)
+- **DML:** ALL DML uses `as user` or `AccessLevel.USER_MODE`
+- **Sharing:** Controllers use `with sharing`, services use `inherited sharing`
+- **Testing:** Use Assert class (NOT System.assertEquals/assert - deprecated)
+- **Naming:** Classes use ElaroXxx prefix or module-specific naming
+- **Documentation:** ApexDoc required on all classes and public methods
+- **Async:** Use Queueable (NOT @future - deprecated)
 
 ### Testing Strategy
-- Run `npm run test:unit` before commits
+- Run `npm run test:unit` before commits (LWC Jest tests)
 - Run `sf apex run test` for Apex tests
-- Maintain test data in `scripts/apex/sample-data/`
-- Mock external integrations in tests
+- Minimum 85% code coverage per class
+- Use @TestSetup for shared test data
+- Use ComplianceTestDataFactory for test data patterns
 
 ### Deployment
 - **Never** deploy directly to production
 - Use scratch orgs for feature development
 - Deploy via: `sf project deploy start --target-org [alias]`
-- Preview changes: `sf project deploy preview`
+- Preview changes: `sf project deploy start --dry-run`
 
 ## Common Tasks
-
-### Load Session Context
-Use the custom command: `/sfcontext` to load current project status
 
 ### Create Scratch Org
 ```bash
@@ -77,58 +86,65 @@ sf project deploy start --target-org elaro-scratch
 
 ### Run Tests
 ```bash
-sf apex run test --test-level RunLocalTests --target-org elaro-dev
-npm run test:unit  # LWC tests
+# Apex tests
+sf apex run test --test-level RunLocalTests --target-org elaro-dev --wait 30
+
+# LWC tests
+npm run test:unit
+npm run test:unit:watch  # Watch mode for TDD
+
+# Code quality
+npm run lint
+npm run fmt:check
 ```
 
 ### Deploy Changes
 ```bash
-sf project deploy preview --target-org elaro-dev
-sf project deploy start --target-org elaro-dev
-```
-
-### Query Compliance Data
-```bash
-sf data query --query "SELECT Id, Name, Status__c FROM Elaro_Compliance_Rule__c" --target-org elaro-dev
+sf project deploy start --target-org elaro-dev --dry-run  # Validate only
+sf project deploy start --target-org elaro-dev            # Deploy
 ```
 
 ## File Structure Priorities
 When working with code:
 1. **Critical Paths:**
-   - `force-app/main/default/classes/` - Core business logic
-   - `force-app/main/default/lwc/` - User interface components
-   - `force-app/main/default/objects/` - Data model
+   - `force-app/main/default/classes/` - Core Apex business logic
+   - `force-app/main/default/lwc/` - Lightning Web Components
+   - `force-app/main/default/objects/` - Custom objects and Platform Events
+   - `force-app-healthcheck/` - Health Check separate 2GP
 
 2. **Documentation:**
-   - `docs/SESSION_CONTEXT.md` - Current work tracking
-   - `docs/architecture/` - System design docs
-   - `docs/api/` - Integration documentation
+   - `CLAUDE.md` - Master project context for Claude Code
+   - `docs/` - Organized documentation hub
+   - `docs/developer/` - Technical documentation
+   - `docs/architecture/` - Architecture Decision Records (ADRs)
 
 3. **Configuration:**
    - `config/` - Salesforce org configs
-   - `.claude/` - Claude Code settings
-   - `sfdx-project.json` - Package manifest
+   - `sfdx-project.json` - Package manifest (2GP configuration)
+   - `.github/workflows/` - CI/CD pipelines
 
 ## Important Constraints
-- ❌ Never delete `force-app/`, `node_modules/`, or production scratch org
 - ❌ Never deploy without running tests first
-- ⚠️ Always check FLS/CRUD before SOQL/DML operations
-- ⚠️ Hardcoded paths reference `/Users/derickporter/sentinel-code/` (legacy)
-- ✅ Use relative paths when creating new code
+- ❌ Never use `WITH SECURITY_ENFORCED` (deprecated - use `WITH USER_MODE`)
+- ❌ Never use `System.assertEquals` (deprecated - use Assert class)
+- ❌ Never use `@future` (deprecated - use Queueable)
+- ⚠️ Always use ApexDoc comments on classes and public methods
+- ✅ Use ElaroLogger for logging (NOT System.debug)
+- ✅ Use null coalescing operator (??) and safe navigation (?.)
 
 ## Current Focus Areas
-1. **Permission Intelligence Engine** - Advanced permission analysis (see `docs/permission-intelligence-engine-prd.md`)
-2. **Compliance Rule Library** - Expanding regulatory framework coverage
-3. **AppExchange Packaging** - Preparing managed package release
-4. **API Integrations** - External compliance tool connectors
+1. **AppExchange Preparation** - 2GP package readiness
+2. **Team 2 Build** - User-facing modules (6 of 8 agents complete)
+3. **Spring '26 Standards** - Full v66.0 API adoption
+4. **Security Hardening** - CodeQL and Checkmarx scanning
+5. **Test Coverage** - 85%+ coverage target across all classes
 
-## Session Handoff
-At the end of each session, update `docs/SESSION_CONTEXT.md` with:
-- Completed tasks
-- Work in progress
-- Blockers or issues
-- Next recommended actions
+## Key Reference Documents
+- `CLAUDE.md` - Complete project context and coding standards
+- `CONTRIBUTING.md` - Development guidelines and best practices
+- `docs/ROADMAP.md` - Project roadmap and milestones
+- `docs/developer/TESTING_GUIDE.md` - Testing standards and patterns
 
 ---
 
-**Questions?** Check `docs/` for detailed documentation or use `/sfcontext` to load current project state.
+**Questions?** Check `CLAUDE.md` for comprehensive project guidance or `docs/` for detailed documentation.

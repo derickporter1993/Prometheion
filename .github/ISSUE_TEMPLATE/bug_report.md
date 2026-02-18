@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a problem in Sentinel
+about: Report a problem in Elaro
 labels: bug
 ---
 
