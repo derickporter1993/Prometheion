@@ -27,6 +27,7 @@ Desktop.ini
 .vscode/
 .idea/
 .cursor/
+.claude/
 *.sublime-*
 .sublime-project
 .sublime-workspace
