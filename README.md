@@ -2,7 +2,7 @@
 
 **Enterprise Compliance Automation for Salesforce — Multi-framework drift detection, AI-powered risk analysis, automated evidence collection, and real-time remediation for regulated organizations.**
 
-_Current: v3.1.0 — Spring '26 | API v66.0 | 2GP Managed Package_
+_Current: v3.0.0 — Spring '26 | API v66.0 | 2GP Managed Package_
 
 <div align="center">
 
@@ -282,8 +282,8 @@ Elaro ships as **two separate 2GP managed packages**:
 
 | Package | Namespace | Path | Description |
 |---|---|---|---|
-| Elaro | (shared) | `force-app/` | Main compliance platform |
-| Elaro Health Check | elaroHC | `force-app-healthcheck/` | Standalone security posture scanner |
+| Elaro | — | `force-app/` | Main compliance platform |
+| Elaro Health Check | — | `force-app-healthcheck/` | Standalone security posture scanner |
 
 ### Health Check Package
 
@@ -341,7 +341,7 @@ Results are aggregated by `ScoreAggregator` into a weighted composite score with
 
 ### LWC Components
 
-**Main Package (51 components):**
+**Main Package (53 components):**
 
 | Category | Components |
 |---|---|
@@ -431,7 +431,7 @@ Elaro includes 15+ schedulable jobs for continuous compliance monitoring:
 |---|---|
 | Apex Classes (main) | 349 (177 production + 172 test) |
 | Apex Classes (Health Check) | 21 (13 production + 8 test) |
-| LWC Components | 57 (51 main + 6 Health Check) |
+| LWC Components | 59 (53 main + 6 Health Check) |
 | Custom Objects | 54+ |
 | Platform Events | 11 |
 | Custom Metadata Types | 10 |
@@ -448,7 +448,7 @@ Elaro includes 15+ schedulable jobs for continuous compliance monitoring:
 ### Prerequisites
 
 - Salesforce org (Production, Sandbox, or Scratch Org)
-- Salesforce CLI (`sf`) installed — `sfdx` was removed November 2024
+- Salesforce CLI (`sf`) installed
 - Node.js v20.0.0+
 - DevHub org authenticated (for scratch orgs)
 
@@ -591,7 +591,7 @@ cd platform && npm install && npm run build
 elaro/
 ├── force-app/main/default/              # Main Elaro 2GP managed package
 │   ├── classes/                         # 349 Apex classes (177 production + 172 test)
-│   ├── lwc/                             # 51 LWC components
+│   ├── lwc/                             # 53 LWC components
 │   ├── objects/                         # 54+ custom objects, platform events, big objects
 │   ├── customMetadata/                  # Custom Metadata Type records
 │   ├── permissionsets/                  # 8 Permission Sets
