@@ -14,12 +14,16 @@ private class ElaroEventProcessorTest {
 
     @IsTest
     static void shouldSkipNullEvent() {
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvent(null);
+        try {
+            ElaroEventProcessor.processEvent(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // No exception thrown means null guard worked correctly
-        Assert.isTrue(true, 'processEvent should silently return on null input');
+        Assert.isNull(caughtEx, 'processEvent should not throw on null input');
     }
 
     @IsTest
@@ -31,12 +35,16 @@ private class ElaroEventProcessorTest {
             Event_Type__c = 'CHANGE'
         );
 
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvent(evt);
+        try {
+            ElaroEventProcessor.processEvent(evt);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // Blank entity type triggers early return with warning log
-        Assert.isTrue(true, 'processEvent should silently return when entity type is blank');
+        Assert.isNull(caughtEx, 'processEvent should not throw when entity type is blank');
     }
 
     @IsTest
@@ -48,12 +56,16 @@ private class ElaroEventProcessorTest {
             Event_Type__c = 'CHANGE'
         );
 
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvent(evt);
+        try {
+            ElaroEventProcessor.processEvent(evt);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // Blank entity ID triggers early return with warning log
-        Assert.isTrue(true, 'processEvent should silently return when entity ID is blank');
+        Assert.isNull(caughtEx, 'processEvent should not throw when entity ID is blank');
     }
 
     @IsTest
@@ -68,30 +80,44 @@ private class ElaroEventProcessorTest {
             Correlation_Id__c = 'TEST-CORR-001'
         );
 
+        Exception caughtEx;
         Test.startTest();
-        // Should not throw -- the catch block logs the error
-        ElaroEventProcessor.processEvent(evt);
+        try {
+            ElaroEventProcessor.processEvent(evt);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'processEvent should catch exceptions from graph indexer and log them');
+        Assert.isNull(caughtEx, 'processEvent should catch exceptions from graph indexer and log them');
     }
 
     @IsTest
     static void shouldSkipNullEventList() {
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvents(null);
+        try {
+            ElaroEventProcessor.processEvents(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'processEvents should silently return on null list');
+        Assert.isNull(caughtEx, 'processEvents should not throw on null list');
     }
 
     @IsTest
     static void shouldSkipEmptyEventList() {
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvents(new List<Elaro_Event__e>());
+        try {
+            ElaroEventProcessor.processEvents(new List<Elaro_Event__e>());
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'processEvents should silently return on empty list');
+        Assert.isNull(caughtEx, 'processEvents should not throw on empty list');
     }
 
     @IsTest
@@ -117,12 +143,17 @@ private class ElaroEventProcessorTest {
             )
         };
 
+        Exception caughtEx;
         Test.startTest();
-        ElaroEventProcessor.processEvents(events);
+        try {
+            ElaroEventProcessor.processEvents(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // All events processed without unhandled exceptions
-        Assert.isTrue(true, 'processEvents should handle a batch of events with mixed validity without throwing');
+        Assert.isNull(caughtEx, 'processEvents should handle a batch of events with mixed validity without throwing');
+        Assert.areEqual(3, events.size(), 'Original event list should remain intact after processing');
     }
 
     @IsTest
@@ -135,11 +166,15 @@ private class ElaroEventProcessorTest {
             Event_Type__c = 'CHANGE'
         );
 
+        Exception caughtEx;
         Test.startTest();
-        // This will attempt indexing with SOC2 default, then catch the exception
-        ElaroEventProcessor.processEvent(evt);
+        try {
+            ElaroEventProcessor.processEvent(evt);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'processEvent should default to SOC2 framework when event framework is blank');
+        Assert.isNull(caughtEx, 'processEvent should default to SOC2 framework when event framework is blank');
     }
 }
