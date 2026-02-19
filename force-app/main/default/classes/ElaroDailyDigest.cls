@@ -45,7 +45,9 @@ public with sharing class ElaroDailyDigest implements Schedulable {
         
         String jobName = 'Elaro_Daily_Digest_' + UserInfo.getUserId();
         
-        // Remove existing job if present
+        // Safe: single SOQL as for-each iterable (not inside a loop). CronTrigger results
+        // are bounded to at most 1 row for a specific job name. This is an idiomatic Apex
+        // pattern for iterating query results directly.
         for (CronTrigger ct : [SELECT Id FROM CronTrigger WHERE CronJobDetail.Name = :jobName WITH USER_MODE]) {
             System.abortJob(ct.Id);
         }
@@ -287,7 +289,14 @@ public with sharing class ElaroDailyDigest implements Schedulable {
      */
     private static void sendDigestToSlack(DigestData digest) {
         if (!Test.isRunningTest()) {
-            System.enqueueJob(new SlackDigestQueueable(digest));
+            AsyncOptions options = new AsyncOptions();
+            options.setMaximumQueueableStackDepth(5);
+            options.setDuplicateSignature(
+                new QueueableDuplicateSignature.Builder()
+                    .addString('SlackDailyDigest')
+                    .build()
+            );
+            System.enqueueJob(new SlackDigestQueueable(digest), options);
         }
     }
     

@@ -7,7 +7,7 @@
  * @group Health Check
  * @see HealthCheckController
  */
-@IsTest
+@IsTest(testFor=HealthCheckController.class)
 private class HealthCheckControllerTest {
 
     /**

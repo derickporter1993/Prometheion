@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Full administrative access to all Elaro compliance features, objects, tabs, and Apex classes</description>
+    <description>Core administrative access to all Elaro compliance objects, fields, tabs, and Apex classes. Grants CRUD and viewAll on every custom object in the package. Use Elaro Admin Extended for additional platform features like schedulers, app visibility, and user permissions.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Elaro Admin</label>
 

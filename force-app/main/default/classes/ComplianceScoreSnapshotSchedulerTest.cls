@@ -50,8 +50,12 @@ private class ComplianceScoreSnapshotSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        // Verify scheduler executed by checking for audit log entries
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c IN ('Compliance Score Snapshot', 'Daily Compliance Summary')
+        ];
+        Assert.isTrue(logs.size() > 0, 'Scheduler should create audit log entries');
     }
 
     @IsTest
@@ -132,8 +136,12 @@ private class ComplianceScoreSnapshotSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'runNow should complete successfully');
+        // Verify runNow executed by checking for audit log entries
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c IN ('Compliance Score Snapshot', 'Daily Compliance Summary')
+        ];
+        Assert.isTrue(logs.size() > 0, 'runNow should create audit log entries');
     }
 
     @IsTest
@@ -206,8 +214,13 @@ private class ComplianceScoreSnapshotSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete and potentially create alerts for score drops
-        Assert.isTrue(true, 'Should handle score comparisons');
+        // Verify snapshots were created for score comparison scenario
+        List<Compliance_Score__c> snapshots = [
+            SELECT Id, Framework__c, Score__c
+            FROM Compliance_Score__c
+            WHERE CreatedDate = TODAY
+        ];
+        Assert.isTrue(snapshots.size() > 0, 'Should create snapshots even with score drops');
     }
 
     @IsTest

@@ -1,6 +1,7 @@
 /**
- * @description Test class for ConsentExpirationScheduler
- * Tests scheduled job execution and batch invocation for consent expiration processing
+ * Test class for ConsentExpirationScheduler.
+ * Tests scheduled job execution and batch invocation for consent expiration processing.
+ *
  * @group Tests
  * @see ConsentExpirationScheduler
  */
@@ -94,7 +95,13 @@ private class ConsentExpirationSchedulerTest {
         scheduler.execute(null);
         Test.stopTest();
 
-        // Assert - should complete without error
-        Assert.isTrue(true, 'Scheduler should handle empty consent list gracefully');
+        // Assert - batch should still be queued even with no consents
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status, JobType
+            FROM AsyncApexJob
+            WHERE JobType = 'BatchApex'
+            AND ApexClass.Name = 'ConsentExpirationBatch'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Batch job should be queued even with no consents');
     }
 }

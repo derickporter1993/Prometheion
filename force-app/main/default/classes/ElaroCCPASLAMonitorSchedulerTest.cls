@@ -1,6 +1,7 @@
 /**
- * @description Test class for ElaroCCPASLAMonitorScheduler
- * Tests CCPA SLA monitoring and deadline tracking
+ * Test class for ElaroCCPASLAMonitorScheduler.
+ * Tests CCPA SLA monitoring and deadline tracking.
+ *
  * @group Tests
  * @see ElaroCCPASLAMonitorScheduler
  */
@@ -106,6 +107,10 @@ private class ElaroCCPASLAMonitorSchedulerTest {
         scheduler.execute(null);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Should handle no requests gracefully');
+        // Verify no requests were marked overdue when none exist
+        List<CCPA_Request__c> overdueRequests = [
+            SELECT Id FROM CCPA_Request__c WHERE Status__c = 'Overdue'
+        ];
+        Assert.areEqual(0, overdueRequests.size(), 'Should have no overdue requests when none exist');
     }
 }

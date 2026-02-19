@@ -43,24 +43,31 @@ private class ElaroAuditTrailPollerTest {
     static void testExecute() {
         ElaroAuditTrailPoller poller = new ElaroAuditTrailPoller();
         SchedulableContext ctx = null;
-        
+
+        Exception caughtEx;
         Test.startTest();
-        poller.execute(ctx);
+        try {
+            poller.execute(ctx);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        // Verify poller executed without errors
-        // Note: Actual audit trail polling would require API access
-        Assert.isTrue(true, 'Poller executed successfully');
+
+        Assert.isNull(caughtEx, 'Poller execute should complete without throwing an exception');
     }
     
     @isTest
     static void testPollAuditTrail() {
+        Exception caughtEx;
         Test.startTest();
-        ElaroAuditTrailPoller.pollAuditTrail();
+        try {
+            ElaroAuditTrailPoller.pollAuditTrail();
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        // Verify method executed without errors
-        Assert.isTrue(true, 'Audit trail polling executed successfully');
+
+        Assert.isNull(caughtEx, 'Audit trail polling should complete without throwing an exception');
     }
 }
 

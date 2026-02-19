@@ -110,14 +110,18 @@ private class SchedulerErrorHandlerTest {
     static void testNotifyOnFailure() {
         Exception testException = new DmlException('Test failure notification');
 
+        Exception caughtEx;
         Test.startTest();
-        // This will attempt to call SlackNotifier which may not exist in test context
-        // The method handles exceptions gracefully
-        SchedulerErrorHandler.notifyOnFailure('TestScheduler', testException);
+        try {
+            // This will attempt to call SlackNotifier which may not exist in test context
+            // The method handles exceptions gracefully
+            SchedulerErrorHandler.notifyOnFailure('TestScheduler', testException);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // No assertion needed - just verify no exception thrown
-        Assert.isTrue(true, 'notifyOnFailure should handle missing SlackNotifier gracefully');
+        Assert.isNull(caughtEx, 'notifyOnFailure should handle missing SlackNotifier gracefully without throwing');
     }
 
     @isTest

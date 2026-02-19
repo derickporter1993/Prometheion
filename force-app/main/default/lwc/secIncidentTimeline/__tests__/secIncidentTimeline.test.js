@@ -2,9 +2,15 @@ import { createElement } from "lwc";
 import SecIncidentTimeline from "c/secIncidentTimeline";
 
 // Mock custom labels
-jest.mock("@salesforce/label/c.SEC_IncidentTimeline", () => ({ default: "Incident Timeline" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_EventType", () => ({ default: "Event Type" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_NoEvents", () => ({ default: "No events recorded" }), { virtual: true });
+jest.mock("@salesforce/label/c.SEC_IncidentTimeline", () => ({ default: "Incident Timeline" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.SEC_EventType", () => ({ default: "Event Type" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.SEC_NoEvents", () => ({ default: "No events recorded" }), {
+  virtual: true,
+});
 
 const MOCK_EVENTS = [
   {
@@ -56,9 +62,7 @@ describe("c-sec-incident-timeline", () => {
     const element = createComponent([]);
     await Promise.resolve();
 
-    const emptyText = element.shadowRoot.querySelector(
-      ".slds-text-color_weak"
-    );
+    const emptyText = element.shadowRoot.querySelector(".slds-text-color_weak");
     expect(emptyText).not.toBeNull();
     expect(emptyText.textContent).toBe("No events recorded");
   });
@@ -87,9 +91,7 @@ describe("c-sec-incident-timeline", () => {
     const element = createComponent(MOCK_EVENTS);
     await Promise.resolve();
 
-    const headings = element.shadowRoot.querySelectorAll(
-      ".slds-text-heading_small"
-    );
+    const headings = element.shadowRoot.querySelectorAll(".slds-text-heading_small");
     // Most recent first: Filing (Feb 14), Determination (Feb 12), Discovery (Feb 10)
     expect(headings.length).toBe(3);
     expect(headings[0].textContent).toBe("Filing");
@@ -101,9 +103,7 @@ describe("c-sec-incident-timeline", () => {
     const element = createComponent(MOCK_EVENTS);
     await Promise.resolve();
 
-    const descriptions = element.shadowRoot.querySelectorAll(
-      ".slds-text-body_small"
-    );
+    const descriptions = element.shadowRoot.querySelectorAll(".slds-text-body_small");
     expect(descriptions.length).toBe(3);
     expect(descriptions[0].textContent).toBe("8-K filed with SEC");
   });

@@ -23,7 +23,14 @@ public with sharing class AccessReviewScheduler implements Schedulable {
     public void execute(SchedulableContext ctx) {
         // Run in Queueable context for better error handling and monitoring
         if (!Test.isRunningTest()) {
-            System.enqueueJob(new AccessReviewQueueable());
+            AsyncOptions options = new AsyncOptions();
+            options.setMaximumQueueableStackDepth(5);
+            options.setDuplicateSignature(
+                new QueueableDuplicateSignature.Builder()
+                    .addString('AccessReviewMonthly')
+                    .build()
+            );
+            System.enqueueJob(new AccessReviewQueueable(), options);
         } else {
             // Run synchronously in tests
             performAccessReview();

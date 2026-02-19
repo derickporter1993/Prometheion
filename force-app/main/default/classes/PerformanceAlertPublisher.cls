@@ -57,7 +57,7 @@ public with sharing class PerformanceAlertPublisher {
                 Stack__c = safeStack
             );
             
-            insert alertHistory;
+            insert as user alertHistory;
             
             // Also send Slack notification if configured
             try {
@@ -84,7 +84,7 @@ public with sharing class PerformanceAlertPublisher {
                     Status__c = 'NEW',
                     Timestamp__c = System.now()
                 );
-                insert error;
+                insert as user error;
             } catch (Exception logError) {
                 ElaroLogger.warn( 'Failed to log PerformanceAlertPublisher error: ' + logError.getMessage());
             }

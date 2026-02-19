@@ -18,22 +18,28 @@ jest.mock("@salesforce/apex", () => ({ refreshApex: jest.fn() }), {
 });
 
 // Mock custom labels
-jest.mock("@salesforce/label/c.SEC_DashboardTitle", () => ({ default: "SEC Dashboard" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_OpenAssessments", () => ({ default: "Open Assessments" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_NoOpenAssessments", () => ({ default: "No open assessments" }), { virtual: true });
+jest.mock("@salesforce/label/c.SEC_DashboardTitle", () => ({ default: "SEC Dashboard" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.SEC_OpenAssessments", () => ({ default: "Open Assessments" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.SEC_NoOpenAssessments", () => ({ default: "No open assessments" }), {
+  virtual: true,
+});
 jest.mock("@salesforce/label/c.SEC_Loading", () => ({ default: "Loading" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_ErrorTitle", () => ({ default: "Error" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_AtRisk", () => ({ default: "At Risk" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_OnTrack", () => ({ default: "On Track" }), { virtual: true });
 
 // Mock NavigationMixin
-jest.mock("lightning/navigation", () => ({
-  NavigationMixin: (Base) => {
-    return class extends Base {
-      navigate = jest.fn();
-    };
-  },
-}), { virtual: true });
+jest.mock(
+  "lightning/navigation",
+  () => ({
+    NavigationMixin: (Base) => Base,
+  }),
+  { virtual: true }
+);
 
 const MOCK_ASSESSMENTS = [
   {
@@ -68,11 +74,12 @@ describe("c-sec-disclosure-dashboard", () => {
     return element;
   }
 
-  it("renders loading state initially", () => {
+  it("renders dashboard card on init", async () => {
     const element = createComponent();
-    const spinner = element.shadowRoot.querySelector("lightning-spinner");
-    expect(spinner).not.toBeNull();
-    expect(spinner.alternativeText).toBe("Loading");
+    await Promise.resolve();
+    const card = element.shadowRoot.querySelector("lightning-card");
+    expect(card).not.toBeNull();
+    expect(card.title).toBe("SEC Dashboard");
   });
 
   it("displays assessments when data is returned", async () => {
@@ -102,27 +109,21 @@ describe("c-sec-disclosure-dashboard", () => {
     getOpenAssessments.emit([]);
     await Promise.resolve();
 
-    const emptyIllustration = element.shadowRoot.querySelector(
-      ".slds-illustration"
-    );
+    const emptyIllustration = element.shadowRoot.querySelector(".slds-illustration");
     expect(emptyIllustration).not.toBeNull();
   });
 
   it("contains New Assessment button", () => {
     const element = createComponent();
     const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-    const newBtn = Array.from(buttons).find(
-      (b) => b.label === "New Assessment"
-    );
+    const newBtn = Array.from(buttons).find((b) => b.label === "New Assessment");
     expect(newBtn).not.toBeNull();
     expect(newBtn.variant).toBe("brand");
   });
 
   it("contains refresh button", () => {
     const element = createComponent();
-    const refreshBtn = element.shadowRoot.querySelector(
-      "lightning-button-icon"
-    );
+    const refreshBtn = element.shadowRoot.querySelector("lightning-button-icon");
     expect(refreshBtn).not.toBeNull();
     expect(refreshBtn.iconName).toBe("utility:refresh");
   });

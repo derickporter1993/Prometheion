@@ -1,6 +1,7 @@
 /**
- * @description Test class for ElaroAlertQueueable
- * Tests queueable alert processing
+ * Test class for ElaroAlertQueueable.
+ * Tests queueable alert processing.
+ *
  * @group Tests
  * @see ElaroAlertQueueable
  */
@@ -25,7 +26,13 @@ private class ElaroAlertQueueableTest {
         System.enqueueJob(queueable);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Queueable should execute without errors');
+        // Verify the queueable job completed
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'Queueable'
+            AND ApexClass.Name = 'ElaroAlertQueueable'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Queueable job should have been executed');
     }
 
     @isTest
@@ -35,7 +42,13 @@ private class ElaroAlertQueueableTest {
         System.enqueueJob(queueable);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Should handle null queue item gracefully');
+        // Verify job completed (null item causes early return, no exception)
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'Queueable'
+            AND ApexClass.Name = 'ElaroAlertQueueable'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Queueable job should complete even with null item');
     }
 
     @isTest
@@ -51,7 +64,13 @@ private class ElaroAlertQueueableTest {
         System.enqueueJob(queueable);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Should handle minimal data');
+        // Verify job completed with minimal data
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'Queueable'
+            AND ApexClass.Name = 'ElaroAlertQueueable'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Queueable job should complete with minimal data');
     }
 
     @isTest
@@ -70,6 +89,12 @@ private class ElaroAlertQueueableTest {
         System.enqueueJob(queueable);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Should process critical alerts');
+        // Verify job completed for critical severity
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'Queueable'
+            AND ApexClass.Name = 'ElaroAlertQueueable'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Queueable job should process critical alerts');
     }
 }

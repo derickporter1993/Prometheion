@@ -116,6 +116,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
                 SELECT Id, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
                 FROM AsyncApexJob
                 WHERE Id = :bc.getJobId()
+                WITH USER_MODE
                 LIMIT 1
             ];
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Full CRUD access to Tech Debt tracking objects for managing technical debt items, checklists, and dependencies</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Tech Debt Manager</label>
 

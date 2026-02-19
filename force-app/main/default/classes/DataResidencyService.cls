@@ -111,6 +111,7 @@ public with sharing class DataResidencyService {
             SELECT Id, Evidence_Type__c, Description__c
             FROM Elaro_Evidence_Item__c
             WHERE Description__c LIKE '%international%' OR Description__c LIKE '%cross-border%'
+            WITH USER_MODE
             LIMIT 100
         ];
         
@@ -145,9 +146,10 @@ public with sharing class DataResidencyService {
         
         // Check for actual EU user data
         Integer euUsers = [
-            SELECT COUNT() FROM User 
+            SELECT COUNT() FROM User
             WHERE Country IN ('Germany', 'France', 'United Kingdom', 'Ireland', 'Netherlands')
             AND IsActive = true
+            WITH USER_MODE
         ];
         
         status.euDataSubjectsCount = euUsers;

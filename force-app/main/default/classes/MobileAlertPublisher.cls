@@ -142,9 +142,7 @@ public with sharing class MobileAlertPublisher {
             Compliance_Gap__c gap = gaps[0];
             gap.Alert_Snoozed_Until__c = snoozeUntil;
 
-            if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
-            }
+            update as user gap;
         }
 
         // Cancel current escalation and schedule delayed notification

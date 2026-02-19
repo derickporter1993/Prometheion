@@ -1,6 +1,6 @@
 /**
- * @description Test class for JiraIntegrationService
- * Provides comprehensive coverage for Jira integration functionality
+ * Test class for JiraIntegrationService.
+ * Provides comprehensive coverage for Jira integration functionality.
  *
  * @author Elaro Development Team
  * @since 2026-01
@@ -143,8 +143,11 @@ private class JiraIntegrationServiceTest {
         JiraIntegrationService.createIssueAsync(gap.Id, 'High');
         Test.stopTest();
 
-        // Queueable enqueued (skipped in test context) - verify no exception thrown
-        Assert.isTrue(true, 'Async method should complete');
+        // Verify the gap was updated by the async execution
+        Compliance_Gap__c updatedGap = [
+            SELECT Jira_Issue_Key__c FROM Compliance_Gap__c WHERE Id = :gap.Id
+        ];
+        Assert.areNotEqual(null, updatedGap.Jira_Issue_Key__c, 'Async method should link gap to Jira issue');
     }
 
     @isTest
@@ -301,12 +304,16 @@ private class JiraIntegrationServiceTest {
     static void testAddComment_Success() {
         Test.setMock(HttpCalloutMock.class, new JiraCommentMock(true));
 
+        Exception caughtEx;
         Test.startTest();
-        JiraIntegrationService.addComment(MOCK_JIRA_KEY, 'Test comment from Salesforce');
+        try {
+            JiraIntegrationService.addComment(MOCK_JIRA_KEY, 'Test comment from Salesforce');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // No exception = success
-        Assert.isTrue(true, 'Comment should be added');
+        Assert.isNull(caughtEx, 'Comment should be added without throwing');
     }
 
     @isTest
@@ -341,11 +348,16 @@ private class JiraIntegrationServiceTest {
     static void testTransitionIssue() {
         Test.setMock(HttpCalloutMock.class, new JiraTransitionMock(true));
 
+        Exception caughtEx;
         Test.startTest();
-        JiraIntegrationService.transitionIssue(MOCK_JIRA_KEY, '21');
+        try {
+            JiraIntegrationService.transitionIssue(MOCK_JIRA_KEY, '21');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Transition should complete');
+        Assert.isNull(caughtEx, 'Transition should complete without throwing');
     }
 
     // ============================================

@@ -1,5 +1,5 @@
 /**
- * @description Test class for ElaroEventScheduler
+ * Test class for ElaroEventScheduler
  * Tests scheduled event loading for compliance monitoring
  * @group Tests
  * @see ElaroEventScheduler
@@ -71,11 +71,16 @@ private class ElaroEventSchedulerTest {
 
         // Act
         Test.startTest();
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Assert - method should complete without error
-        Assert.isTrue(true, 'Execute method should complete successfully');
+        Assert.isNull(caughtEx, 'Execute method should complete without throwing');
     }
 
     @isTest
@@ -84,14 +89,19 @@ private class ElaroEventSchedulerTest {
         List<String> eventTypes = new List<String>{'LOGIN', 'API', 'REPORT_EXPORT', 'APEX_EXECUTION'};
 
         Test.startTest();
-        for (String eventType : eventTypes) {
-            ElaroEventScheduler scheduler = new ElaroEventScheduler(eventType, 7, 'SOC2');
-            scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            for (String eventType : eventTypes) {
+                ElaroEventScheduler scheduler = new ElaroEventScheduler(eventType, 7, 'SOC2');
+                scheduler.execute(null);
+            }
+        } catch (Exception e) {
+            caughtEx = e;
         }
         Test.stopTest();
 
         // Assert
-        Assert.isTrue(true, 'All event types should be processed');
+        Assert.isNull(caughtEx, 'All event types should be processed without throwing');
     }
 
     @isTest
@@ -100,13 +110,18 @@ private class ElaroEventSchedulerTest {
         List<String> frameworks = new List<String>{'SOC2', 'HIPAA', 'GDPR', 'NIST'};
 
         Test.startTest();
-        for (String framework : frameworks) {
-            ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', 7, framework);
-            scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            for (String framework : frameworks) {
+                ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', 7, framework);
+                scheduler.execute(null);
+            }
+        } catch (Exception e) {
+            caughtEx = e;
         }
         Test.stopTest();
 
         // Assert
-        Assert.isTrue(true, 'All frameworks should be processed');
+        Assert.isNull(caughtEx, 'All frameworks should be processed without throwing');
     }
 }

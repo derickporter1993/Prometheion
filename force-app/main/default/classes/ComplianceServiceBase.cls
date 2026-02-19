@@ -101,7 +101,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert gap;
+        insert as user gap;
         logAuditEntry('GAP_CREATED', 'Created compliance gap: ' + policyReference, gap.Id);
         return gap.Id;
     }
@@ -127,7 +127,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Compliance_Evidence__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert evidence;
+        insert as user evidence;
         logAuditEntry('EVIDENCE_COLLECTED', 'Collected evidence: ' + evidenceType, evidence.Id);
         return evidence.Id;
     }
@@ -194,7 +194,7 @@ public abstract with sharing class ComplianceServiceBase implements IRiskScoring
             );
 
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert auditLog;
+            insert as user auditLog;
         } catch (Exception e) {
             // Log but don't fail the main operation
             ElaroLogger.error( 'Failed to create audit log: ' + e.getMessage());

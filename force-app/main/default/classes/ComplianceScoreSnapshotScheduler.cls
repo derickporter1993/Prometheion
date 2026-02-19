@@ -27,7 +27,14 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
     public void execute(SchedulableContext ctx) {
         // Run in Queueable context for better error handling and monitoring
         if (!Test.isRunningTest()) {
-            System.enqueueJob(new ComplianceSnapshotQueueable());
+            AsyncOptions options = new AsyncOptions();
+            options.setMaximumQueueableStackDepth(5);
+            options.setDuplicateSignature(
+                new QueueableDuplicateSignature.Builder()
+                    .addString('ComplianceSnapshotDaily')
+                    .build()
+            );
+            System.enqueueJob(new ComplianceSnapshotQueueable(), options);
         } else {
             // Run synchronously in tests
             captureSnapshots();
@@ -83,7 +90,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             // Insert all snapshots
             if (!snapshots.isEmpty()) {
                 ElaroSecurityUtils.validateCRUDAccess('Compliance_Score__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert snapshots;
+                insert as user snapshots;
             }
 
             // Calculate overall compliance score
@@ -221,7 +228,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             log.Details__c = summaryDetails;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
 
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to create daily summary: ' + e.getMessage());
@@ -264,7 +271,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             gap.Due_Date__c = Date.today().addDays(7);
 
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert gap;
+            insert as user gap;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to create score alert: ' + e.getMessage());
         }
@@ -286,7 +293,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             gap.Due_Date__c = Date.today().addDays(3);
 
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert gap;
+            insert as user gap;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to create compliance alert: ' + e.getMessage());
         }
@@ -304,7 +311,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
                 '. Overall Score: ' + overallScore + '%';
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log execution: ' + e.getMessage());
         }
@@ -321,7 +328,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log error: ' + e.getMessage());
         }

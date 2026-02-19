@@ -168,7 +168,7 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
         ];
 
         change.Ticket_Reference__c = ticketRef;
-        update change;
+        update as user change;
 
         SOC2ChangeManagementService service = new SOC2ChangeManagementService();
         service.logAuditEntry('CHANGE_LINKED', 'Linked change ' + changeId + ' to ticket ' + ticketRef, changeId);
@@ -231,7 +231,7 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
             Origin = 'H'
         );
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         // Get ContentDocumentId
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];

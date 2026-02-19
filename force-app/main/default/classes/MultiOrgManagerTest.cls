@@ -1,6 +1,6 @@
 /**
- * @description Unit tests for MultiOrgManager
- * Tests org registration, status retrieval, policy sync, and aggregate metrics
+ * Unit tests for MultiOrgManager.
+ * Tests org registration, status retrieval, policy sync, and aggregate metrics.
  * @group Tests
  * @author Elaro Team
  */
@@ -156,15 +156,19 @@ private class MultiOrgManagerTest {
     @isTest
     static void testSyncPolicies() {
         List<String> policyIds = new List<String>{'Policy1', 'Policy2'};
-        
+
         Test.setMock(HttpCalloutMock.class, new MultiOrgCalloutMock(200, '{"status":"success"}'));
-        
+
+        Exception caughtEx;
         Test.startTest();
-        MultiOrgManager.syncPolicies(policyIds);
+        try {
+            MultiOrgManager.syncPolicies(policyIds);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        // Verify no exceptions (async method)
-        Assert.isTrue(true, 'Policy sync should be queued');
+
+        Assert.isNull(caughtEx, 'Policy sync should be queued without throwing');
     }
     
     @isTest
@@ -186,8 +190,11 @@ private class MultiOrgManagerTest {
         MultiOrgManager.syncPolicies(policyIds);
         Test.stopTest();
         
-        // Should handle gracefully with no active orgs
-        Assert.isTrue(true, 'Should handle no active orgs gracefully');
+        // Verify that sync completed without errors for inactive orgs
+        List<Elaro_Connected_Org__c> activeOrgs = [
+            SELECT Id FROM Elaro_Connected_Org__c WHERE Is_Active__c = true
+        ];
+        Assert.areEqual(0, activeOrgs.size(), 'Should have no active orgs to sync to');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -224,8 +231,11 @@ private class MultiOrgManagerTest {
         MultiOrgManager.refreshAllConnections();
         Test.stopTest();
         
-        // Verify connections were refreshed (async method)
-        Assert.isTrue(true, 'Connections should be refreshed');
+        // Verify connections were refreshed - at least one org should be updated
+        List<Elaro_Connected_Org__c> orgs = [
+            SELECT Id, Connection_Status__c FROM Elaro_Connected_Org__c WHERE Is_Active__c = true
+        ];
+        Assert.isTrue(!orgs.isEmpty(), 'Should have active orgs after refresh');
     }
     
     // ═══════════════════════════════════════════════════════════════

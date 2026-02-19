@@ -297,11 +297,6 @@ public with sharing class BlockchainVerification {
     }
     
     private static void storeVerificationRecord(AnchorResult result, String fileName) {
-        // CRUD check before insert
-        if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
-            throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
-        }
-
         Elaro_Evidence_Anchor__c anchor = new Elaro_Evidence_Anchor__c(
             Name = 'ANCHOR-' + result.contentVersionId.left(10),
             Content_Version_Id__c = result.contentVersionId,
@@ -313,7 +308,7 @@ public with sharing class BlockchainVerification {
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert anchor;
+        insert as user anchor;
     }
     
     // ═══════════════════════════════════════════════════════════════

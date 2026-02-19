@@ -120,6 +120,7 @@ public with sharing class ElaroChangeAdvisor {
                 SELECT PermissionsModifyAllData, PermissionsViewAllData
                 FROM PermissionSet
                 WHERE Id = :permissionSetId
+                WITH USER_MODE
                 LIMIT 1
             ];
             

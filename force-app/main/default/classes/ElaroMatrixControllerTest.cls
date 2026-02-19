@@ -37,7 +37,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }
@@ -59,7 +59,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }
@@ -267,7 +267,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }
@@ -289,7 +289,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }
@@ -311,7 +311,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }
@@ -333,7 +333,7 @@ private class ElaroMatrixControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails in test context');
         }
         Test.stopTest();
     }

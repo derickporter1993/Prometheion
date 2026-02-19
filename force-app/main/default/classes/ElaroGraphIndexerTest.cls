@@ -38,7 +38,7 @@ private class ElaroGraphIndexerTest {
             ElaroGraphIndexer.indexChange('INVALID', 'badid', null, 'SOC2');
             Assert.fail( 'Should have thrown exception');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Expected exception for invalid entity');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message for invalid entity');
         }
         Test.stopTest();
     }

@@ -43,6 +43,9 @@ public with sharing class ComplianceGraphService {
         graph.nodes = new List<GraphNode>();
         graph.edges = new List<GraphEdge>();
 
+        // Track existing node IDs for O(1) duplicate checks instead of nested loop scans
+        Set<String> existingNodeIds = new Set<String>();
+
         // Query gaps once and reuse
         List<Compliance_Gap__c> gaps = getGapsForGraph();
 
@@ -53,14 +56,18 @@ public with sharing class ComplianceGraphService {
         }
 
         for (String framework : frameworks) {
-            graph.nodes.add(createFrameworkNode(framework));
+            GraphNode frameworkNode = createFrameworkNode(framework);
+            graph.nodes.add(frameworkNode);
+            existingNodeIds.add(frameworkNode.id);
         }
 
         // Add policy nodes and connect to frameworks
         Map<String, List<Compliance_Policy__mdt>> policiesByFramework = getPoliciesByFramework();
         for (String framework : policiesByFramework.keySet()) {
             for (Compliance_Policy__mdt policy : policiesByFramework.get(framework)) {
-                graph.nodes.add(createPolicyNode(policy));
+                GraphNode policyNode = createPolicyNode(policy);
+                graph.nodes.add(policyNode);
+                existingNodeIds.add(policyNode.id);
                 graph.edges.add(new GraphEdge(
                     'framework-' + framework,
                     'policy-' + policy.DeveloperName,
@@ -70,9 +77,12 @@ public with sharing class ComplianceGraphService {
             }
         }
 
-        // Add gap nodes and connect to policies and frameworks
+        // Add gap nodes and connect to policies and frameworks.
+        // Entity dedup uses Set lookup (O(1)) instead of scanning all nodes (O(n)).
         for (Compliance_Gap__c gap : gaps) {
-            graph.nodes.add(createGapNode(gap));
+            GraphNode gapNode = createGapNode(gap);
+            graph.nodes.add(gapNode);
+            existingNodeIds.add(gapNode.id);
 
             // Connect to policy
             graph.edges.add(new GraphEdge(
@@ -94,17 +104,10 @@ public with sharing class ComplianceGraphService {
             if (String.isNotBlank(gap.Entity_Type__c) && String.isNotBlank(gap.Entity_Id__c)) {
                 String entityNodeId = 'entity-' + gap.Entity_Type__c + '-' + gap.Entity_Id__c;
 
-                // Check if entity node already exists
-                Boolean entityExists = false;
-                for (GraphNode node : graph.nodes) {
-                    if (node.id == entityNodeId) {
-                        entityExists = true;
-                        break;
-                    }
-                }
-
-                if (!entityExists) {
+                // O(1) Set lookup replaces O(n) linear scan of graph.nodes
+                if (!existingNodeIds.contains(entityNodeId)) {
                     graph.nodes.add(createEntityNode(gap.Entity_Type__c, gap.Entity_Id__c));
+                    existingNodeIds.add(entityNodeId);
                 }
 
                 graph.edges.add(new GraphEdge(

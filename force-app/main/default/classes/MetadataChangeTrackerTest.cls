@@ -46,7 +46,7 @@ private class MetadataChangeTrackerTest {
             MetadataChangeTracker.trackChange('', 'ApexClass', 'TestClass', null, '{}');
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank parameters');
+            Assert.isNotNull(e.getMessage(), 'Expected exception for blank parameters should have a message');
         }
         Test.stopTest();
     }

@@ -66,6 +66,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
             WHERE EventType = :eventType
             AND LogDate &gt;= :startDate
             AND LogDate &lt;= :endDate
+            WITH USER_MODE
             ORDER BY LogDate ASC
         ]);
     }

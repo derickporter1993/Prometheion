@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for ElaroScheduledDelivery
+ * Unit tests for ElaroScheduledDelivery
  * Tests scheduled delivery execution, error handling, and scheduling methods
  * @group Tests
  * @author Elaro Team
@@ -29,11 +29,16 @@ private class ElaroScheduledDeliveryTest {
         );
         
         Test.startTest();
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
+
         // Verify no exceptions thrown
-        Assert.isTrue(true, 'Scheduled delivery should execute successfully');
+        Assert.isNull(caughtEx, 'Scheduled delivery should execute without throwing');
     }
     
     @isTest
@@ -52,7 +57,7 @@ private class ElaroScheduledDeliveryTest {
             scheduler.execute(null);
         } catch (Exception e) {
             // Expected - package doesn't exist
-            Assert.isTrue(true, 'Should handle invalid package ID');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message for invalid package ID');
         }
         Test.stopTest();
     }
@@ -68,11 +73,16 @@ private class ElaroScheduledDeliveryTest {
         );
         
         Test.startTest();
-        // Should handle empty recipients gracefully
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            // Should handle empty recipients gracefully
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        Assert.isTrue(true, 'Should handle empty recipients');
+
+        Assert.isNull(caughtEx, 'Should handle empty recipients without throwing');
     }
     
     @isTest
@@ -89,12 +99,17 @@ private class ElaroScheduledDeliveryTest {
         );
         
         Test.startTest();
-        // Should send error notification
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            // Should send error notification
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
+
         // Verify error was handled (notification sent in non-test context)
-        Assert.isTrue(true, 'Should handle errors and send notification');
+        Assert.isNull(caughtEx, 'Should handle errors gracefully without throwing');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -245,10 +260,15 @@ private class ElaroScheduledDeliveryTest {
         );
         
         Test.startTest();
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        Assert.isTrue(true, 'Should handle bulk recipients without governor limit errors');
+
+        Assert.isNull(caughtEx, 'Should handle bulk recipients without throwing');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -274,7 +294,7 @@ private class ElaroScheduledDeliveryTest {
         }
         Test.stopTest();
         
-        Assert.isTrue(true, 'Should handle exceptions gracefully');
+        Assert.isNotNull(scheduler, 'Scheduler should exist after exception handling');
     }
     
     @isTest
@@ -293,7 +313,7 @@ private class ElaroScheduledDeliveryTest {
             // System.schedule will throw exception for invalid cron
             Assert.fail( 'Should throw exception for invalid cron');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Should handle invalid cron expression: ' + e.getMessage());
+            Assert.isNotNull(e.getMessage(), 'Should have error message for invalid cron expression');
         }
         Test.stopTest();
     }

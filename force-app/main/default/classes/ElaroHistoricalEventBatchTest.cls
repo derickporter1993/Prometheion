@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for ElaroHistoricalEventBatch
+ * Unit tests for ElaroHistoricalEventBatch
  * @group Tests
  */
 @IsTest(testFor=ElaroHistoricalEventBatch.class)
@@ -152,13 +152,17 @@ private class ElaroHistoricalEventBatchTest {
             Date.today().addDays(-30),
             Date.today()
         );
-        
+
         Test.startTest();
-        batch.finish(null);
+        Exception caughtEx;
+        try {
+            batch.finish(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
-        
-        // Should not throw exception
-        Assert.isTrue(true, 'Finish method should complete');
+
+        Assert.isNull(caughtEx, 'Finish method should complete without throwing');
     }
     
     @isTest
@@ -240,6 +244,12 @@ private class ElaroHistoricalEventBatchTest {
         }
         Test.stopTest();
         
-        Assert.isTrue(true, 'Should handle all event types');
+        // Verify batches were queued
+        List&lt;AsyncApexJob&gt; jobs = [
+            SELECT Status FROM AsyncApexJob
+            WHERE ApexClass.Name = 'ElaroHistoricalEventBatch'
+            AND Status = 'Completed'
+        ];
+        Assert.isTrue(jobs.size() &gt; 0, 'At least one batch should complete for event types');
     }
 }

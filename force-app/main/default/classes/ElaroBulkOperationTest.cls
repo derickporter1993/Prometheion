@@ -243,7 +243,8 @@ private class ElaroBulkOperationTest {
         try {
             ElaroSecurityUtils.validateCRUDAccess('Account', ElaroSecurityUtils.DmlOperation.DML_INSERT);
             insert accounts;
-            Assert.isTrue(true, 'Bulk insert should succeed with proper validation');
+            // If we reach here, validation and insert both succeeded
+            Assert.areEqual(200, accounts.size(), 'All 200 accounts should be inserted after validation');
         } catch (ElaroSecurityUtils.SecurityException e) {
             Assert.fail( 'Should not throw SecurityException: ' + e.getMessage());
         }

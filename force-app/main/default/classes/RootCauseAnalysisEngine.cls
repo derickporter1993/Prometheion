@@ -40,11 +40,12 @@ public with sharing class RootCauseAnalysisEngine {
         try {
             // Query the primary event
             Elaro_Evidence_Item__c primaryEvent = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c,
                        Description__c, Status__c, Audit_Package__c,
                        Audit_Package__r.Framework__c
                 FROM Elaro_Evidence_Item__c
                 WHERE Id = :eventId
+                WITH USER_MODE
                 LIMIT 1
             ];
             
@@ -167,6 +168,7 @@ public with sharing class RootCauseAnalysisEngine {
             AND Id != :primaryEvent.Id
             AND Evidence_Date__c &gt;= :startDate
             AND Evidence_Date__c &lt;= :endDate
+            WITH USER_MODE
             ORDER BY Evidence_Date__c ASC
             LIMIT 50
         ];

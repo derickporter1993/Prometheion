@@ -55,7 +55,7 @@ public with sharing class ElaroLegalDocumentGenerator {
             if (accessibleContent.isEmpty()) {
                 throw new AuraHandledException('Insufficient field-level security access for ContentVersion');
             }
-            insert accessibleContent;
+            insert as user accessibleContent;
             cv = (ContentVersion)accessibleContent[0];
 
             // Get ContentDocumentId
@@ -108,15 +108,13 @@ public with sharing class ElaroLegalDocumentGenerator {
      */
     private static void logAuditEvent(String action, String framework, Date startDate, Date endDate, String documentId) {
         try {
-            if (Schema.sObjectType.Elaro_Audit_Log__c.isCreateable()) {
-                Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
-                    Action__c = action,
-                    User__c = UserInfo.getUserId(),
-                    Timestamp__c = System.now(),
-                    Details__c = 'Framework: ' + framework + ', Period: ' + startDate + ' to ' + endDate + ', DocumentId: ' + documentId
-                );
-                insert auditLog;
-            }
+            Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
+                Action__c = action,
+                User__c = UserInfo.getUserId(),
+                Timestamp__c = System.now(),
+                Details__c = 'Framework: ' + framework + ', Period: ' + startDate + ' to ' + endDate + ', DocumentId: ' + documentId
+            );
+            insert as user auditLog;
         } catch (Exception e) {
             // Don't fail the main operation if audit logging fails
             ElaroLogger.warn('ElaroLegalDocumentGenerator: Failed to log audit event: ' + e.getMessage());

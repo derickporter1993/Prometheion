@@ -195,13 +195,17 @@ private class TrustCenterLinkServiceTest {
     static void shouldHandleNullLinkId() {
         TrustCenterLinkService service = new TrustCenterLinkService();
 
+        Exception caughtEx;
         Test.startTest();
-        service.recordAccess(null); // Should not throw exception
-        service.revokeLink(null); // Should not throw exception
+        try {
+            service.recordAccess(null); // Should not throw exception
+            service.revokeLink(null); // Should not throw exception
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // If we reach here, test passes (no exceptions thrown)
-        Assert.isTrue(true, 'Should handle null IDs gracefully');
+        Assert.isNull(caughtEx, 'Should handle null IDs gracefully without throwing');
     }
 
     @IsTest

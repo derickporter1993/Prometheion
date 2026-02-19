@@ -80,7 +80,7 @@ private class ElaroTrendControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Query may fail due to no data, which is acceptable
-            Assert.isTrue(true, 'Query may fail with no data');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -100,7 +100,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -120,7 +120,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -140,7 +140,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -160,7 +160,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -300,7 +300,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -320,7 +320,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -340,7 +340,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }
@@ -360,7 +360,7 @@ private class ElaroTrendControllerTest {
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message when query fails');
         }
         Test.stopTest();
     }

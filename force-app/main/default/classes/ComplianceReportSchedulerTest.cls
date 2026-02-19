@@ -134,7 +134,12 @@ private class ComplianceReportSchedulerTest {
         ComplianceReportScheduler.sendTestReport('ALL', new List<String>{ 'test@example.com' });
         Test.stopTest();
 
-        Assert.isTrue(true, 'Test report should send without errors');
+        // Verify audit log was created by report delivery
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'REPORT_DELIVERED'
+        ];
+        Assert.isTrue(logs.size() > 0, 'Test report delivery should create an audit log entry');
     }
 
     /**

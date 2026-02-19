@@ -139,17 +139,12 @@ public with sharing class ElaroQuickActionsService {
         
         if (!newAssignments.isEmpty()) {
             try {
-                // CRUD check: Verify PermissionSetAssignment is creatable
-                if (!Schema.sObjectType.PermissionSetAssignment.isCreateable()) {
-                    result.messages.add('Insufficient permissions to create permission set assignments');
-                } else {
-                    // Strip inaccessible fields before insert
-                    SObjectAccessDecision decision = Security.stripInaccessible(
-                        AccessType.CREATABLE,
-                        newAssignments
-                    );
-                    insert decision.getRecords();
-                }
+                // Strip inaccessible fields before insert
+                SObjectAccessDecision decision = Security.stripInaccessible(
+                    AccessType.CREATABLE,
+                    newAssignments
+                );
+                insert as user decision.getRecords();
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
                 result.messages.add('Error creating permission set assignments: ' + e.getMessage());
@@ -158,13 +153,8 @@ public with sharing class ElaroQuickActionsService {
         
         if (!assignmentsToRemove.isEmpty()) {
             try {
-                // Delete permission set assignments with CRUD check
-                if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                    result.messages.add('Insufficient permissions to delete permission set assignments');
-                } else {
-                    delete assignmentsToRemove;
-                    result.assignmentsRemoved.addAll(assignmentsToRemove);
-                }
+                delete as user assignmentsToRemove;
+                result.assignmentsRemoved.addAll(assignmentsToRemove);
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting assignments: ' + e.getMessage());
                 result.messages.add('Error removing permission set assignments: ' + e.getMessage());
@@ -214,17 +204,12 @@ public with sharing class ElaroQuickActionsService {
         
         if (!inactiveUsers.isEmpty()) {
             try {
-                // CRUD check: Verify User is updateable
-                if (!Schema.sObjectType.User.isUpdateable()) {
-                    result.messages.add('Insufficient permissions to update users');
-                } else {
-                    // Strip inaccessible fields before update
-                    SObjectAccessDecision decision = Security.stripInaccessible(
-                        AccessType.UPDATABLE,
-                        inactiveUsers
-                    );
-                    update decision.getRecords();
-                }
+                // Strip inaccessible fields before update
+                SObjectAccessDecision decision = Security.stripInaccessible(
+                    AccessType.UPDATABLE,
+                    inactiveUsers
+                );
+                update as user decision.getRecords();
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception updating users: ' + e.getMessage());
                 result.messages.add('Error deactivating users: ' + e.getMessage());
@@ -266,11 +251,7 @@ public with sharing class ElaroQuickActionsService {
                 ];
                 
                 if (!assignments.isEmpty()) {
-                    if (Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                        delete assignments;
-                    } else {
-                        result.messages.add('Insufficient permissions to delete permission set assignments');
-                    }
+                    delete as user assignments;
                 }
             } catch (Exception e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] Error removing assignments: ' + e.getMessage());
@@ -279,11 +260,7 @@ public with sharing class ElaroQuickActionsService {
 
             // Then delete the permission sets
             try {
-                if (!Schema.sObjectType.PermissionSet.isDeletable()) {
-                    result.messages.add('Insufficient permissions to delete permission sets');
-                } else {
-                    delete setsToRemove;
-                }
+                delete as user setsToRemove;
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting permission sets: ' + e.getMessage());
                 result.messages.add('Error deleting permission sets: ' + e.getMessage());
@@ -376,14 +353,10 @@ public with sharing class ElaroQuickActionsService {
         
         if (!toRemove.isEmpty()) {
             try {
-                if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                    result.messages.add('Insufficient permissions to delete permission set assignments');
-                } else {
-                    delete toRemove;
-                    result.assignmentsRemoved.addAll(toRemove);
-                    result.messages.add('Removed ' + toRemove.size() +
-                        ' excessive permission set assignments.');
-                }
+                delete as user toRemove;
+                result.assignmentsRemoved.addAll(toRemove);
+                result.messages.add('Removed ' + toRemove.size() +
+                    ' excessive permission set assignments.');
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception removing assignments: ' + e.getMessage());
                 result.messages.add('Error removing excessive assignments: ' + e.getMessage());
@@ -397,15 +370,11 @@ public with sharing class ElaroQuickActionsService {
      * Creates a least-privilege permission set template
      */
     private static PermissionSet createLeastPrivilegeTemplate() {
-        if (!Schema.sObjectType.PermissionSet.isCreateable()) {
-            throw new AuraHandledException('Insufficient permissions to create permission sets');
-        }
-
         PermissionSet ps = new PermissionSet(
             Name = 'Elaro_Least_Privilege_' + String.valueOf(DateTime.now().getTime()),
             Label = 'Elaro Least Privilege Template'
         );
-        insert ps;
+        insert as user ps;
         
         // Note: Object and field permissions would be added here
         // This is a simplified version - full implementation would

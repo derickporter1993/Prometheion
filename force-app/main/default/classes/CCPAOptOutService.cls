@@ -137,9 +137,13 @@ public with sharing class CCPAOptOutService extends ComplianceServiceBase {
             
             Integer vendorsSynced = 0;
             List<String> vendorNames = new List<String>();
-            
+
             for (Third_Party_Recipient__c recipient : recipients) {
-                // In production, would call vendor API to update opt-out status
+                // GOVERNOR LIMIT NOTE: When vendor API callouts are implemented here,
+                // they MUST NOT be placed inside this loop. Instead, batch the recipient
+                // data and use a Queueable chain (one callout per Queueable execution)
+                // or a single bulk API call. Always verify callout capacity before
+                // making HTTP requests: Limits.getCallouts() < Limits.getLimitCallouts()
                 vendorNames.add(recipient.Recipient_Name__c);
                 vendorsSynced++;
             }

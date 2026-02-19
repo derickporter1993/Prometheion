@@ -1,5 +1,5 @@
 /**
- * @description Test class for MobileAlertEscalator
+ * Test class for MobileAlertEscalator
  * @author Elaro Development Team
  * @since 2026-01
  */
@@ -208,13 +208,18 @@ private class MobileAlertEscalatorTest {
 
     @isTest
     static void testEscalator_InvalidAlertId() {
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertEscalator escalator = new MobileAlertEscalator('001000000000000AAA');
-        escalator.execute(null);
+        try {
+            MobileAlertEscalator escalator = new MobileAlertEscalator('001000000000000AAA');
+            escalator.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should complete without error
-        Assert.isTrue(true, 'Escalator handled invalid ID gracefully');
+        Assert.isNull(caughtEx, 'Escalator should handle invalid ID gracefully without throwing');
     }
 
     @isTest
@@ -334,7 +339,12 @@ private class MobileAlertEscalatorTest {
         escalator.execute(null);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Escalator handled long description correctly');
+        Compliance_Gap__c updatedGap = [
+            SELECT Alert_Escalation_Level__c
+            FROM Compliance_Gap__c
+            WHERE Id = :gap.Id
+        ];
+        Assert.areEqual(1, updatedGap.Alert_Escalation_Level__c, 'Escalator should process gap with long description');
     }
 
     @isTest
@@ -348,6 +358,11 @@ private class MobileAlertEscalatorTest {
         escalator.execute(null);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Escalator handled null description correctly');
+        Compliance_Gap__c updatedGap = [
+            SELECT Alert_Escalation_Level__c
+            FROM Compliance_Gap__c
+            WHERE Id = :gap.Id
+        ];
+        Assert.areEqual(1, updatedGap.Alert_Escalation_Level__c, 'Escalator should process gap with null description');
     }
 }

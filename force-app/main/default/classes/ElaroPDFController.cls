@@ -96,17 +96,18 @@ public with sharing class ElaroPDFController {
         }
         
         // Build query
-        String query = 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, ' +
-                       'Description__c, Status__c, CreatedDate ' +
-                       'FROM Elaro_Evidence_Item__c ' +
-                       'WHERE Audit_Package__c = :packageId ';
-        
+        String query = 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, '
+            + 'Description__c, Status__c, CreatedDate '
+            + 'FROM Elaro_Evidence_Item__c '
+            + 'WHERE Audit_Package__c = :packageId ';
+
         // Note: Control filtering would require a Control_Reference__c field
         // For now, we'll load all evidence
-        
+
         query += 'WITH USER_MODE ORDER BY Evidence_Date__c DESC LIMIT 5000';
 
-        evidenceItems = Database.query(query);
+        Map<String, Object> binds = new Map<String, Object>{ 'packageId' => packageId };
+        evidenceItems = Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
 
         // Strip inaccessible fields for FLS security
         evidenceItems = (List&lt;Elaro_Evidence_Item__c&gt;) ElaroSecurityUtils.stripInaccessibleFields(

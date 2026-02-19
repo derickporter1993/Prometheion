@@ -1,5 +1,5 @@
 /**
- * @description Test class for ElaroPDFController
+ * Test class for ElaroPDFController
  * Tests Visualforce PDF controller for audit packages
  * @group Tests
  * @see ElaroPDFController
@@ -162,7 +162,8 @@ private class ElaroPDFControllerTest {
         Test.stopTest();
 
         // Should handle gracefully without errors
-        Assert.isTrue(true, 'Controller should handle null package');
+        Assert.areNotEqual(null, controller, 'Controller should be instantiated even with null package');
+        Assert.areNotEqual(null, controller.generatedAt, 'Generated timestamp should still be set');
     }
 
     @isTest

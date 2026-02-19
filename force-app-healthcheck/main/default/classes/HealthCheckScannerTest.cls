@@ -7,7 +7,7 @@
  * @group Health Check
  * @see HealthCheckScanner
  */
-@IsTest
+@IsTest(testFor=HealthCheckScanner.class)
 private class HealthCheckScannerTest {
 
     private class HealthCheckMock implements HttpCalloutMock {
@@ -68,5 +68,45 @@ private class HealthCheckScannerTest {
 
         Assert.areEqual(0, result.nativeScore, 'Score should default to 0 with no records');
         Assert.isTrue(result.findings.isEmpty(), 'Findings should be empty');
+    }
+
+    private class ErrorMock implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest req) {
+            HttpResponse res = new HttpResponse();
+            res.setHeader('Content-Type', 'application/json');
+            res.setStatusCode(500);
+            res.setStatus('Internal Server Error');
+            res.setBody('{"errorCode":"SERVER_ERROR","message":"Tooling API unavailable"}');
+            return res;
+        }
+    }
+
+    @IsTest
+    static void shouldThrowOnToolingApiError() {
+        Test.setMock(HttpCalloutMock.class, new ErrorMock());
+
+        Test.startTest();
+        try {
+            new HealthCheckScanner().scan();
+            Assert.fail('Should have thrown AuraHandledException on Tooling API error');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(
+                e.getMessage().contains('Internal Server Error')
+                || e.getMessage().contains('Tooling API'),
+                'Error should reference API failure: ' + e.getMessage()
+            );
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void shouldInitializeScanResultDefaults() {
+        Test.startTest();
+        HealthCheckScanner.ScanResult result = new HealthCheckScanner.ScanResult();
+        Test.stopTest();
+
+        Assert.areEqual(0, result.nativeScore, 'Default nativeScore should be 0');
+        Assert.isNotNull(result.findings, 'Default findings list should be initialized');
+        Assert.isTrue(result.findings.isEmpty(), 'Default findings list should be empty');
     }
 }

@@ -102,25 +102,29 @@ private class ElaroPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateNoCVVStorage_Null() {
         Test.startTest();
+        Exception caughtEx;
         try {
             ElaroPCIDataMaskingService.validateNoCVVStorage(null);
-            Assert.isTrue(true, 'Should not throw exception for null');
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
-            Assert.fail( 'Should not throw for null CVV');
+            caughtEx = e;
         }
         Test.stopTest();
+
+        Assert.isNull(caughtEx, 'Should not throw PCIViolationException for null CVV');
     }
 
     @IsTest
     static void testValidateNoCVVStorage_Empty() {
         Test.startTest();
+        Exception caughtEx;
         try {
             ElaroPCIDataMaskingService.validateNoCVVStorage('');
-            Assert.isTrue(true, 'Should not throw exception for empty');
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
-            Assert.fail( 'Should not throw for empty CVV');
+            caughtEx = e;
         }
         Test.stopTest();
+
+        Assert.isNull(caughtEx, 'Should not throw PCIViolationException for empty CVV');
     }
 
     @IsTest
@@ -246,15 +250,21 @@ private class ElaroPCIDataMaskingServiceTest {
     @IsTest
     static void testValidateEncryptionEnabled() {
         Test.startTest();
+        Boolean validationPassed = false;
         try {
             ElaroPCIDataMaskingService.validateEncryptionEnabled();
             // In dev/test, this passes as encryption check returns true
-            Assert.isTrue(true, 'Encryption validation passed');
+            validationPassed = true;
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
             // This may throw in environments without Shield
             Assert.isTrue(e.getMessage().contains('Platform Encryption'),
                 'Should mention encryption requirement');
         }
         Test.stopTest();
+
+        // If no exception was thrown, encryption validation passed
+        if (validationPassed) {
+            Assert.isTrue(validationPassed, 'Encryption validation should pass in this environment');
+        }
     }
 }

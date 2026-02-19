@@ -129,19 +129,18 @@ private class ElaroISO27001QuarterlySchedulerTest {
     @IsTest
     static void testExecuteWithException() {
         // This test verifies error handling
-        Test.startTest();
-        
         ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler('invalid');
-        // Should not throw exception
+
+        Test.startTest();
+        Exception caughtEx;
         try {
             scheduler.execute(null);
         } catch (Exception e) {
-            System.debug('Expected exception: ' + e.getMessage());
+            caughtEx = e;
         }
-        
         Test.stopTest();
-        
+
         // Test should complete without unhandled exceptions
-        Assert.isTrue(true, 'Exception handling should work');
+        Assert.isNull(caughtEx, 'Exception handling should prevent unhandled exceptions from propagating');
     }
 }

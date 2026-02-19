@@ -83,6 +83,7 @@ public with sharing class ServiceNowIntegration {
                     SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c, Status__c
                     FROM Elaro_Evidence_Item__c
                     WHERE Id = :evidenceId
+                    WITH USER_MODE
                     LIMIT 1
                 ];
                 
@@ -137,6 +138,7 @@ public with sharing class ServiceNowIntegration {
                     SELECT Id, Name, Package_Name__c, Framework__c, Status__c
                     FROM Elaro_Audit_Package__c
                     WHERE Id = :auditPackageId
+                    WITH USER_MODE
                     LIMIT 1
                 ];
                 

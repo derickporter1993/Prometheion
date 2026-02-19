@@ -19,6 +19,7 @@
   "name": "Elaro",
   "namespace": "elaro",
   "_TODO_namespace": "Register 'elaro' namespace in DevHub before creating package versions",
+  "_TODO_HC_namespace": "Register 'elaroHC' namespace in DevHub for Health Check package",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "66.0",
   "packageAliases": {

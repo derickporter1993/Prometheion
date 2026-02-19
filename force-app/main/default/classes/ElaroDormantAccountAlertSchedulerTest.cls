@@ -1,5 +1,5 @@
 /**
- * @description Test class for ElaroDormantAccountAlertScheduler
+ * Test class for ElaroDormantAccountAlertScheduler
  * Tests dormant account detection and alert generation
  * @group Tests
  * @see ElaroDormantAccountAlertScheduler
@@ -43,11 +43,16 @@ private class ElaroDormantAccountAlertSchedulerTest {
 
         // Act
         Test.startTest();
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Assert - method should complete without error
-        Assert.isTrue(true, 'Execute method should complete successfully');
+        Assert.isNull(caughtEx, 'Execute method should complete without throwing');
     }
 
     @isTest
@@ -57,11 +62,16 @@ private class ElaroDormantAccountAlertSchedulerTest {
 
         // Act
         Test.startTest();
-        scheduler.execute(null);
+        Exception caughtEx;
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Assert
-        Assert.isTrue(true, 'Scheduler should handle case with no dormant users');
+        Assert.isNull(caughtEx, 'Scheduler should handle case with no dormant users without throwing');
     }
 
     @isTest
@@ -87,13 +97,14 @@ private class ElaroDormantAccountAlertSchedulerTest {
 
         // Act
         Test.startTest();
+        Exception caughtEx;
         try {
             scheduler.execute(null);
-            Assert.isTrue(true, 'Scheduler executed without throwing exception');
         } catch (Exception e) {
-            // Error handling is expected to log and notify
-            Assert.isTrue(true, 'Scheduler handles errors gracefully');
+            caughtEx = e;
         }
         Test.stopTest();
+
+        Assert.isNull(caughtEx, 'Scheduler should handle errors gracefully without throwing');
     }
 }

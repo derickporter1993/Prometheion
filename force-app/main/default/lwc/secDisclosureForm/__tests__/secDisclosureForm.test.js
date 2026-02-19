@@ -12,9 +12,9 @@ jest.mock(
 jest.mock(
   "lightning/platformShowToastEvent",
   () => ({
-    ShowToastEvent: function (config) {
-      this.detail = config;
-    },
+    ShowToastEvent: jest.fn().mockImplementation((config) => {
+      return new CustomEvent("lightning__showtoast", { detail: config });
+    }),
     ShowToastEventName: "lightning__showtoast",
   }),
   { virtual: true }
@@ -41,15 +41,11 @@ describe("c-sec-disclosure-form", () => {
     const inputs = element.shadowRoot.querySelectorAll("lightning-input");
     expect(inputs.length).toBe(2);
 
-    const descriptionInput = Array.from(inputs).find(
-      (i) => i.dataset.field === "description"
-    );
+    const descriptionInput = Array.from(inputs).find((i) => i.dataset.field === "description");
     expect(descriptionInput).not.toBeNull();
     expect(descriptionInput.required).toBe(true);
 
-    const dateInput = Array.from(inputs).find(
-      (i) => i.dataset.field === "discoveryDate"
-    );
+    const dateInput = Array.from(inputs).find((i) => i.dataset.field === "discoveryDate");
     expect(dateInput).not.toBeNull();
     expect(dateInput.type).toBe("datetime");
     expect(dateInput.required).toBe(true);
@@ -66,9 +62,7 @@ describe("c-sec-disclosure-form", () => {
   it("updates formData on input change", async () => {
     const element = createComponent();
     const inputs = element.shadowRoot.querySelectorAll("lightning-input");
-    const descInput = Array.from(inputs).find(
-      (i) => i.dataset.field === "description"
-    );
+    const descInput = Array.from(inputs).find((i) => i.dataset.field === "description");
 
     descInput.value = "Test incident";
     descInput.dispatchEvent(
@@ -128,9 +122,7 @@ describe("c-sec-disclosure-form", () => {
     await Promise.resolve();
 
     expect(createdHandler).toHaveBeenCalled();
-    expect(createdHandler.mock.calls[0][0].detail.assessmentId).toBe(
-      "a01000000000001"
-    );
+    expect(createdHandler.mock.calls[0][0].detail.assessmentId).toBe("a01000000000001");
   });
 
   it("renders within a lightning-card", () => {

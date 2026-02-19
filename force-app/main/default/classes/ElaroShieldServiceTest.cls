@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for ElaroShieldService
+ * Unit tests for ElaroShieldService
  * @group Tests
  */
 @IsTest(testFor=ElaroShieldService.class)
@@ -253,8 +253,7 @@ private class ElaroShieldServiceTest {
             ElaroShieldService.parseEventLogContent('invalid_id');
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            // Expected
-            Assert.isTrue(true, 'Should throw exception for invalid ID');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message for invalid ID');
         }
         Test.stopTest();
     }

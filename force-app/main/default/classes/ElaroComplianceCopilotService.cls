@@ -175,6 +175,7 @@ public with sharing class ElaroComplianceCopilotService {
                 SELECT Evidence_Type__c, Evidence_Date__c, Status__c
                 FROM Elaro_Evidence_Item__c
                 WHERE CreatedDate = LAST_N_DAYS:90
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
                 LIMIT 500
             ];
@@ -219,6 +220,7 @@ public with sharing class ElaroComplianceCopilotService {
                 SELECT Id, Evidence_Type__c, Description__c
                 FROM Elaro_Evidence_Item__c
                 WHERE Id IN :eventIds
+                WITH USER_MODE
                 LIMIT 50
             ];
             

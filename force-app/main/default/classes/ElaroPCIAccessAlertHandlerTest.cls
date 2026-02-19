@@ -18,11 +18,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEvent('user001', 'testuser@example.com', '192.168.1.1', 'Failed Login'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should log warning level (not critical) for single failure
-        Assert.isTrue(true, 'Single failed access should be handled without error');
+        Assert.isNull(caughtEx, 'Single failed access should be handled without throwing');
     }
 
     @IsTest
@@ -35,11 +40,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         }
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should trigger critical alert for repeated failures
-        Assert.isTrue(true, 'Multiple failed accesses should trigger critical alert');
+        Assert.isNull(caughtEx, 'Multiple failed accesses should be handled without throwing');
     }
 
     @IsTest
@@ -52,11 +62,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEvent('user003', 'user3@example.com', '192.168.1.3', 'Failed Login'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should handle multiple users without errors
-        Assert.isTrue(true, 'Multiple users should be handled separately');
+        Assert.isNull(caughtEx, 'Multiple users should be handled without throwing');
     }
 
     // ========================================
@@ -70,11 +85,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEvent('user001', 'testuser@example.com', '192.168.1.1', 'View Record'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should send warning alert for after-hours access
-        Assert.isTrue(true, 'After-hours access should trigger warning alert');
+        Assert.isNull(caughtEx, 'After-hours access should be handled without throwing');
     }
 
     @IsTest
@@ -86,11 +106,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         }
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should process all after-hours events
-        Assert.isTrue(true, 'Multiple after-hours events should be processed');
+        Assert.isNull(caughtEx, 'Multiple after-hours events should be processed without throwing');
     }
 
     // ========================================
@@ -104,11 +129,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEventWithAction('user001', 'testuser@example.com', '192.168.1.1', 'Bulk: 25 records'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should log event but not trigger alert (under 50 threshold)
-        Assert.isTrue(true, 'Under-threshold bulk access should be logged without high alert');
+        Assert.isNull(caughtEx, 'Under-threshold bulk access should be handled without throwing');
     }
 
     @IsTest
@@ -118,11 +148,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEventWithAction('user001', 'testuser@example.com', '192.168.1.1', 'Bulk: 100 records'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should trigger high priority alert
-        Assert.isTrue(true, 'Over-threshold bulk access should trigger high alert');
+        Assert.isNull(caughtEx, 'Over-threshold bulk access should be handled without throwing');
     }
 
     @IsTest
@@ -132,11 +167,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(createTestEventWithAction('user001', 'testuser@example.com', '192.168.1.1', 'Regular access'));
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should handle invalid action format gracefully
-        Assert.isTrue(true, 'Invalid action format should be handled gracefully');
+        Assert.isNull(caughtEx, 'Invalid action format should be handled without throwing');
     }
 
     // ========================================
@@ -146,17 +186,20 @@ private class ElaroPCIAccessAlertHandlerTest {
     @IsTest
     static void testCreateSecurityIncident() {
         Test.startTest();
-
-        ElaroPCIAccessAlertHandler.createSecurityIncident(
-            'Test Security Incident',
-            'This is a test incident description',
-            'High'
-        );
-
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.createSecurityIncident(
+                'Test Security Incident',
+                'This is a test incident description',
+                'High'
+            );
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should create security incident without error
-        Assert.isTrue(true, 'Security incident should be created');
+        Assert.isNull(caughtEx, 'Security incident creation should complete without throwing');
     }
 
     // ========================================
@@ -243,14 +286,19 @@ private class ElaroPCIAccessAlertHandlerTest {
 
         Test.startTest();
 
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
-        ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
-        ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+            ElaroPCIAccessAlertHandler.handleAfterHoursAccess(events);
+            ElaroPCIAccessAlertHandler.handleBulkAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should handle empty lists gracefully
-        Assert.isTrue(true, 'Empty event lists should be handled gracefully');
+        Assert.isNull(caughtEx, 'Empty event lists should be handled without throwing');
     }
 
     @IsTest
@@ -266,11 +314,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(event);
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should handle null event data gracefully
-        Assert.isTrue(true, 'Null event data should be handled gracefully');
+        Assert.isNull(caughtEx, 'Null event data should be handled without throwing');
     }
 
     @IsTest
@@ -286,11 +339,16 @@ private class ElaroPCIAccessAlertHandlerTest {
         events.add(event);
 
         Test.startTest();
-        ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        Exception caughtEx;
+        try {
+            ElaroPCIAccessAlertHandler.handleFailedAccess(events);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Should handle malformed JSON gracefully
-        Assert.isTrue(true, 'Malformed JSON should be handled gracefully');
+        Assert.isNull(caughtEx, 'Malformed JSON should be handled without throwing');
     }
 
     // ========================================

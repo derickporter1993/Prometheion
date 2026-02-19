@@ -34,6 +34,7 @@ public with sharing class ElaroDeliveryService {
                 SELECT Id, Name, Package_Name__c, Framework__c, Status__c
                 FROM Elaro_Audit_Package__c
                 WHERE Id = :packageId
+                WITH USER_MODE
                 LIMIT 1
             ];
             
@@ -45,6 +46,7 @@ public with sharing class ElaroDeliveryService {
                 SELECT Id, Title, VersionData, ContentDocumentId
                 FROM ContentVersion
                 WHERE Id = :contentVersionId
+                WITH USER_MODE
             ];
             
             // Build and send emails
@@ -141,13 +143,15 @@ public with sharing class ElaroDeliveryService {
                 SELECT ContentDocumentId
                 FROM ContentVersion
                 WHERE Id = :contentVersionId
+                WITH USER_MODE
             ];
-            
+
             // Query package for naming
             Elaro_Audit_Package__c pkg = [
                 SELECT Package_Name__c, Framework__c
                 FROM Elaro_Audit_Package__c
                 WHERE Id = :packageId
+                WITH USER_MODE
             ];
             
             // Create ContentDistribution
@@ -164,13 +168,14 @@ public with sharing class ElaroDeliveryService {
             );
 
             ElaroSecurityUtils.validateCRUDAccess('ContentDistribution', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert cd;
+            insert as user cd;
             
             // Query for the generated URL
             cd = [
                 SELECT DistributionPublicUrl, Password
                 FROM ContentDistribution
                 WHERE Id = :cd.Id
+                WITH USER_MODE
             ];
             
             return cd.DistributionPublicUrl;
@@ -210,6 +215,7 @@ public with sharing class ElaroDeliveryService {
             SELECT ContentDocumentId
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :packageId
+            WITH USER_MODE
         ];
         
         Set&lt;Id&gt; docIds = new Set&lt;Id&gt;();
@@ -219,10 +225,11 @@ public with sharing class ElaroDeliveryService {
         
         if (!docIds.isEmpty()) {
             List&lt;ContentDistribution&gt; distributions = [
-                SELECT Id, Name, DistributionPublicUrl, ExpiryDate, 
+                SELECT Id, Name, DistributionPublicUrl, ExpiryDate,
                        FirstViewDate, LastViewDate, ViewCount, CreatedDate
                 FROM ContentDistribution
                 WHERE ContentDocumentId IN :docIds
+                WITH USER_MODE
                 ORDER BY CreatedDate DESC
             ];
             

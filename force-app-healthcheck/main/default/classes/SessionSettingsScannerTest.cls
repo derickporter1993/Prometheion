@@ -7,7 +7,7 @@
  * @group Health Check
  * @see SessionSettingsScanner
  */
-@IsTest
+@IsTest(testFor=SessionSettingsScanner.class)
 private class SessionSettingsScannerTest {
 
     private class AllSecureMock implements HttpCalloutMock {

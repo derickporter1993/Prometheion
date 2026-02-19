@@ -7,7 +7,7 @@
  * @group Health Check
  * @see ScoreAggregator
  */
-@IsTest
+@IsTest(testFor=ScoreAggregator.class)
 private class ScoreAggregatorTest {
 
     @IsTest

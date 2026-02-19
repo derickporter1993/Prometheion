@@ -58,10 +58,6 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
      * Initiate an access review cycle
      */
     public Id initiateAccessReview(String reviewType) {
-        if (!Schema.sObjectType.Access_Review__c.isCreateable()) {
-            throw new ComplianceServiceException('Insufficient permissions to create Access Review records');
-        }
-
         // Calculate due date based on review type
         Date dueDate;
         if (reviewType == 'QUARTERLY') {
@@ -95,7 +91,7 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
         }
 
         if (!reviews.isEmpty()) {
-            insert reviews;
+            insert as user reviews;
             logAuditEntry('ACCESS_REVIEW_INITIATED', 'Initiated ' + reviewType + ' access review for ' + reviews.size() + ' users', reviews[0].Id);
             return reviews[0].Id;
         }
@@ -255,7 +251,7 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
                         psa.AssigneeId);
                 }
 
-                delete toRevoke;
+                delete as user toRevoke;
                 result.permissionsRevoked = toRevoke.size();
             }
 

@@ -7,7 +7,7 @@
  * @group Health Check
  * @see ProfilePermissionScanner
  */
-@IsTest
+@IsTest(testFor=ProfilePermissionScanner.class)
 private class ProfilePermissionScannerTest {
 
     @IsTest

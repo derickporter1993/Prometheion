@@ -1,5 +1,5 @@
 /**
- * @description Test class for MobileAlertPublisher
+ * Test class for MobileAlertPublisher
  * @author Elaro Development Team
  * @since 2026-01
  */
@@ -97,53 +97,72 @@ private class MobileAlertPublisherTest {
     static void testPublishCriticalAlert() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'CRITICAL' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.publishCriticalAlert(
-            gap.Id,
-            'CRITICAL: SOX Gap Detected',
-            'Immediate action required'
-        );
+        try {
+            MobileAlertPublisher.publishCriticalAlert(
+                gap.Id,
+                'CRITICAL: SOX Gap Detected',
+                'Immediate action required'
+            );
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // Verify no exceptions thrown - notification sending is mocked in tests
-        Assert.isTrue(true, 'Critical alert published successfully');
+        Assert.isNull(caughtEx, 'Critical alert should be published without throwing');
     }
 
     @isTest
     static void testPublishHighAlert() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'HIGH' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.publishHighAlert(
-            gap.Id,
-            'HIGH: HIPAA Gap Detected',
-            'Action required'
-        );
+        try {
+            MobileAlertPublisher.publishHighAlert(
+                gap.Id,
+                'HIGH: HIPAA Gap Detected',
+                'Action required'
+            );
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'High alert published successfully');
+        Assert.isNull(caughtEx, 'High alert should be published without throwing');
     }
 
     @isTest
     static void testPublishAlertForGap_Critical() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'CRITICAL' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.publishAlertForGap(gap.Id);
+        try {
+            MobileAlertPublisher.publishAlertForGap(gap.Id);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Alert for critical gap published successfully');
+        Assert.isNull(caughtEx, 'Alert for critical gap should be published without throwing');
     }
 
     @isTest
     static void testPublishAlertForGap_High() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'HIGH' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.publishAlertForGap(gap.Id);
+        try {
+            MobileAlertPublisher.publishAlertForGap(gap.Id);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Alert for high gap published successfully');
+        Assert.isNull(caughtEx, 'Alert for high gap should be published without throwing');
     }
 
     @isTest
@@ -151,11 +170,16 @@ private class MobileAlertPublisherTest {
         // Medium severity gaps should not trigger alerts
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'MEDIUM' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.publishAlertForGap(gap.Id);
+        try {
+            MobileAlertPublisher.publishAlertForGap(gap.Id);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'No alert sent for medium severity gap');
+        Assert.isNull(caughtEx, 'Medium severity gap should be handled without throwing');
     }
 
     @isTest
@@ -327,16 +351,21 @@ private class MobileAlertPublisherTest {
 
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'CRITICAL' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        // Should not throw an exception - will fall back to admin users or log warning
-        MobileAlertPublisher.publishCriticalAlert(
-            gap.Id,
-            'Test Alert',
-            'Test message'
-        );
+        try {
+            // Should not throw an exception - will fall back to admin users or log warning
+            MobileAlertPublisher.publishCriticalAlert(
+                gap.Id,
+                'Test Alert',
+                'Test message'
+            );
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Alert handled gracefully with no on-call users');
+        Assert.isNull(caughtEx, 'Alert should be handled gracefully with no on-call users');
     }
 
     @isTest
@@ -379,12 +408,17 @@ private class MobileAlertPublisherTest {
     static void testMobileAlertResender() {
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'CRITICAL' LIMIT 1];
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender(gap.Id);
-        resender.execute(null);
+        try {
+            MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender(gap.Id);
+            resender.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Resender executed successfully');
+        Assert.isNull(caughtEx, 'Resender should execute without throwing');
     }
 
     @isTest
@@ -395,21 +429,31 @@ private class MobileAlertPublisherTest {
         gap.Alert_Snoozed_Until__c = Datetime.now().addHours(2);
         update gap;
 
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender(gap.Id);
-        resender.execute(null);
+        try {
+            MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender(gap.Id);
+            resender.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Resender handled snoozed alert correctly');
+        Assert.isNull(caughtEx, 'Resender should handle snoozed alert without throwing');
     }
 
     @isTest
     static void testMobileAlertResender_InvalidId() {
+        Exception caughtEx;
         Test.startTest();
-        MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender('001000000000000AAA');
-        resender.execute(null);
+        try {
+            MobileAlertPublisher.MobileAlertResender resender = new MobileAlertPublisher.MobileAlertResender('001000000000000AAA');
+            resender.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Resender handled invalid ID gracefully');
+        Assert.isNull(caughtEx, 'Resender should handle invalid ID gracefully without throwing');
     }
 }

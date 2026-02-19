@@ -35,7 +35,13 @@ private class ElaroBatchEventLoaderTest {
         Database.executeBatch(batch, 200);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Batch should execute without errors');
+        // Verify batch job was executed
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'BatchApex'
+            AND ApexClass.Name = 'ElaroBatchEventLoader'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Batch job should have been executed');
     }
 
     @isTest
@@ -67,7 +73,13 @@ private class ElaroBatchEventLoaderTest {
         Database.executeBatch(batch, 10);
         Test.stopTest();
 
-        Assert.isTrue(true, 'Small batch size should execute');
+        // Verify batch completed with small batch size
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'BatchApex'
+            AND ApexClass.Name = 'ElaroBatchEventLoader'
+        ];
+        Assert.isTrue(jobs.size() > 0, 'Batch should execute with small batch size');
     }
 
     @isTest
@@ -86,7 +98,13 @@ private class ElaroBatchEventLoaderTest {
         }
         Test.stopTest();
 
-        Assert.isTrue(true, 'All frameworks should process');
+        // Verify batch jobs were created for all frameworks
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'BatchApex'
+            AND ApexClass.Name = 'ElaroBatchEventLoader'
+        ];
+        Assert.areEqual(frameworks.size(), jobs.size(), 'Should have one batch job per framework');
     }
 
     @isTest
@@ -113,6 +131,12 @@ private class ElaroBatchEventLoaderTest {
 
         Test.stopTest();
 
-        Assert.isTrue(true, 'Date ranges should be handled');
+        // Verify both batch jobs were created for different date ranges
+        List<AsyncApexJob> jobs = [
+            SELECT Id, Status FROM AsyncApexJob
+            WHERE JobType = 'BatchApex'
+            AND ApexClass.Name = 'ElaroBatchEventLoader'
+        ];
+        Assert.areEqual(2, jobs.size(), 'Should have two batch jobs for narrow and wide date ranges');
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Full administrative access to all Elaro compliance platform features including AI Copilot, dashboards, scoring, and notifications.</description>
+    <description>Extended platform permissions supplementing Elaro Admin. Grants access to schedulers, event publishers, notification services, Elaro app visibility, and user permissions (ApiEnabled, RunReports, ExportReport). Assign alongside Elaro Admin for full platform access.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Elaro Admin Extended</label>
 
@@ -179,10 +179,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>ElaroCCPADataInventoryService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>ElaroISO27001QuarterlyScheduler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

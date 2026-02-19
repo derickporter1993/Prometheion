@@ -88,19 +88,22 @@ public with sharing class ComplianceReportGenerator {
      * Get compliance gaps filtered by framework
      */
     private static List<Compliance_Gap__c> getComplianceGaps(String framework) {
-        String query = 'SELECT Id, Name, Severity__c, Framework__c, Status__c, Description__c, CreatedDate ';
-        query += 'FROM Compliance_Gap__c ';
-        query += 'WHERE Status__c != \'Resolved\' ';
+        String query = 'SELECT Id, Name, Severity__c, Framework__c, Status__c, Description__c, CreatedDate '
+            + 'FROM Compliance_Gap__c '
+            + 'WHERE Status__c != \'Resolved\' ';
+
+        Map<String, Object> binds = new Map<String, Object>();
 
         if (framework != 'ALL' && String.isNotBlank(framework)) {
             query += 'AND Framework__c = :framework ';
+            binds.put('framework', framework);
         }
 
-        query += 'WITH USER_MODE ';
-        query += 'ORDER BY Severity__c DESC, CreatedDate DESC ';
-        query += 'LIMIT 200';
+        query += 'WITH USER_MODE '
+            + 'ORDER BY Severity__c DESC, CreatedDate DESC '
+            + 'LIMIT 200';
 
-        return Database.query(query);
+        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
 
     /**

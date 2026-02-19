@@ -12,76 +12,110 @@ private class ElaroLoggerTest {
     @isTest
     static void testDebugLogging_WithMessage_LogsSuccessfully() {
         Test.startTest();
-        ElaroLogger.debug('Debug message');
-        ElaroLogger.debug('Debug with context', new Map<String, Object>{'key' => 'value'});
+        Exception caughtEx;
+        try {
+            ElaroLogger.debug('Debug message');
+            ElaroLogger.debug('Debug with context', new Map<String, Object>{'key' => 'value'});
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // Logger should not throw exceptions
-        Assert.isTrue(true, 'Debug logging completed without errors');
+        Assert.isNull(caughtEx, 'Debug logging should complete without throwing');
     }
 
     @isTest
     static void testInfoLogging_WithMessage_LogsSuccessfully() {
         Test.startTest();
-        ElaroLogger.info('Info message');
-        ElaroLogger.info('Info with context', new Map<String, Object>{'accountId' => 'test123'});
+        Exception caughtEx;
+        try {
+            ElaroLogger.info('Info message');
+            ElaroLogger.info('Info with context', new Map<String, Object>{'accountId' => 'test123'});
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Info logging completed without errors');
+        Assert.isNull(caughtEx, 'Info logging should complete without throwing');
     }
 
     @isTest
     static void testWarnLogging_WithMessage_LogsSuccessfully() {
         Test.startTest();
-        ElaroLogger.warn('Warning message');
-        ElaroLogger.warn('Warning with context', new Map<String, Object>{'threshold' => 80});
+        Exception caughtEx;
+        try {
+            ElaroLogger.warn('Warning message');
+            ElaroLogger.warn('Warning with context', new Map<String, Object>{'threshold' => 80});
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Warn logging completed without errors');
+        Assert.isNull(caughtEx, 'Warn logging should complete without throwing');
     }
 
     @isTest
     static void testErrorLogging_WithMessage_LogsSuccessfully() {
         Test.startTest();
-        ElaroLogger.error('Error message');
-        ElaroLogger.error('Error with context', new Map<String, Object>{'errorCode' => 500});
+        Exception caughtEx;
+        try {
+            ElaroLogger.error('Error message');
+            ElaroLogger.error('Error with context', new Map<String, Object>{'errorCode' => 500});
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Error logging completed without errors');
+        Assert.isNull(caughtEx, 'Error logging should complete without throwing');
     }
 
     @isTest
     static void testErrorLogging_WithException_LogsStackTrace() {
         Test.startTest();
+        Exception caughtEx;
         try {
-            Integer result = 1 / 0; // Force exception
-        } catch (Exception ex) {
-            ElaroLogger.error('Caught exception', ex);
+            try {
+                Integer result = 1 / 0; // Force exception
+            } catch (Exception ex) {
+                ElaroLogger.error('Caught exception', ex);
+            }
+        } catch (Exception e) {
+            caughtEx = e;
         }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Exception logging completed without errors');
+        Assert.isNull(caughtEx, 'Exception logging should complete without throwing');
     }
 
     @isTest
     static void testLogLevel_WithDebug_RespectsConfiguration() {
         Test.startTest();
-        ElaroLogger.log(ElaroLogger.Level.DEBUG, 'Test debug', null);
-        ElaroLogger.log(ElaroLogger.Level.INFO, 'Test info', null);
-        ElaroLogger.log(ElaroLogger.Level.WARN, 'Test warn', null);
-        ElaroLogger.log(ElaroLogger.Level.ERROR, 'Test error', null);
+        Exception caughtEx;
+        try {
+            ElaroLogger.log(ElaroLogger.Level.DEBUG, 'Test debug', null);
+            ElaroLogger.log(ElaroLogger.Level.INFO, 'Test info', null);
+            ElaroLogger.log(ElaroLogger.Level.WARN, 'Test warn', null);
+            ElaroLogger.log(ElaroLogger.Level.ERROR, 'Test error', null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'All log levels processed successfully');
+        Assert.isNull(caughtEx, 'All log levels should be processed without throwing');
     }
 
     @isTest
     static void testLogging_WithNullContext_HandlesGracefully() {
         Test.startTest();
-        ElaroLogger.log(ElaroLogger.Level.INFO, 'Null context test', null);
+        Exception caughtEx;
+        try {
+            ElaroLogger.log(ElaroLogger.Level.INFO, 'Null context test', null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Null context handled without errors');
+        Assert.isNull(caughtEx, 'Null context should be handled without throwing');
     }
 
     @isTest
@@ -97,10 +131,15 @@ private class ElaroLoggerTest {
         };
 
         Test.startTest();
-        ElaroLogger.info('Complex context test', complexContext);
+        Exception caughtEx;
+        try {
+            ElaroLogger.info('Complex context test', complexContext);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Complex context serialized successfully');
+        Assert.isNull(caughtEx, 'Complex context should be serialized without throwing');
     }
 
     @isTest

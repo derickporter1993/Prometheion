@@ -183,8 +183,12 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'runNow should complete successfully');
+        // Verify runNow executed by checking for audit log entries
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'Breach Deadline Monitor'
+        ];
+        Assert.isTrue(logs.size() > 0, 'runNow should create an audit log entry');
     }
 
     @IsTest
@@ -232,8 +236,13 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        // Should handle empty data gracefully
-        Assert.isTrue(true, 'Should handle no breaches gracefully');
+        // Verify no compliance gaps were created for empty breach set
+        List<Compliance_Gap__c> gaps = [
+            SELECT Id FROM Compliance_Gap__c
+            WHERE Framework__c = 'HIPAA'
+            AND CreatedDate = TODAY
+        ];
+        Assert.areEqual(0, gaps.size(), 'Should not create gaps when no breaches exist');
     }
 
     @IsTest

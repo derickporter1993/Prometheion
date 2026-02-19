@@ -23,7 +23,7 @@ _Current: v3.1.0 — Spring '26 | API v66.0 | 2GP Managed Package_
 
 Elaro is a **2GP managed package** for the Salesforce AppExchange that turns your org into a continuously monitored, audit-ready compliance platform. It automates the work that compliance teams spend weeks doing manually — detecting configuration drift, scoring risk across regulatory frameworks, collecting audit evidence, and remediating violations.
 
-Elaro covers **14 compliance frameworks** out of the box, with dedicated service classes, automated scanners, and framework-specific scoring for each one. It doesn't just detect problems — it explains *why* they matter, suggests fixes, and can auto-remediate common violations with a single click.
+Elaro covers **14 compliance frameworks** out of the box, with dedicated service classes, automated scanners, and framework-specific scoring for each one. It doesn't just detect problems — it explains _why_ they matter, suggests fixes, and can auto-remediate common violations with a single click.
 
 ---
 
@@ -47,13 +47,13 @@ If you're spending weeks preparing for audits, manually reviewing permissions, o
 
 Multi-framework compliance scoring with weighted risk factors across every supported framework. Scores update in real-time as your org configuration changes.
 
-| Factor | Weight | What It Measures |
-|---|---|---|
-| Permission Sprawl | 30% | Users with elevated access (ModifyAllData, ViewAllData) |
-| Audit Trail Coverage | 25% | Objects with Field History Tracking enabled |
-| Configuration Drift | 20% | Unreviewed high-risk changes in the last 30 days |
-| Encryption Status | 15% | Shield Platform Encryption on PHI/PII fields |
-| Policy Compliance | 10% | OWD settings, session timeout, password policy |
+| Factor               | Weight | What It Measures                                        |
+| -------------------- | ------ | ------------------------------------------------------- |
+| Permission Sprawl    | 30%    | Users with elevated access (ModifyAllData, ViewAllData) |
+| Audit Trail Coverage | 25%    | Objects with Field History Tracking enabled             |
+| Configuration Drift  | 20%    | Unreviewed high-risk changes in the last 30 days        |
+| Encryption Status    | 15%    | Shield Platform Encryption on PHI/PII fields            |
+| Policy Compliance    | 10%    | OWD settings, session timeout, password policy          |
 
 Each framework applies additional framework-specific scoring: HIPAA weighs PHI field exposure, PCI-DSS penalizes unencrypted cardholder data (+4.0 risk), GDPR focuses on personal data protection, and so on.
 
@@ -73,7 +73,7 @@ High-risk changes trigger multi-channel alerts with AI-generated risk analysis e
 ### AI-Powered Compliance Intelligence
 
 - **Compliance Copilot** — Natural language interface for compliance queries ("Why did my score drop?", "Show me all risky flows touching PII"). Backed by Claude API integration via Named Credential
-- **Change Advisor** — Analyzes proposed changes *before* they happen and returns score deltas with safer alternatives
+- **Change Advisor** — Analyzes proposed changes _before_ they happen and returns score deltas with safer alternatives
 - **Risk Predictor** — Einstein-based risk prediction for compliance violations
 - **Root Cause Analysis** — AI-powered event chain analysis to identify root causes of compliance events within 24-hour windows
 - **Natural Language Query** — Converts plain English to secure SOQL against whitelisted compliance objects
@@ -109,15 +109,15 @@ Deep integration with Salesforce Shield Event Monitoring:
 
 Compliance alerts delivered across every channel your team uses:
 
-| Channel | Integration |
-|---|---|
-| Email | Native Salesforce email with daily/weekly digests |
-| Slack | Webhook integration with rich Block Kit messages |
-| Microsoft Teams | Adaptive Card notifications via Incoming Webhooks |
-| PagerDuty | Events API v2 — trigger and resolve incidents |
-| ServiceNow | GRC integration — sync controls, push evidence, create incidents |
-| Mobile Push | Salesforce Custom Notifications with on-call schedule integration |
-| In-App Bell | Lightning notification bell |
+| Channel         | Integration                                                       |
+| --------------- | ----------------------------------------------------------------- |
+| Email           | Native Salesforce email with daily/weekly digests                 |
+| Slack           | Webhook integration with rich Block Kit messages                  |
+| Microsoft Teams | Adaptive Card notifications via Incoming Webhooks                 |
+| PagerDuty       | Events API v2 — trigger and resolve incidents                     |
+| ServiceNow      | GRC integration — sync controls, push evidence, create incidents  |
+| Mobile Push     | Salesforce Custom Notifications with on-call schedule integration |
+| In-App Bell     | Lightning notification bell                                       |
 
 Alerts support configurable escalation paths (Team Lead, Manager, CISO/Director), on-call rotation schedules, acknowledgment tracking, and snooze.
 
@@ -280,36 +280,36 @@ EU AI Act + NIST AI RMF v1.0:
 
 Elaro ships as **two separate 2GP managed packages**:
 
-| Package | Namespace | Path | Description |
-|---|---|---|---|
-| Elaro | (shared) | `force-app/` | Main compliance platform |
-| Elaro Health Check | elaroHC | `force-app-healthcheck/` | Standalone security posture scanner |
+| Package            | Namespace | Path                     | Description                         |
+| ------------------ | --------- | ------------------------ | ----------------------------------- |
+| Elaro              | (shared)  | `force-app/`             | Main compliance platform            |
+| Elaro Health Check | elaroHC   | `force-app-healthcheck/` | Standalone security posture scanner |
 
 ### Health Check Package
 
 A standalone AppExchange package that scans an org's security posture across five dimensions:
 
-| Scanner | Weight | What It Scans |
-|---|---|---|
-| Security Health Check | 40% | Native Salesforce SecurityHealthCheck via Tooling API |
-| MFA Compliance | 20% | LoginHistory MFA adoption percentage |
-| Profile Permissions | 15% | Over-provisioned ModifyAllData/ViewAllData access |
-| Session Settings | 15% | Timeout, HTTPS enforcement, IP locking, XSS protection |
-| Audit Trail | 10% | High-risk administrative changes |
+| Scanner               | Weight | What It Scans                                          |
+| --------------------- | ------ | ------------------------------------------------------ |
+| Security Health Check | 40%    | Native Salesforce SecurityHealthCheck via Tooling API  |
+| MFA Compliance        | 20%    | LoginHistory MFA adoption percentage                   |
+| Profile Permissions   | 15%    | Over-provisioned ModifyAllData/ViewAllData access      |
+| Session Settings      | 15%    | Timeout, HTTPS enforcement, IP locking, XSS protection |
+| Audit Trail           | 10%    | High-risk administrative changes                       |
 
 Results are aggregated by `ScoreAggregator` into a weighted composite score with prioritized remediation recommendations.
 
 ### Core Architecture Components
 
-| Component | Role |
-|---|---|
-| `ComplianceServiceFactory` | Factory pattern for framework service resolution — caches singletons for `IRiskScoringService`, `IAccessControlService`, `IBreachNotificationService` |
-| `IComplianceModule` | Interface all framework modules implement: `getFrameworkName()`, `getControls()`, `calculateComplianceScore()` |
-| `ComplianceServiceBase` | Abstract base class providing common gap creation, evidence collection, audit logging |
-| `ElaroLogger` | Structured logging via Platform Events (Publish Immediately — survives rollbacks) |
-| `ElaroSecurityUtils` | Defense-in-depth security utilities: CRUD/FLS validation, access checks |
-| `ElaroConstants` | Centralized constants: framework names, severity levels, thresholds, API versions |
-| `ComplianceTestDataFactory` | Shared test data factory for all compliance test classes |
+| Component                   | Role                                                                                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ComplianceServiceFactory`  | Factory pattern for framework service resolution — caches singletons for `IRiskScoringService`, `IAccessControlService`, `IBreachNotificationService` |
+| `IComplianceModule`         | Interface all framework modules implement: `getFrameworkName()`, `getControls()`, `calculateComplianceScore()`                                        |
+| `ComplianceServiceBase`     | Abstract base class providing common gap creation, evidence collection, audit logging                                                                 |
+| `ElaroLogger`               | Structured logging via Platform Events (Publish Immediately — survives rollbacks)                                                                     |
+| `ElaroSecurityUtils`        | Defense-in-depth security utilities: CRUD/FLS validation, access checks                                                                               |
+| `ElaroConstants`            | Centralized constants: framework names, severity levels, thresholds, API versions                                                                     |
+| `ComplianceTestDataFactory` | Shared test data factory for all compliance test classes                                                                                              |
 
 ### Data Model
 
@@ -343,20 +343,20 @@ Results are aggregated by `ScoreAggregator` into a weighted composite score with
 
 **Main Package (51 components):**
 
-| Category | Components |
-|---|---|
-| Command Center | `complianceCommandCenter`, `complianceDashboard`, `elaroDashboard`, `frameworkSelector` |
-| Compliance Views | `complianceScoreCard`, `complianceGapList`, `complianceTimeline`, `complianceTrendChart`, `complianceGraphViewer`, `complianceContextSidebar`, `complianceNotificationFeed`, `complianceActionCard` |
-| AI & Copilot | `complianceCopilot`, `elaroCopilot`, `elaroAiSettings` |
-| SEC Cybersecurity | `secDisclosureDashboard`, `secDisclosureForm`, `secMaterialityCard`, `secIncidentTimeline` |
-| Assessment | `assessmentWizard`, `assessmentProgressTracker`, `wizardStep`, `crossFrameworkPrefill`, `elaroAuditWizard` |
-| Analytics | `elaroComparativeAnalytics`, `elaroExecutiveKPIDashboard`, `executiveKpiDashboard`, `elaroDrillDownViewer`, `elaroDynamicReportBuilder`, `elaroTrendAnalyzer`, `riskHeatmap`, `controlMappingMatrix`, `elaroROICalculator` |
-| Evidence & Audit | `elaroAuditPackageBuilder`, `auditReportGenerator`, `reportSchedulerConfig` |
-| Monitoring | `systemMonitorDashboard`, `apiUsageDashboard`, `flowExecutionMonitor`, `deploymentMonitorDashboard`, `performanceAlertPanel`, `elaroEventMonitor`, `elaroEventExplorer`, `elaroScoreListener`, `pollingManager` |
-| Jira | `jiraCreateModal`, `jiraIssueCard` |
-| Alerts & Operations | `escalationPathConfig`, `onCallScheduleManager`, `remediationSuggestionCard` |
-| Setup | `elaroSetupWizard`, `elaroReadinessScore` |
-| Utilities | `utils` |
+| Category            | Components                                                                                                                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Command Center      | `complianceCommandCenter`, `complianceDashboard`, `elaroDashboard`, `frameworkSelector`                                                                                                                                    |
+| Compliance Views    | `complianceScoreCard`, `complianceGapList`, `complianceTimeline`, `complianceTrendChart`, `complianceGraphViewer`, `complianceContextSidebar`, `complianceNotificationFeed`, `complianceActionCard`                        |
+| AI & Copilot        | `complianceCopilot`, `elaroCopilot`, `elaroAiSettings`                                                                                                                                                                     |
+| SEC Cybersecurity   | `secDisclosureDashboard`, `secDisclosureForm`, `secMaterialityCard`, `secIncidentTimeline`                                                                                                                                 |
+| Assessment          | `assessmentWizard`, `assessmentProgressTracker`, `wizardStep`, `crossFrameworkPrefill`, `elaroAuditWizard`                                                                                                                 |
+| Analytics           | `elaroComparativeAnalytics`, `elaroExecutiveKPIDashboard`, `executiveKpiDashboard`, `elaroDrillDownViewer`, `elaroDynamicReportBuilder`, `elaroTrendAnalyzer`, `riskHeatmap`, `controlMappingMatrix`, `elaroROICalculator` |
+| Evidence & Audit    | `elaroAuditPackageBuilder`, `auditReportGenerator`, `reportSchedulerConfig`                                                                                                                                                |
+| Monitoring          | `systemMonitorDashboard`, `apiUsageDashboard`, `flowExecutionMonitor`, `deploymentMonitorDashboard`, `performanceAlertPanel`, `elaroEventMonitor`, `elaroEventExplorer`, `elaroScoreListener`, `pollingManager`            |
+| Jira                | `jiraCreateModal`, `jiraIssueCard`                                                                                                                                                                                         |
+| Alerts & Operations | `escalationPathConfig`, `onCallScheduleManager`, `remediationSuggestionCard`                                                                                                                                               |
+| Setup               | `elaroSetupWizard`, `elaroReadinessScore`                                                                                                                                                                                  |
+| Utilities           | `utils`                                                                                                                                                                                                                    |
 
 **Health Check Package (6 components):**
 
@@ -364,82 +364,82 @@ Results are aggregated by `ScoreAggregator` into a weighted composite score with
 
 ### Named Credentials
 
-| Name | Purpose |
-|---|---|
+| Name               | Purpose                                                 |
+| ------------------ | ------------------------------------------------------- |
 | `Elaro_Claude_API` | Anthropic Claude API for AI-powered compliance analysis |
-| `Jira_API` | Jira REST API v3 for bidirectional issue sync |
-| `Slack_Webhook` | Slack Incoming Webhook for alert delivery |
-| `Teams_Webhook` | Microsoft Teams Incoming Webhook for alert delivery |
+| `Jira_API`         | Jira REST API v3 for bidirectional issue sync           |
+| `Slack_Webhook`    | Slack Incoming Webhook for alert delivery               |
+| `Teams_Webhook`    | Microsoft Teams Incoming Webhook for alert delivery     |
 
 ### Scheduled Jobs
 
 Elaro includes 15+ schedulable jobs for continuous compliance monitoring:
 
-| Job | Frequency | Purpose |
-|---|---|---|
-| `ConfigDriftDetector` | Every 5 min | Detect configuration changes via SetupAuditTrail |
-| `ElaroAuditTrailPoller` | Every 5 min | Publish audit trail changes as Platform Events |
-| `ComplianceScoreSnapshotScheduler` | Daily 1 AM | Capture compliance scores for trend analysis |
-| `ElaroDormantAccountAlertScheduler` | Daily 5 AM | Identify dormant user accounts (90+ days) |
-| `ElaroDailyDigest` | Daily 6 AM | Send daily compliance summary to stakeholders |
-| `ElaroGLBAAnnualNoticeScheduler` | Daily 6 AM | Process GLBA annual privacy notices |
-| `ElaroCCPASLAMonitorScheduler` | Daily 8 AM | Monitor CCPA 45-day response deadlines |
-| `ConsentExpirationScheduler` | Daily 8 AM | GDPR consent expiration monitoring |
-| `BreachDeadlineMonitor` | Daily | HIPAA 60-day breach notification deadlines |
-| `RetentionEnforcementScheduler` | Weekly Sun 2 AM | GDPR data retention enforcement |
-| `AccessReviewScheduler` | Monthly | SOC 2 / HIPAA periodic access reviews |
-| `ElaroISO27001QuarterlyScheduler` | Quarterly | ISO 27001 access reviews and certifications |
-| `WeeklyScorecardScheduler` | Weekly | Slack/Teams compliance scorecard delivery |
-| `TrustCenterDataService` | Nightly | Materialize public-safe compliance metrics |
-| `MobileAlertEscalator` | On-demand | Escalate unacknowledged mobile alerts |
+| Job                                 | Frequency       | Purpose                                          |
+| ----------------------------------- | --------------- | ------------------------------------------------ |
+| `ConfigDriftDetector`               | Every 5 min     | Detect configuration changes via SetupAuditTrail |
+| `ElaroAuditTrailPoller`             | Every 5 min     | Publish audit trail changes as Platform Events   |
+| `ComplianceScoreSnapshotScheduler`  | Daily 1 AM      | Capture compliance scores for trend analysis     |
+| `ElaroDormantAccountAlertScheduler` | Daily 5 AM      | Identify dormant user accounts (90+ days)        |
+| `ElaroDailyDigest`                  | Daily 6 AM      | Send daily compliance summary to stakeholders    |
+| `ElaroGLBAAnnualNoticeScheduler`    | Daily 6 AM      | Process GLBA annual privacy notices              |
+| `ElaroCCPASLAMonitorScheduler`      | Daily 8 AM      | Monitor CCPA 45-day response deadlines           |
+| `ConsentExpirationScheduler`        | Daily 8 AM      | GDPR consent expiration monitoring               |
+| `BreachDeadlineMonitor`             | Daily           | HIPAA 60-day breach notification deadlines       |
+| `RetentionEnforcementScheduler`     | Weekly Sun 2 AM | GDPR data retention enforcement                  |
+| `AccessReviewScheduler`             | Monthly         | SOC 2 / HIPAA periodic access reviews            |
+| `ElaroISO27001QuarterlyScheduler`   | Quarterly       | ISO 27001 access reviews and certifications      |
+| `WeeklyScorecardScheduler`          | Weekly          | Slack/Teams compliance scorecard delivery        |
+| `TrustCenterDataService`            | Nightly         | Materialize public-safe compliance metrics       |
+| `MobileAlertEscalator`              | On-demand       | Escalate unacknowledged mobile alerts            |
 
 ### REST Endpoints
 
-| Endpoint | Purpose |
-|---|---|
+| Endpoint                     | Purpose                                                                      |
+| ---------------------------- | ---------------------------------------------------------------------------- |
 | `POST /elaro/score/callback` | Receive compliance scores from external services (API key + HMAC validation) |
-| `POST /jira/webhook/*` | Handle Jira webhook events for bidirectional sync |
+| `POST /jira/webhook/*`       | Handle Jira webhook events for bidirectional sync                            |
 
 ### Triggers
 
-| Trigger | Fires On | Purpose |
-|---|---|---|
-| `ElaroAlertTrigger` | `ComplianceAlert__e` | Route compliance alerts to channels |
-| `ElaroConsentWithdrawalTrigger` | Consent events | Process GDPR consent withdrawal |
-| `ElaroEventCaptureTrigger` | `Elaro_Alert_Event__e` | Capture and index compliance events |
-| `ElaroPCIAccessAlertTrigger` | `PCI_Access_Event__e` | Detect PCI-DSS access violations |
-| `PerformanceAlertEventTrigger` | `Performance_Alert__e` | Process performance threshold alerts |
+| Trigger                         | Fires On               | Purpose                              |
+| ------------------------------- | ---------------------- | ------------------------------------ |
+| `ElaroAlertTrigger`             | `ComplianceAlert__e`   | Route compliance alerts to channels  |
+| `ElaroConsentWithdrawalTrigger` | Consent events         | Process GDPR consent withdrawal      |
+| `ElaroEventCaptureTrigger`      | `Elaro_Alert_Event__e` | Capture and index compliance events  |
+| `ElaroPCIAccessAlertTrigger`    | `PCI_Access_Event__e`  | Detect PCI-DSS access violations     |
+| `PerformanceAlertEventTrigger`  | `Performance_Alert__e` | Process performance threshold alerts |
 
 ---
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | Apex (Salesforce API v66.0, Spring '26) |
-| Frontend | Lightning Web Components (LWC) |
-| Testing | Jest (LWC) + Apex Test Classes |
-| Linting | ESLint v9 with LWC plugin |
-| Formatting | Prettier |
-| Monorepo | Turborepo (`platform/`) |
-| Node.js | v20.0.0+ required |
-| AI | Anthropic Claude API, Salesforce Einstein |
+| Layer      | Technology                                |
+| ---------- | ----------------------------------------- |
+| Backend    | Apex (Salesforce API v66.0, Spring '26)   |
+| Frontend   | Lightning Web Components (LWC)            |
+| Testing    | Jest (LWC) + Apex Test Classes            |
+| Linting    | ESLint v9 with LWC plugin                 |
+| Formatting | Prettier                                  |
+| Monorepo   | Turborepo (`platform/`)                   |
+| Node.js    | v20.0.0+ required                         |
+| AI         | Anthropic Claude API, Salesforce Einstein |
 
 ### Codebase Stats
 
-| Metric | Count |
-|---|---|
-| Apex Classes (main) | 349 (177 production + 172 test) |
-| Apex Classes (Health Check) | 21 (13 production + 8 test) |
-| LWC Components | 57 (51 main + 6 Health Check) |
-| Custom Objects | 54+ |
-| Platform Events | 11 |
-| Custom Metadata Types | 10 |
-| Big Objects | 1 (`Elaro_Compliance_Graph__b`) |
-| Apex Triggers | 5 |
-| Permission Sets | 10 (8 main + 2 Health Check) |
-| Named Credentials | 4 |
-| Scheduled Jobs | 15+ |
+| Metric                      | Count                           |
+| --------------------------- | ------------------------------- |
+| Apex Classes (main)         | 349 (177 production + 172 test) |
+| Apex Classes (Health Check) | 21 (13 production + 8 test)     |
+| LWC Components              | 57 (51 main + 6 Health Check)   |
+| Custom Objects              | 54+                             |
+| Platform Events             | 11                              |
+| Custom Metadata Types       | 10                              |
+| Big Objects                 | 1 (`Elaro_Compliance_Graph__b`) |
+| Apex Triggers               | 5                               |
+| Permission Sets             | 10 (8 main + 2 Health Check)    |
+| Named Credentials           | 4                               |
+| Scheduled Jobs              | 15+                             |
 
 ---
 
@@ -494,17 +494,17 @@ sf org open --target-org myorg
 
 Assign permission sets based on user role:
 
-| Permission Set | Role | Access |
-|---|---|---|
-| `Elaro_Admin` | Compliance Admin | Full read/write access to all Elaro objects, classes, and tabs |
-| `Elaro_Admin_Extended` | Super Admin | Extended admin capabilities |
-| `Elaro_User` | Compliance User | Read/execute access to dashboards and reports |
-| `Elaro_Auditor` | External Auditor | Read-only access to compliance data and evidence |
-| `Elaro_SEC_Admin` | SEC Compliance Lead | SEC disclosure workflow management |
-| `Elaro_AI_Governance_Admin` | AI Governance Lead | AI system registry and classification management |
-| `Elaro_AI_Governance_User` | AI Governance Viewer | Read access to AI governance data |
-| `Elaro_Health_Check_Admin` | HC Admin | Health Check full access |
-| `Elaro_Health_Check_User` | HC User | Health Check read/execute access |
+| Permission Set              | Role                 | Access                                                         |
+| --------------------------- | -------------------- | -------------------------------------------------------------- |
+| `Elaro_Admin`               | Compliance Admin     | Full read/write access to all Elaro objects, classes, and tabs |
+| `Elaro_Admin_Extended`      | Super Admin          | Extended admin capabilities                                    |
+| `Elaro_User`                | Compliance User      | Read/execute access to dashboards and reports                  |
+| `Elaro_Auditor`             | External Auditor     | Read-only access to compliance data and evidence               |
+| `Elaro_SEC_Admin`           | SEC Compliance Lead  | SEC disclosure workflow management                             |
+| `Elaro_AI_Governance_Admin` | AI Governance Lead   | AI system registry and classification management               |
+| `Elaro_AI_Governance_User`  | AI Governance Viewer | Read access to AI governance data                              |
+| `Elaro_Health_Check_Admin`  | HC Admin             | Health Check full access                                       |
+| `Elaro_Health_Check_User`   | HC User              | Health Check read/execute access                               |
 
 ### Run Your First Compliance Scan
 
@@ -548,13 +548,13 @@ Configure via `callout:PagerDuty_API` Named Credential with your Events API v2 i
 
 ### Custom Settings
 
-| Setting | Description |
-|---|---|
-| `Elaro_AI_Settings__c` | AI confidence thresholds, auto-remediation flags, human approval requirements |
-| `Elaro_Alert_Config__c` | Alert routing and severity thresholds |
-| `Elaro_Jira_Settings__c` | Jira project key, webhook secret, sync preferences |
-| `Elaro_Feature_Flags__c` | Per-feature kill switches for subscriber orgs |
-| `CCX_Settings__c` | General platform configuration |
+| Setting                  | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `Elaro_AI_Settings__c`   | AI confidence thresholds, auto-remediation flags, human approval requirements |
+| `Elaro_Alert_Config__c`  | Alert routing and severity thresholds                                         |
+| `Elaro_Jira_Settings__c` | Jira project key, webhook secret, sync preferences                            |
+| `Elaro_Feature_Flags__c` | Per-feature kill switches for subscriber orgs                                 |
+| `CCX_Settings__c`        | General platform configuration                                                |
 
 ---
 
@@ -641,10 +641,10 @@ GitHub Actions runs on push to `main`, `develop`, `release/*`, `claude/*`:
 
 ## Two-Team Build Structure
 
-| Team | Focus | Modules |
-|---|---|---|
-| Team 1 — Sovereign Infrastructure | Backend engine and cross-cutting concerns | Async Framework, CMMC 2.0, Rule Engine, Orchestration, NIS2/DORA |
-| Team 2 — User-Facing Modules | Dashboards, wizards, and framework-specific UIs | Health Check, Command Center, Event Monitoring, Assessment Wizards, SEC Module, AI Governance, Trust Center |
+| Team                              | Focus                                           | Modules                                                                                                     |
+| --------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Team 1 — Sovereign Infrastructure | Backend engine and cross-cutting concerns       | Async Framework, CMMC 2.0, Rule Engine, Orchestration, NIS2/DORA                                            |
+| Team 2 — User-Facing Modules      | Dashboards, wizards, and framework-specific UIs | Health Check, Command Center, Event Monitoring, Assessment Wizards, SEC Module, AI Governance, Trust Center |
 
 ---
 

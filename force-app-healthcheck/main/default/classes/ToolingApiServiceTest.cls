@@ -6,7 +6,7 @@
  * @group Health Check
  * @see ToolingApiService
  */
-@IsTest
+@IsTest(testFor=ToolingApiService.class)
 private class ToolingApiServiceTest {
 
     private class SuccessMock implements HttpCalloutMock {

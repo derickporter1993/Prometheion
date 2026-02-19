@@ -8,7 +8,7 @@
  * @group Health Check
  * @see AuditTrailScanner
  */
-@IsTest
+@IsTest(testFor=AuditTrailScanner.class)
 private class AuditTrailScannerTest {
 
     @IsTest

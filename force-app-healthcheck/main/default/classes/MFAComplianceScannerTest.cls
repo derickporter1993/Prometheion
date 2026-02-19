@@ -7,7 +7,7 @@
  * @group Health Check
  * @see MFAComplianceScanner
  */
-@IsTest
+@IsTest(testFor=MFAComplianceScanner.class)
 private class MFAComplianceScannerTest {
 
     @IsTest

@@ -148,18 +148,20 @@ private class ElaroSharingViolationTest {
         Test.startTest();
         System.runAs(owner1) {
             // Even with sharing, user should not see other user's records
+            Boolean sharingEnforced = false;
             try {
                 List<Account> accounts = [
                     SELECT Id FROM Account WHERE Id = :owner2Account.Id
                     WITH USER_MODE
                 ];
                 // Query may return empty due to sharing
-                Assert.isTrue(accounts.isEmpty() || accounts.size() == 0, 
-                    'Should not return records due to sharing violation');
+                sharingEnforced = accounts.isEmpty();
             } catch (QueryException e) {
                 // QueryException may be thrown for sharing violations
-                Assert.isTrue(true, 'Expected sharing violation: ' + e.getMessage());
+                sharingEnforced = true;
+                Assert.isNotNull(e.getMessage(), 'QueryException should have a message');
             }
+            Assert.isTrue(sharingEnforced, 'Sharing should be enforced - either empty results or QueryException');
         }
         Test.stopTest();
     }

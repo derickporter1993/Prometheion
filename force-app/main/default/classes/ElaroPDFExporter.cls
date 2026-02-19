@@ -46,14 +46,14 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Generated audit package PDF. SHA-256: ' + documentHash
             );
-            insert cv;
-            
+            insert as user cv;
+
             // Link to the audit package record
             linkContentToRecord(cv.Id, packageId);
-            
+
             // Update package with generation timestamp
             pkg.Last_Generated__c = Datetime.now();
-            update pkg;
+            update as user pkg;
             
             return cv.Id;
             
@@ -92,7 +92,7 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Executive summary PDF. SHA-256: ' + documentHash
             );
-            insert cv;
+            insert as user cv;
             
             linkContentToRecord(cv.Id, packageId);
             
@@ -138,7 +138,7 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Detailed evidence report PDF. SHA-256: ' + documentHash
             );
-            insert cv;
+            insert as user cv;
             
             linkContentToRecord(cv.Id, packageId);
             
@@ -181,13 +181,14 @@ public with sharing class ElaroPDFExporter {
         try {
             // Query evidence items
             List&lt;Elaro_Evidence_Item__c&gt; evidence = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c,
                        Status__c, CreatedDate
                 FROM Elaro_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
             ];
-            
+
             // Build CSV content
             String csv = 'Evidence ID,Name,Type,Date,Description,Status,Created Date\n';
             
@@ -223,13 +224,14 @@ public with sharing class ElaroPDFExporter {
             
             // Query evidence items
             List&lt;Elaro_Evidence_Item__c&gt; evidence = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c,
                        Status__c, CreatedDate
                 FROM Elaro_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
             ];
-            
+
             // Build export object
             Map&lt;String, Object&gt; exportData = new Map&lt;String, Object&gt;{
                 'exportDate' =&gt; Datetime.now(),
@@ -287,7 +289,7 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(csvContent),
             Description = 'CSV export of audit evidence'
         );
-        insert cv;
+        insert as user cv;
         
         linkContentToRecord(cv.Id, packageId);
         
@@ -310,7 +312,7 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(jsonContent),
             Description = 'JSON export of audit package'
         );
-        insert cv;
+        insert as user cv;
         
         linkContentToRecord(cv.Id, packageId);
         
@@ -342,6 +344,7 @@ public with sharing class ElaroPDFExporter {
                    Audit_Period_Start__c, Audit_Period_End__c, Last_Generated__c
             FROM Elaro_Audit_Package__c
             WHERE Id = :packageId
+            WITH USER_MODE
             LIMIT 1
         ];
         
@@ -370,11 +373,12 @@ public with sharing class ElaroPDFExporter {
     private static void linkContentToRecord(Id contentVersionId, Id recordId) {
         // Query the ContentDocumentId
         ContentVersion cv = [
-            SELECT ContentDocumentId 
-            FROM ContentVersion 
+            SELECT ContentDocumentId
+            FROM ContentVersion
             WHERE Id = :contentVersionId
+            WITH USER_MODE
         ];
-        
+
         // Create ContentDocumentLink
         ContentDocumentLink cdl = new ContentDocumentLink(
             ContentDocumentId = cv.ContentDocumentId,
@@ -382,7 +386,7 @@ public with sharing class ElaroPDFExporter {
             ShareType = 'V',
             Visibility = 'AllUsers'
         );
-        insert cdl;
+        insert as user cdl;
     }
     
     /**

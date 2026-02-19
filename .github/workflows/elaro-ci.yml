@@ -28,10 +28,10 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Format Check
-        run: npm run fmt:check || echo "⚠️  Format check failed"
+        run: npm run fmt:check
 
       - name: Lint Code
-        run: npm run lint || echo "⚠️  Lint check failed"
+        run: npm run lint
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
             --rule-selector "Recommended:Security" \
             --format "html" \
             --outfile "scanner-reports/code-analyzer-appexchange.html" \
-            --severity-threshold 2 || echo "⚠️ AppExchange scan found issues (review HTML report)"
+            --severity-threshold 2
 
       - name: Run AppExchange Security Scan (JSON)
         run: |
@@ -97,7 +97,7 @@ jobs:
             --rule-selector "AppExchange" \
             --rule-selector "Recommended:Security" \
             --format "table" \
-            --severity-threshold 2 || echo "⚠️ Review scanner reports for details"
+            --severity-threshold 2
 
       - name: Generate SARIF Report
         if: always()

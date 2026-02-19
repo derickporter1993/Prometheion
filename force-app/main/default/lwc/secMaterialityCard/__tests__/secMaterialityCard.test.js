@@ -2,24 +2,32 @@ import { createElement } from "lwc";
 import SecMaterialityCard from "c/secMaterialityCard";
 
 // Mock custom labels
-jest.mock("@salesforce/label/c.SEC_IncidentDescription", () => ({ default: "Incident Description" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_DiscoveryDate", () => ({ default: "Discovery Date" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_FilingDeadline", () => ({ default: "Filing Deadline" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_DeterminationResult", () => ({ default: "Determination Result" }), { virtual: true });
-jest.mock("@salesforce/label/c.SEC_SLAStatus", () => ({ default: "SLA Status" }), { virtual: true });
+jest.mock(
+  "@salesforce/label/c.SEC_IncidentDescription",
+  () => ({ default: "Incident Description" }),
+  { virtual: true }
+);
+jest.mock("@salesforce/label/c.SEC_DiscoveryDate", () => ({ default: "Discovery Date" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.SEC_FilingDeadline", () => ({ default: "Filing Deadline" }), {
+  virtual: true,
+});
+jest.mock(
+  "@salesforce/label/c.SEC_DeterminationResult",
+  () => ({ default: "Determination Result" }),
+  { virtual: true }
+);
+jest.mock("@salesforce/label/c.SEC_SLAStatus", () => ({ default: "SLA Status" }), {
+  virtual: true,
+});
 jest.mock("@salesforce/label/c.SEC_OnTrack", () => ({ default: "On Track" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_AtRisk", () => ({ default: "At Risk" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_Breached", () => ({ default: "Breached" }), { virtual: true });
 
-const FUTURE_DATE = new Date(
-  Date.now() + 10 * 24 * 60 * 60 * 1000
-).toISOString();
-const TOMORROW_DATE = new Date(
-  Date.now() + 1 * 24 * 60 * 60 * 1000
-).toISOString();
-const PAST_DATE = new Date(
-  Date.now() - 3 * 24 * 60 * 60 * 1000
-).toISOString();
+const FUTURE_DATE = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
+const TOMORROW_DATE = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString();
+const PAST_DATE = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
 
 const MOCK_ON_TRACK_ASSESSMENT = {
   Id: "a01000000000001",
@@ -116,12 +124,8 @@ describe("c-sec-materiality-card", () => {
     const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
     await Promise.resolve();
 
-    const labels = element.shadowRoot.querySelectorAll(
-      ".slds-dl_horizontal__label"
-    );
-    const details = element.shadowRoot.querySelectorAll(
-      ".slds-dl_horizontal__detail"
-    );
+    const labels = element.shadowRoot.querySelectorAll(".slds-dl_horizontal__label");
+    const details = element.shadowRoot.querySelectorAll(".slds-dl_horizontal__detail");
     expect(labels.length).toBe(3);
     expect(details.length).toBe(3);
     // Discovery Date and Filing Deadline should have non-empty values
@@ -159,9 +163,7 @@ describe("c-sec-materiality-card", () => {
     await Promise.resolve();
 
     expect(handler).toHaveBeenCalled();
-    expect(handler.mock.calls[0][0].detail.assessmentId).toBe(
-      "a01000000000001"
-    );
+    expect(handler.mock.calls[0][0].detail.assessmentId).toBe("a01000000000001");
   });
 
   it("renders as a clickable article with role button", async () => {

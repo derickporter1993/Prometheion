@@ -83,9 +83,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             Framework__c = 'SOC2'
         );
 
-        if (Schema.sObjectType.Security_Incident__c.isCreateable()) {
-            insert incident;
-        }
+        insert as user incident;
 
         // Populate assessment
         assessment.breachId = incident.Id;
@@ -238,7 +236,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             Origin = 'H'
         );
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
 
@@ -398,7 +396,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
             incident.Severity__c = 'CRITICAL';
         }
 
-        update incident;
+        update as user incident;
 
         SOC2IncidentResponseService service = new SOC2IncidentResponseService();
         service.logAuditEntry('INCIDENT_ESCALATED', 'Escalated incident to ' + incident.Severity__c + '. Reason: ' + reason, incidentId);
@@ -420,7 +418,7 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
         incident.Resolution__c = resolution;
         incident.Resolved_Date__c = DateTime.now();
 
-        update incident;
+        update as user incident;
 
         SOC2IncidentResponseService service = new SOC2IncidentResponseService();
         service.logAuditEntry('INCIDENT_RESOLVED', 'Resolved incident: ' + resolution, incidentId);
@@ -431,18 +429,21 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
      */
     @AuraEnabled(cacheable=false)
     public static List<Security_Incident__c> getOpenIncidents(String severity) {
-        String query = 'SELECT Id, Name, Incident_Type__c, Severity__c, Status__c, ' +
-                       'Detected_Date__c, Affected_Records__c, Assigned_To__r.Name, Description__c ' +
-                       'FROM Security_Incident__c ' +
-                       'WHERE Status__c NOT IN (\'RESOLVED\', \'CLOSED\') ';
+        String query = 'SELECT Id, Name, Incident_Type__c, Severity__c, Status__c, '
+            + 'Detected_Date__c, Affected_Records__c, Assigned_To__r.Name, Description__c '
+            + 'FROM Security_Incident__c '
+            + 'WHERE Status__c NOT IN (\'RESOLVED\', \'CLOSED\') ';
+
+        Map<String, Object> binds = new Map<String, Object>();
 
         if (String.isNotBlank(severity)) {
             query += 'AND Severity__c = :severity ';
+            binds.put('severity', severity);
         }
 
         query += 'WITH USER_MODE ORDER BY Severity__c, Detected_Date__c DESC LIMIT 200';
 
-        return Database.query(query);
+        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
 
     /**
