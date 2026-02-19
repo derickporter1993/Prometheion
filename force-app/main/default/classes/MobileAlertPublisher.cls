@@ -110,9 +110,7 @@ public with sharing class MobileAlertPublisher {
             gap.Alert_Acknowledged_By__c = UserInfo.getUserId();
             gap.Alert_Acknowledged_At__c = Datetime.now();
 
-            if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
-            }
+            update as user gap;
         }
 
         // Cancel any pending escalations

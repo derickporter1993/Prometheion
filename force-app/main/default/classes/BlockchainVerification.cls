@@ -189,11 +189,8 @@ public with sharing class BlockchainVerification {
 
         // Single bulk insert for all verification records
         if (!anchorsToInsert.isEmpty()) {
-            if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
-                throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
-            }
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert anchorsToInsert;
+            insert as user anchorsToInsert;
         }
 
         return results;

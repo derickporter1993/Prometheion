@@ -132,9 +132,7 @@ global with sharing class JiraWebhookHandler {
             gap.Status__c = newSalesforceStatus;
         }
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Updated gap ' + gap.Name + ' with status ' + newJiraStatus);
     }
@@ -175,9 +173,7 @@ global with sharing class JiraWebhookHandler {
         gap.Jira_Status__c = null;
         gap.Jira_Last_Sync__c = null;
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Cleared Jira link from gap ' + gap.Name);
     }
@@ -231,9 +227,7 @@ global with sharing class JiraWebhookHandler {
 
         gap.Notes__c = (gap.Notes__c != null ? gap.Notes__c : '') + noteEntry;
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Added comment to gap ' + gap.Name);
     }

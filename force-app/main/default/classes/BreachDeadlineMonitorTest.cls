@@ -96,8 +96,12 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'Monitor should execute successfully');
+        // Verify monitor executed by checking for audit log entries
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'Breach Deadline Monitor'
+        ];
+        Assert.isTrue(logs.size() > 0, 'Monitor should create an audit log entry');
     }
 
     @IsTest

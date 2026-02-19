@@ -45,7 +45,7 @@ private class AuditReportControllerTest {
             AuditReportController.generateAuditReport('', startDate, endDate);
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank framework');
+            Assert.isTrue(e.getMessage().contains('blank'), 'Exception should mention blank framework');
         }
         Test.stopTest();
     }
@@ -57,7 +57,7 @@ private class AuditReportControllerTest {
             AuditReportController.generateAuditReport('SOX', null, null);
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null dates');
+            Assert.isTrue(e.getMessage().contains('date'), 'Exception should mention date requirement');
         }
         Test.stopTest();
     }

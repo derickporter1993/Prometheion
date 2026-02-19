@@ -140,7 +140,8 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should handle empty data gracefully');
+        List<CCPA_Request__c> remaining = [SELECT Id FROM CCPA_Request__c WHERE Status__c = 'Overdue'];
+        Assert.areEqual(0, remaining.size(), 'Scheduler should handle empty data gracefully with no overdue requests');
     }
 
     // ========================================
@@ -149,15 +150,20 @@ private class ElaroSchedulerTests {
 
     @IsTest
     static void testDormantAccountAlertScheduler_Execute() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Scheduler should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Scheduler should execute successfully without throwing');
     }
 
     @IsTest
@@ -185,14 +191,19 @@ private class ElaroSchedulerTests {
         // set LastLoginDate. This test verifies the scheduler handles
         // the scenario where no dormant users are found.
 
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
-        Assert.isTrue(true, 'Scheduler should handle no dormant users gracefully');
+        Assert.isNull(caughtEx, 'Scheduler should handle no dormant users gracefully');
     }
 
     // ========================================

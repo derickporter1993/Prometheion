@@ -35,8 +35,13 @@ private class AccessReviewSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        // Verify scheduler executed without throwing
+        // Check that audit log was created by performAccessReview
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'Access Review Scheduled Job'
+        ];
+        Assert.isTrue(logs.size() > 0, 'Scheduler should create an audit log entry');
     }
 
     @IsTest
@@ -48,8 +53,12 @@ private class AccessReviewSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'Access review should complete successfully');
+        // Verify audit log was created by performAccessReview
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c, Status__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'Access Review Scheduled Job'
+        ];
+        Assert.isTrue(logs.size() > 0, 'Access review should create an audit log entry');
     }
 
     @IsTest
@@ -126,8 +135,12 @@ private class AccessReviewSchedulerTest {
 
         Test.stopTest();
 
-        // Should complete without errors
-        Assert.isTrue(true, 'runNow should complete successfully');
+        // Verify runNow executed successfully by checking audit log
+        List<Elaro_Audit_Log__c> logs = [
+            SELECT Id, Action__c FROM Elaro_Audit_Log__c
+            WHERE Action__c = 'Access Review Scheduled Job'
+        ];
+        Assert.isTrue(logs.size() > 0, 'runNow should create an audit log entry');
     }
 
     @IsTest

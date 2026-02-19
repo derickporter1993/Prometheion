@@ -44,6 +44,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
                    Alert_Acknowledged__c, Alert_Escalation_Level__c, Alert_Snoozed_Until__c
             FROM Compliance_Gap__c
             WHERE Id = :alertId
+            WITH USER_MODE
             LIMIT 1
         ];
 
@@ -90,9 +91,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
 
         // Update escalation level on gap
         gap.Alert_Escalation_Level__c = nextLevel;
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         // Schedule next escalation if not at max level
         if (nextLevel < MAX_ESCALATION_LEVEL) {
@@ -180,6 +179,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
             List<CustomNotificationType> notifTypes = [
                 SELECT Id FROM CustomNotificationType
                 WHERE DeveloperName = :CRITICAL_NOTIFICATION_TYPE
+                WITH USER_MODE
                 LIMIT 1
             ];
 

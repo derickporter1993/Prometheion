@@ -50,9 +50,7 @@ public with sharing class JiraIntegrationService {
         gap.Jira_Status__c = 'To Do';
         gap.Jira_Last_Sync__c = Datetime.now();
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return buildJiraIssueFromResponse(responseBody, settings.jiraInstanceUrl);
     }
@@ -118,9 +116,7 @@ public with sharing class JiraIntegrationService {
             gap.Status__c = newStatus;
         }
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
     }
 
     /**
