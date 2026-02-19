@@ -409,13 +409,7 @@ public with sharing class ElaroQuickActionsService {
                 return result;
             }
 
-            if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                result.success = false;
-                result.errorMessage = 'Insufficient permissions to delete permission set assignments';
-                result.message = result.errorMessage;
-                return result;
-            }
-            delete assignments;
+            delete as user assignments;
             
             result.success = true;
             result.affectedRecords = assignments.size();
@@ -460,18 +454,11 @@ public with sharing class ElaroQuickActionsService {
                 return result;
             }
 
-            if (!Schema.sObjectType.User.isUpdateable()) {
-                result.success = false;
-                result.errorMessage = 'Insufficient permissions to update users';
-                result.message = result.errorMessage;
-                return result;
-            }
-
             for (User u : inactiveUsers) {
                 u.IsActive = false;
             }
 
-            update inactiveUsers;
+            update as user inactiveUsers;
             
             result.success = true;
             result.affectedRecords = inactiveUsers.size();
@@ -506,13 +493,7 @@ public with sharing class ElaroQuickActionsService {
                 WITH USER_MODE
             ];
 
-            if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                result.success = false;
-                result.errorMessage = 'Insufficient permissions to delete permission set assignments';
-                result.message = result.errorMessage;
-                return result;
-            }
-            delete psa;
+            delete as user psa;
             
             result.success = true;
             result.affectedRecords = 1;

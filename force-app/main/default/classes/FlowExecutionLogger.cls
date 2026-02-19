@@ -48,7 +48,7 @@ public with sharing class FlowExecutionLogger {
                 toInsert
             );
             if (!accessibleRecords.isEmpty()) {
-                insert accessibleRecords;
+                insert as user accessibleRecords;
             }
         }
     }

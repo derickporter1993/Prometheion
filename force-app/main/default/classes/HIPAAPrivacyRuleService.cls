@@ -217,7 +217,7 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             Origin = 'H'
         );
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
 

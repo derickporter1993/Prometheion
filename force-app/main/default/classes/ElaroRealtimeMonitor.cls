@@ -158,6 +158,7 @@ public with sharing class ElaroRealtimeMonitor {
                 SELECT Evidence_Type__c eventType, COUNT(Id) cnt
                 FROM Elaro_Evidence_Item__c
                 WHERE CreatedDate &gt;= :cutoffTime
+                WITH USER_MODE
                 GROUP BY Evidence_Type__c
                 ORDER BY COUNT(Id) DESC
                 LIMIT 10
@@ -303,6 +304,7 @@ public with sharing class ElaroRealtimeMonitor {
                     SELECT Profile.Name
                     FROM User
                     WHERE Id = :userId
+                    WITH USER_MODE
                     LIMIT 1
                 ];
                 

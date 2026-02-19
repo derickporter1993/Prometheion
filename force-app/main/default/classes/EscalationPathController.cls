@@ -40,12 +40,8 @@ public with sharing class EscalationPathController {
     public static Id createPath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isCreateable()) {
-            insert path;
-            return path.Id;
-        } else {
-            throw new AuraHandledException('Insufficient permissions to create escalation paths');
-        }
+        insert as user path;
+        return path.Id;
     }
 
     /**
@@ -56,11 +52,7 @@ public with sharing class EscalationPathController {
     public static void updatePath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isUpdateable()) {
-            update path;
-        } else {
-            throw new AuraHandledException('Insufficient permissions to update escalation paths');
-        }
+        update as user path;
     }
 
     /**
@@ -69,11 +61,7 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled
     public static void deletePath(Id pathId) {
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isDeletable()) {
-            delete [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
-        } else {
-            throw new AuraHandledException('Insufficient permissions to delete escalation paths');
-        }
+        delete as user [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
     }
 
     /**
