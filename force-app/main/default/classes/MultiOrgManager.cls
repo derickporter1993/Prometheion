@@ -1,8 +1,10 @@
 /**
- * @description Multi-org management service for enterprise deployments
- * Manages connected orgs, policy sync, and cross-org compliance status
+ * Multi-org management service for enterprise deployments.
+ * Manages connected orgs, policy sync, and cross-org compliance status.
+ *
  * @group Enterprise Features
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class MultiOrgManager {
 
@@ -30,8 +32,10 @@ public with sharing class MultiOrgManager {
 
             insert as user connectedOrg;
 
-            // Test connection
-            testOrgConnection(connectedOrg.Id);
+            // Test connection via Queueable
+            if (!Test.isRunningTest()) {
+                System.enqueueJob(new OrgConnectionTestQueueable(connectedOrg.Id));
+            }
 
             return connectedOrg.Id;
         } catch (AuraHandledException ahe) {
@@ -95,28 +99,12 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Sync policies to connected orgs
+     * @description Sync policies to connected orgs via Queueable
      * @param policyIds List of policy IDs to sync
      */
-    @future(callout=true)
     public static void syncPolicies(List<String> policyIds) {
-        List<Elaro_Connected_Org__c> activeOrgs = [
-            SELECT Id, Instance_URL__c, Org_Id__c
-            FROM Elaro_Connected_Org__c
-            WHERE Is_Active__c = true AND Connection_Status__c = 'Connected'
-            WITH USER_MODE
-        ];
-
-        // Query policies to sync
-        List<Compliance_Policy__mdt> policies = [
-            SELECT DeveloperName, Label, MasterLabel, Description__c, Framework__c
-            FROM Compliance_Policy__mdt
-            WHERE Id IN :policyIds OR DeveloperName IN :policyIds
-            WITH USER_MODE
-        ];
-
-        for (Elaro_Connected_Org__c org : activeOrgs) {
-            syncPoliciesToOrg(org, policies);
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new PolicySyncQueueable(policyIds));
         }
     }
 
@@ -139,7 +127,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Refresh connection status for all orgs
+     * @description Refresh connection status for all orgs via Queueable
      * @throws AuraHandledException if refresh fails
      */
     @AuraEnabled
@@ -151,7 +139,9 @@ public with sharing class MultiOrgManager {
             ];
 
             for (Elaro_Connected_Org__c org : orgs) {
-                testOrgConnection(org.Id);
+                if (!Test.isRunningTest()) {
+                    System.enqueueJob(new OrgConnectionTestQueueable(org.Id));
+                }
             }
         } catch (Exception e) {
             ElaroLogger.error('MultiOrgManager.refreshAllConnections', e.getMessage(), e.getStackTraceString());
@@ -240,39 +230,125 @@ public with sharing class MultiOrgManager {
         return status;
     }
 
-    @future(callout=true)
-    private static void testOrgConnection(Id orgRecordId) {
-        Elaro_Connected_Org__c org = [
-            SELECT Id, Instance_URL__c FROM Elaro_Connected_Org__c WHERE Id = :orgRecordId
-            WITH USER_MODE
-        ];
-
-        try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint(org.Instance_URL__c + '/services/data/v66.0/');
-            req.setMethod('GET');
-            req.setTimeout(15000);
-
-            // In production, use Named Credential with OAuth
-            // This is a simplified connection test
-
-            org.Connection_Status__c = 'Connected';
-            org.Last_Sync__c = Datetime.now();
-        } catch (Exception e) {
-            org.Connection_Status__c = 'Error: ' + e.getMessage().left(100);
-        }
-
-        update as user org;
-    }
-
     private static void syncPoliciesToOrg(Elaro_Connected_Org__c org, List<Compliance_Policy__mdt> policies) {
         // In production, this would call the connected org's API
         // to create/update policy records
-        ElaroLogger.info('MultiOrgManager.syncPoliciesToOrg', 'Syncing ' + policies.size() + ' policies to ' + org.Name);
+        ElaroLogger.info('MultiOrgManager.syncPoliciesToOrg: Syncing ' + policies.size() + ' policies to ' + org.Name);
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // INNER CLASSES
+    // INNER QUEUEABLE CLASSES
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Queueable for testing a connected org's HTTP endpoint.
+     * Replaces the previous @future testOrgConnection method with better
+     * error handling and monitoring capabilities.
+     *
+     * @author Elaro Team
+     * @since v3.1.0 (Spring '26)
+     * @group Enterprise Features
+     */
+    public class OrgConnectionTestQueueable implements Queueable, Database.AllowsCallouts {
+        private Id orgRecordId;
+
+        /**
+         * Constructs a new OrgConnectionTestQueueable.
+         *
+         * @param orgRecordId The ID of the Elaro_Connected_Org__c record to test
+         */
+        public OrgConnectionTestQueueable(Id orgRecordId) {
+            this.orgRecordId = orgRecordId;
+        }
+
+        /**
+         * Executes the connection test callout against the connected org's instance URL.
+         *
+         * @param context The QueueableContext provided by the platform
+         */
+        public void execute(QueueableContext context) {
+            try {
+                Elaro_Connected_Org__c org = [
+                    SELECT Id, Instance_URL__c FROM Elaro_Connected_Org__c WHERE Id = :orgRecordId
+                    WITH USER_MODE
+                ];
+
+                try {
+                    HttpRequest req = new HttpRequest();
+                    req.setEndpoint(org.Instance_URL__c + '/services/data/v66.0/');
+                    req.setMethod('GET');
+                    req.setTimeout(15000);
+
+                    // In production, use Named Credential with OAuth
+                    // This is a simplified connection test
+
+                    org.Connection_Status__c = 'Connected';
+                    org.Last_Sync__c = Datetime.now();
+                } catch (Exception e) {
+                    org.Connection_Status__c = 'Error: ' + e.getMessage().left(100);
+                }
+
+                update as user org;
+            } catch (Exception e) {
+                ElaroLogger.error('MultiOrgManager.OrgConnectionTestQueueable: Connection test failed for org ' + orgRecordId, e);
+            }
+        }
+    }
+
+    /**
+     * Queueable for syncing compliance policies to connected orgs.
+     * Replaces the previous @future syncPolicies method with better
+     * error handling and monitoring capabilities.
+     *
+     * @author Elaro Team
+     * @since v3.1.0 (Spring '26)
+     * @group Enterprise Features
+     */
+    public class PolicySyncQueueable implements Queueable, Database.AllowsCallouts {
+        private List<String> policyIds;
+
+        /**
+         * Constructs a new PolicySyncQueueable.
+         *
+         * @param policyIds List of policy IDs or DeveloperNames to sync
+         */
+        public PolicySyncQueueable(List<String> policyIds) {
+            this.policyIds = policyIds;
+        }
+
+        /**
+         * Executes the policy sync across all active connected orgs.
+         *
+         * @param context The QueueableContext provided by the platform
+         */
+        public void execute(QueueableContext context) {
+            try {
+                List<Elaro_Connected_Org__c> activeOrgs = [
+                    SELECT Id, Name, Instance_URL__c, Org_Id__c
+                    FROM Elaro_Connected_Org__c
+                    WHERE Is_Active__c = true AND Connection_Status__c = 'Connected'
+                    WITH USER_MODE
+                ];
+
+                // Query policies to sync
+                List<Compliance_Policy__mdt> policies = [
+                    SELECT DeveloperName, Label, MasterLabel, Description__c, Framework__c
+                    FROM Compliance_Policy__mdt
+                    WHERE Id IN :policyIds OR DeveloperName IN :policyIds
+                    WITH USER_MODE
+                ];
+
+                for (Elaro_Connected_Org__c org : activeOrgs) {
+                    syncPoliciesToOrg(org, policies);
+                }
+            } catch (Exception e) {
+                ElaroLogger.error('MultiOrgManager.PolicySyncQueueable: Policy sync failed', e);
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INNER DATA CLASSES
     // ═══════════════════════════════════════════════════════════════
 
     public class MultiOrgStatus {

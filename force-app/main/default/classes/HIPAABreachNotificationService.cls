@@ -241,14 +241,14 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
 
         for (HIPAA_Breach__c breach : breaches) {
             // Count by type
-            String breachType = breach.Breach_Type__c != null ? breach.Breach_Type__c : 'Unknown';
+            String breachType = breach.Breach_Type__c ?? 'Unknown';
             if (!metrics.breachesByType.containsKey(breachType)) {
                 metrics.breachesByType.put(breachType, 0);
             }
             metrics.breachesByType.put(breachType, metrics.breachesByType.get(breachType) + 1);
 
             // Count by risk level
-            String riskLevel = breach.Risk_Level__c != null ? breach.Risk_Level__c : 'Unknown';
+            String riskLevel = breach.Risk_Level__c ?? 'Unknown';
             if (!metrics.breachesByRiskLevel.containsKey(riskLevel)) {
                 metrics.breachesByRiskLevel.put(riskLevel, 0);
             }
@@ -274,171 +274,220 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
 
     /**
      * Create new breach record
+     *
+     * @param breachData Map containing breach details
+     * @return Id of the created breach record
+     * @throws AuraHandledException if creation fails
      */
     @AuraEnabled
     public static Id createBreachRecord(Map<String, Object> breachData) {
-        HIPAA_Breach__c breach = new HIPAA_Breach__c();
-        breach.Description__c = (String) breachData.get('description');
-        breach.Discovery_Date__c = Date.today();
-        breach.Notification_Deadline__c = Date.today().addDays(NOTIFICATION_DEADLINE_DAYS);
-        breach.Records_Affected__c = (Decimal) breachData.get('recordsAffected');
-        breach.Breach_Type__c = (String) breachData.get('breachType');
-        breach.Status__c = 'Open';
+        try {
+            HIPAA_Breach__c breach = new HIPAA_Breach__c();
+            breach.Description__c = (String) breachData.get('description');
+            breach.Discovery_Date__c = Date.today();
+            breach.Notification_Deadline__c = Date.today().addDays(NOTIFICATION_DEADLINE_DAYS);
+            breach.Records_Affected__c = (Decimal) breachData.get('recordsAffected');
+            breach.Breach_Type__c = (String) breachData.get('breachType');
+            breach.Status__c = 'Open';
 
-        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_INSERT);
-        insert breach;
+            insert as user breach;
 
-        // Log audit entry
-        HIPAABreachNotificationService service = new HIPAABreachNotificationService();
-        service.logAuditEntry('HIPAA_Breach_Created', breach.Id, 'HIPAA Breach record created');
+            // Log audit entry
+            HIPAABreachNotificationService service = new HIPAABreachNotificationService();
+            service.logAuditEntry('HIPAA_Breach_Created', breach.Id, 'HIPAA Breach record created');
 
-        return breach.Id;
+            return breach.Id;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.createBreachRecord', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to create breach record. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
      * Get breaches pending assessment
+     *
+     * @return List of HIPAA_Breach__c records pending assessment
+     * @throws AuraHandledException if query fails
      */
     @AuraEnabled(cacheable=true)
     public static List<HIPAA_Breach__c> getPendingBreaches() {
-        return [
-            SELECT Id, Name, Description__c, Discovery_Date__c, Records_Affected__c,
-                   Breach_Type__c, Status__c, Risk_Level__c
-            FROM HIPAA_Breach__c
-            WHERE Status__c = 'Pending Assessment'
-            WITH USER_MODE
-            ORDER BY Discovery_Date__c ASC
-        ];
+        try {
+            return [
+                SELECT Id, Name, Description__c, Discovery_Date__c, Records_Affected__c,
+                       Breach_Type__c, Status__c, Risk_Level__c
+                FROM HIPAA_Breach__c
+                WHERE Status__c = 'Pending Assessment'
+                WITH USER_MODE
+                ORDER BY Discovery_Date__c ASC
+            ];
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.getPendingBreaches', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve pending breaches. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
      * Get breaches requiring notification
+     *
+     * @return List of HIPAA_Breach__c records requiring notification
+     * @throws AuraHandledException if query fails
      */
     @AuraEnabled(cacheable=true)
     public static List<HIPAA_Breach__c> getBreachesRequiringNotification() {
-        return [
-            SELECT Id, Name, Description__c, Discovery_Date__c, Notification_Deadline__c,
-                   Records_Affected__c, Risk_Level__c, Status__c,
-                   Individuals_Notified__c, HHS_Notified__c, Media_Notified__c
-            FROM HIPAA_Breach__c
-            WHERE Notification_Required__c = true
-            AND (Individuals_Notified__c = false OR HHS_Notified__c = false)
-            WITH USER_MODE
-            ORDER BY Notification_Deadline__c ASC
-        ];
+        try {
+            return [
+                SELECT Id, Name, Description__c, Discovery_Date__c, Notification_Deadline__c,
+                       Records_Affected__c, Risk_Level__c, Status__c,
+                       Individuals_Notified__c, HHS_Notified__c, Media_Notified__c
+                FROM HIPAA_Breach__c
+                WHERE Notification_Required__c = true
+                AND (Individuals_Notified__c = false OR HHS_Notified__c = false)
+                WITH USER_MODE
+                ORDER BY Notification_Deadline__c ASC
+            ];
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.getBreachesRequiringNotification', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve breaches requiring notification. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
      * Record individual notification
+     *
+     * @param breachId The breach record Id
+     * @param individualsNotified Number of individuals notified
+     * @throws AuraHandledException if update fails
      */
     @AuraEnabled
     public static void recordIndividualNotification(Id breachId, Integer individualsNotified) {
-        HIPAA_Breach__c breach = [
-            SELECT Id, Individuals_Notified__c
-            FROM HIPAA_Breach__c
-            WHERE Id = :breachId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            HIPAA_Breach__c breach = [
+                SELECT Id, Individuals_Notified__c
+                FROM HIPAA_Breach__c
+                WHERE Id = :breachId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        breach.Individuals_Notified__c = true;
-        breach.Individual_Notification_Date__c = Date.today();
-        breach.Individuals_Notified_Count__c = individualsNotified;
+            breach.Individuals_Notified__c = true;
+            breach.Individual_Notification_Date__c = Date.today();
+            breach.Individuals_Notified_Count__c = individualsNotified;
 
-        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
-        update breach;
+            update as user breach;
 
-        HIPAABreachNotificationService service = new HIPAABreachNotificationService();
-        service.logAuditEntry('HIPAA_Individual_Notification', breachId,
-            'Notified ' + individualsNotified + ' individuals');
+            HIPAABreachNotificationService service = new HIPAABreachNotificationService();
+            service.logAuditEntry('HIPAA_Individual_Notification', breachId,
+                'Notified ' + individualsNotified + ' individuals');
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.recordIndividualNotification', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to record individual notification. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
      * Record HHS notification
+     *
+     * @param breachId The breach record Id
+     * @param hhsConfirmationNumber The HHS confirmation number
+     * @throws AuraHandledException if update fails
      */
     @AuraEnabled
     public static void recordHHSNotification(Id breachId, String hhsConfirmationNumber) {
-        HIPAA_Breach__c breach = [
-            SELECT Id, HHS_Notified__c
-            FROM HIPAA_Breach__c
-            WHERE Id = :breachId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            HIPAA_Breach__c breach = [
+                SELECT Id, HHS_Notified__c
+                FROM HIPAA_Breach__c
+                WHERE Id = :breachId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        breach.HHS_Notified__c = true;
-        breach.HHS_Notification_Date__c = Date.today();
-        breach.HHS_Confirmation_Number__c = hhsConfirmationNumber;
+            breach.HHS_Notified__c = true;
+            breach.HHS_Notification_Date__c = Date.today();
+            breach.HHS_Confirmation_Number__c = hhsConfirmationNumber;
 
-        ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
-        update breach;
+            update as user breach;
 
-        HIPAABreachNotificationService service = new HIPAABreachNotificationService();
-        service.logAuditEntry('HIPAA_HHS_Notification', breachId,
-            'HHS notified. Confirmation: ' + hhsConfirmationNumber);
+            HIPAABreachNotificationService service = new HIPAABreachNotificationService();
+            service.logAuditEntry('HIPAA_HHS_Notification', breachId,
+                'HHS notified. Confirmation: ' + hhsConfirmationNumber);
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.recordHHSNotification', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to record HHS notification. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
      * Get notification timeline for a breach
+     *
+     * @param breachId The breach record Id
+     * @return List of NotificationEvent timeline entries
+     * @throws AuraHandledException if query fails
      */
     @AuraEnabled(cacheable=true)
     public static List<NotificationEvent> getNotificationTimeline(Id breachId) {
-        List<NotificationEvent> timeline = new List<NotificationEvent>();
+        try {
+            List<NotificationEvent> timeline = new List<NotificationEvent>();
 
-        HIPAA_Breach__c breach = [
-            SELECT Id, Discovery_Date__c, Notification_Deadline__c,
-                   Individual_Notification_Date__c, HHS_Notification_Date__c,
-                   Media_Notification_Date__c, Records_Affected__c
-            FROM HIPAA_Breach__c
-            WHERE Id = :breachId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+            HIPAA_Breach__c breach = [
+                SELECT Id, Discovery_Date__c, Notification_Deadline__c,
+                       Individual_Notification_Date__c, HHS_Notification_Date__c,
+                       Media_Notification_Date__c, Records_Affected__c
+                FROM HIPAA_Breach__c
+                WHERE Id = :breachId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        // Discovery event
-        timeline.add(new NotificationEvent(
-            'Discovery',
-            breach.Discovery_Date__c,
-            'Breach discovered',
-            'completed'
-        ));
-
-        // Individual notification
-        timeline.add(new NotificationEvent(
-            'Individual Notification',
-            breach.Individual_Notification_Date__c,
-            'Notify affected individuals',
-            breach.Individual_Notification_Date__c != null ? 'completed' : 'pending'
-        ));
-
-        // HHS notification
-        timeline.add(new NotificationEvent(
-            'HHS Notification',
-            breach.HHS_Notification_Date__c,
-            breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD ?
-                'Immediate HHS notification required (500+ records)' :
-                'HHS annual log entry required',
-            breach.HHS_Notification_Date__c != null ? 'completed' : 'pending'
-        ));
-
-        // Media notification if applicable
-        if (breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD) {
+            // Discovery event
             timeline.add(new NotificationEvent(
-                'Media Notification',
-                breach.Media_Notification_Date__c,
-                'Notify prominent media outlets (500+ in state)',
-                breach.Media_Notification_Date__c != null ? 'completed' : 'pending'
+                'Discovery',
+                breach.Discovery_Date__c,
+                'Breach discovered',
+                'completed'
             ));
+
+            // Individual notification
+            timeline.add(new NotificationEvent(
+                'Individual Notification',
+                breach.Individual_Notification_Date__c,
+                'Notify affected individuals',
+                breach.Individual_Notification_Date__c != null ? 'completed' : 'pending'
+            ));
+
+            // HHS notification
+            timeline.add(new NotificationEvent(
+                'HHS Notification',
+                breach.HHS_Notification_Date__c,
+                breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD ?
+                    'Immediate HHS notification required (500+ records)' :
+                    'HHS annual log entry required',
+                breach.HHS_Notification_Date__c != null ? 'completed' : 'pending'
+            ));
+
+            // Media notification if applicable
+            if (breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD) {
+                timeline.add(new NotificationEvent(
+                    'Media Notification',
+                    breach.Media_Notification_Date__c,
+                    'Notify prominent media outlets (500+ in state)',
+                    breach.Media_Notification_Date__c != null ? 'completed' : 'pending'
+                ));
+            }
+
+            // Deadline
+            timeline.add(new NotificationEvent(
+                'Notification Deadline',
+                breach.Notification_Deadline__c,
+                '60-day notification deadline',
+                Date.today() > breach.Notification_Deadline__c ? 'overdue' : 'upcoming'
+            ));
+
+            return timeline;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAABreachNotificationService.getNotificationTimeline', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve notification timeline. Please verify you have the required permissions and try again.');
         }
-
-        // Deadline
-        timeline.add(new NotificationEvent(
-            'Notification Deadline',
-            breach.Notification_Deadline__c,
-            '60-day notification deadline',
-            Date.today() > breach.Notification_Deadline__c ? 'overdue' : 'upcoming'
-        ));
-
-        return timeline;
     }
 
     // ========== Private Helper Methods ==========

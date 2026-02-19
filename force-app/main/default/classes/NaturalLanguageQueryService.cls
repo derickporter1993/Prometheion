@@ -1,8 +1,10 @@
 /**
- * @description Natural language to SOQL conversion service
- * Uses AI to convert natural language queries to SOQL and execute them
- * @group AI Integration
+ * Natural language to SOQL conversion service.
+ * Uses AI to convert natural language queries to SOQL and execute them.
+ *
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
  */
 public with sharing class NaturalLanguageQueryService {
     
@@ -37,7 +39,7 @@ public with sharing class NaturalLanguageQueryService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Execute natural language query
+     * Execute natural language query
      * @param query The natural language query
      * @return QueryResult with generated SOQL and results
      */
@@ -90,7 +92,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Get query suggestions based on partial input
+     * Get query suggestions based on partial input
      * @param partialQuery The partial query string
      * @return List of suggested queries
      */
@@ -124,7 +126,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Validate a natural language query before execution
+     * Validate a natural language query before execution
      * @param query The query to validate
      * @return Validation result with generated SOQL preview
      */
@@ -161,7 +163,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Get recently executed queries for current user
+     * Get recently executed queries for current user
      * @return List of recent queries
      */
     @AuraEnabled(cacheable=true)
@@ -176,7 +178,7 @@ public with sharing class NaturalLanguageQueryService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Generate SOQL from natural language using AI
+     * Generate SOQL from natural language using AI
      */
     private static String generateSOQL(String naturalLanguageQuery) {
         // Check cache
@@ -201,7 +203,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Call AI to generate SOQL
+     * Call AI to generate SOQL
      */
     private static String callAIForSOQL(String query) {
         String prompt = buildSOQLPrompt(query);
@@ -237,7 +239,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Build SOQL generation prompt
+     * Build SOQL generation prompt
      */
     private static String buildSOQLPrompt(String query) {
         return 'Convert the following natural language query to Salesforce SOQL.\n\n' +
@@ -250,7 +252,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Extract SOQL from AI response
+     * Extract SOQL from AI response
      */
     private static String extractSOQLFromResponse(String response) {
         try {
@@ -277,7 +279,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Check if SOQL is safe to execute
+     * Check if SOQL is safe to execute
      */
     private static Boolean isSOQLSafe(String soql) {
         if (String.isBlank(soql)) {
@@ -314,7 +316,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Estimate row count for query
+     * Estimate row count for query
      */
     private static Integer estimateRowCount(String soql) {
         try {
@@ -333,7 +335,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Add WITH USER_MODE to SOQL query if not present
+     * Add WITH USER_MODE to SOQL query if not present
      */
     private static String addSecurityEnforced(String soql) {
         if (String.isBlank(soql)) {
@@ -358,7 +360,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Generate human-readable result summary
+     * Generate human-readable result summary
      */
     private static String generateResultSummary(String query, Integer resultCount) {
         if (resultCount == 0) {
@@ -371,7 +373,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Get contextual query suggestions
+     * Get contextual query suggestions
      */
     private static List&lt;String&gt; getContextualSuggestions(String partialQuery) {
         List&lt;String&gt; suggestions = new List&lt;String&gt;();
@@ -401,7 +403,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Get mock SOQL for testing
+     * Get mock SOQL for testing
      */
     private static String getMockSOQL(String query) {
         // Return appropriate mock SOQL based on query keywords
@@ -446,7 +448,7 @@ public with sharing class NaturalLanguageQueryService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Query result wrapper
+     * Query result wrapper
      */
     public class QueryResult {
         @AuraEnabled public String originalQuery;
@@ -457,7 +459,7 @@ public with sharing class NaturalLanguageQueryService {
     }
     
     /**
-     * @description Validation result wrapper
+     * Validation result wrapper
      */
     public class ValidationResult {
         @AuraEnabled public String originalQuery;

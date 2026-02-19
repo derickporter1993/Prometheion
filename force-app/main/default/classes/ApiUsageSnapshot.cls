@@ -1,3 +1,12 @@
+/**
+ * Captures daily API usage limits from the Salesforce REST API and persists
+ * snapshots for trend analysis and capacity planning.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ * @see ElaroSecurityUtils
+ */
 public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
     public class LimitsResponse {
         public class DailyLimit { public Integer Max; public Integer Remaining; }

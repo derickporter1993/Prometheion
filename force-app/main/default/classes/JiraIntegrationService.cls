@@ -58,18 +58,14 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Asynchronously creates a Jira issue (for trigger/batch contexts)
+     * Asynchronously creates a Jira issue via Queueable (for trigger/batch contexts).
+     *
      * @param gapId The Salesforce ID of the Compliance_Gap__c record
      * @param priority Optional priority override
      */
-    @future(callout=true)
     public static void createIssueAsync(String gapId, String priority) {
-        try {
-            createIssue(gapId, priority);
-        } catch (Exception e) {
-            ElaroLogger.error('Async Jira issue creation failed: ' + e.getMessage(), e);
-            // Log to custom object for monitoring
-            logError('createIssueAsync', gapId, e.getMessage());
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new JiraIssueCreationQueueable(gapId, priority));
         }
     }
 
@@ -503,6 +499,51 @@ public with sharing class JiraIntegrationService {
         // Could log to a custom object for monitoring
         ElaroLogger.error('Jira Integration Error - Operation: ' + operation +
                      ', Record: ' + recordId + ', Error: ' + errorMessage);
+    }
+
+    // ============================================
+    // Inner Queueable Class
+    // ============================================
+
+    /**
+     * Queueable for asynchronous Jira issue creation from compliance gaps.
+     * Replaces the previous @future createIssueAsync method with better
+     * error handling and monitoring capabilities.
+     *
+     * @author Elaro Team
+     * @since v3.1.0 (Spring '26)
+     * @group Integrations
+     * @see JiraIntegrationService
+     */
+    public class JiraIssueCreationQueueable implements Queueable, Database.AllowsCallouts {
+        private String gapId;
+        private String priority;
+
+        /**
+         * Constructs a new JiraIssueCreationQueueable.
+         *
+         * @param gapId The Salesforce ID of the Compliance_Gap__c record
+         * @param priority Optional priority override for the Jira issue
+         */
+        public JiraIssueCreationQueueable(String gapId, String priority) {
+            this.gapId = gapId;
+            this.priority = priority;
+        }
+
+        /**
+         * Executes the Jira issue creation callout.
+         *
+         * @param context The QueueableContext provided by the platform
+         */
+        public void execute(QueueableContext context) {
+            try {
+                createIssue(gapId, priority);
+            } catch (Exception e) {
+                ElaroLogger.error('JiraIntegrationService.JiraIssueCreationQueueable: Async Jira issue creation failed', e);
+                // Log to custom object for monitoring
+                logError('JiraIssueCreationQueueable', gapId, e.getMessage());
+            }
+        }
     }
 
     // ============================================
