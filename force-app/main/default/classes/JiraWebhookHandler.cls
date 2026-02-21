@@ -233,9 +233,15 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * Validates the webhook secret from request headers
+     * Validates the webhook secret from request headers using constant-time comparison
+     * to prevent timing attacks.
+     *
+     * SECURITY: Uses ElaroSecurityUtils.compareSecrets() instead of String.equals()
+     * to prevent attackers from using timing analysis to deduce the secret.
+     *
      * @param req The REST request
      * @return True if valid or no secret configured
+     * @see ElaroSecurityUtils.compareSecrets
      */
     private static Boolean validateWebhookSecret(RestRequest req) {
         Elaro_Jira_Settings__c settings = Elaro_Jira_Settings__c.getOrgDefaults();
@@ -250,7 +256,8 @@ global with sharing class JiraWebhookHandler {
             providedSecret = req.headers.get('x-atlassian-webhook-secret');
         }
 
-        return settings.Webhook_Secret__c.equals(providedSecret);
+        // Use constant-time comparison to prevent timing attacks
+        return ElaroSecurityUtils.compareSecrets(settings.Webhook_Secret__c, providedSecret);
     }
 
     /**
