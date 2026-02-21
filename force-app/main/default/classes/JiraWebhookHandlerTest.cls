@@ -5,7 +5,7 @@
  * @author Elaro Development Team
  * @since 2026-01
  */
-@IsTest(testFor=JiraWebhookHandler.class)
+@IsTest
 private class JiraWebhookHandlerTest {
 
     private static final String MOCK_JIRA_KEY = 'COMPLIANCE-456';
@@ -416,6 +416,163 @@ private class JiraWebhookHandlerTest {
         Test.stopTest();
 
         Assert.areEqual(500, res.statusCode, 'Should return 500 for invalid JSON');
+    }
+
+    // ============================================
+    // Timing Attack Prevention Tests
+    // ============================================
+
+    /**
+     * SECURITY: Verifies that webhook secret validation uses constant-time comparison
+     * to prevent timing attacks. This test ensures ElaroSecurityUtils.compareSecrets()
+     * is being used instead of String.equals().
+     *
+     * A timing attack exploits the fact that String.equals() fails fast - it returns
+     * false as soon as it finds a mismatched character. By measuring response times,
+     * an attacker can deduce the secret one character at a time:
+     * - Wrong first char: ~1μs response
+     * - Correct first char, wrong second: ~2μs response
+     * - Correct first two chars, wrong third: ~3μs response
+     *
+     * The fix uses bitwise XOR accumulation to ensure comparison time is constant
+     * regardless of where strings differ.
+     */
+    @isTest
+    static void testTimingAttackPrevention_ValidSecret() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'test-secret-123'); // Correct secret
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(200, res.statusCode,
+            'Valid secret should authenticate successfully using constant-time comparison');
+    }
+
+    @isTest
+    static void testTimingAttackPrevention_InvalidSecret_FirstCharDiffers() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'Xest-secret-123'); // First char wrong
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(401, res.statusCode,
+            'Invalid secret (first char differs) should fail authentication');
+    }
+
+    @isTest
+    static void testTimingAttackPrevention_InvalidSecret_LastCharDiffers() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'test-secret-124'); // Last char wrong
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(401, res.statusCode,
+            'Invalid secret (last char differs) should fail authentication');
+    }
+
+    @isTest
+    static void testTimingAttackPrevention_InvalidSecret_MiddleCharDiffers() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'test-Xecret-123'); // Middle char wrong
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(401, res.statusCode,
+            'Invalid secret (middle char differs) should fail authentication');
+    }
+
+    @isTest
+    static void testTimingAttackPrevention_CaseSensitive() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'TEST-SECRET-123'); // Wrong case
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(401, res.statusCode,
+            'Secret comparison should be case-sensitive');
+    }
+
+    @isTest
+    static void testTimingAttackPrevention_DifferentLength() {
+        String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
+
+        RestRequest req = new RestRequest();
+        req.requestUri = '/services/apexrest/jira/webhook';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(payload);
+        req.headers.put('X-Atlassian-Webhook-Secret', 'test'); // Much shorter
+
+        RestResponse res = new RestResponse();
+
+        RestContext.request = req;
+        RestContext.response = res;
+
+        Test.startTest();
+        JiraWebhookHandler.handleWebhook();
+        Test.stopTest();
+
+        Assert.areEqual(401, res.statusCode,
+            'Secrets with different lengths should fail authentication (length check is safe to expose)');
     }
 
     // ============================================

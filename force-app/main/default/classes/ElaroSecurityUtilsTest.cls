@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroSecurityUtils.class)
+@IsTest
 private class ElaroSecurityUtilsTest {
     
     @TestSetup
@@ -429,5 +429,154 @@ private class ElaroSecurityUtilsTest {
                 'Exception message should match');
         }
         Test.stopTest();
+    }
+
+    /**
+     * Tests for compareSecrets() - constant-time comparison to prevent timing attacks
+     */
+    @IsTest
+    static void testCompareSecrets_Match() {
+        String secret = 'my-webhook-secret-12345';
+        String provided = 'my-webhook-secret-12345';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isTrue(result, 'Identical secrets should match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_NoMatch() {
+        String secret = 'my-webhook-secret-12345';
+        String provided = 'my-webhook-secret-99999';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Different secrets should not match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_CaseSensitive() {
+        String secret = 'MyWebhookSecret';
+        String provided = 'mywebhooksecret';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Comparison should be case-sensitive');
+    }
+
+    @IsTest
+    static void testCompareSecrets_DifferentLength() {
+        String secret = 'short';
+        String provided = 'much-longer-secret';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Secrets with different lengths should not match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_NullExpected() {
+        String secret = null;
+        String provided = 'some-secret';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Null expected secret should never match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_NullProvided() {
+        String secret = 'my-webhook-secret';
+        String provided = null;
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Null provided secret should never match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_BothNull() {
+        String secret = null;
+        String provided = null;
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Two null values should not match (security fail-safe)');
+    }
+
+    @IsTest
+    static void testCompareSecrets_EmptyStrings() {
+        String secret = '';
+        String provided = '';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isTrue(result, 'Empty strings should match (edge case for blank config)');
+    }
+
+    @IsTest
+    static void testCompareSecrets_OneDifferentCharacter() {
+        String secret = 'my-webhook-secret-12345';
+        String provided = 'my-webhook-secret-12346'; // Last char differs
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Single character difference should fail match');
+    }
+
+    @IsTest
+    static void testCompareSecrets_FirstCharacterDiffers() {
+        String secret = 'Ay-webhook-secret';
+        String provided = 'By-webhook-secret'; // First char differs
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'First character difference should fail match (no fast-fail leakage)');
+    }
+
+    @IsTest
+    static void testCompareSecrets_LongSecrets() {
+        // Test with realistic HMAC-SHA256 hex string length (64 chars)
+        String secret = 'a'.repeat(64);
+        String provided = 'a'.repeat(64);
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isTrue(result, 'Long matching secrets should compare correctly');
+    }
+
+    @IsTest
+    static void testCompareSecrets_LongSecrets_OneBitDifference() {
+        // Test with realistic HMAC-SHA256 hex string, last char differs
+        String secret = 'a'.repeat(63) + 'b';
+        String provided = 'a'.repeat(63) + 'c';
+
+        Test.startTest();
+        Boolean result = ElaroSecurityUtils.compareSecrets(secret, provided);
+        Test.stopTest();
+
+        Assert.isFalse(result, 'Long secrets with single character difference should fail match');
     }
 }

@@ -159,4 +159,48 @@ public with sharing class ElaroSecurityUtils {
         String cleaned = baseQuery.replaceAll('(?i)\\s+WITH\\s+SECURITY_ENFORCED', '');
         return cleaned + ' WITH USER_MODE';
     }
+
+    /**
+     * Compares two strings in constant time to prevent timing attacks.
+     *
+     * Uses bitwise XOR accumulation to ensure comparison time is independent
+     * of where strings differ, preventing attackers from using timing analysis
+     * to deduce secret values byte-by-byte.
+     *
+     * SECURITY: This method MUST be used for all secret comparisons including
+     * API keys, webhook secrets, HMAC signatures, and authentication tokens.
+     * Never use String.equals() or == for secret comparison.
+     *
+     * @param expected The expected secret value
+     * @param provided The provided value to validate
+     * @return True if strings match exactly, false otherwise
+     * @see ElaroScoreCallback.validateHmacSignature for HMAC usage example
+     * @example
+     * String webhookSecret = settings.Webhook_Secret__c;
+     * String providedSecret = request.headers.get('X-Webhook-Secret');
+     * if (!ElaroSecurityUtils.compareSecrets(webhookSecret, providedSecret)) {
+     *     throw new SecurityException('Invalid webhook secret');
+     * }
+     */
+    public static Boolean compareSecrets(String expected, String provided) {
+        // Handle null inputs - never allow null to match
+        if (expected == null || provided == null) {
+            return false;
+        }
+
+        // Length check - fail fast only on length mismatch (safe to expose length)
+        if (expected.length() != provided.length()) {
+            return false;
+        }
+
+        // Constant-time comparison using XOR accumulation
+        // Any difference sets at least one bit in result
+        Integer result = 0;
+        for (Integer i = 0; i < expected.length(); i++) {
+            result |= expected.charAt(i) ^ provided.charAt(i);
+        }
+
+        // Return true only if all characters matched (result == 0)
+        return result == 0;
+    }
 }
