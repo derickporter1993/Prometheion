@@ -294,12 +294,16 @@ private class ElaroComplianceAlertTest {
         };
         
         Test.startTest();
-        // Should handle invalid channel gracefully
+        // Should handle invalid channel gracefully or throw a meaningful exception
         try {
             ElaroComplianceAlert.sendAlertNotification('INVALID', JSON.serialize(alertData));
-        } catch (Exception e) {
-            // May or may not throw exception depending on implementation
-            Assert.isTrue(true, 'Should handle invalid channel');
+            // If no exception, the method handled the invalid channel gracefully
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('channel') || e.getMessage().containsIgnoreCase('invalid') || e.getMessage().containsIgnoreCase('unsupported'),
+                'Should have descriptive error message, got: ' + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('channel') || e.getMessage().containsIgnoreCase('invalid') || e.getMessage().containsIgnoreCase('unsupported'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

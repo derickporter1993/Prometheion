@@ -484,9 +484,9 @@ private class ElaroDynamicReportControllerTest {
             ElaroDynamicReportController.ReportResult result =
                 ElaroDynamicReportController.executeReport(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Field validation may fail for some fields
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context when field validation fails
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }

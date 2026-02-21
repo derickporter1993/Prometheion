@@ -35,9 +35,10 @@ private class ComplianceFrameworkServiceTest {
         Test.startTest();
         try {
             ComplianceFrameworkService.evaluateFramework('');
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for blank framework');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank framework');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('framework') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('blank'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
@@ -47,9 +48,10 @@ private class ComplianceFrameworkServiceTest {
         Test.startTest();
         try {
             ComplianceFrameworkService.evaluateFramework(null);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for null framework');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null framework');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('framework') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('null'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

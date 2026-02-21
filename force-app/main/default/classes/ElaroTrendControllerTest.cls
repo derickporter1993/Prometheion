@@ -78,9 +78,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to no data, which is acceptable
-            Assert.isTrue(true, 'Query may fail with no data');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -99,8 +99,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -119,8 +120,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -139,8 +141,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -159,8 +162,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -299,8 +303,9 @@ private class ElaroTrendControllerTest {
                     'Name LIKE \'Test%\''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -319,8 +324,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -339,8 +345,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -359,8 +366,9 @@ private class ElaroTrendControllerTest {
                     ''
                 );
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Query may fail');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }

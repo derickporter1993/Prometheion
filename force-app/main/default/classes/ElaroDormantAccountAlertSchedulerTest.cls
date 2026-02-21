@@ -87,13 +87,11 @@ private class ElaroDormantAccountAlertSchedulerTest {
 
         // Act
         Test.startTest();
-        try {
-            scheduler.execute(null);
-            Assert.isTrue(true, 'Scheduler executed without throwing exception');
-        } catch (Exception e) {
-            // Error handling is expected to log and notify
-            Assert.isTrue(true, 'Scheduler handles errors gracefully');
-        }
+        // Scheduler should handle errors internally without throwing
+        scheduler.execute(null);
         Test.stopTest();
+
+        // If we reach here, the scheduler handled any internal errors gracefully
+        // Verify no unhandled exceptions were thrown by confirming execution completed
     }
 }

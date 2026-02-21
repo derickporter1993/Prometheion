@@ -117,17 +117,17 @@ private class FlowExecutionLoggerTest {
         // Test null inputs
         try {
             FlowExecutionLogger.logInvocable(null);
-            Assert.fail( 'Should have thrown exception for null inputs');
+            Assert.fail('Expected IllegalArgumentException for null inputs');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null inputs');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
 
         // Test empty inputs
         try {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>());
-            Assert.fail( 'Should have thrown exception for empty inputs');
+            Assert.fail('Expected IllegalArgumentException for empty inputs');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for empty inputs');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
 
         // Test blank flow name
@@ -136,9 +136,10 @@ private class FlowExecutionLoggerTest {
         invalidInput.status = 'SUCCESS';
         try {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>{ invalidInput });
-            Assert.fail( 'Should have thrown exception for blank flow name');
+            Assert.fail('Expected IllegalArgumentException for blank flow name');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank flow name');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('flow') || e.getMessage().containsIgnoreCase('blank') || e.getMessage().containsIgnoreCase('required'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
 
         // Test negative CPU
@@ -148,9 +149,10 @@ private class FlowExecutionLoggerTest {
         negativeInput.cpu = -1;
         try {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>{ negativeInput });
-            Assert.fail( 'Should have thrown exception for negative CPU');
+            Assert.fail('Expected IllegalArgumentException for negative CPU');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for negative CPU');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('cpu') || e.getMessage().containsIgnoreCase('negative') || e.getMessage().containsIgnoreCase('invalid'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
 
         Test.stopTest();

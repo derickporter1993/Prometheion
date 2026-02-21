@@ -36,9 +36,13 @@ private class ElaroGraphIndexerTest {
         Test.startTest();
         try {
             ElaroGraphIndexer.indexChange('INVALID', 'badid', null, 'SOC2');
-            Assert.fail( 'Should have thrown exception');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Expected exception for invalid entity');
+            Assert.fail('Expected exception for invalid entity type');
+        } catch (IllegalArgumentException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('entity') || e.getMessage().containsIgnoreCase('invalid') || e.getMessage().containsIgnoreCase('unsupported'),
+                'Should have descriptive error message, got: ' + e.getMessage());
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('entity') || e.getMessage().containsIgnoreCase('invalid') || e.getMessage().containsIgnoreCase('unsupported'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

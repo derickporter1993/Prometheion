@@ -35,9 +35,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -57,9 +57,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -265,9 +265,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -287,9 +287,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -309,9 +309,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }
@@ -331,9 +331,9 @@ private class ElaroMatrixControllerTest {
             ElaroMatrixController.MatrixResult result =
                 ElaroMatrixController.executeMatrixQuery(configJson);
             Assert.areNotEqual(null, result, 'Result should not be null');
-        } catch (Exception e) {
-            // Query may fail due to security enforcement in test context
-            Assert.isTrue(true, 'Query may fail in test context');
+        } catch (AuraHandledException e) {
+            // Expected in test context without full org data
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }

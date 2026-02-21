@@ -41,9 +41,10 @@ private class ChangeImpactAnalyzerTest {
         Test.startTest();
         try {
             ChangeImpactAnalyzer.analyzeImpact(null);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for null changes');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null changes');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('changes') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('null'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
@@ -53,9 +54,10 @@ private class ChangeImpactAnalyzerTest {
         Test.startTest();
         try {
             ChangeImpactAnalyzer.analyzeImpact(new List<ChangeImpactAnalyzer.MetadataChange>());
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for empty changes');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for empty changes');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('changes') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('empty'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

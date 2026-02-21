@@ -40,9 +40,10 @@ private class EvidenceCollectionServiceTest {
         Test.startTest();
         try {
             EvidenceCollectionService.collectEvidence('', startDate, endDate);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for blank framework');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank framework');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('framework') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('blank'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
@@ -52,9 +53,10 @@ private class EvidenceCollectionServiceTest {
         Test.startTest();
         try {
             EvidenceCollectionService.collectEvidence('SOX', null, null);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for null dates');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null dates');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('date') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('null'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
@@ -67,9 +69,10 @@ private class EvidenceCollectionServiceTest {
         Test.startTest();
         try {
             EvidenceCollectionService.collectEvidence('SOX', startDate, endDate);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for invalid date range');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for invalid date range');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('date') || e.getMessage().containsIgnoreCase('range') || e.getMessage().containsIgnoreCase('before'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

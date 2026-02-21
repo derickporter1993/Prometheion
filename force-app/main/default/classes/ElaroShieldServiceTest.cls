@@ -251,10 +251,9 @@ private class ElaroShieldServiceTest {
         Test.startTest();
         try {
             ElaroShieldService.parseEventLogContent('invalid_id');
-            Assert.fail( 'Should have thrown exception');
+            Assert.fail('Expected AuraHandledException for invalid ID');
         } catch (AuraHandledException e) {
-            // Expected
-            Assert.isTrue(true, 'Should throw exception for invalid ID');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message');
         }
         Test.stopTest();
     }

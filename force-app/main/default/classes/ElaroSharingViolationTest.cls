@@ -157,8 +157,8 @@ private class ElaroSharingViolationTest {
                 Assert.isTrue(accounts.isEmpty() || accounts.size() == 0, 
                     'Should not return records due to sharing violation');
             } catch (QueryException e) {
-                // QueryException may be thrown for sharing violations
-                Assert.isTrue(true, 'Expected sharing violation: ' + e.getMessage());
+                // QueryException expected for sharing violations in USER_MODE
+                Assert.isNotNull(e.getMessage(), 'Sharing violation exception should have a message');
             }
         }
         Test.stopTest();

@@ -129,9 +129,13 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.startTest();
         try {
             String jsonData = ElaroGDPRDataPortabilityService.exportContactData(null);
-            Assert.fail( 'Should throw exception');
-        } catch (Exception e) {
-            Assert.isTrue(true, 'Expected exception for null contact');
+            Assert.fail('Expected exception for null contact ID');
+        } catch (IllegalArgumentException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('contact') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('null'),
+                'Should have descriptive error message, got: ' + e.getMessage());
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().containsIgnoreCase('contact') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('null'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }

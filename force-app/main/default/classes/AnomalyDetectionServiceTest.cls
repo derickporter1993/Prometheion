@@ -54,9 +54,10 @@ private class AnomalyDetectionServiceTest {
         Test.startTest();
         try {
             AnomalyDetectionService.detectAnomalies('', 30);
-            Assert.fail( 'Should have thrown IllegalArgumentException');
+            Assert.fail('Expected IllegalArgumentException for blank framework');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank framework');
+            Assert.isTrue(e.getMessage().containsIgnoreCase('framework') || e.getMessage().containsIgnoreCase('required') || e.getMessage().containsIgnoreCase('blank'),
+                'Should have descriptive error message, got: ' + e.getMessage());
         }
         Test.stopTest();
     }
