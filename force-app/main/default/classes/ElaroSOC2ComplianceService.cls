@@ -14,6 +14,15 @@
 public with sharing class ElaroSOC2ComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_SOC2;
     
+    /**
+     * Calculates a SOC 2-specific risk score for the given entity.
+     * Permission sets with excessive object permissions (40+) receive a higher penalty.
+     *
+     * @param entityType The type of entity being scored (e.g., field, permission set)
+     * @param entityId The unique identifier of the entity
+     * @param metadata Additional context; supports 'objectPermissionCount' for permission sets
+     * @return Risk score capped at the configured maximum
+     */
     public Decimal calculateRiskScore(String entityType, String entityId, Map<String, Object> metadata) {
         Decimal score = ElaroConstants.BASE_RISK_SCORE;
         
@@ -32,10 +41,21 @@ public with sharing class ElaroSOC2ComplianceService implements IRiskScoringServ
         return Math.min(score, ElaroConstants.RISK_SCORE_MAX);
     }
     
+    /**
+     * Returns the current SOC 2 compliance readiness score from the scorer.
+     *
+     * @return SOC 2 framework compliance score
+     */
     public Decimal getComplianceScore() {
         return ElaroComplianceScorer.calculateReadinessScore().frameworkScores.get(FRAMEWORK);
     }
     
+    /**
+     * Identifies current SOC 2 violations by checking for unreviewed configuration changes
+     * related to permissions and sharing rules in the last 30 days.
+     *
+     * @return List of active SOC 2 violations with remediation guidance
+     */
     public List<Violation> getViolations() {
         List<Violation> violations = new List<Violation>();
         
@@ -65,6 +85,11 @@ public with sharing class ElaroSOC2ComplianceService implements IRiskScoringServ
         return violations;
     }
     
+    /**
+     * Returns the SOC 2 framework identifier.
+     *
+     * @return The framework constant for SOC 2
+     */
     public String getFrameworkName() {
         return FRAMEWORK;
     }

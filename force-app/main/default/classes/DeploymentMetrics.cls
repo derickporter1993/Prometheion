@@ -17,6 +17,13 @@ public with sharing class DeploymentMetrics {
         }
     }
 
+    /**
+     * Retrieves recent deployment job records, ordered by start time descending.
+     * Each row includes job name, status, start/finish timestamps, and test pass/fail counts.
+     *
+     * @param limitSize Maximum number of deployment records to return (minimum 1)
+     * @return List of Row wrappers containing deployment job details from Deployment_Job__c
+     */
     @AuraEnabled(cacheable=true)
     public static List<Row> getRecentDeployments(Integer limitSize) {
         Integer recordLimit = Math.max(1, limitSize);

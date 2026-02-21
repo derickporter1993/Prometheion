@@ -11,6 +11,19 @@ public with sharing class PerformanceAlertPublisher {
     private static final Integer RATE_LIMIT_MAX_CALLS = 100;
     private static final Integer RATE_LIMIT_WINDOW_SECONDS = 60;
     
+    /**
+     * Publishes a performance alert by persisting it to Performance_Alert_History__c and optionally
+     * sending a Slack notification. Validates inputs, sanitizes metric and stack trace against XSS,
+     * and enforces rate limiting (100 calls per 60-second window). Silently skips publication if
+     * rate limit is exceeded rather than throwing.
+     *
+     * @param metric Name of the performance metric that triggered the alert (required)
+     * @param value Current observed value of the metric (required)
+     * @param threshold Threshold value that was exceeded (required)
+     * @param contextRecordId Optional Salesforce record ID providing context for the alert
+     * @param stack Optional stack trace or diagnostic information (truncated to 32KB, HTML-escaped)
+     * @throws AuraHandledException When inputs are invalid or the alert record fails to save
+     */
     @AuraEnabled
     public static void publish(String metric, Decimal value, Decimal threshold, String contextRecordId, String stack) {
         try {

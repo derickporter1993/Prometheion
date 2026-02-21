@@ -13,6 +13,14 @@ public with sharing class FlowExecutionStats {
         }
     }
 
+    /**
+     * Retrieves aggregate execution statistics for the most-run flows, ordered by total run count descending.
+     * Returns flow name, total runs, fault count, and last run timestamp. Fault counts are queried
+     * separately since SOQL does not support CASE WHEN in aggregate queries.
+     *
+     * @param limitSize Maximum number of flow aggregates to return (minimum 1)
+     * @return List of ExecAgg wrappers containing flow name, run count, fault count, and last run datetime
+     */
     @AuraEnabled(cacheable=true)
     public static List<ExecAgg> getTopFlows(Integer limitSize) {
         Integer recordLimit = Math.max(1, limitSize);

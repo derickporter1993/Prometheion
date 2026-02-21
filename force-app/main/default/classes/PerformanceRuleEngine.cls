@@ -29,6 +29,16 @@ public with sharing class PerformanceRuleEngine {
     private static final Integer DEFAULT_DML_WARN = 140;
     private static final Integer DEFAULT_DML_CRIT = 150;
 
+    /**
+     * Evaluates current governor limit statistics against configurable warning and critical thresholds
+     * (from CCX_Settings__c, with sensible defaults) for CPU, heap, SOQL, and DML metrics.
+     * Creates Performance_Alert_History__c records for any exceeded thresholds. Returns an EvalResult
+     * summarizing whether warnings or critical alerts were triggered and how many alerts were saved.
+     *
+     * @param stats GovernorStats snapshot containing current CPU, heap, SOQL, and DML usage
+     * @param contextRecordId Optional Salesforce record ID to associate with generated alerts
+     * @return EvalResult containing warning/critical flags, event counts, and a summary message
+     */
     @AuraEnabled
     public static EvalResult evaluateAndPublish(
         LimitMetrics.GovernorStats stats,

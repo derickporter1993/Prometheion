@@ -20,6 +20,13 @@ public with sharing class ApiUsageDashboardController {
         }
     }
 
+    /**
+     * Retrieves recent API usage snapshots for the dashboard, ordered by snapshot timestamp descending.
+     * Each row includes daily usage, daily limit, percent used, and projected exhaustion time.
+     *
+     * @param limitSize Maximum number of snapshot records to return (minimum 1)
+     * @return List of Row wrappers containing API usage metrics from API_Usage_Snapshot__c
+     */
     @AuraEnabled(cacheable = true)
     public static List<Row> getRecentSnapshots(Integer limitSize) {
         List<Row> out = new List<Row>();

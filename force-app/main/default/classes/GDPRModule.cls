@@ -71,10 +71,20 @@ public with sharing class GDPRModule implements IComplianceModule {
             'Governance', 'HIGH'));
     }
     
+    /** {@inheritDoc} Returns 'GDPR'. */
     public String getFrameworkName() { return FRAMEWORK_NAME; }
+    /** {@inheritDoc} Returns '2018'. */
     public String getFrameworkVersion() { return FRAMEWORK_VERSION; }
+    /** {@inheritDoc} Returns all GDPR controls (Articles 5-37). */
     public List<IComplianceModule.Control> getControls() { return GDPR_CONTROLS; }
-    
+
+    /**
+     * Calculates a weighted GDPR compliance score for the given audit package.
+     * Critical controls are weighted 3x, High 2x, and others 1x.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return Weighted compliance score from 0-100, or 0 if the ID is null
+     */
     public Decimal calculateScore(Id auditPackageId) {
         if (auditPackageId == null) return 0;
         
@@ -93,6 +103,13 @@ public with sharing class GDPRModule implements IComplianceModule {
         return totalWeight > 0 ? (totalScore / totalWeight) * 100 : 0;
     }
     
+    /**
+     * Identifies non-compliant GDPR controls and returns them as Gap objects with
+     * framework-specific remediation recommendations.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return List of Gap objects for controls that did not pass evaluation
+     */
     public List<IComplianceModule.Gap> identifyGaps(Id auditPackageId) {
         List<IComplianceModule.Gap> gaps = new List<IComplianceModule.Gap>();
         
@@ -116,6 +133,12 @@ public with sharing class GDPRModule implements IComplianceModule {
         return gaps;
     }
     
+    /**
+     * Generates a GDPR-specific compliance report as a PDF.
+     *
+     * @param auditPackageId The audit package to generate the report for
+     * @return PDF content as a Blob
+     */
     public Blob generateReport(Id auditPackageId) {
         PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
@@ -123,6 +146,12 @@ public with sharing class GDPRModule implements IComplianceModule {
         return Test.isRunningTest() ? Blob.valueOf('GDPR Report') : pdfPage.getContentAsPDF();
     }
     
+    /**
+     * Looks up a GDPR control by its article code (e.g., 'Art.17').
+     *
+     * @param controlId The control code to search for
+     * @return The matching Control, or null if not found
+     */
     public IComplianceModule.Control getControlById(String controlId) {
         for (IComplianceModule.Control ctrl : GDPR_CONTROLS) {
             if (ctrl.code == controlId) return ctrl;
@@ -130,6 +159,15 @@ public with sharing class GDPRModule implements IComplianceModule {
         return null;
     }
     
+    /**
+     * Evaluates a specific GDPR control against the audit package.
+     * Routes to specialized evaluators for Erasure (Art.17), ROPA (Art.30),
+     * Security (Art.32), and Breach Notification (Art.33).
+     *
+     * @param controlId The control code to evaluate
+     * @param context Must contain 'auditPackageId' key with the audit package ID
+     * @return ControlResult with pass/fail status, score, and findings
+     */
     public IComplianceModule.ControlResult evaluateControl(String controlId, Map<String, Object> context) {
         IComplianceModule.ControlResult result = new IComplianceModule.ControlResult();
         result.controlId = controlId;

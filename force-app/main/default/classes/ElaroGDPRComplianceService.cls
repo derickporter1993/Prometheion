@@ -14,6 +14,15 @@
 public with sharing class ElaroGDPRComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_GDPR;
     
+    /**
+     * Calculates a GDPR-specific risk score for the given entity.
+     * Fields containing personal data without encryption receive a higher penalty.
+     *
+     * @param entityType The type of entity being scored (e.g., field, permission set)
+     * @param entityId The unique identifier of the entity
+     * @param metadata Additional context for risk calculation
+     * @return Risk score capped at the configured maximum
+     */
     public Decimal calculateRiskScore(String entityType, String entityId, Map<String, Object> metadata) {
         Decimal score = ElaroConstants.BASE_RISK_SCORE;
         
@@ -26,10 +35,20 @@ public with sharing class ElaroGDPRComplianceService implements IRiskScoringServ
         return Math.min(score, ElaroConstants.RISK_SCORE_MAX);
     }
     
+    /**
+     * Returns the current GDPR compliance readiness score from the scorer.
+     *
+     * @return GDPR framework compliance score
+     */
     public Decimal getComplianceScore() {
         return ElaroComplianceScorer.calculateReadinessScore().frameworkScores.get(FRAMEWORK);
     }
     
+    /**
+     * Identifies current GDPR violations such as unencrypted PII fields.
+     *
+     * @return List of active GDPR violations
+     */
     public List<Violation> getViolations() {
         List<Violation> violations = new List<Violation>();
         
@@ -40,6 +59,11 @@ public with sharing class ElaroGDPRComplianceService implements IRiskScoringServ
         return violations;
     }
     
+    /**
+     * Returns the GDPR framework identifier.
+     *
+     * @return The framework constant for GDPR
+     */
     public String getFrameworkName() {
         return FRAMEWORK;
     }

@@ -42,6 +42,16 @@ public without sharing class ElaroReasoningEngine {
         return settings.Confidence_Threshold__c;
     }
 
+    /**
+     * Analyzes a compliance graph node and produces an AI-assisted explanation of the violation.
+     * If AI reasoning is disabled, falls back to manual review. Logs an adjudication record
+     * to the Big Object for audit trail integrity.
+     *
+     * @param nodeHash The Graph_Node_Id__c hash of the compliance graph node
+     * @param framework The compliance framework context (e.g., 'HIPAA', 'SOC2')
+     * @return ReasoningResult with violation determination, confidence, and explanation
+     * @throws ReasoningException if the node is not found or adjudication logging fails
+     */
     public static ReasoningResult explainViolation(String nodeHash, String framework) {
         Elaro_Compliance_Graph__b node = queryGraphNode(nodeHash);
         Elaro_AI_Settings__c settings = getAISettingsSafe();

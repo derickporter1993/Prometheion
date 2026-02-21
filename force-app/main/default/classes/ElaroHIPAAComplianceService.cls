@@ -14,6 +14,15 @@
 public with sharing class ElaroHIPAAComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_HIPAA;
     
+    /**
+     * Calculates a HIPAA-specific risk score for the given entity.
+     * Permission sets with excessive object permissions receive higher risk penalties.
+     *
+     * @param entityType The type of entity being scored (e.g., field, permission set)
+     * @param entityId The unique identifier of the entity
+     * @param metadata Additional context; supports 'objectPermissionCount' for permission sets
+     * @return Risk score capped at the configured maximum
+     */
     public Decimal calculateRiskScore(String entityType, String entityId, Map<String, Object> metadata) {
         Decimal score = ElaroConstants.BASE_RISK_SCORE;
         
@@ -34,12 +43,23 @@ public with sharing class ElaroHIPAAComplianceService implements IRiskScoringSer
         return Math.min(score, ElaroConstants.RISK_SCORE_MAX);
     }
     
+    /**
+     * Returns the current HIPAA compliance readiness score from the scorer.
+     *
+     * @return HIPAA framework compliance score
+     */
     public Decimal getComplianceScore() {
         // Calculate HIPAA-specific compliance score
         // This would integrate with ElaroComplianceScorer
         return ElaroComplianceScorer.calculateReadinessScore().frameworkScores.get(FRAMEWORK);
     }
     
+    /**
+     * Identifies current HIPAA violations by checking for users with Modify All Data
+     * permission, which violates the minimum necessary access requirement (45 CFR 164.514(d)).
+     *
+     * @return List of active HIPAA violations with remediation guidance
+     */
     public List<Violation> getViolations() {
         List<Violation> violations = new List<Violation>();
         
@@ -67,6 +87,11 @@ public with sharing class ElaroHIPAAComplianceService implements IRiskScoringSer
         return violations;
     }
     
+    /**
+     * Returns the HIPAA framework identifier.
+     *
+     * @return The framework constant for HIPAA
+     */
     public String getFrameworkName() {
         return FRAMEWORK;
     }

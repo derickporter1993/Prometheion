@@ -284,27 +284,51 @@ public with sharing class ComplianceServiceFactory {
             this.baseService = new SOC2AccessReviewService();
         }
 
+        /** Delegates access review initiation to the underlying SOC2 service.
+         * @param reviewType The type of access review to initiate
+         * @return Id of the created access review record
+         */
         public Id initiateAccessReview(String reviewType) {
             return baseService.initiateAccessReview(reviewType);
         }
 
+        /** Retrieves the status of an access review from the underlying SOC2 service.
+         * @param reviewId The access review record ID
+         * @return AccessReviewStatus with current review state
+         */
         public IAccessControlService.AccessReviewStatus getReviewStatus(Id reviewId) {
             return baseService.getReviewStatus(reviewId);
         }
 
+        /** Returns users with excessive access, augmented with HIPAA-specific PHI access checks.
+         * @return List of users with excessive access levels
+         */
         public List<IAccessControlService.ExcessiveAccessUser> getExcessiveAccessUsers() {
             // Add HIPAA-specific PHI access checks
             return baseService.getExcessiveAccessUsers();
         }
 
+        /** Revokes access for the specified users via the underlying SOC2 service.
+         * @param userIds List of User IDs whose access should be revoked
+         * @param reason Business justification for the revocation
+         * @return RevokeAccessResult with outcome details
+         */
         public IAccessControlService.RevokeAccessResult revokeAccess(List<Id> userIds, String reason) {
             return baseService.revokeAccess(userIds, reason);
         }
 
+        /** Identifies stale permission assignments based on user login activity.
+         * @param daysSinceLogin Threshold of inactive days to flag as stale
+         * @return List of stale permission assignments
+         */
         public List<IAccessControlService.StalePermission> getStalePermissions(Integer daysSinceLogin) {
             return baseService.getStalePermissions(daysSinceLogin);
         }
 
+        /** Validates whether a user's access aligns with the need-to-know principle.
+         * @param userId The User ID to validate
+         * @return NeedToKnowResult indicating compliance with the principle
+         */
         public IAccessControlService.NeedToKnowResult validateNeedToKnow(Id userId) {
             return baseService.validateNeedToKnow(userId);
         }

@@ -81,18 +81,29 @@ public with sharing class HIPAAModule implements IComplianceModule {
     // INTERFACE IMPLEMENTATION
     // ═══════════════════════════════════════════════════════════════
     
+    /** {@inheritDoc} Returns 'HIPAA'. */
     public String getFrameworkName() {
         return FRAMEWORK_NAME;
     }
-    
+
+    /** {@inheritDoc} Returns '2013'. */
     public String getFrameworkVersion() {
         return FRAMEWORK_VERSION;
     }
-    
+
+    /** {@inheritDoc} Returns all HIPAA controls (Administrative, Physical, Technical safeguards). */
     public List<IComplianceModule.Control> getControls() {
         return HIPAA_CONTROLS;
     }
-    
+
+    /**
+     * Calculates a weighted HIPAA compliance score for the given audit package.
+     * Critical controls are weighted 3x, High 2x, Medium 1x. Partial compliance
+     * is scored at 50% of the control's weighted value.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return Weighted compliance score from 0-100, or 0 if the ID is null
+     */
     public Decimal calculateScore(Id auditPackageId) {
         if (auditPackageId == null) {
             return 0;
@@ -121,6 +132,13 @@ public with sharing class HIPAAModule implements IComplianceModule {
         return totalWeight > 0 ? (weightedScore / totalWeight) : 0;
     }
     
+    /**
+     * Identifies non-compliant HIPAA controls and returns them as Gap objects
+     * with risk scores and remediation recommendations.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return List of Gap objects for controls that did not pass evaluation
+     */
     public List<IComplianceModule.Gap> identifyGaps(Id auditPackageId) {
         List<IComplianceModule.Gap> gaps = new List<IComplianceModule.Gap>();
         
@@ -146,6 +164,12 @@ public with sharing class HIPAAModule implements IComplianceModule {
         return gaps;
     }
     
+    /**
+     * Generates a HIPAA-specific compliance report as a PDF.
+     *
+     * @param auditPackageId The audit package to generate the report for
+     * @return PDF content as a Blob
+     */
     public Blob generateReport(Id auditPackageId) {
         // Generate HIPAA-specific report
         PageReference pdfPage = Page.ElaroAuditPackagePDF;
@@ -159,6 +183,12 @@ public with sharing class HIPAAModule implements IComplianceModule {
         return pdfPage.getContentAsPDF();
     }
     
+    /**
+     * Looks up a HIPAA control by its code or ID (e.g., '164.312(a)').
+     *
+     * @param controlId The control code or ID to search for
+     * @return The matching Control, or null if not found
+     */
     public IComplianceModule.Control getControlById(String controlId) {
         for (IComplianceModule.Control ctrl : HIPAA_CONTROLS) {
             if (ctrl.code == controlId || ctrl.id == controlId) {
@@ -168,6 +198,16 @@ public with sharing class HIPAAModule implements IComplianceModule {
         return null;
     }
     
+    /**
+     * Evaluates a specific HIPAA control against the audit package.
+     * Routes to specialized evaluators for Access Control (164.312(a)),
+     * Audit Controls (164.312(b)), Authentication (164.312(d)),
+     * Transmission Security (164.312(e)), and Incident Procedures (164.308(a)(6)).
+     *
+     * @param controlId The control code to evaluate
+     * @param context Must contain 'auditPackageId' key with the audit package ID
+     * @return ControlResult with pass/fail status, score, and findings
+     */
     public IComplianceModule.ControlResult evaluateControl(String controlId, Map<String, Object> context) {
         IComplianceModule.ControlResult result = new IComplianceModule.ControlResult();
         result.controlId = controlId;

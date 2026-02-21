@@ -3,6 +3,17 @@ public with sharing class ElaroLegalDocumentGenerator {
     private static final Integer RATE_LIMIT_MAX_CALLS = 10;
     private static final Integer RATE_LIMIT_WINDOW_SECONDS = 60;
 
+    /**
+     * Generates a compliance evidence pack document for the specified framework and date range.
+     * Queries Elaro_Compliance_Graph__b entries, formats them into a structured text report,
+     * and stores the result as a ContentVersion file. Rate-limited to 10 calls per 60-second window.
+     *
+     * @param framework Compliance framework identifier (e.g., HIPAA, SOC2, PCI-DSS). Must be a supported framework per ElaroConstants.
+     * @param startDate Beginning of the compliance period to include in the evidence pack
+     * @param endDate End of the compliance period to include in the evidence pack
+     * @return ContentDocumentId of the generated evidence pack file
+     * @throws AuraHandledException When rate limit is exceeded, inputs are invalid, or document generation fails
+     */
     @AuraEnabled
     public static String generateLegalAttestation(String framework, Date startDate, Date endDate) {
         // Rate limiting check

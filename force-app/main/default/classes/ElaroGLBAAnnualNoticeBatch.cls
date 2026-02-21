@@ -11,6 +11,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
     private Integer noticesSent = 0;
     private Integer errors = 0;
 
+    /** Collects Privacy_Notice__c records due for annual notice renewal. */
     public Database.QueryLocator start(Database.BatchableContext bc) {
         ElaroLogger.info( 'GLBA Batch start() - Job ID: ' + bc.getJobId());
 
@@ -34,6 +35,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
         }
     }
 
+    /** Creates new annual notice records for each contact and publishes GLBA compliance events. */
     public void execute(Database.BatchableContext bc, List<Privacy_Notice__c> scope) {
         List<Privacy_Notice__c> newNotices = new List<Privacy_Notice__c>();
         Set<Id> processedContacts = new Set<Id>();
@@ -104,6 +106,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
         }
     }
 
+    /** Logs batch results and sends a summary email to the job creator. */
     public void finish(Database.BatchableContext bc) {
         ElaroLogger.info( 'GLBA Batch finish() - Notices sent: ' + noticesSent + ', Errors: ' + errors);
 

@@ -59,10 +59,20 @@ public with sharing class SOC2Module implements IComplianceModule {
             'CC9', 'MEDIUM'));
     }
     
+    /** {@inheritDoc} Returns 'SOC2'. */
     public String getFrameworkName() { return FRAMEWORK_NAME; }
+    /** {@inheritDoc} Returns '2017'. */
     public String getFrameworkVersion() { return FRAMEWORK_VERSION; }
+    /** {@inheritDoc} Returns all SOC 2 Trust Service Criteria controls (CC6-CC9). */
     public List<IComplianceModule.Control> getControls() { return SOC2_CONTROLS; }
-    
+
+    /**
+     * Calculates a weighted SOC 2 compliance score for the given audit package.
+     * Critical controls are weighted 3x, High 2x, and others 1x.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return Weighted compliance score from 0-100, or 0 if the ID is null
+     */
     public Decimal calculateScore(Id auditPackageId) {
         if (auditPackageId == null) return 0;
         
@@ -81,6 +91,13 @@ public with sharing class SOC2Module implements IComplianceModule {
         return totalWeight > 0 ? (totalScore / totalWeight) * 100 : 0;
     }
     
+    /**
+     * Identifies non-compliant or partially compliant SOC 2 controls and returns
+     * them as Gap objects with remediation recommendations.
+     *
+     * @param auditPackageId The audit package to evaluate
+     * @return List of Gap objects for controls that are not fully compliant
+     */
     public List<IComplianceModule.Gap> identifyGaps(Id auditPackageId) {
         List<IComplianceModule.Gap> gaps = new List<IComplianceModule.Gap>();
         
@@ -104,6 +121,12 @@ public with sharing class SOC2Module implements IComplianceModule {
         return gaps;
     }
     
+    /**
+     * Generates a SOC 2-specific compliance report as a PDF.
+     *
+     * @param auditPackageId The audit package to generate the report for
+     * @return PDF content as a Blob
+     */
     public Blob generateReport(Id auditPackageId) {
         PageReference pdfPage = Page.ElaroAuditPackagePDF;
         pdfPage.getParameters().put('id', auditPackageId);
@@ -111,6 +134,12 @@ public with sharing class SOC2Module implements IComplianceModule {
         return Test.isRunningTest() ? Blob.valueOf('SOC2 Report') : pdfPage.getContentAsPDF();
     }
     
+    /**
+     * Looks up a SOC 2 control by its code (e.g., 'CC6.1').
+     *
+     * @param controlId The control code to search for
+     * @return The matching Control, or null if not found
+     */
     public IComplianceModule.Control getControlById(String controlId) {
         for (IComplianceModule.Control ctrl : SOC2_CONTROLS) {
             if (ctrl.code == controlId) return ctrl;
@@ -118,6 +147,15 @@ public with sharing class SOC2Module implements IComplianceModule {
         return null;
     }
     
+    /**
+     * Evaluates a specific SOC 2 control against the audit package.
+     * Routes to specialized evaluators for Logical Access (CC6.1),
+     * System Monitoring (CC7.2), Incident Response (CC7.4), and Change Management (CC8.1).
+     *
+     * @param controlId The control code to evaluate
+     * @param context Must contain 'auditPackageId' key with the audit package ID
+     * @return ControlResult with pass/fail status, score, and findings
+     */
     public IComplianceModule.ControlResult evaluateControl(String controlId, Map<String, Object> context) {
         IComplianceModule.ControlResult result = new IComplianceModule.ControlResult();
         result.controlId = controlId;

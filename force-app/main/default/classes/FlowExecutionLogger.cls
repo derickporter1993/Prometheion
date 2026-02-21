@@ -45,6 +45,19 @@ public with sharing class FlowExecutionLogger {
             }
         }
     }
+    /**
+     * Logs a single flow execution record from an LWC context. Validates inputs (non-blank flow name and status,
+     * max 255 characters each), enforces per-user rate limiting (100 calls per 60-second window),
+     * then delegates to the bulkified logInvocable method for CRUD/FLS-safe insertion.
+     *
+     * @param flowName Name of the flow that was executed (required, max 255 chars)
+     * @param primaryRecordId Optional record ID associated with the flow execution
+     * @param status Execution status (e.g., 'Success', 'Fault') (required, max 255 chars)
+     * @param cpu CPU time consumed in milliseconds
+     * @param soql Number of SOQL queries consumed
+     * @param dml Number of DML statements consumed
+     * @throws AuraHandledException When flowName or status is blank, exceeds length limits, or rate limit is exceeded
+     */
     @AuraEnabled
     public static void log(String flowName, Id primaryRecordId, String status, Integer cpu, Integer soql, Integer dml) {
         // Input validation - non-null, non-empty

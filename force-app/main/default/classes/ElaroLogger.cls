@@ -70,40 +70,88 @@ public with sharing class ElaroLogger {
     }
 
     /**
-     * Convenience methods
+     * Logs a message at DEBUG level without additional context.
+     *
+     * @param message The log message describing what occurred
      */
     public static void debug(String message) {
         log(Level.DEBUG, message, null);
     }
 
+    /**
+     * Logs a message at DEBUG level with additional structured context.
+     *
+     * @param message The log message describing what occurred
+     * @param context Key-value pairs providing additional diagnostic data
+     */
     public static void debug(String message, Map<String, Object> context) {
         log(Level.DEBUG, message, context);
     }
 
+    /**
+     * Logs a message at INFO level without additional context.
+     *
+     * @param message The log message describing what occurred
+     */
     public static void info(String message) {
         log(Level.INFO, message, null);
     }
 
+    /**
+     * Logs a message at INFO level with additional structured context.
+     *
+     * @param message The log message describing what occurred
+     * @param context Key-value pairs providing additional diagnostic data
+     */
     public static void info(String message, Map<String, Object> context) {
         log(Level.INFO, message, context);
     }
 
+    /**
+     * Logs a message at WARN level without additional context.
+     *
+     * @param message The log message describing a potential issue or degraded condition
+     */
     public static void warn(String message) {
         log(Level.WARN, message, null);
     }
 
+    /**
+     * Logs a message at WARN level with additional structured context.
+     *
+     * @param message The log message describing a potential issue or degraded condition
+     * @param context Key-value pairs providing additional diagnostic data
+     */
     public static void warn(String message, Map<String, Object> context) {
         log(Level.WARN, message, context);
     }
 
+    /**
+     * Logs a message at ERROR level without additional context.
+     *
+     * @param message The log message describing the error condition
+     */
     public static void error(String message) {
         log(Level.ERROR, message, null);
     }
 
+    /**
+     * Logs a message at ERROR level with additional structured context.
+     *
+     * @param message The log message describing the error condition
+     * @param context Key-value pairs providing additional diagnostic data
+     */
     public static void error(String message, Map<String, Object> context) {
         log(Level.ERROR, message, context);
     }
 
+    /**
+     * Logs a message at ERROR level with exception details automatically extracted
+     * into structured context (exception type, message, and stack trace).
+     *
+     * @param message The log message describing the error condition
+     * @param ex The caught exception whose details will be included in the log context
+     */
     public static void error(String message, Exception ex) {
         Map<String, Object> context = new Map<String, Object>{
             'exceptionType' => ex.getTypeName(),

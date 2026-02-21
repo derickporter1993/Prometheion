@@ -10,6 +10,13 @@ public with sharing class ElaroAISettingsController {
     private static final Boolean DEFAULT_AUTO_REMEDIATION_ENABLED = false;
     private static final String DEFAULT_BLACKLISTED_USERS = '';
 
+    /**
+     * Retrieves the current Elaro AI Settings custom setting instance for the running user's context.
+     * If no org-level default exists, creates and persists one with sensible defaults
+     * (AI reasoning enabled, 0.85 confidence threshold, human approval required, auto-remediation disabled).
+     *
+     * @return Elaro_AI_Settings__c instance with current or default configuration values
+     */
     @AuraEnabled(cacheable=true)
     public static Elaro_AI_Settings__c getSettings() {
         Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getInstance();
@@ -79,6 +86,14 @@ public with sharing class ElaroAISettingsController {
         }
     }
 
+    /**
+     * Saves the provided AI settings to the org-level custom setting. Enforces CRUD/FLS via
+     * Security.stripInaccessible before upserting. Logs an audit event on successful save
+     * and returns a generic error message to the client on failure (detailed errors logged server-side).
+     *
+     * @param settings The Elaro_AI_Settings__c record containing updated configuration values
+     * @throws AuraHandledException When settings is null, no accessible fields exist, or the upsert fails
+     */
     @AuraEnabled
     public static void saveSettings(Elaro_AI_Settings__c settings) {
         if (settings == null) {

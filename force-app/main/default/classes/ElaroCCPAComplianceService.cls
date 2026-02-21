@@ -14,6 +14,15 @@
 public with sharing class ElaroCCPAComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_CCPA;
     
+    /**
+     * Calculates a CCPA-specific risk score for the given entity.
+     * Focuses on consumer privacy rights factors.
+     *
+     * @param entityType The type of entity being scored (e.g., field, permission set)
+     * @param entityId The unique identifier of the entity
+     * @param metadata Additional context for risk calculation
+     * @return Risk score capped at the configured maximum
+     */
     public Decimal calculateRiskScore(String entityType, String entityId, Map<String, Object> metadata) {
         Decimal score = ElaroConstants.BASE_RISK_SCORE;
         
@@ -21,10 +30,20 @@ public with sharing class ElaroCCPAComplianceService implements IRiskScoringServ
         return Math.min(score, ElaroConstants.RISK_SCORE_MAX);
     }
     
+    /**
+     * Returns the current CCPA compliance readiness score from the scorer.
+     *
+     * @return CCPA framework compliance score
+     */
     public Decimal getComplianceScore() {
         return ElaroComplianceScorer.calculateReadinessScore().frameworkScores.get(FRAMEWORK);
     }
     
+    /**
+     * Identifies current CCPA violations such as missing opt-out mechanisms.
+     *
+     * @return List of active CCPA violations
+     */
     public List<Violation> getViolations() {
         List<Violation> violations = new List<Violation>();
         
@@ -34,6 +53,11 @@ public with sharing class ElaroCCPAComplianceService implements IRiskScoringServ
         return violations;
     }
     
+    /**
+     * Returns the CCPA framework identifier.
+     *
+     * @return The framework constant for CCPA
+     */
     public String getFrameworkName() {
         return FRAMEWORK;
     }

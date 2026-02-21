@@ -17,6 +17,7 @@ public with sharing class ConsentExpirationBatch implements Database.Batchable<S
         this.expirationWarningDays = warningDays;
     }
     
+    /** Collects active, non-withdrawn consents that may be approaching expiration. */
     public Database.QueryLocator start(Database.BatchableContext bc) {
         // Query consents that are expiring soon
         // Note: Consent__c object may need an Expiration_Date__c field
@@ -33,6 +34,7 @@ public with sharing class ConsentExpirationBatch implements Database.Batchable<S
         ]);
     }
     
+    /** Processes each batch of consents and queues renewal reminder notifications. */
     public void execute(Database.BatchableContext bc, List<Consent__c> consents) {
         GDPRConsentManagementService service = new GDPRConsentManagementService();
         List<Id> contactsToNotify = new List<Id>();
@@ -49,6 +51,7 @@ public with sharing class ConsentExpirationBatch implements Database.Batchable<S
         ElaroLogger.info( 'Processing ' + contactsToNotify.size() + ' contacts for consent renewal reminders');
     }
     
+    /** Logs batch completion. */
     public void finish(Database.BatchableContext bc) {
         ElaroLogger.info( 'ConsentExpirationBatch completed');
     }

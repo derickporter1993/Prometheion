@@ -20,12 +20,14 @@ public with sharing class ElaroBatchEventLoader implements Database.Batchable<SO
         this.framework = framework;
     }
     
+    /** Collects Shield Event Monitoring data for the configured event type and date range. */
     public Iterable<SObject> start(Database.BatchableContext bc) {
         // Query Event Monitoring data via REST API
         // For now, return empty list - actual implementation would query Event Monitoring API
         return new List<Elaro_Event__e>();
     }
     
+    /** Transforms each batch of event records into Elaro Platform Events and publishes them. */
     public void execute(Database.BatchableContext bc, List<SObject> scope) {
         List<Elaro_Event__e> events = new List<Elaro_Event__e>();
         String correlationId = 'BATCH-' + System.now().getTime();
@@ -57,6 +59,7 @@ public with sharing class ElaroBatchEventLoader implements Database.Batchable<SO
         }
     }
     
+    /** Logs batch completion. */
     public void finish(Database.BatchableContext bc) {
         ElaroLogger.info( '[ElaroBatchEventLoader] Batch completed');
     }

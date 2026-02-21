@@ -14,6 +14,15 @@
 public with sharing class ElaroPCIDSSComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_PCI_DSS;
     
+    /**
+     * Calculates a PCI-DSS-specific risk score for the given entity.
+     * Fields storing cardholder data without encryption receive a high penalty.
+     *
+     * @param entityType The type of entity being scored (e.g., field, permission set)
+     * @param entityId The unique identifier of the entity
+     * @param metadata Additional context for risk calculation
+     * @return Risk score capped at the configured maximum
+     */
     public Decimal calculateRiskScore(String entityType, String entityId, Map<String, Object> metadata) {
         Decimal score = ElaroConstants.BASE_RISK_SCORE;
         
@@ -26,10 +35,20 @@ public with sharing class ElaroPCIDSSComplianceService implements IRiskScoringSe
         return Math.min(score, ElaroConstants.RISK_SCORE_MAX);
     }
     
+    /**
+     * Returns the current PCI-DSS compliance readiness score from the scorer.
+     *
+     * @return PCI-DSS framework compliance score
+     */
     public Decimal getComplianceScore() {
         return ElaroComplianceScorer.calculateReadinessScore().frameworkScores.get(FRAMEWORK);
     }
     
+    /**
+     * Identifies current PCI-DSS violations such as unencrypted cardholder data fields.
+     *
+     * @return List of active PCI-DSS violations
+     */
     public List<Violation> getViolations() {
         List<Violation> violations = new List<Violation>();
         
@@ -39,6 +58,11 @@ public with sharing class ElaroPCIDSSComplianceService implements IRiskScoringSe
         return violations;
     }
     
+    /**
+     * Returns the PCI-DSS framework identifier.
+     *
+     * @return The framework constant for PCI-DSS
+     */
     public String getFrameworkName() {
         return FRAMEWORK;
     }

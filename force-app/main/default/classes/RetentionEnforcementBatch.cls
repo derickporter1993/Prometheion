@@ -7,6 +7,7 @@
  */
 public with sharing class RetentionEnforcementBatch implements Database.Batchable<SObject> {
     
+    /** Collects data processing activities that have defined retention periods. */
     public Database.QueryLocator start(Database.BatchableContext bc) {
         // Query data processing activities with retention periods
         // Check for activities where retention period has been exceeded
@@ -20,6 +21,7 @@ public with sharing class RetentionEnforcementBatch implements Database.Batchabl
         ]);
     }
     
+    /** Evaluates each activity's retention period and triggers erasure workflows for expired data. */
     public void execute(Database.BatchableContext bc, List<Data_Processing_Activity__c> activities) {
         GDPRDataSubjectService service = new GDPRDataSubjectService();
         List<Id> recordsToErase = new List<Id>();
@@ -37,6 +39,7 @@ public with sharing class RetentionEnforcementBatch implements Database.Batchabl
         ElaroLogger.info( 'Processing ' + recordsToErase.size() + ' records for retention enforcement');
     }
     
+    /** Logs batch completion. */
     public void finish(Database.BatchableContext bc) {
         ElaroLogger.info( 'RetentionEnforcementBatch completed');
     }

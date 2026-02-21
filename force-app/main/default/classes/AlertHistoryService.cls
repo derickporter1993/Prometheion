@@ -15,6 +15,14 @@ public with sharing class AlertHistoryService {
         }
     }
     
+    /**
+     * Retrieves the most recent performance alert history records, ordered by creation date descending.
+     * Validates object-level read access and field-level security before querying.
+     *
+     * @param limitSize Maximum number of alert records to return (minimum 1)
+     * @return List of AlertRow wrappers containing metric, value, threshold, context record, and timestamp
+     * @throws AuraHandledException When the running user lacks read access to Performance_Alert_History__c
+     */
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> getRecentAlerts(Integer limitSize) {
         // Validate read access
