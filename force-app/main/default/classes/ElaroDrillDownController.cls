@@ -67,12 +67,10 @@ public with sharing class ElaroDrillDownController {
             Math.min(ctx.pageSize, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE;
         Integer offset = ctx.offset != null ? ctx.offset : 0;
 
-        // Build and execute query
-        String soql = buildSecureQuery(ctx, pageSize, offset);
-
+        // Build and execute parameterized query
         List<SObject> records;
         try {
-            records = Database.query(soql);
+            records = executeSecureQuery(ctx, pageSize, offset);
         } catch (QueryException e) {
             throw new AuraHandledException('Query failed: ' + e.getMessage());
         }
@@ -119,9 +117,13 @@ public with sharing class ElaroDrillDownController {
 
         validateFilterContext(ctx);
 
-        // Build query with export limit
-        String soql = buildSecureQuery(ctx, MAX_TOTAL_RECORDS, 0);
-        List<SObject> records = Database.query(soql);
+        // Execute parameterized query with export limit
+        List<SObject> records;
+        try {
+            records = executeSecureQuery(ctx, MAX_TOTAL_RECORDS, 0);
+        } catch (QueryException e) {
+            throw new AuraHandledException('Export query failed: ' + e.getMessage());
+        }
 
         // Build CSV
         List<String> csvLines = new List<String>();
@@ -224,9 +226,81 @@ public with sharing class ElaroDrillDownController {
     }
 
     /**
-     * Build secure SOQL query
+     * Build parameterized WHERE clause with bind variables.
+     * Eliminates SOQL injection by using Database.queryWithBinds() bind map
+     * instead of string concatenation for all user-supplied values.
+     *
+     * Date literals (TODAY, LAST_90_DAYS, etc.) remain as validated string
+     * constants since they are SOQL keywords, not bindable values.
+     *
+     * @param ctx The filter context containing user-supplied filters
+     * @return WhereClauseResult with parameterized clause and bind map
      */
-    private static String buildSecureQuery(FilterContext ctx, Integer limitSize, Integer offset) {
+    @TestVisible
+    private static WhereClauseResult buildWhereClause(FilterContext ctx) {
+        WhereClauseResult result = new WhereClauseResult();
+
+        if (ctx.filters == null || ctx.filters.isEmpty()) {
+            return result;
+        }
+
+        List<String> whereParts = new List<String>();
+        Integer bindIndex = 0;
+
+        for (Filter f : ctx.filters) {
+            String fieldName = sanitizeFieldName(f.field);
+            String op = f.operator.toUpperCase();
+
+            // Null comparisons — no bind needed
+            if (f.value == null || f.value.equalsIgnoreCase('null')) {
+                if (op == '=' || op == '!=') {
+                    whereParts.add(fieldName + (op == '=' ? ' = null' : ' != null'));
+                }
+                continue;
+            }
+
+            String bindKey = 'b' + bindIndex++;
+
+            if (op == 'LIKE') {
+                whereParts.add(fieldName + ' LIKE :' + bindKey);
+                result.binds.put(bindKey, '%' + f.value + '%');
+            } else if (op == 'IN' || op == 'NOT IN') {
+                List<String> vals = new List<String>();
+                for (String v : f.value.split(',')) {
+                    vals.add(v.trim());
+                }
+                whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
+                result.binds.put(bindKey, vals);
+            } else if (op == 'INCLUDES' || op == 'EXCLUDES') {
+                // Multi-select picklist operators don't support bind variables
+                String escapedValue = String.escapeSingleQuotes(f.value);
+                whereParts.add(fieldName + ' ' + op + ' (\'' + escapedValue + '\')');
+            } else if (isDateLiteral(f.value)) {
+                // Date literals are SOQL keywords, not bindable values
+                whereParts.add(fieldName + ' ' + op + ' ' + f.value);
+            } else if (isNumeric(f.value)) {
+                whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
+                result.binds.put(bindKey, Decimal.valueOf(f.value));
+            } else if (f.value.equalsIgnoreCase('true') || f.value.equalsIgnoreCase('false')) {
+                whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
+                result.binds.put(bindKey, Boolean.valueOf(f.value));
+            } else {
+                whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
+                result.binds.put(bindKey, f.value);
+            }
+        }
+
+        if (!whereParts.isEmpty()) {
+            result.whereClause = ' WHERE ' + String.join(whereParts, ' AND ');
+        }
+
+        return result;
+    }
+
+    /**
+     * Build secure SOQL query using bind variables
+     */
+    private static List<SObject> executeSecureQuery(FilterContext ctx, Integer limitSize, Integer offset) {
         List<String> selectFields = new List<String>();
 
         // Always include Id for record links
@@ -243,58 +317,11 @@ public with sharing class ElaroDrillDownController {
         String soql = 'SELECT ' + String.join(selectFields, ', ') +
                       ' FROM ' + ctx.objectApiName;
 
-        // Build WHERE clause
-        List<String> whereParts = new List<String>();
+        // Build parameterized WHERE clause
+        WhereClauseResult whereResult = buildWhereClause(ctx);
+        soql += whereResult.whereClause;
 
-        if (ctx.filters != null && !ctx.filters.isEmpty()) {
-            for (Filter f : ctx.filters) {
-                String fieldName = sanitizeFieldName(f.field);
-                String op = f.operator.toUpperCase();
-
-                // Handle null values
-                if (f.value == null || f.value.equalsIgnoreCase('null')) {
-                    if (op == '=' || op == '!=') {
-                        whereParts.add(fieldName + (op == '=' ? ' = null' : ' != null'));
-                    }
-                    continue;
-                }
-
-                String escapedValue = String.escapeSingleQuotes(f.value);
-
-                if (op == 'LIKE') {
-                    whereParts.add(fieldName + ' LIKE \'%' + escapedValue + '%\'');
-                } else if (op == 'IN' || op == 'NOT IN') {
-                    List<String> vals = new List<String>();
-                    for (String v : f.value.split(',')) {
-                        vals.add('\'' + String.escapeSingleQuotes(v.trim()) + '\'');
-                    }
-                    whereParts.add(fieldName + ' ' + op + ' (' + String.join(vals, ', ') + ')');
-                } else if (op == 'INCLUDES' || op == 'EXCLUDES') {
-                    // Multi-select picklist
-                    whereParts.add(fieldName + ' ' + op + ' (\'' + escapedValue + '\')');
-                } else {
-                    // Handle date literals
-                    if (isDateLiteral(f.value)) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value);
-                    } else if (isNumeric(f.value)) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value);
-                    } else if (f.value.equalsIgnoreCase('true') || f.value.equalsIgnoreCase('false')) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value.toLowerCase());
-                    } else {
-                        whereParts.add(fieldName + ' ' + op + ' \'' + escapedValue + '\'');
-                    }
-                }
-            }
-        }
-
-        if (!whereParts.isEmpty()) {
-            soql += ' WHERE ' + String.join(whereParts, ' AND ');
-        }
-
-        // Add security enforcement
-        soql += ' WITH USER_MODE';
-
-        // Add ORDER BY
+        // ORDER BY — uses sanitized field names (not user values), safe for concat
         if (String.isNotBlank(ctx.orderBy)) {
             String cleanOrderBy = sanitizeFieldName(ctx.orderBy);
             String direction = ctx.orderDirection == 'DESC' ? 'DESC' : 'ASC';
@@ -303,71 +330,32 @@ public with sharing class ElaroDrillDownController {
             soql += ' ORDER BY CreatedDate DESC';
         }
 
-        // Add pagination
+        // Pagination — integer values, safe for concat
         soql += ' LIMIT ' + limitSize;
         if (offset > 0) {
             soql += ' OFFSET ' + offset;
         }
 
-        return soql;
+        return Database.queryWithBinds(soql, whereResult.binds, AccessLevel.USER_MODE);
     }
 
     /**
-     * Get total count for pagination
+     * Get total count for pagination using bind variables
      */
     private static Integer getTotalCount(FilterContext ctx) {
         String countSoql = 'SELECT COUNT() FROM ' + ctx.objectApiName;
 
-        if (ctx.filters != null && !ctx.filters.isEmpty()) {
-            List<String> whereParts = new List<String>();
-            for (Filter f : ctx.filters) {
-                String fieldName = sanitizeFieldName(f.field);
-                String op = f.operator.toUpperCase();
-
-                if (f.value == null || f.value.equalsIgnoreCase('null')) {
-                    if (op == '=' || op == '!=') {
-                        whereParts.add(fieldName + (op == '=' ? ' = null' : ' != null'));
-                    }
-                    continue;
-                }
-
-                String escapedValue = String.escapeSingleQuotes(f.value);
-
-                if (op == 'LIKE') {
-                    whereParts.add(fieldName + ' LIKE \'%' + escapedValue + '%\'');
-                } else if (op == 'IN' || op == 'NOT IN') {
-                    List<String> vals = new List<String>();
-                    for (String v : f.value.split(',')) {
-                        vals.add('\'' + String.escapeSingleQuotes(v.trim()) + '\'');
-                    }
-                    whereParts.add(fieldName + ' ' + op + ' (' + String.join(vals, ', ') + ')');
-                } else {
-                    if (isDateLiteral(f.value)) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value);
-                    } else if (isNumeric(f.value)) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value);
-                    } else if (f.value.equalsIgnoreCase('true') || f.value.equalsIgnoreCase('false')) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value.toLowerCase());
-                    } else {
-                        whereParts.add(fieldName + ' ' + op + ' \'' + escapedValue + '\'');
-                    }
-                }
-            }
-
-            if (!whereParts.isEmpty()) {
-                countSoql += ' WHERE ' + String.join(whereParts, ' AND ');
-            }
-        }
-
-        countSoql += ' WITH USER_MODE';
+        // Reuse the same parameterized WHERE clause
+        WhereClauseResult whereResult = buildWhereClause(ctx);
+        countSoql += whereResult.whereClause;
 
         try {
-            return Database.countQuery(countSoql);
+            return Database.countQueryWithBinds(countSoql, whereResult.binds, AccessLevel.USER_MODE);
         } catch (QueryException e) {
-            ElaroLogger.error( 'ElaroDrillDownController: Count query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroDrillDownController: Count query failed: ' + e.getMessage());
             return 0;
         } catch (Exception e) {
-            ElaroLogger.error( 'ElaroDrillDownController: Unexpected error in count query: ' + e.getMessage());
+            ElaroLogger.error('ElaroDrillDownController: Unexpected error in count query: ' + e.getMessage());
             return 0;
         }
     }
@@ -506,6 +494,20 @@ public with sharing class ElaroDrillDownController {
     }
 
     // ==================== Inner Classes ====================
+
+    /**
+     * Result of building a parameterized WHERE clause with bind variables.
+     */
+    @TestVisible
+    private class WhereClauseResult {
+        public String whereClause;
+        public Map<String, Object> binds;
+
+        public WhereClauseResult() {
+            this.whereClause = '';
+            this.binds = new Map<String, Object>();
+        }
+    }
 
     public class FilterContext {
         public String objectApiName;
