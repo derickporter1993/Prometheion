@@ -199,14 +199,12 @@ private class ElaroSecurityUtilsPermissionTest {
             Boolean threwException = false;
             try {
                 ElaroSecurityUtils.validateFLSAccess('Account', new List<String>{'InvalidField__c'}, false);
-                // May not throw if field doesn't exist - either outcome is acceptable
             } catch (ElaroSecurityUtils.SecurityException e) {
                 threwException = true;
                 Assert.isTrue(e.getMessage().contains('Insufficient FLS'),
                     'Should throw SecurityException for insufficient FLS: ' + e.getMessage());
             }
-            // Verify we got a deterministic outcome (either passed or threw expected exception)
-            Assert.isNotNull(threwException, 'Test should complete with a deterministic outcome');
+            Assert.isTrue(threwException, 'Should throw SecurityException for invalid/inaccessible field');
         }
         Test.stopTest();
     }

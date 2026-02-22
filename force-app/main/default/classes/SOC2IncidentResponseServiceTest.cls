@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=SOC2IncidentResponseService.class)
-public class SOC2IncidentResponseServiceTest {
+public inherited sharing class SOC2IncidentResponseServiceTest {
 
     @TestSetup
     static void setup() {

@@ -4,8 +4,8 @@
  * @group Utilities
  * @author Elaro Team
  */
-@isTest
-public class ElaroTestDataFactory {
+@IsTest
+public inherited sharing class ElaroTestDataFactory {
     
     // ═══════════════════════════════════════════════════════════════
     // MOCK EVENT DATA

@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=SOC2DataRetentionService.class)
-public class SOC2DataRetentionServiceTest {
+public inherited sharing class SOC2DataRetentionServiceTest {
 
     @TestSetup
     static void setup() {

@@ -6,7 +6,7 @@
  * @since v1.0.0 (Spring '26)
  * @group Health Check
  */
-public class HealthCheckResult {
+public inherited sharing class HealthCheckResult {
 
     @AuraEnabled
     public Integer overallScore { get; set; }

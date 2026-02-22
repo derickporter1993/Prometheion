@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=SOC2ChangeManagementService.class)
-public class SOC2ChangeManagementServiceTest {
+public inherited sharing class SOC2ChangeManagementServiceTest {
 
     @TestSetup
     static void setup() {

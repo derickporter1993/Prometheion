@@ -18,8 +18,8 @@
  *     // Test code with auditor permissions
  * }
  */
-@isTest
-public class ElaroTestUserFactory {
+@IsTest
+public inherited sharing class ElaroTestUserFactory {
 
     private static Integer userCounter = 0;
 
