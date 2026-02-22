@@ -89,6 +89,20 @@ npm run precommit        # fmt:check + lint + test:unit
 cd platform && npm install && npm run build  # Build platform packages
 ```
 
+## Pre-Commit Validation (MANDATORY)
+
+Before EVERY commit, run `npm run precommit` and confirm it passes. Do NOT commit
+if any step fails. No exceptions for "just docs" or "just formatting" commits.
+
+After any merge or branch sync, run `npm run precommit` before committing the merge
+result. Do NOT rely on lint-staged to catch issues — run the full suite manually.
+
+When reviewing PRs or syncing branches, review ALL changed files including `docs/`,
+`scripts/`, and config files — not just Apex and LWC source code.
+
+Do NOT push to remote until local validation passes. If CI fails after push, fix the
+issues immediately on the same branch before moving to other work.
+
 ## Project Structure
 
 ```

@@ -65,6 +65,6 @@ That framing is commercially strong because it maps directly to budget holders (
 ## Recommended Validation Command
 
 ```bash
-npm test
+npm run precommit
 ```
 
