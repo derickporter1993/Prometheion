@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SF2026 Login Boundary Controls</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Apply Profile IP Restrictions and Login Hours</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Constrain user access by source network and business hours to reduce account compromise blast radius.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">Salesforce Security 2026</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">HIGH</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Identity Security</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">NetworkAccess/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">4</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">Login Restrictions</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Define approved office and VPN IP ranges under Setup > Security > Network Access. Apply role-based login IP ranges and login hours at the profile level, with an exception process for approved temporary overrides. Configure alerting for denied logins and repeated off-hours login attempts.</value>
+    </values>
+</CustomMetadata>
