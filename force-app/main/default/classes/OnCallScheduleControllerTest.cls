@@ -20,7 +20,7 @@ private class OnCallScheduleControllerTest {
             TimeZoneSidKey = 'America/New_York',
             UserName = 'scheduleuser' + Datetime.now().getTime() + '@elaro.test'
         );
-        insert testUser;
+        insert as user testUser;
 
         Elaro_On_Call_Schedule__c schedule = new Elaro_On_Call_Schedule__c(
             Name = 'Primary On-Call',
@@ -32,7 +32,7 @@ private class OnCallScheduleControllerTest {
             Timezone__c = 'America/New_York',
             Notification_Methods__c = 'Mobile;Email'
         );
-        insert schedule;
+        insert as user schedule;
     }
 
     @isTest

@@ -28,7 +28,7 @@ private class ElaroQuickActionsServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert u;
+        insert as user u;
         
         Test.startTest();
         ElaroQuickActionsService.ActionResult result = 
@@ -55,7 +55,7 @@ private class ElaroQuickActionsServiceTest {
             Name = 'Test_PS',
             Label = 'Test Permission Set'
         );
-        insert ps;
+        insert as user ps;
         
         Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User u = new User(
@@ -70,13 +70,13 @@ private class ElaroQuickActionsServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert u;
+        insert as user u;
         
         PermissionSetAssignment psa = new PermissionSetAssignment(
             AssigneeId = u.Id,
             PermissionSetId = ps.Id
         );
-        insert psa;
+        insert as user psa;
         
         Test.startTest();
         ElaroQuickActionsService.ActionResult result = 

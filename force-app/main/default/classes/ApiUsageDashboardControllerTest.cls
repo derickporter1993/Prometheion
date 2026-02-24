@@ -15,7 +15,7 @@ private class ApiUsageDashboardControllerTest {
                 )
             );
         }
-        insert snapshots;
+        insert as user snapshots;
 
         Test.startTest();
         List<ApiUsageDashboardController.Row> rows = ApiUsageDashboardController.getRecentSnapshots(10);
@@ -42,7 +42,7 @@ private class ApiUsageDashboardControllerTest {
                 )
             );
         }
-        insert snapshots;
+        insert as user snapshots;
 
         Test.startTest();
         List<ApiUsageDashboardController.Row> rows = ApiUsageDashboardController.getRecentSnapshots(5);
@@ -64,7 +64,7 @@ private class ApiUsageDashboardControllerTest {
     @IsTest
     static void testRecentMinimumLimit() {
         // Test that minimum limit is enforced
-        insert new API_Usage_Snapshot__c(
+        insert as user new API_Usage_Snapshot__c(
             Taken_On__c = System.now(),
             Daily_Used__c = 1000,
             Daily_Limit__c = 100000,

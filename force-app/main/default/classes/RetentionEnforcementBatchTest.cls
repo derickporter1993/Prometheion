@@ -18,7 +18,7 @@ private class RetentionEnforcementBatchTest {
                 Legal_Basis__c = 'Consent'
             ));
         }
-        insert activities;
+        insert as user activities;
     }
 
     @isTest
@@ -41,7 +41,7 @@ private class RetentionEnforcementBatchTest {
     @isTest
     static void testBatchWithNoActivities() {
         // Arrange - delete all activities
-        delete [SELECT Id FROM Data_Processing_Activity__c];
+        delete as user [SELECT Id FROM Data_Processing_Activity__c];
 
         // Act
         Test.startTest();
@@ -61,7 +61,7 @@ private class RetentionEnforcementBatchTest {
             Activity_Name__c = 'No Retention Activity',
             Legal_Basis__c = 'Legitimate Interest'
         );
-        insert activityNoRetention;
+        insert as user activityNoRetention;
 
         // Act
         Test.startTest();
@@ -85,7 +85,7 @@ private class RetentionEnforcementBatchTest {
                 Legal_Basis__c = 'Contract'
             ));
         }
-        insert bulkActivities;
+        insert as user bulkActivities;
 
         // Act
         Test.startTest();

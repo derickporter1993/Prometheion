@@ -28,7 +28,7 @@ private class PCIAccessControlServiceTest {
                 LanguageLocaleKey = 'en_US'
             ));
         }
-        insert users;
+        insert as user users;
     }
     
     @IsTest

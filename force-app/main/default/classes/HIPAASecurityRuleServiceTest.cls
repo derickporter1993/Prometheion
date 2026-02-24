@@ -20,7 +20,7 @@ public class HIPAASecurityRuleServiceTest {
                 Email = 'patient' + i + '@test.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
 
     @isTest
@@ -172,7 +172,7 @@ public class HIPAASecurityRuleServiceTest {
                 Email = 'bulk' + i + '@test.com'
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
 
         Test.startTest();
         HIPAASecurityRuleService.TechnicalSafeguardResult result =

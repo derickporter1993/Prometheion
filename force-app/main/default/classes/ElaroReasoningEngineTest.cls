@@ -7,7 +7,7 @@ private class ElaroReasoningEngineTest {
             Name = 'TestReasoningPS',
             Label = 'Test Reasoning Permission Set'
         );
-        insert ps;
+        insert as user ps;
     }
 
     @IsTest

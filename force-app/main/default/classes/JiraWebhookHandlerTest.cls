@@ -22,7 +22,7 @@ private class JiraWebhookHandlerTest {
             Webhook_Secret__c = 'test-secret-123',
             Sync_Enabled__c = true
         );
-        insert settings;
+        insert as user settings;
 
         // Create linked compliance gap
         Compliance_Gap__c gap = new Compliance_Gap__c(
@@ -37,7 +37,7 @@ private class JiraWebhookHandlerTest {
             Jira_Status__c = 'To Do',
             Notes__c = 'Initial notes'
         );
-        insert gap;
+        insert as user gap;
     }
 
     // ============================================
@@ -123,7 +123,7 @@ private class JiraWebhookHandlerTest {
         // First update gap to have "In Progress" status
         Compliance_Gap__c gap = [SELECT Id, Jira_Status__c FROM Compliance_Gap__c WHERE Jira_Issue_Key__c = :MOCK_JIRA_KEY];
         gap.Jira_Status__c = 'In Progress';
-        update gap;
+        update as user gap;
 
         String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'In Progress');
 
@@ -284,7 +284,7 @@ private class JiraWebhookHandlerTest {
         // Remove webhook secret from settings
         Elaro_Jira_Settings__c settings = Elaro_Jira_Settings__c.getOrgDefaults();
         settings.Webhook_Secret__c = null;
-        update settings;
+        update as user settings;
 
         String payload = buildIssueUpdatedPayload(MOCK_JIRA_KEY, 'Done');
 

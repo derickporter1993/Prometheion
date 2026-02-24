@@ -20,7 +20,7 @@ private class ElaroDailyDigestTest {
         for (Elaro_Evidence_Item__c item : items) {
             item.Status__c = 'Resolved';
         }
-        update items;
+        update as user items;
     }
     
     // ═══════════════════════════════════════════════════════════════

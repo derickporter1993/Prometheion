@@ -20,7 +20,7 @@ private class GDPRDataInventoryServiceTest {
                 Retention_Period__c = 365
             ));
         }
-        insert activities;
+        insert as user activities;
         
         // Create third-party recipients
         List<Third_Party_Recipient__c> recipients = new List<Third_Party_Recipient__c>();
@@ -31,7 +31,7 @@ private class GDPRDataInventoryServiceTest {
                 DPA_Signed__c = true
             ));
         }
-        insert recipients;
+        insert as user recipients;
     }
     
     @IsTest

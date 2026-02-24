@@ -11,7 +11,7 @@ private class ElaroAlertTriggerTest {
         );
 
         Test.startTest();
-        insert alert;
+        insert as user alert;
         Test.stopTest();
 
         // Verify alert was created
@@ -30,7 +30,7 @@ private class ElaroAlertTriggerTest {
         );
 
         Test.startTest();
-        insert alert;
+        insert as user alert;
         Test.stopTest();
 
         // Verify alert was created but event should not be published
@@ -52,7 +52,7 @@ private class ElaroAlertTriggerTest {
         }
 
         Test.startTest();
-        insert alerts;
+        insert as user alerts;
         Test.stopTest();
 
         List<Alert__c> insertedAlerts = [SELECT Id FROM Alert__c WHERE Title__c LIKE 'Bulk Alert%'];

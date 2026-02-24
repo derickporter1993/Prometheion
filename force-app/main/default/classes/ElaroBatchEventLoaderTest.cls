@@ -20,7 +20,7 @@ private class ElaroBatchEventLoaderTest {
                 Timestamp__c = System.now()
             ));
         }
-        insert logs;
+        insert as user logs;
     }
 
     @isTest

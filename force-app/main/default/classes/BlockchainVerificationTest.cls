@@ -16,7 +16,7 @@ private class BlockchainVerificationTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert pkg;
+        insert as user pkg;
 
         // Create test content
         ContentVersion cv = new ContentVersion(
@@ -25,7 +25,7 @@ private class BlockchainVerificationTest {
             VersionData = Blob.valueOf('Test evidence content for blockchain verification'),
             IsMajorVersion = true
         );
-        insert cv;
+        insert as user cv;
 
         // Link to package
         ContentVersion insertedCV = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
@@ -34,7 +34,7 @@ private class BlockchainVerificationTest {
             ContentDocumentId = insertedCV.ContentDocumentId,
             ShareType = 'V'
         );
-        insert cdl;
+        insert as user cdl;
     }
 
     @isTest
@@ -60,7 +60,7 @@ private class BlockchainVerificationTest {
             VersionData = Blob.valueOf('Not anchored yet'),
             IsMajorVersion = true
         );
-        insert cv;
+        insert as user cv;
 
         Test.startTest();
         BlockchainVerification.VerificationResult result = BlockchainVerification.verifyEvidence(cv.Id);
@@ -98,7 +98,7 @@ private class BlockchainVerificationTest {
                 IsMajorVersion = true
             ));
         }
-        insert contentVersions;
+        insert as user contentVersions;
 
         List<String> cvIds = new List<String>();
         for (ContentVersion cv : [SELECT Id FROM ContentVersion WHERE Title LIKE 'Batch Test Document%']) {
@@ -154,7 +154,7 @@ private class BlockchainVerificationTest {
             VersionData = Blob.valueOf('Unverified content'),
             IsMajorVersion = true
         );
-        insert cv;
+        insert as user cv;
 
         Test.startTest();
         try {

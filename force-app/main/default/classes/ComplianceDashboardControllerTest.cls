@@ -14,8 +14,8 @@ private class ComplianceDashboardControllerTest {
         // Create test gaps and evidence
         List<Compliance_Gap__c> gaps = ComplianceTestDataFactory.createComplianceGaps('SOX', 3);
         List<Compliance_Evidence__c> evidence = ComplianceTestDataFactory.createComplianceEvidence('SOX', 3);
-        insert gaps;
-        insert evidence;
+        insert as user gaps;
+        insert as user evidence;
     }
     
     @IsTest

@@ -21,7 +21,7 @@ private class MobileAlertPublisherTest {
             TimeZoneSidKey = 'America/New_York',
             UserName = 'oncalluser' + Datetime.now().getTime() + '@elaro.test'
         );
-        insert testUser;
+        insert as user testUser;
 
         // Create on-call schedule for test user (current time window)
         Elaro_On_Call_Schedule__c schedule = new Elaro_On_Call_Schedule__c(
@@ -34,7 +34,7 @@ private class MobileAlertPublisherTest {
             Timezone__c = 'America/New_York',
             Notification_Methods__c = 'Mobile;Email'
         );
-        insert schedule;
+        insert as user schedule;
 
         // Create escalation paths
         List<Elaro_Escalation_Path__c> escalationPaths = new List<Elaro_Escalation_Path__c>();
@@ -62,7 +62,7 @@ private class MobileAlertPublisherTest {
             Notification_Method__c = 'All',
             Escalation_Delay_Minutes__c = 60
         ));
-        insert escalationPaths;
+        insert as user escalationPaths;
 
         // Create test compliance gaps
         List<Compliance_Gap__c> gaps = new List<Compliance_Gap__c>();
@@ -90,7 +90,7 @@ private class MobileAlertPublisherTest {
             Gap_Description__c = 'Medium priority SOC2 gap',
             Detected_Date__c = Datetime.now()
         ));
-        insert gaps;
+        insert as user gaps;
     }
 
     @isTest
@@ -315,7 +315,7 @@ private class MobileAlertPublisherTest {
         for (Elaro_Escalation_Path__c path : paths) {
             path.Active__c = false;
         }
-        update paths;
+        update as user paths;
 
         Test.startTest();
         List<MobileAlertPublisher.EscalationPathEntry> result = MobileAlertPublisher.getEscalationPath();
@@ -331,7 +331,7 @@ private class MobileAlertPublisherTest {
         for (Elaro_On_Call_Schedule__c schedule : schedules) {
             schedule.Active__c = false;
         }
-        update schedules;
+        update as user schedules;
 
         Test.startTest();
         List<MobileAlertPublisher.OnCallUser> result = MobileAlertPublisher.getCurrentOnCallUsers();
@@ -347,7 +347,7 @@ private class MobileAlertPublisherTest {
         for (Elaro_On_Call_Schedule__c schedule : schedules) {
             schedule.Active__c = false;
         }
-        update schedules;
+        update as user schedules;
 
         Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Severity__c = 'CRITICAL' LIMIT 1];
 
@@ -427,7 +427,7 @@ private class MobileAlertPublisherTest {
 
         // Set snooze in the future
         gap.Alert_Snoozed_Until__c = Datetime.now().addHours(2);
-        update gap;
+        update as user gap;
 
         Exception caughtEx;
         Test.startTest();

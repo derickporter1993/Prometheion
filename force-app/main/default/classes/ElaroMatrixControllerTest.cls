@@ -17,7 +17,7 @@ private class ElaroMatrixControllerTest {
                 Industry = Math.mod(i, 3) == 0 ? 'Technology' : 'Finance'
             ));
         }
-        insert accounts;
+        insert as user accounts;
     }
 
     @isTest

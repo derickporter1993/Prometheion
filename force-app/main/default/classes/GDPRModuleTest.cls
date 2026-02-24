@@ -59,7 +59,7 @@ private class GDPRModuleTest {
             ));
         }
 
-        insert items;
+        insert as user items;
     }
 
     // =============================================

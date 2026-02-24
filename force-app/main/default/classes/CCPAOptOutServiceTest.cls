@@ -19,7 +19,7 @@ private class CCPAOptOutServiceTest {
                 Email = 'consumer' + i + '@example.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
     
     @IsTest
@@ -117,7 +117,7 @@ private class CCPAOptOutServiceTest {
                 Country__c = 'United States'
             ));
         }
-        insert recipients;
+        insert as user recipients;
         
         Contact testContact = [SELECT Id FROM Contact LIMIT 1];
         

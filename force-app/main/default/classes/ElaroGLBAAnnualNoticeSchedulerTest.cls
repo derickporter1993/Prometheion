@@ -17,7 +17,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
             Account acc = new Account(Name = 'Test Account ' + i);
             accounts.add(acc);
         }
-        insert accounts;
+        insert as user accounts;
         
         for (Integer i = 0; i < 10; i++) {
             Contact con = new Contact(
@@ -28,7 +28,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
             );
             contacts.add(con);
         }
-        insert contacts;
+        insert as user contacts;
         
         // Create privacy notices due for annual notice
         List<Privacy_Notice__c> notices = new List<Privacy_Notice__c>();
@@ -42,7 +42,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
             );
             notices.add(notice);
         }
-        insert notices;
+        insert as user notices;
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -199,7 +199,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
                 Sent_Date__c = Date.today().addDays(-400)
             ));
         }
-        insert notices;
+        insert as user notices;
         
         ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
         

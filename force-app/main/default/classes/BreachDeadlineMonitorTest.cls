@@ -84,7 +84,7 @@ private class BreachDeadlineMonitorTest {
             HHS_Notified__c = true
         ));
 
-        insert breaches;
+        insert as user breaches;
     }
 
     @IsTest
@@ -227,7 +227,7 @@ private class BreachDeadlineMonitorTest {
     @IsTest
     static void testMonitorDeadlines_NoBreaches() {
         // Delete all test breaches
-        delete [SELECT Id FROM HIPAA_Breach__c];
+        delete as user [SELECT Id FROM HIPAA_Breach__c];
 
         Test.startTest();
 
@@ -263,7 +263,7 @@ private class BreachDeadlineMonitorTest {
                 HHS_Notified__c = false
             ));
         }
-        insert breaches;
+        insert as user breaches;
 
         Test.startTest();
 

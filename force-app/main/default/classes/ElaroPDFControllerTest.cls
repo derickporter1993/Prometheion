@@ -16,7 +16,7 @@ private class ElaroPDFControllerTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert pkg;
+        insert as user pkg;
 
         // Create evidence items with various types
         List<Elaro_Evidence_Item__c> items = new List<Elaro_Evidence_Item__c>();
@@ -48,7 +48,7 @@ private class ElaroPDFControllerTest {
             Description__c = 'Low risk logout event',
             Status__c = 'COLLECTED'
         ));
-        insert items;
+        insert as user items;
     }
 
     @isTest
@@ -173,7 +173,7 @@ private class ElaroPDFControllerTest {
             Framework__c = 'SOC2',
             Status__c = 'DRAFT'
         );
-        insert pkg;
+        insert as user pkg;
 
         ApexPages.StandardController stdController = new ApexPages.StandardController(pkg);
         ElaroPDFController controller = new ElaroPDFController(stdController);

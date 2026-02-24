@@ -68,7 +68,7 @@ private class ComplianceReportGeneratorTest {
             ));
         }
 
-        insert gaps;
+        insert as user gaps;
 
         // Create compliance scores for trend data
         List<Compliance_Score__c> scores = new List<Compliance_Score__c>();
@@ -78,7 +78,7 @@ private class ComplianceReportGeneratorTest {
                 Org_ID__c = 'test-org-' + i
             ));
         }
-        insert scores;
+        insert as user scores;
     }
 
     /**
@@ -247,7 +247,7 @@ private class ComplianceReportGeneratorTest {
     @IsTest
     static void testGenerateReportData_NoGaps() {
         // Delete all test gaps
-        delete [SELECT Id FROM Compliance_Gap__c];
+        delete as user [SELECT Id FROM Compliance_Gap__c];
 
         Test.startTest();
         ComplianceReportGenerator.ReportData data = ComplianceReportGenerator.generateReportData('ALL');
@@ -296,7 +296,7 @@ private class ComplianceReportGeneratorTest {
                 Status__c = 'Open'
             ));
         }
-        insert bulkGaps;
+        insert as user bulkGaps;
 
         Test.startTest();
         ComplianceReportGenerator.ReportData data = ComplianceReportGenerator.generateReportData('SOC2');

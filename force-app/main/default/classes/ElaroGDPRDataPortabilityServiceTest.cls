@@ -19,7 +19,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
                 BillingCountry = 'Test Country'
             ));
         }
-        insert accounts;
+        insert as user accounts;
 
         // Create test contacts
         List<Contact> contacts = new List<Contact>();
@@ -32,7 +32,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
                 AccountId = accounts[i].Id
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
 
     @IsTest

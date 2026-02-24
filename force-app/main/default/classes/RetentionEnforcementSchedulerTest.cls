@@ -18,7 +18,7 @@ private class RetentionEnforcementSchedulerTest {
                 Legal_Basis__c = 'Consent'
             ));
         }
-        insert activities;
+        insert as user activities;
     }
 
     @isTest
@@ -73,7 +73,7 @@ private class RetentionEnforcementSchedulerTest {
     @isTest
     static void testSchedulerWithNoActivities() {
         // Arrange - delete all activities
-        delete [SELECT Id FROM Data_Processing_Activity__c];
+        delete as user [SELECT Id FROM Data_Processing_Activity__c];
         RetentionEnforcementScheduler scheduler = new RetentionEnforcementScheduler();
 
         // Act

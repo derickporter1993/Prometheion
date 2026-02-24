@@ -19,7 +19,7 @@ private class RemediationExecutorTest {
             Entity_Id__c = '0PS000000000001',
             Detected_Date__c = Datetime.now()
         );
-        insert gap;
+        insert as user gap;
 
         // Create suggestions with different states
         List<Remediation_Suggestion__c> suggestions = new List<Remediation_Suggestion__c>();
@@ -75,7 +75,7 @@ private class RemediationExecutorTest {
             Confidence_Score__c = 0.80
         ));
 
-        insert suggestions;
+        insert as user suggestions;
     }
 
     @isTest
@@ -239,7 +239,7 @@ private class RemediationExecutorTest {
             }),
             Description__c = 'Profile update suggestion'
         );
-        insert suggestion2;
+        insert as user suggestion2;
 
         List<Remediation_Suggestion__c> approvedSuggestions = [
             SELECT Id FROM Remediation_Suggestion__c
@@ -323,7 +323,7 @@ private class RemediationExecutorTest {
             }),
             Description__c = 'FLS suggestion'
         );
-        insert flsSuggestion;
+        insert as user flsSuggestion;
 
         Test.startTest();
         RemediationExecutor.RemediationResult result = RemediationExecutor.executeRemediation(flsSuggestion.Id);
@@ -351,7 +351,7 @@ private class RemediationExecutorTest {
             }),
             Description__c = 'Profile update'
         );
-        insert profileSuggestion;
+        insert as user profileSuggestion;
 
         Test.startTest();
         RemediationExecutor.RemediationResult result = RemediationExecutor.executeRemediation(profileSuggestion.Id);
@@ -374,7 +374,7 @@ private class RemediationExecutorTest {
             Auto_Remediation_Payload__c = 'invalid json',
             Description__c = 'Bad payload'
         );
-        insert badSuggestion;
+        insert as user badSuggestion;
 
         Test.startTest();
         RemediationExecutor.RemediationResult result = RemediationExecutor.executeRemediation(badSuggestion.Id);
@@ -402,7 +402,7 @@ private class RemediationExecutorTest {
                 Detected_Date__c = Datetime.now()
             ));
         }
-        insert gaps;
+        insert as user gaps;
 
         List<Remediation_Suggestion__c> suggestions = new List<Remediation_Suggestion__c>();
         String[] suggestionTypes = new String[]{ 'PERMISSION_CHANGE', 'FIELD_LEVEL_SECURITY', 'PROFILE_UPDATE' };
@@ -436,7 +436,7 @@ private class RemediationExecutorTest {
                 Priority_Score__c = 10.0
             ));
         }
-        insert suggestions;
+        insert as user suggestions;
 
         List<String> suggestionIds = new List<String>();
         for (Remediation_Suggestion__c s : suggestions) {
@@ -539,7 +539,7 @@ private class RemediationExecutorTest {
             Description__c = 'Manual only suggestion'
         ));
 
-        insert testSuggestions;
+        insert as user testSuggestions;
 
         List<String> suggestionIds = new List<String>();
         for (Remediation_Suggestion__c s : testSuggestions) {

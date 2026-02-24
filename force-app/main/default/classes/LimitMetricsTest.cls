@@ -40,7 +40,7 @@ private class LimitMetricsTest {
     static void testGovernorStatsAfterDML() {
         Test.startTest();
         // Perform DML inside test context so limits are tracked
-        insert new Performance_Alert_History__c(
+        insert as user new Performance_Alert_History__c(
             Metric__c = 'TEST',
             Value__c = 100,
             Threshold__c = 50

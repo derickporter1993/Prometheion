@@ -41,7 +41,7 @@ private class ElaroChangeAdvisorTest {
             Name = 'Test_Modify_All',
             Label = 'Test Modify All'
         );
-        insert ps;
+        insert as user ps;
         
         // Note: Can't set PermissionsModifyAllData in test, but we can test the logic
         Map<String, Object> proposedConfig = new Map<String, Object>{

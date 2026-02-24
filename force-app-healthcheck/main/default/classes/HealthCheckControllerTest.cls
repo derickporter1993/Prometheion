@@ -86,7 +86,7 @@ private class HealthCheckControllerTest {
     static void shouldThrowWhenFeatureDisabled() {
         Health_Check_Feature_Flags__c flags = Health_Check_Feature_Flags__c.getOrgDefaults();
         flags.Health_Check_Enabled__c = false;
-        upsert flags;
+        upsert as user flags;
 
         Test.startTest();
         try {

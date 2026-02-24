@@ -12,7 +12,7 @@ private class ElaroHIPAAComplianceServiceTest {
             Label='HIPAA Test Permission Set',
             Description='Test permission set for HIPAA compliance'
         );
-        insert ps;
+        insert as user ps;
     }
     
     @IsTest

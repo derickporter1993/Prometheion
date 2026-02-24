@@ -63,7 +63,7 @@ private class ElaroInstallHandlerTest {
         ElaroInstallHandler handler = new ElaroInstallHandler();
 
         // Ensure no AI settings exist before test
-        delete [SELECT Id FROM Elaro_AI_Settings__c];
+        delete as user [SELECT Id FROM Elaro_AI_Settings__c];
 
         // Act
         Test.startTest();
@@ -107,7 +107,7 @@ private class ElaroInstallHandlerTest {
             Max_Tokens__c = 8192,
             Temperature__c = 0.5
         );
-        insert existingSettings;
+        insert as user existingSettings;
 
         Version previousVersion = new Version(2, 5, 0);
         MockInstallContext context = new MockInstallContext(false, true, false, previousVersion);

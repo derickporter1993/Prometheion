@@ -34,7 +34,7 @@ private class ElaroComplianceAlertTest {
             Is_Active__c = true
         ));
         
-        insert configs;
+        insert as user configs;
         
         // Create evidence items for active alerts
         Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
@@ -47,7 +47,7 @@ private class ElaroComplianceAlertTest {
         for (Elaro_Evidence_Item__c item : items) {
             item.Status__c = 'Pending Review';
         }
-        update items;
+        update as user items;
     }
     
     // ═══════════════════════════════════════════════════════════════

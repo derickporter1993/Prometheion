@@ -20,7 +20,7 @@ private class ElaroGDPRDataErasureServiceTest {
             Name = 'Test Account',
             BillingCountry = 'US'
         );
-        insert testAccount;
+        insert as user testAccount;
         
         // Create test contacts
         List<Contact> testContacts = new List<Contact>();
@@ -32,7 +32,7 @@ private class ElaroGDPRDataErasureServiceTest {
                 AccountId = testAccount.Id
             ));
         }
-        insert testContacts;
+        insert as user testContacts;
         
         // Create test cases for some contacts (to test blockers)
         List<Case> testCases = new List<Case>();
@@ -46,7 +46,7 @@ private class ElaroGDPRDataErasureServiceTest {
             Status = 'Closed',
             ContactId = testContacts[1].Id
         ));
-        insert testCases;
+        insert as user testCases;
         
         // Create test opportunities for some contacts
         List<Opportunity> testOpps = new List<Opportunity>();
@@ -56,7 +56,7 @@ private class ElaroGDPRDataErasureServiceTest {
             CloseDate = Date.today().addDays(30),
             AccountId = testAccount.Id
         ));
-        insert testOpps;
+        insert as user testOpps;
         
         // Link opportunity to contact via ContactRole (if custom field exists)
         // Otherwise, we'll test with Account-based opportunities
@@ -199,7 +199,7 @@ private class ElaroGDPRDataErasureServiceTest {
         // Given: 200+ contacts
         List<Contact> bulkContacts = new List<Contact>();
         Account bulkAccount = new Account(Name = 'Bulk Account');
-        insert bulkAccount;
+        insert as user bulkAccount;
         
         for (Integer i = 0; i < 200; i++) {
             bulkContacts.add(new Contact(
@@ -209,7 +209,7 @@ private class ElaroGDPRDataErasureServiceTest {
                 AccountId = bulkAccount.Id
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
         
         Test.startTest();
         List<ElaroGDPRDataErasureService.ErasureResult> results = 
@@ -267,9 +267,9 @@ private class ElaroGDPRDataErasureServiceTest {
             Contact_Email__c = 'temp@test.com',
             Status__c = 'In Progress'
         );
-        insert tempRecord;
+        insert as user tempRecord;
         Id validId = tempRecord.Id;
-        delete tempRecord;
+        delete as user tempRecord;
 
         Test.startTest();
         GDPR_Erasure_Request__c request =
@@ -291,7 +291,7 @@ private class ElaroGDPRDataErasureServiceTest {
             WhoId = testContact.Id,
             Status = 'Not Started'
         );
-        insert testTask;
+        insert as user testTask;
 
         Event testEvent = new Event(
             Subject = 'Test Event',
@@ -299,7 +299,7 @@ private class ElaroGDPRDataErasureServiceTest {
             StartDateTime = DateTime.now(),
             EndDateTime = DateTime.now().addHours(1)
         );
-        insert testEvent;
+        insert as user testEvent;
 
         Test.startTest();
         ElaroGDPRDataErasureService.ErasureResult result =
@@ -367,7 +367,7 @@ private class ElaroGDPRDataErasureServiceTest {
             Consent_Type__c = 'Marketing',
             Status__c = 'Active'
         );
-        insert consent;
+        insert as user consent;
 
         Test.startTest();
         ElaroGDPRDataErasureService.ErasureResult result =
@@ -387,7 +387,7 @@ private class ElaroGDPRDataErasureServiceTest {
     @IsTest
     static void testGetRecentErasureRequests_EmptyList() {
         // Given: No erasure requests exist yet (delete any from setup)
-        delete [SELECT Id FROM GDPR_Erasure_Request__c];
+        delete as user [SELECT Id FROM GDPR_Erasure_Request__c];
 
         Test.startTest();
         List<GDPR_Erasure_Request__c> requests =
@@ -476,7 +476,7 @@ private class ElaroGDPRDataErasureServiceTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert limitedUser;
+        insert as user limitedUser;
         return limitedUser;
     }
 }

@@ -25,7 +25,7 @@ private class ComplianceScoreSnapshotSchedulerTest {
                 Violations_Count__c = 1
             ));
         }
-        insert scores;
+        insert as user scores;
 
         // Create test compliance gaps
         List<Compliance_Gap__c> gaps = new List<Compliance_Gap__c>();
@@ -38,7 +38,7 @@ private class ComplianceScoreSnapshotSchedulerTest {
                 Description__c = 'Test gap ' + i
             ));
         }
-        insert gaps;
+        insert as user gaps;
     }
 
     @IsTest
@@ -205,7 +205,7 @@ private class ComplianceScoreSnapshotSchedulerTest {
             Status__c = 'Compliant',
             Evaluation_Date__c = DateTime.now().addDays(-1)
         );
-        insert previousScore;
+        insert as user previousScore;
 
         Test.startTest();
 
@@ -238,7 +238,7 @@ private class ComplianceScoreSnapshotSchedulerTest {
                 Description__c = 'Bulk gap ' + i
             ));
         }
-        insert gaps;
+        insert as user gaps;
 
         Test.startTest();
 

@@ -43,7 +43,7 @@ private class SlackIntegrationTest {
             Audit_Period_Start__c = Date.today().addDays(-30),
             Audit_Period_End__c = Date.today()
         );
-        insert pkg;
+        insert as user pkg;
     }
 
     @isTest

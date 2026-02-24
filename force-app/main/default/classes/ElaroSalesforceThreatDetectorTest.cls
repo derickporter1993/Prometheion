@@ -8,7 +8,7 @@ private class ElaroSalesforceThreatDetectorTest {
             Name = 'Test_Clone_Copy',
             Label = 'Test Clone Copy'
         );
-        insert ps;
+        insert as user ps;
         
         Test.startTest();
         List<ElaroSalesforceThreatDetector.Threat> threats = 
@@ -36,7 +36,7 @@ private class ElaroSalesforceThreatDetectorTest {
             LanguageLocaleKey = 'en_US',
             IsActive = true
         );
-        insert u;
+        insert as user u;
         
         // Note: LastLoginDate is read-only and cannot be set in tests
         // The test will rely on actual LastLoginDate values or mock the detection logic

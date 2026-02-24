@@ -94,7 +94,7 @@ private class PerformanceRuleEngineTest {
             DML_Warn__c = 120,
             DML_Crit__c = 140
         );
-        insert customSettings;
+        insert as user customSettings;
         
         LimitMetrics.GovernorStats stats = new LimitMetrics.GovernorStats();
         stats.cpuMs = 7200; // Above custom warn (7000) but below custom crit (8500)

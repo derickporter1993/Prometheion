@@ -18,7 +18,7 @@ public class HIPAAPrivacyRuleServiceTest {
                 Name = 'Test Healthcare Account ' + i
             ));
         }
-        insert accounts;
+        insert as user accounts;
 
         // Create test contacts
         List<Contact> contacts = new List<Contact>();
@@ -30,7 +30,7 @@ public class HIPAAPrivacyRuleServiceTest {
                 Email = 'patient' + i + '@test.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
 
     @isTest
@@ -144,7 +144,7 @@ public class HIPAAPrivacyRuleServiceTest {
                 Email = 'bulk' + i + '@test.com'
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
 
         Test.startTest();
         List<HIPAAPrivacyRuleService.PHIObjectInfo> phiObjects =

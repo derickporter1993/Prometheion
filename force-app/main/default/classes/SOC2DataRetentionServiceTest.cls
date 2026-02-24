@@ -22,7 +22,7 @@ public class SOC2DataRetentionServiceTest {
                 Status__c = 'COLLECTED'
             ));
         }
-        insert evidenceRecords;
+        insert as user evidenceRecords;
     }
 
     @isTest
@@ -131,7 +131,7 @@ public class SOC2DataRetentionServiceTest {
                 Status__c = 'COLLECTED'
             ));
         }
-        insert bulkEvidence;
+        insert as user bulkEvidence;
 
         Test.startTest();
         SOC2DataRetentionService.RetentionEvaluationResult result =

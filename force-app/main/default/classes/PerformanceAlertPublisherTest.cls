@@ -142,7 +142,7 @@ private class PerformanceAlertPublisherTest {
     @isTest
     static void testPublishWithContextRecord() {
         Account testAccount = new Account(Name = 'Test Account');
-        insert testAccount;
+        insert as user testAccount;
 
         Test.startTest();
         PerformanceAlertPublisher.publish('SOQL', 95, 100, testAccount.Id, 'Context test');

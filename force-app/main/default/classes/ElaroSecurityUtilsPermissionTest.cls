@@ -21,7 +21,7 @@ private class ElaroSecurityUtilsPermissionTest {
                 BillingCountry = 'Test Country'
             ));
         }
-        insert accounts;
+        insert as user accounts;
         
         // Create test contacts
         List<Contact> contacts = new List<Contact>();
@@ -33,7 +33,7 @@ private class ElaroSecurityUtilsPermissionTest {
                 AccountId = accounts[i].Id
             ));
         }
-        insert contacts;
+        insert as user contacts;
     }
     
     /**
@@ -228,7 +228,7 @@ private class ElaroSecurityUtilsPermissionTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        insert limitedUser;
+        insert as user limitedUser;
         return limitedUser;
     }
 }

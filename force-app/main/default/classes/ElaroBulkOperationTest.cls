@@ -25,7 +25,7 @@ private class ElaroBulkOperationTest {
         }
         
         Test.startTest();
-        insert accounts;
+        insert as user accounts;
         Test.stopTest();
         
         // Verify all records were inserted
@@ -48,7 +48,7 @@ private class ElaroBulkOperationTest {
                 Name = 'Bulk Update Account ' + i
             ));
         }
-        insert accounts;
+        insert as user accounts;
         
         // Update all accounts
         for (Account acc : accounts) {
@@ -56,7 +56,7 @@ private class ElaroBulkOperationTest {
         }
         
         Test.startTest();
-        update accounts;
+        update as user accounts;
         Test.stopTest();
         
         // Verify all records were updated
@@ -82,10 +82,10 @@ private class ElaroBulkOperationTest {
                 Name = 'Bulk Delete Account ' + i
             ));
         }
-        insert accounts;
+        insert as user accounts;
         
         Test.startTest();
-        delete accounts;
+        delete as user accounts;
         Test.stopTest();
         
         // Verify all records were deleted
@@ -109,7 +109,7 @@ private class ElaroBulkOperationTest {
                 Name = 'Bulk SOQL Account ' + i
             ));
         }
-        insert accounts;
+        insert as user accounts;
         
         Test.startTest();
         List<Account> queriedAccounts = [
@@ -134,7 +134,7 @@ private class ElaroBulkOperationTest {
         }
         
         Test.startTest();
-        insert accounts;
+        insert as user accounts;
         
         // Query with WITH USER_MODE
         List<Account> queriedAccounts = [
@@ -168,7 +168,7 @@ private class ElaroBulkOperationTest {
         Integer startQueries = Limits.getQueries();
         Integer startDml = Limits.getDmlStatements();
         
-        insert accounts;
+        insert as user accounts;
         
         List<Account> queriedAccounts = [
             SELECT Id, Name FROM Account WHERE Name LIKE 'Bulk Limits Account%'
@@ -197,7 +197,7 @@ private class ElaroBulkOperationTest {
                 Name = 'Bulk Contact Account ' + i
             ));
         }
-        insert accounts;
+        insert as user accounts;
         
         // Create 200 contacts (one per account)
         List<Contact> contacts = new List<Contact>();
@@ -210,7 +210,7 @@ private class ElaroBulkOperationTest {
         }
         
         Test.startTest();
-        insert contacts;
+        insert as user contacts;
         
         // Query with relationship
         List<Account> accountsWithContacts = [
@@ -242,7 +242,7 @@ private class ElaroBulkOperationTest {
         // Validate CRUD access before bulk insert
         try {
             ElaroSecurityUtils.validateCRUDAccess('Account', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert accounts;
+            insert as user accounts;
             // If we reach here, validation and insert both succeeded
             Assert.areEqual(200, accounts.size(), 'All 200 accounts should be inserted after validation');
         } catch (ElaroSecurityUtils.SecurityException e) {

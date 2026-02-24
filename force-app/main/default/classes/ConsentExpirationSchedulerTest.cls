@@ -19,7 +19,7 @@ private class ConsentExpirationSchedulerTest {
                 Email = 'test' + i + '@example.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
 
         // Create test consents
         List<Consent__c> consents = new List<Consent__c>();
@@ -32,7 +32,7 @@ private class ConsentExpirationSchedulerTest {
                 Consent_Date__c = Date.today().addDays(-30)
             ));
         }
-        insert consents;
+        insert as user consents;
     }
 
     @isTest
@@ -87,7 +87,7 @@ private class ConsentExpirationSchedulerTest {
     @isTest
     static void testSchedulerWithNoConsents() {
         // Arrange - delete all consents
-        delete [SELECT Id FROM Consent__c];
+        delete as user [SELECT Id FROM Consent__c];
         ConsentExpirationScheduler scheduler = new ConsentExpirationScheduler();
 
         // Act

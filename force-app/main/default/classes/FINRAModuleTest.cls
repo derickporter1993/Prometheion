@@ -43,7 +43,7 @@ private class FINRAModuleTest {
             ));
         }
 
-        insert items;
+        insert as user items;
     }
 
     @IsTest

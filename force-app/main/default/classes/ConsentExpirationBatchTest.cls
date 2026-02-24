@@ -18,7 +18,7 @@ private class ConsentExpirationBatchTest {
                 Email = 'test' + i + '@example.com'
             ));
         }
-        insert contacts;
+        insert as user contacts;
 
         // Create test consents
         List<Consent__c> consents = new List<Consent__c>();
@@ -31,7 +31,7 @@ private class ConsentExpirationBatchTest {
                 Consent_Date__c = Date.today().addDays(-30)
             ));
         }
-        insert consents;
+        insert as user consents;
     }
 
     @isTest
@@ -74,7 +74,7 @@ private class ConsentExpirationBatchTest {
         for (Consent__c c : consents) {
             c.Consent_Withdrawn__c = true;
         }
-        update consents;
+        update as user consents;
 
         // Act
         Test.startTest();
@@ -96,7 +96,7 @@ private class ConsentExpirationBatchTest {
             Consent_Withdrawn__c = false,
             Consent_Date__c = Date.today()
         );
-        insert consentNoContact;
+        insert as user consentNoContact;
 
         // Act
         Test.startTest();
@@ -120,7 +120,7 @@ private class ConsentExpirationBatchTest {
                 Email = 'bulk' + i + '@example.com'
             ));
         }
-        insert bulkContacts;
+        insert as user bulkContacts;
 
         List<Consent__c> bulkConsents = new List<Consent__c>();
         for (Contact c : bulkContacts) {
@@ -132,7 +132,7 @@ private class ConsentExpirationBatchTest {
                 Consent_Date__c = Date.today().addDays(-15)
             ));
         }
-        insert bulkConsents;
+        insert as user bulkConsents;
 
         // Act
         Test.startTest();

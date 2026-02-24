@@ -36,7 +36,7 @@ private class AnomalyDetectionServiceTest {
             ));
         }
 
-        insert changes;
+        insert as user changes;
     }
 
     @IsTest

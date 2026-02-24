@@ -13,7 +13,7 @@ private class DeploymentMetricsTest {
                 Tests_Failed__c = Math.mod(i, 3)
             ));
         }
-        insert jobs;
+        insert as user jobs;
     }
 
     @IsTest
@@ -39,7 +39,7 @@ private class DeploymentMetricsTest {
     @IsTest
     static void testRecentEmpty() {
         // Delete all test data
-        delete [SELECT Id FROM Deployment_Job__c];
+        delete as user [SELECT Id FROM Deployment_Job__c];
 
         Test.startTest();
         List<DeploymentMetrics.Row> rows = DeploymentMetrics.recent(5);
@@ -92,7 +92,7 @@ private class DeploymentMetricsTest {
             Tests_Passed__c = 100,
             Tests_Failed__c = 5
         );
-        insert job;
+        insert as user job;
 
         // Re-query to get Name
         job = [SELECT Name, Status__c, Started_On__c, Finished_On__c, Tests_Passed__c, Tests_Failed__c FROM Deployment_Job__c WHERE Id = :job.Id];

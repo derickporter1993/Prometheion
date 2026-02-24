@@ -55,7 +55,7 @@ private class MetadataChangeTrackerTest {
     static void testGetRecentChanges() {
         // Create test changes
         List<Metadata_Change__c> changes = ComplianceTestDataFactory.createMetadataChanges(5);
-        insert changes;
+        insert as user changes;
         
         Test.startTest();
         List<Metadata_Change__c> recentChanges = MetadataChangeTracker.getRecentChanges(10);
