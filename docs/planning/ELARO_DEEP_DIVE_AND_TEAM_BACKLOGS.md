@@ -20,7 +20,7 @@ Elaro is functionally broad and test-rich on LWC, but the remaining delivery ris
 ### Top Remaining Gaps (ranked)
 
 1. **AppExchange security/readiness closure remains the critical path**
-   - Security docs still track unresolved/high-priority items (notably PagerDuty key management hardening flow and final security evidence packaging).
+   - Security docs still track unresolved/high-priority items (notably final security evidence packaging). Note: PagerDuty key management has been fully resolved — the routing key is retrieved from Protected Custom Metadata (`Elaro_API_Config__mdt`) and is confirmed implemented as of 2026-01-11 (see `docs/security/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md`).
    - Multiple archived readiness reports still indicate blocker categories that require fresh verification runs (scanner artifacts, security packaging discipline, final submission checklist).
 
 2. **Delivery-status docs are inconsistent/stale vs current code reality**
@@ -63,7 +63,7 @@ Elaro is functionally broad and test-rich on LWC, but the remaining delivery ris
   - AppExchange scanner outputs
   - accessibility audit result
   - final dependency/security scan outputs
-- Resolve/verify PagerDuty secret handling path and capture design + validation evidence.
+- PagerDuty key management is already implemented (routing key retrieved from Protected Custom Metadata `Elaro_API_Config__mdt`; see `docs/security/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md`, status: ✅ IMPLEMENTED 2026-01-11). Capture this as completed evidence in the release bundle.
 
 **Owner:** Team B lead + Security engineer.
 
