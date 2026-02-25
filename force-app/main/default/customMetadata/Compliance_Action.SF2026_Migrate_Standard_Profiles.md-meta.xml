@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SF2026 Profile to Permission Set Migration</label>
+    <protected>false</protected>
+    <values>
+        <field>Action_Title__c</field>
+        <value xsi:type="xsd:string">Retire Standard Profiles and Move Access to Permission Sets</value>
+    </values>
+    <values>
+        <field>Action_Description__c</field>
+        <value xsi:type="xsd:string">Treat standard profiles as templates only and shift object, field, and system access controls into permission sets and permission set groups.</value>
+    </values>
+    <values>
+        <field>Framework__c</field>
+        <value xsi:type="xsd:string">Salesforce Security 2026</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">CRITICAL</value>
+    </values>
+    <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Access Control</value>
+    </values>
+    <values>
+        <field>Setup_Path__c</field>
+        <value xsi:type="xsd:string">PermSets/home</value>
+    </values>
+    <values>
+        <field>Priority_Order__c</field>
+        <value xsi:type="xsd:double">2</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Control_Reference__c</field>
+        <value xsi:type="xsd:string">Least Privilege</value>
+    </values>
+    <values>
+        <field>Remediation_Steps__c</field>
+        <value xsi:type="xsd:string">Inventory all users on standard profiles and create equivalent custom profiles with minimal baseline access. Remove excess profile permissions and grant role-specific access through permission sets and permission set groups. Require documented business justification for any high-risk permission such as Modify All Data, Author Apex, API Enabled, and View All Data.</value>
+    </values>
+</CustomMetadata>
