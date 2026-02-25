@@ -4,8 +4,8 @@
  * @group Utilities
  * @author Elaro Team
  */
-@isTest
-public class ElaroClaudeAPIMock implements HttpCalloutMock {
+@IsTest
+public inherited sharing class ElaroClaudeAPIMock implements HttpCalloutMock {
     
     // ═══════════════════════════════════════════════════════════════
     // RESPONSE TYPES

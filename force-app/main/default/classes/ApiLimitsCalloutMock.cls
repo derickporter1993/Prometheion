@@ -6,7 +6,7 @@
  * @since v3.1.0 (Spring '26)
  * @group Utilities
  */
-global class ApiLimitsCalloutMock implements HttpCalloutMock {
+global inherited sharing class ApiLimitsCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type','application/json');
