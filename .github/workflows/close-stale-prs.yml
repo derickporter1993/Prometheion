@@ -1,0 +1,60 @@
+name: Close Stale Pull Requests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  close-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale Copilot and Codex PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Closing stale pull requests from Copilot and Codex..."
+          echo ""
+
+          # Configuration for identifying stale Copilot/Codex PRs
+          STALE_DAYS=30
+          STALE_BEFORE="$(date -u -d "${STALE_DAYS} days ago" +%Y-%m-%d)"
+
+          # Search query to match PRs created by Copilot/Codex automation.
+          # Adjust this query if your Copilot/Codex PRs are identified differently
+          # (e.g., by label or specific bot user).
+          STALE_QUERY="author:app/github-copilot author:app/github-codex"
+
+          echo "Finding open Copilot/Codex PRs last updated before ${STALE_BEFORE}..."
+
+          # Get list of matching PR numbers
+          mapfile -t PR_NUMBERS < <(
+            gh pr list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --search "${STALE_QUERY} updated:<${STALE_BEFORE}" \
+              --json number \
+              --jq '.[].number'
+          )
+
+          if [ "${#PR_NUMBERS[@]}" -eq 0 ]; then
+            echo "No matching stale Copilot/Codex PRs found."
+          else
+            echo "Found ${#PR_NUMBERS[@]} stale Copilot/Codex PR(s): ${PR_NUMBERS[*]}"
+            echo ""
+
+            for PR_NUM in "${PR_NUMBERS[@]}"; do
+              echo "Closing PR #$PR_NUM..."
+              gh pr close "$PR_NUM" \
+                --repo "${{ github.repository }}" \
+                --comment "Closing: stale PR from automated tooling (Copilot/Codex). These changes were not reviewed or approved for merge." \
+                2>&1 || echo "  Failed to close PR #$PR_NUM (may already be closed)"
+              echo ""
+            done
+          fi
+          echo "Done. Remaining open PRs:"
+          gh pr list --repo "${{ github.repository }}" --state open --limit 20
