@@ -197,10 +197,10 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const kpiValues = getKPIValues(element);
       expect(kpiValues.length > 0).toBeTruthy();
-        const valueText = kpiValues[0].textContent;
-        // Should contain currency symbol or formatted value
-        expect(valueText).toContain("$");
-        expect(valueText).toContain("125,000");
+      const valueText = kpiValues[0].textContent;
+      // Should contain currency symbol or formatted value
+      expect(valueText).toContain("$");
+      expect(valueText).toContain("125,000");
     });
 
     it("formats percent values correctly", async () => {
@@ -225,9 +225,9 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const kpiValues = getKPIValues(element);
       expect(kpiValues.length > 0).toBeTruthy();
-        const valueText = kpiValues[0].textContent;
-        expect(valueText).toContain("%");
-        expect(valueText).toContain("85");
+      const valueText = kpiValues[0].textContent;
+      expect(valueText).toContain("%");
+      expect(valueText).toContain("85");
     });
 
     it("formats days values correctly", async () => {
@@ -252,9 +252,9 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const kpiValues = getKPIValues(element);
       expect(kpiValues.length > 0).toBeTruthy();
-        const valueText = kpiValues[0].textContent;
-        expect(valueText).toContain("days");
-        expect(valueText).toContain("30.5");
+      const valueText = kpiValues[0].textContent;
+      expect(valueText).toContain("days");
+      expect(valueText).toContain("30.5");
     });
 
     it("shows N/A for null values", async () => {
@@ -279,7 +279,7 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const kpiValues = getKPIValues(element);
       expect(kpiValues.length > 0).toBeTruthy();
-        expect(kpiValues[0].textContent).toBe("N/A");
+      expect(kpiValues[0].textContent).toBe("N/A");
     });
 
     it("shows N/A when metric has error", async () => {
@@ -333,7 +333,7 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const badges = getStatusBadges(element);
       expect(badges.length > 0).toBeTruthy();
-        expect(badges[0].variant).toBe("success");
+      expect(badges[0].variant).toBe("success");
     });
 
     it("displays warning variant for yellow status", async () => {
@@ -358,7 +358,7 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const badges = getStatusBadges(element);
       expect(badges.length > 0).toBeTruthy();
-        expect(badges[0].variant).toBe("warning");
+      expect(badges[0].variant).toBe("warning");
     });
 
     it("displays error variant for red status", async () => {
@@ -383,7 +383,7 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const badges = getStatusBadges(element);
       expect(badges.length > 0).toBeTruthy();
-        expect(badges[0].variant).toBe("error");
+      expect(badges[0].variant).toBe("error");
     });
 
     it("displays default variant for unknown status", async () => {
@@ -408,8 +408,8 @@ describe("c-elaro-executive-kpi-dashboard", () => {
 
       const badges = getStatusBadges(element);
       expect(badges.length > 0).toBeTruthy();
-        // Default variant may be undefined or "default"
-        expect(["default", undefined, ""]).toContain(badges[0].variant);
+      // Default variant may be undefined or "default"
+      expect(["default", undefined, ""]).toContain(badges[0].variant);
     });
   });
 

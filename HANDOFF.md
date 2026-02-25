@@ -14,19 +14,19 @@ Built the foundational async processing framework replacing Batch Apex with Curs
 
 #### Production Classes (11)
 
-| Class | Type | Purpose |
-|-------|------|---------|
-| Step.cls | Interface | Core contract: execute(), finalize(), getName(), shouldRestart() |
-| StepContext.cls | State carrier | Serializable context with typed getters, cursor position, metrics |
-| StepExecutionMetric.cls | DTO | Per-step metrics: timing, SOQL/DML usage, record counts |
-| CursorStep.cls | Abstract | Database.Cursor wrapper with CursorWrapper/CursorLike for test mocking |
-| ComputeStep.cls | Abstract | Non-query computation, stores result in context by key |
-| DMLStep.cls | Abstract | Auto-chunking DML (200/batch), DML limit circuit breakers |
-| CalloutStep.cls | Abstract | HTTP callouts with auto-retry for 5xx, callout limit checks |
-| FlowStep.cls | Concrete | Wraps Flow.Interview for declarative steps |
-| NoOpStep.cls | Concrete | Null object pattern for disabled steps |
-| StepProcessor.cls | Orchestrator | Queueable + Finalizer with exponential backoff retry |
-| ElaroAsyncFeatureFlags.cls | Utility | Hierarchy Custom Setting accessor with defaults |
+| Class                      | Type          | Purpose                                                                |
+| -------------------------- | ------------- | ---------------------------------------------------------------------- |
+| Step.cls                   | Interface     | Core contract: execute(), finalize(), getName(), shouldRestart()       |
+| StepContext.cls            | State carrier | Serializable context with typed getters, cursor position, metrics      |
+| StepExecutionMetric.cls    | DTO           | Per-step metrics: timing, SOQL/DML usage, record counts                |
+| CursorStep.cls             | Abstract      | Database.Cursor wrapper with CursorWrapper/CursorLike for test mocking |
+| ComputeStep.cls            | Abstract      | Non-query computation, stores result in context by key                 |
+| DMLStep.cls                | Abstract      | Auto-chunking DML (200/batch), DML limit circuit breakers              |
+| CalloutStep.cls            | Abstract      | HTTP callouts with auto-retry for 5xx, callout limit checks            |
+| FlowStep.cls               | Concrete      | Wraps Flow.Interview for declarative steps                             |
+| NoOpStep.cls               | Concrete      | Null object pattern for disabled steps                                 |
+| StepProcessor.cls          | Orchestrator  | Queueable + Finalizer with exponential backoff retry                   |
+| ElaroAsyncFeatureFlags.cls | Utility       | Hierarchy Custom Setting accessor with defaults                        |
 
 #### Metadata
 
@@ -58,13 +58,13 @@ StepContextTest (11 tests), StepExecutionMetricTest (3), CursorStepTest (12), Co
 
 ### Team 1 Status (Sovereign Infrastructure)
 
-| Agent | Workstream | Status | Completion | Blocker? |
-|-------|------------|--------|------------|----------|
-| Agent 1 | WS6 — Async Framework | **COMPLETE** | 100% | No |
-| Agent 2 | WS1 — CMMC 2.0 | **NOT STARTED** | 0% | Yes — Team 2 Assessment Wizards depend on CMMC data model |
-| Agent 3 | WS3 — Rule Engine + Orchestration | **PARTIAL** | ~40% | Yes — Event infra exists, core evaluators missing |
-| Agent 4 | WS1 — Batch Migration | **NOT STARTED** | 0% | No — framework ready, no actual migrations |
-| Agent 5 | WS7 — NIS2/DORA | **NOT STARTED** | 0% | No — independent regulatory module |
+| Agent   | Workstream                        | Status          | Completion | Blocker?                                                  |
+| ------- | --------------------------------- | --------------- | ---------- | --------------------------------------------------------- |
+| Agent 1 | WS6 — Async Framework             | **COMPLETE**    | 100%       | No                                                        |
+| Agent 2 | WS1 — CMMC 2.0                    | **NOT STARTED** | 0%         | Yes — Team 2 Assessment Wizards depend on CMMC data model |
+| Agent 3 | WS3 — Rule Engine + Orchestration | **PARTIAL**     | ~40%       | Yes — Event infra exists, core evaluators missing         |
+| Agent 4 | WS1 — Batch Migration             | **NOT STARTED** | 0%         | No — framework ready, no actual migrations                |
+| Agent 5 | WS7 — NIS2/DORA                   | **NOT STARTED** | 0%         | No — independent regulatory module                        |
 
 #### Team 1 Agent 2 — CMMC 2.0 (MISSING — 0%)
 
@@ -120,16 +120,16 @@ StepContextTest (11 tests), StepExecutionMetricTest (3), CursorStepTest (12), Co
 
 ### Team 2 Status (User-Facing Modules)
 
-| Agent | Workstream | Status | Completion | Notes |
-|-------|------------|--------|------------|-------|
-| Agent 1 | WS4 — Health Check | **COMPLETE** | 100% | Separate 2GP, all LWC + Jest tests |
-| Agent 2 | WS-CC — Command Center | **COMPLETE** | 100% | 38 Compliance_Action\_\_mdt records |
-| Agent 3 | WS-EM — Event Monitoring | **COMPLETE** | 100% | 3 Platform Events, 8 correlation rules |
-| Agent 4 | WS-AW — Assessment Wizards | **COMPLETE** | 100% | 28+ wizard config records |
-| Agent 5 | WS8 — SEC Disclosure | **95%** | 95% | Missing: 4 Jest tests, User perm set |
-| Agent 6 | WS2 — AI Governance | **COMPLETE** | 100% | EU AI Act deadline Aug 2, 2026 |
-| Agent 7 | WS5 — Trust Center | **40%** | 40% | Missing: LWC components, perm sets |
-| Agent 8 | Integration & QA | **25%** | 25% | API v66.0 done, quality gates not run |
+| Agent   | Workstream                 | Status       | Completion | Notes                                  |
+| ------- | -------------------------- | ------------ | ---------- | -------------------------------------- |
+| Agent 1 | WS4 — Health Check         | **COMPLETE** | 100%       | Separate 2GP, all LWC + Jest tests     |
+| Agent 2 | WS-CC — Command Center     | **COMPLETE** | 100%       | 38 Compliance_Action\_\_mdt records    |
+| Agent 3 | WS-EM — Event Monitoring   | **COMPLETE** | 100%       | 3 Platform Events, 8 correlation rules |
+| Agent 4 | WS-AW — Assessment Wizards | **COMPLETE** | 100%       | 28+ wizard config records              |
+| Agent 5 | WS8 — SEC Disclosure       | **95%**      | 95%        | Missing: 4 Jest tests, User perm set   |
+| Agent 6 | WS2 — AI Governance        | **COMPLETE** | 100%       | EU AI Act deadline Aug 2, 2026         |
+| Agent 7 | WS5 — Trust Center         | **40%**      | 40%        | Missing: LWC components, perm sets     |
+| Agent 8 | Integration & QA           | **25%**      | 25%        | API v66.0 done, quality gates not run  |
 
 #### Team 2 Agent 5 — SEC Disclosure (95% — small gaps)
 
@@ -183,18 +183,18 @@ StepContextTest (11 tests), StepExecutionMetricTest (3), CursorStepTest (12), Co
 
 ## Codebase Stats
 
-| Metric | Count |
-|--------|-------|
-| Apex Classes (production) | ~197 |
-| Apex Test Classes | ~193 |
-| LWC Components | 54 |
-| LWC Jest Tests | 46 (85% coverage) |
-| Custom Objects | 54 |
-| Platform Events | 11 |
-| Custom Metadata Types | 12+ |
-| Custom Metadata Records | 100+ |
-| Permission Sets | 12 |
-| Custom Labels | 170+ |
+| Metric                    | Count             |
+| ------------------------- | ----------------- |
+| Apex Classes (production) | ~197              |
+| Apex Test Classes         | ~193              |
+| LWC Components            | 54                |
+| LWC Jest Tests            | 46 (85% coverage) |
+| Custom Objects            | 54                |
+| Platform Events           | 11                |
+| Custom Metadata Types     | 12+               |
+| Custom Metadata Records   | 100+              |
+| Permission Sets           | 12                |
+| Custom Labels             | 170+              |
 
 ---
 

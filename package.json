@@ -50,7 +50,7 @@
     "prettier": "^3.7.4"
   },
   "overrides": {
-    "fast-xml-parser": "^5.3.4"
+    "fast-xml-parser": "^5.3.6"
   },
   "lint-staged": {
     "*.{js,ts,html,md,json,yml,yaml,xml}": [
