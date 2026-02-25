@@ -1,0 +1,38 @@
+name: Close Stale Pull Requests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/close-stale-prs.yml'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  close-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale Copilot and Codex PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Closing stale pull requests from Copilot and Codex..."
+          echo ""
+
+          # List of PR numbers to close (stale copilot/codex PRs)
+          PR_NUMBERS=(181 180 179 178 177 176 175 174 173 172)
+
+          for PR_NUM in "${PR_NUMBERS[@]}"; do
+            echo "Closing PR #$PR_NUM..."
+            gh pr close "$PR_NUM" \
+              --repo "${{ github.repository }}" \
+              --comment "Closing: stale PR from automated tooling (Copilot/Codex). These changes were not reviewed or approved for merge." \
+              2>&1 || echo "  Failed to close PR #$PR_NUM (may already be closed)"
+            echo ""
+          done
+
+          echo "Done. Remaining open PRs:"
+          gh pr list --repo "${{ github.repository }}" --state open --limit 20
