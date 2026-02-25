@@ -63,7 +63,7 @@ Elaro is functionally broad and test-rich on LWC, but the remaining delivery ris
   - AppExchange scanner outputs
   - accessibility audit result
   - final dependency/security scan outputs
-- Resolve/verify PagerDuty secret handling path and capture design + validation evidence.
+- ✅ PagerDuty secret handling resolved: routing key is now stored in Protected Custom Metadata (`Elaro_API_Config__mdt`), with no hardcoded credentials. See `docs/security/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md` for full design and validation evidence.
 
 **Owner:** Team B lead + Security engineer.
 
