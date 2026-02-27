@@ -360,7 +360,7 @@ public with sharing class ElaroComplianceAlert {
     
     private static void sendSlackAlert(Map<String, Object> alertData) {
         Map<String, Object> slackMessage = buildSlackMessage(alertData);
-        
+
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Slack_Webhook');
         req.setMethod('POST');
@@ -369,15 +369,21 @@ public with sharing class ElaroComplianceAlert {
         req.setTimeout(10000);
 
         Http http = new Http();
-        http.send(req);
+        HttpResponse res = http.send(req);
+
+        if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
+            ElaroLogger.error('ElaroComplianceAlert.sendSlackAlert',
+                'Slack alert failed with status ' + res.getStatusCode() + ': ' + res.getStatus(),
+                res.getBody());
+        }
     }
 
     private static void sendPagerDutyAlert(Map<String, Object> alertData) {
         String severity = (String)alertData.get('severity');
-        String pdSeverity = severity == 'CRITICAL' ? 'critical' : 
-                          severity == 'HIGH' ? 'error' : 
+        String pdSeverity = severity == 'CRITICAL' ? 'critical' :
+                          severity == 'HIGH' ? 'error' :
                           severity == 'MEDIUM' ? 'warning' : 'info';
-        
+
         Map<String, Object> pdEvent = new Map<String, Object>{
             'routing_key' => '{!$Credential.PagerDuty_API_Key}',
             'event_action' => 'trigger',
@@ -388,7 +394,7 @@ public with sharing class ElaroComplianceAlert {
                 'custom_details' => alertData
             }
         };
-        
+
         HttpRequest req = new HttpRequest();
         req.setEndpoint('https://events.pagerduty.com/v2/enqueue');
         req.setMethod('POST');
@@ -397,7 +403,13 @@ public with sharing class ElaroComplianceAlert {
         req.setTimeout(10000);
 
         Http http = new Http();
-        http.send(req);
+        HttpResponse res = http.send(req);
+
+        if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
+            ElaroLogger.error('ElaroComplianceAlert.sendPagerDutyAlert',
+                'PagerDuty alert failed with status ' + res.getStatusCode() + ': ' + res.getStatus(),
+                res.getBody());
+        }
     }
     
     private static void createBellNotification(Map<String, Object> alertData) {
