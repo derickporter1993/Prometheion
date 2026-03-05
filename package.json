@@ -37,7 +37,7 @@
     "@babel/core": "^7.28.5",
     "@babel/eslint-parser": "^7.28.5",
     "@eslint/js": "^10.0.1",
-    "@lwc/eslint-plugin-lwc": "^3.3.0",
+    "@lwc/eslint-plugin-lwc": "^3.4.0",
     "@salesforce/eslint-config-lwc": "^4.1.2",
     "@salesforce/sfdx-lwc-jest": "^7.1.2",
     "@testing-library/jest-dom": "^6.9.1",
