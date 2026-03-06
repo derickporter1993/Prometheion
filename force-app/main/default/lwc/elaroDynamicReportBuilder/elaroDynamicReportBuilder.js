@@ -316,7 +316,7 @@ export default class ElaroDynamicReportBuilder extends LightningElement {
     this.errorMessage = message;
     this.dispatchEvent(
       new ShowToastEvent({
-        title: "Error",
+        title: ToastError,
         message: message,
         variant: "error",
       })
@@ -326,7 +326,7 @@ export default class ElaroDynamicReportBuilder extends LightningElement {
   showSuccess(message) {
     this.dispatchEvent(
       new ShowToastEvent({
-        title: "Success",
+        title: ToastSuccess,
         message: message,
         variant: "success",
       })

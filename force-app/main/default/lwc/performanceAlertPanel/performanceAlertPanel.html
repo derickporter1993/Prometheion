@@ -1,11 +1,11 @@
 <template>
-  <lightning-card title="Performance Alerts">
+  <lightning-card title={label.PERF_AlertsTitle}>
     <div class="slds-var-p-around_medium">
-      <p class="slds-text-color_weak">Live + recent alerts from Performance_Alert__e</p>
+      <p class="slds-text-color_weak">{label.PERF_AlertsHint}</p>
 
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading performance alerts" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.PERF_LoadingAlerts} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -19,7 +19,7 @@
       <template lwc:if={isEmpty}>
         <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
           <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-          No performance alerts available
+          {label.PERF_NoAlertsAvailable}
         </div>
       </template>
 

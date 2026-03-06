@@ -114,7 +114,7 @@
 
       <!-- Events Data Table -->
       <template lwc:if={isLoading}>
-        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
       </template>
 
       <template lwc:else>
@@ -177,7 +177,7 @@
         <div id="modal-content" class="slds-modal__content slds-var-p-around_medium">
           <template lwc:if={selectedEvent}>
             <dl class="slds-dl_horizontal" role="list" aria-label={label.EventDetailsTitle}>
-              <dt class="slds-dl_horizontal__label">Event ID:</dt>
+              <dt class="slds-dl_horizontal__label">{label.EventIdLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.id}</dd>
 
               <dt class="slds-dl_horizontal__label">{label.EventTypeLabel}:</dt>
@@ -191,19 +191,19 @@
                 ></lightning-badge>
               </dd>
 
-              <dt class="slds-dl_horizontal__label">Risk Score:</dt>
+              <dt class="slds-dl_horizontal__label">{label.RiskScoreLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.riskScore}</dd>
 
-              <dt class="slds-dl_horizontal__label">User:</dt>
+              <dt class="slds-dl_horizontal__label">{label.UserLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.userName}</dd>
 
-              <dt class="slds-dl_horizontal__label">Timestamp:</dt>
+              <dt class="slds-dl_horizontal__label">{label.TimestampLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.formattedTimestamp}</dd>
 
-              <dt class="slds-dl_horizontal__label">Source IP:</dt>
+              <dt class="slds-dl_horizontal__label">{label.SourceIpLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.sourceIp}</dd>
 
-              <dt class="slds-dl_horizontal__label">Description:</dt>
+              <dt class="slds-dl_horizontal__label">{label.DescriptionLabel}:</dt>
               <dd class="slds-dl_horizontal__detail">{selectedEvent.description}</dd>
             </dl>
           </template>

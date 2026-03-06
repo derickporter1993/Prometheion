@@ -1,6 +1,9 @@
 import { LightningElement } from "lwc";
 import getTopFlows from "@salesforce/apex/FlowExecutionStats.getTopFlows";
 import PollingManager from "c/pollingManager";
+import FLOW_MonitorTitle from "@salesforce/label/c.FLOW_MonitorTitle";
+import FLOW_LoadingSpinner from "@salesforce/label/c.FLOW_LoadingSpinner";
+import FLOW_EmptyState from "@salesforce/label/c.FLOW_EmptyState";
 
 export default class FlowExecutionMonitor extends LightningElement {
   rows = [];
@@ -14,6 +17,8 @@ export default class FlowExecutionMonitor extends LightningElement {
     { label: "Last Run", fieldName: "lastRun", type: "date" },
   ];
   pollingManager = null;
+
+  label = { FLOW_MonitorTitle, FLOW_LoadingSpinner, FLOW_EmptyState };
 
   get isEmpty() {
     return !this.isLoading && !this.hasError && (!this.rows || this.rows.length === 0);

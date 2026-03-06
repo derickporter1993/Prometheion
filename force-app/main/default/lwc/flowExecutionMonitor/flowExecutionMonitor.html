@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Flow Execution Monitor">
+  <lightning-card title={label.FLOW_MonitorTitle}>
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading flow executions" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.FLOW_LoadingSpinner} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -17,7 +17,7 @@
       <template lwc:if={isEmpty}>
         <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
           <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-          No flow execution data available
+          {label.FLOW_EmptyState}
         </div>
       </template>
 
@@ -28,7 +28,7 @@
               key-field="flowName"
               data={rows}
               columns={columns}
-              aria-label="Flow execution history"
+              aria-label={label.FLOW_MonitorTitle}
             ></lightning-datatable>
           </template>
         </template>

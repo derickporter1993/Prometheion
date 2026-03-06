@@ -84,7 +84,7 @@ export default class ElaroAuditPackageBuilder extends NavigationMixin(LightningE
         },
       });
     } catch (error) {
-      this.showToast("Error", error.body?.message || "Failed to generate audit package", "error");
+      this.showToast(ERROR_TITLE, error.body?.message || GENERATE_FAILED, "error");
     } finally {
       this.isLoading = false;
     }

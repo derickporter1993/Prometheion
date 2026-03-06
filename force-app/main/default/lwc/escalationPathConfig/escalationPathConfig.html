@@ -93,8 +93,8 @@
                 <!-- Level 2 -->
                 <div class="slds-box slds-m-bottom_small">
                     <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
-                        <lightning-badge label="Level 2" variant="warning" class="slds-m-right_small"></lightning-badge>
-                        <span class="slds-text-heading_small">Manager Escalation</span>
+                        <lightning-badge label={label.ESCPATH_Level2} variant="warning" class="slds-m-right_small"></lightning-badge>
+                        <span class="slds-text-heading_small">{label.ESCPATH_ManagerEscalation}</span>
                     </div>
                     <template for:each={level2Paths} for:item="path">
                         <div key={path.id} class="slds-box slds-box_x-small slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
@@ -129,15 +129,15 @@
                         </div>
                     </template>
                     <template lwc:if={hasNoLevel2Paths}>
-                        <p class="slds-text-color_weak">No Level 2 escalation paths configured</p>
+                        <p class="slds-text-color_weak">{label.ESCPATH_NoLevel2Paths}</p>
                     </template>
                 </div>
 
                 <!-- Level 3 -->
                 <div class="slds-box">
                     <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
-                        <lightning-badge label="Level 3" variant="error" class="slds-m-right_small"></lightning-badge>
-                        <span class="slds-text-heading_small">CISO/Director Escalation</span>
+                        <lightning-badge label={label.ESCPATH_Level3} variant="error" class="slds-m-right_small"></lightning-badge>
+                        <span class="slds-text-heading_small">{label.ESCPATH_CISODirectorEscalation}</span>
                     </div>
                     <template for:each={level3Paths} for:item="path">
                         <div key={path.id} class="slds-box slds-box_x-small slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
@@ -172,7 +172,7 @@
                         </div>
                     </template>
                     <template lwc:if={hasNoLevel3Paths}>
-                        <p class="slds-text-color_weak">No Level 3 escalation paths configured</p>
+                        <p class="slds-text-color_weak">{label.ESCPATH_NoLevel3Paths}</p>
                     </template>
                 </div>
             </template>
@@ -180,9 +180,9 @@
             <template lwc:else>
                 <div class="slds-illustration slds-illustration_small">
                     <div class="slds-text-longform">
-                        <h3 class="slds-text-heading_medium">No Escalation Paths</h3>
+                        <h3 class="slds-text-heading_medium">{label.ESCPATH_NoEscalationPaths}</h3>
                         <p class="slds-text-body_regular">
-                            Configure escalation paths to automatically escalate unacknowledged alerts.
+                            {label.ESCPATH_NoEscalationPathsDesc}
                         </p>
                     </div>
                 </div>
@@ -197,15 +197,15 @@
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeModal}>
                         <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
+                        <span class="slds-assistive-text">{label.ESCPATH_Close}</span>
                     </button>
                     <h2 id="escalation-modal-heading" class="slds-modal__title slds-hyphenate">{modalTitle}</h2>
                 </header>
 
                 <div class="slds-modal__content slds-p-around_medium">
                     <lightning-record-picker
-                        label="User"
-                        placeholder="Select a user"
+                        label={label.ESCPATH_UserLabel}
+                        placeholder={label.ESCPATH_SelectUser}
                         object-api-name="User"
                         value={formData.userId}
                         data-field="userId"
@@ -214,7 +214,7 @@
                     </lightning-record-picker>
 
                     <lightning-combobox
-                        label="Escalation Level"
+                        label={label.ESCPATH_EscalationLevel}
                         data-field="level"
                         value={formData.level}
                         options={levelOptions}
@@ -224,7 +224,7 @@
                     </lightning-combobox>
 
                     <lightning-combobox
-                        label="Role"
+                        label={label.ESCPATH_Role}
                         data-field="role"
                         value={formData.role}
                         options={roleOptions}
@@ -233,7 +233,7 @@
                     </lightning-combobox>
 
                     <lightning-combobox
-                        label="Notification Method"
+                        label={label.ESCPATH_NotificationMethod}
                         data-field="notificationMethod"
                         value={formData.notificationMethod}
                         options={notificationMethodOptions}
@@ -242,7 +242,7 @@
                     </lightning-combobox>
 
                     <lightning-combobox
-                        label="Escalation Delay"
+                        label={label.ESCPATH_EscalationDelay}
                         data-field="delayMinutes"
                         value={formData.delayMinutes}
                         options={delayOptions}
@@ -252,7 +252,7 @@
 
                     <lightning-input
                         type="checkbox"
-                        label="Active"
+                        label={label.ESCPATH_Active}
                         data-field="active"
                         checked={formData.active}
                         onchange={handleInputChange}
@@ -261,10 +261,10 @@
                 </div>
 
                 <footer class="slds-modal__footer">
-                    <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
+                    <lightning-button label={label.ESCPATH_Cancel} onclick={closeModal}></lightning-button>
                     <lightning-button
                         variant="brand"
-                        label="Save"
+                        label={label.ESCPATH_Save}
                         onclick={handleSave}
                         disabled={isLoading}>
                     </lightning-button>
@@ -281,7 +281,7 @@
                 <header class="slds-modal__header slds-theme_error">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeDeleteModal}>
                         <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
+                        <span class="slds-assistive-text">{label.ESCPATH_Close}</span>
                     </button>
                     <h2 id="delete-escalation-modal-heading" class="slds-modal__title">Delete Escalation Path</h2>
                 </header>

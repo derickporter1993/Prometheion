@@ -1,12 +1,12 @@
 <template>
-  <lightning-card title="Executive KPI Dashboard" icon-name="standard:dashboard">
+  <lightning-card title={label.KPI_DashboardTitle} icon-name="standard:dashboard">
     <div class="slds-p-around_medium">
       <template lwc:if={loading}>
-        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        <lightning-spinner alternative-text={label.KPI_Loading}></lightning-spinner>
       </template>
 
       <template lwc:if={error}>
-        <div class="slds-text-color_error" role="alert">Error loading KPIs: {errorMessage}</div>
+        <div class="slds-text-color_error" role="alert">{label.KPI_ErrorLoading} {errorMessage}</div>
       </template>
 
       <template lwc:if={dashboardData}>
@@ -14,25 +14,25 @@
           <div class="slds-col slds-size_1-of-4">
             <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{overallScore}%</div>
-              <div class="slds-text-body_small">Overall Compliance Score</div>
+              <div class="slds-text-body_small">{label.KPI_OverallComplianceScore}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{totalGaps}</div>
-              <div class="slds-text-body_small">Total Gaps</div>
+              <div class="slds-text-body_small">{label.KPI_TotalGaps}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="slds-text-align_center">
               <div class="slds-text-heading_large slds-text-color_error">{criticalGaps}</div>
-              <div class="slds-text-body_small">Critical Gaps</div>
+              <div class="slds-text-body_small">{label.KPI_CriticalGaps}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="slds-text-align_center">
               <div class="slds-text-heading_large">{compliantFrameworks}</div>
-              <div class="slds-text-body_small">Compliant Frameworks</div>
+              <div class="slds-text-body_small">{label.KPI_CompliantFrameworks}</div>
             </div>
           </div>
         </div>

@@ -6,6 +6,36 @@ import syncIssueStatus from "@salesforce/apex/JiraIntegrationService.syncIssueSt
 import addComment from "@salesforce/apex/JiraIntegrationService.addComment";
 import getAvailableTransitions from "@salesforce/apex/JiraIntegrationService.getAvailableTransitions";
 import transitionIssue from "@salesforce/apex/JiraIntegrationService.transitionIssue";
+import JIRA_IssueCardTitle from "@salesforce/label/c.JIRA_IssueCardTitle";
+import JIRA_Loading from "@salesforce/label/c.JIRA_Loading";
+import JIRA_NoIssueLinked from "@salesforce/label/c.JIRA_NoIssueLinked";
+import JIRA_CreateIssueHint from "@salesforce/label/c.JIRA_CreateIssueHint";
+import JIRA_IssueKeyLabel from "@salesforce/label/c.JIRA_IssueKeyLabel";
+import JIRA_SummaryLabel from "@salesforce/label/c.JIRA_SummaryLabel";
+import JIRA_PriorityFieldLabel from "@salesforce/label/c.JIRA_PriorityFieldLabel";
+import JIRA_AssigneeLabel from "@salesforce/label/c.JIRA_AssigneeLabel";
+import JIRA_Unassigned from "@salesforce/label/c.JIRA_Unassigned";
+import JIRA_CreatedLabel from "@salesforce/label/c.JIRA_CreatedLabel";
+import JIRA_UpdatedLabel from "@salesforce/label/c.JIRA_UpdatedLabel";
+import JIRA_RefreshButton from "@salesforce/label/c.JIRA_RefreshButton";
+import JIRA_SyncButton from "@salesforce/label/c.JIRA_SyncButton";
+import JIRA_AddCommentButton from "@salesforce/label/c.JIRA_AddCommentButton";
+import JIRA_TransitionButton from "@salesforce/label/c.JIRA_TransitionButton";
+import JIRA_OpenInJiraButton from "@salesforce/label/c.JIRA_OpenInJiraButton";
+import JIRA_CancelButton from "@salesforce/label/c.JIRA_CancelButton";
+import JIRA_CommentLabel from "@salesforce/label/c.JIRA_CommentLabel";
+import JIRA_CommentPlaceholder from "@salesforce/label/c.JIRA_CommentPlaceholder";
+import JIRA_TransitionToLabel from "@salesforce/label/c.JIRA_TransitionToLabel";
+import JIRA_TransitionPlaceholder from "@salesforce/label/c.JIRA_TransitionPlaceholder";
+import JIRA_CurrentStatus from "@salesforce/label/c.JIRA_CurrentStatus";
+import JIRA_IssueRefreshed from "@salesforce/label/c.JIRA_IssueRefreshed";
+import JIRA_IssueSynced from "@salesforce/label/c.JIRA_IssueSynced";
+import JIRA_NoRecordId from "@salesforce/label/c.JIRA_NoRecordId";
+import JIRA_EnterComment from "@salesforce/label/c.JIRA_EnterComment";
+import JIRA_CommentAdded from "@salesforce/label/c.JIRA_CommentAdded";
+import JIRA_SelectTransition from "@salesforce/label/c.JIRA_SelectTransition";
+import JIRA_TransitionSuccess from "@salesforce/label/c.JIRA_TransitionSuccess";
+import JIRA_UnexpectedError from "@salesforce/label/c.JIRA_UnexpectedError";
 
 export default class JiraIssueCard extends LightningElement {
   @api recordId; // Compliance_Gap__c Id
@@ -23,12 +53,57 @@ export default class JiraIssueCard extends LightningElement {
 
   wiredIssueResult;
 
+  label = {
+    JIRA_IssueCardTitle,
+    JIRA_Loading,
+    JIRA_NoIssueLinked,
+    JIRA_CreateIssueHint,
+    JIRA_IssueKeyLabel,
+    JIRA_SummaryLabel,
+    JIRA_PriorityFieldLabel,
+    JIRA_AssigneeLabel,
+    JIRA_Unassigned,
+    JIRA_CreatedLabel,
+    JIRA_UpdatedLabel,
+    JIRA_RefreshButton,
+    JIRA_SyncButton,
+    JIRA_AddCommentButton,
+    JIRA_TransitionButton,
+    JIRA_OpenInJiraButton,
+    JIRA_CancelButton,
+    JIRA_CommentLabel,
+    JIRA_CommentPlaceholder,
+    JIRA_TransitionToLabel,
+    JIRA_TransitionPlaceholder,
+    JIRA_CurrentStatus,
+    JIRA_IssueRefreshed,
+    JIRA_IssueSynced,
+    JIRA_NoRecordId,
+    JIRA_EnterComment,
+    JIRA_CommentAdded,
+    JIRA_SelectTransition,
+    JIRA_TransitionSuccess,
+    JIRA_UnexpectedError,
+  };
+
   get hasIssue() {
     return this.jiraKey && this.issue;
   }
 
   get noIssueLinked() {
     return !this.jiraKey;
+  }
+
+  get commentModalTitle() {
+    return `${this.label.JIRA_AddCommentButton} to ${this.jiraKey}`;
+  }
+
+  get transitionModalTitle() {
+    return `${this.label.JIRA_TransitionButton} ${this.jiraKey}`;
+  }
+
+  get currentStatusText() {
+    return `${this.label.JIRA_CurrentStatus} ${this.issue?.status ?? ""}`;
   }
 
   get statusClass() {
@@ -101,7 +176,7 @@ export default class JiraIssueCard extends LightningElement {
 
     try {
       await refreshApex(this.wiredIssueResult);
-      this.showToast("Success", "Issue status refreshed", "success");
+      this.showToast("Success", this.label.JIRA_IssueRefreshed, "success");
     } catch (err) {
       this.error = this.getErrorMessage(err);
     } finally {
@@ -111,7 +186,7 @@ export default class JiraIssueCard extends LightningElement {
 
   async handleSync() {
     if (!this.recordId) {
-      this.showToast("Error", "No record ID provided", "error");
+      this.showToast("Error", this.label.JIRA_NoRecordId, "error");
       return;
     }
 
@@ -120,7 +195,7 @@ export default class JiraIssueCard extends LightningElement {
     try {
       await syncIssueStatus({ gapId: this.recordId });
       await refreshApex(this.wiredIssueResult);
-      this.showToast("Success", "Issue synced with Salesforce", "success");
+      this.showToast("Success", this.label.JIRA_IssueSynced, "success");
     } catch (err) {
       this.showToast("Error", this.getErrorMessage(err), "error");
     } finally {
@@ -165,7 +240,7 @@ export default class JiraIssueCard extends LightningElement {
 
   async handleSubmitComment() {
     if (!this.commentText.trim()) {
-      this.showToast("Error", "Please enter a comment", "error");
+      this.showToast("Error", this.label.JIRA_EnterComment, "error");
       return;
     }
 
@@ -173,7 +248,7 @@ export default class JiraIssueCard extends LightningElement {
 
     try {
       await addComment({ jiraKey: this.jiraKey, comment: this.commentText });
-      this.showToast("Success", "Comment added to Jira", "success");
+      this.showToast("Success", this.label.JIRA_CommentAdded, "success");
       this.handleCloseCommentModal();
     } catch (err) {
       this.showToast("Error", this.getErrorMessage(err), "error");
@@ -208,7 +283,7 @@ export default class JiraIssueCard extends LightningElement {
 
   async handleSubmitTransition() {
     if (!this.selectedTransition) {
-      this.showToast("Error", "Please select a transition", "error");
+      this.showToast("Error", this.label.JIRA_SelectTransition, "error");
       return;
     }
 
@@ -217,7 +292,7 @@ export default class JiraIssueCard extends LightningElement {
     try {
       await transitionIssue({ jiraKey: this.jiraKey, transitionId: this.selectedTransition });
       await refreshApex(this.wiredIssueResult);
-      this.showToast("Success", "Issue transitioned successfully", "success");
+      this.showToast("Success", this.label.JIRA_TransitionSuccess, "success");
       this.handleCloseTransitionModal();
     } catch (err) {
       this.showToast("Error", this.getErrorMessage(err), "error");
@@ -229,7 +304,7 @@ export default class JiraIssueCard extends LightningElement {
   getErrorMessage(error) {
     if (error?.body?.message) return error.body.message;
     if (error?.message) return error.message;
-    return "An unexpected error occurred";
+    return this.label.JIRA_UnexpectedError;
   }
 
   showToast(title, message, variant) {
