@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Elaro Drill-Down Viewer" icon-name="custom:custom63">
+  <lightning-card title={label.CardTitle} icon-name="custom:custom63">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading drill-down data" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -32,13 +32,13 @@
           <template lwc:if={noRecords}>
             <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
               <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-              No records found for the selected context
+              {label.NoRecords}
             </div>
           </template>
 
           <div class="slds-m-top_medium slds-text-align_center">
             <lightning-button
-              label="Export to CSV"
+              label={label.ExportCSV}
               onclick={handleExport}
               disabled={isExportDisabled}
               icon-name="utility:download"

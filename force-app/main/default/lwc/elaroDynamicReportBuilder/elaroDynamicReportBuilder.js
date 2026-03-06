@@ -3,8 +3,28 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getAvailableObjects from "@salesforce/apex/ElaroDynamicReportController.getAvailableObjects";
 import getFieldMetadata from "@salesforce/apex/ElaroDynamicReportController.getFieldMetadata";
 import executeReport from "@salesforce/apex/ElaroDynamicReportController.executeReport";
+import CardTitle from "@salesforce/label/c.REPORT_CardTitle";
+import SpinnerAlt from "@salesforce/label/c.REPORT_SpinnerAlt";
+import SelectObject from "@salesforce/label/c.REPORT_SelectObject";
+import ChooseObject from "@salesforce/label/c.REPORT_ChooseObject";
+import SelectFields from "@salesforce/label/c.REPORT_SelectFields";
+import AvailableFields from "@salesforce/label/c.REPORT_AvailableFields";
+import SelectedFields from "@salesforce/label/c.REPORT_SelectedFields";
+import FiltersHeading from "@salesforce/label/c.REPORT_Filters";
+import FieldLabel from "@salesforce/label/c.REPORT_Field";
+import OperatorLabel from "@salesforce/label/c.REPORT_Operator";
+import ValueLabel from "@salesforce/label/c.REPORT_Value";
+import RemoveFilter from "@salesforce/label/c.REPORT_RemoveFilter";
+import AddFilter from "@salesforce/label/c.REPORT_AddFilter";
+import SortBy from "@salesforce/label/c.REPORT_SortBy";
+import SortDirection from "@salesforce/label/c.REPORT_SortDirection";
+import MaxRows from "@salesforce/label/c.REPORT_MaxRows";
+import RunReport from "@salesforce/label/c.REPORT_RunReport";
+import ClearBtn from "@salesforce/label/c.REPORT_Clear";
+import Results from "@salesforce/label/c.REPORT_Results";
 
 export default class ElaroDynamicReportBuilder extends LightningElement {
+  label = { CardTitle, SpinnerAlt, SelectObject, ChooseObject, SelectFields, AvailableFields, SelectedFields, FiltersHeading, FieldLabel, OperatorLabel, ValueLabel, RemoveFilter, AddFilter, SortBy, SortDirection, MaxRows, RunReport, ClearBtn, Results };
   selectedObject = "";
   objectOptions = [];
   availableFields = [];

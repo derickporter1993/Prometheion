@@ -3,8 +3,13 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
 import getRecords from "@salesforce/apex/ElaroDrillDownController.getRecords";
 import exportToCSV from "@salesforce/apex/ElaroDrillDownController.exportToCSV";
+import CardTitle from "@salesforce/label/c.DRILL_CardTitle";
+import LoadingAlt from "@salesforce/label/c.DRILL_LoadingAlt";
+import NoRecords from "@salesforce/label/c.DRILL_NoRecords";
+import ExportCSV from "@salesforce/label/c.DRILL_ExportCSV";
 
 export default class ElaroDrillDownViewer extends NavigationMixin(LightningElement) {
+  label = { CardTitle, LoadingAlt, NoRecords, ExportCSV };
   @api contextJson;
   records = [];
   columns = [];

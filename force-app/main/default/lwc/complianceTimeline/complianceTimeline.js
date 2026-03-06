@@ -1,6 +1,17 @@
 import { LightningElement, api } from "lwc";
 
+// Custom Labels
+import CARD_TITLE from "@salesforce/label/c.TIMELINE_CardTitle";
+import LOADING_TIMELINE from "@salesforce/label/c.TIMELINE_Loading";
+import NO_TIMELINE_EVENTS from "@salesforce/label/c.TIMELINE_NoEvents";
+
 export default class ComplianceTimeline extends LightningElement {
+  label = {
+    cardTitle: CARD_TITLE,
+    loadingTimeline: LOADING_TIMELINE,
+    noTimelineEvents: NO_TIMELINE_EVENTS,
+  };
+
   @api events = [];
   isLoading = false;
   hasError = false;

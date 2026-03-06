@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Compliance Trend" icon-name="standard:chart">
+  <lightning-card title={label.cardTitle} icon-name="standard:chart">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading trend data" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.loadingTrend} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -17,7 +17,7 @@
       <template lwc:if={isEmpty}>
         <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
           <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-          No trend data available
+          {label.noTrendData}
         </div>
       </template>
 
