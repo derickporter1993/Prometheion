@@ -11,9 +11,15 @@ import AggregateLabel from "@salesforce/label/c.COMPARE_AggregateLabel";
 import GenerateMatrix from "@salesforce/label/c.COMPARE_GenerateMatrix";
 import MatrixResults from "@salesforce/label/c.COMPARE_MatrixResults";
 import TotalColumn from "@salesforce/label/c.COMPARE_Total";
+import ErrorLoadingFields from "@salesforce/label/c.COMPARE_ErrorLoadingFields";
+import ErrorGeneratingMatrix from "@salesforce/label/c.COMPARE_ErrorGeneratingMatrix";
+import MatrixGeneratedSuccess from "@salesforce/label/c.COMPARE_MatrixGeneratedSuccess";
+import ToastError from "@salesforce/label/c.COMPARE_ToastError";
+import ToastSuccess from "@salesforce/label/c.COMPARE_ToastSuccess";
+import UnknownError from "@salesforce/label/c.COMPARE_UnknownError";
 
 export default class ElaroComparativeAnalytics extends LightningElement {
-  label = { CardTitle, SpinnerAlt, ObjectLabel, RowFieldLabel, ColumnFieldLabel, AggregateLabel, GenerateMatrix, MatrixResults, TotalColumn };
+  label = { CardTitle, SpinnerAlt, ObjectLabel, RowFieldLabel, ColumnFieldLabel, AggregateLabel, GenerateMatrix, MatrixResults, TotalColumn, ErrorLoadingFields, ErrorGeneratingMatrix, MatrixGeneratedSuccess, ToastError, ToastSuccess, UnknownError };
   selectedObject = "";
   objectOptions = [
     { label: "Account", value: "Account" },
@@ -41,8 +47,8 @@ export default class ElaroComparativeAnalytics extends LightningElement {
       }));
     } else if (error) {
       this.showError(
-        "Error loading fields: " +
-          (error?.body?.message || error?.message || "An unknown error occurred")
+        ErrorLoadingFields +
+          (error?.body?.message || error?.message || UnknownError)
       );
     }
   }
@@ -92,13 +98,13 @@ export default class ElaroComparativeAnalytics extends LightningElement {
         // Pre-compute matrix display data
         this.computedMatrixData = this.computeMatrixDisplayData();
         this.isLoading = false;
-        this.showSuccess("Matrix generated successfully");
+        this.showSuccess(MatrixGeneratedSuccess);
       })
       .catch((error) => {
         this.hasError = true;
         this.errorMessage =
-          "Error generating matrix: " +
-          (error?.body?.message || error?.message || "An unknown error occurred");
+          ErrorGeneratingMatrix +
+          (error?.body?.message || error?.message || UnknownError);
         this.isLoading = false;
         this.showError(this.errorMessage);
       });
@@ -163,7 +169,7 @@ export default class ElaroComparativeAnalytics extends LightningElement {
   showError(message) {
     this.dispatchEvent(
       new ShowToastEvent({
-        title: "Error",
+        title: ToastError,
         message: message,
         variant: "error",
       })
@@ -173,7 +179,7 @@ export default class ElaroComparativeAnalytics extends LightningElement {
   showSuccess(message) {
     this.dispatchEvent(
       new ShowToastEvent({
-        title: "Success",
+        title: ToastSuccess,
         message: message,
         variant: "success",
       })

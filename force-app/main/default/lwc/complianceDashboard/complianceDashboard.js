@@ -1,7 +1,21 @@
 import { LightningElement, wire } from "lwc";
 import getDashboardSummary from "@salesforce/apex/ComplianceDashboardController.getDashboardSummary";
 
+// Custom Labels
+import CARD_TITLE from "@salesforce/label/c.DASHBOARD_CardTitle";
+import LOADING from "@salesforce/label/c.DASHBOARD_Loading";
+import ERROR_LOADING_DASHBOARD from "@salesforce/label/c.DASHBOARD_ErrorLoading";
+import RECENT_EVIDENCE from "@salesforce/label/c.DASHBOARD_RecentEvidence";
+import UNKNOWN_ERROR from "@salesforce/label/c.DASHBOARD_UnknownError";
+
 export default class ComplianceDashboard extends LightningElement {
+  label = {
+    cardTitle: CARD_TITLE,
+    loading: LOADING,
+    errorLoadingDashboard: ERROR_LOADING_DASHBOARD,
+    recentEvidence: RECENT_EVIDENCE,
+  };
+
   dashboardData;
   error;
   loading = true;
@@ -38,6 +52,6 @@ export default class ComplianceDashboard extends LightningElement {
 
   get errorMessage() {
     if (!this.error) return "";
-    return this.error?.body?.message || this.error?.message || "An unknown error occurred";
+    return this.error?.body?.message || this.error?.message || UNKNOWN_ERROR;
   }
 }

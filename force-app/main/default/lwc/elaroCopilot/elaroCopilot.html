@@ -30,12 +30,12 @@
             </svg>
           </div>
           <div class="logo-text">
-            <h1>Elaro</h1>
-            <span class="subtitle">Compliance Copilot</span>
+            <h1>{label.HeaderTitle}</h1>
+            <span class="subtitle">{label.HeaderSubtitle}</span>
           </div>
         </div>
         <div class="header-actions">
-          <button class="icon-button" onclick={clearChat} title="Clear conversation" aria-label="Clear conversation">
+          <button class="icon-button" onclick={clearChat} title={label.ClearConversation} aria-label={label.ClearConversation}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path
                 d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
@@ -62,9 +62,9 @@
               />
             </svg>
           </div>
-          <h2>How can I help with compliance today?</h2>
+          <h2>{label.WelcomeHeading}</h2>
           <p class="welcome-subtitle">
-            Ask me about your compliance posture, violations, or generate audit evidence.
+            {label.WelcomeSubtitle}
           </p>
 
           <!-- Quick Actions Grid -->
@@ -185,7 +185,7 @@
                             />
                             <path d="M14 2V8H20" />
                           </svg>
-                          Evidence
+                          {label.EvidenceTitle}
                         </h4>
                         <div class="evidence-cards">
                           <template for:each={message.evidenceList} for:item="ev">
@@ -193,7 +193,7 @@
                               <div class="evidence-header">
                                 <span class="entity-badge">{ev.entityType}</span>
                                 <template lwc:if={ev.riskScore}>
-                                  <span class={ev.riskClass}>Risk: {ev.riskScore}/10</span>
+                                  <span class={ev.riskClass}>{label.RiskLabel} {ev.riskScore}/10</span>
                                 </template>
                               </div>
                               <p class="evidence-description">{ev.description}</p>
@@ -260,7 +260,7 @@
             <span></span>
             <span></span>
           </div>
-          <span class="slds-assistive-text">Processing your request</span>
+          <span class="slds-assistive-text">{label.ProcessingAlt}</span>
         </div>
       </template>
     </div>
@@ -271,20 +271,20 @@
         <input
           type="text"
           class="chat-input"
-          placeholder="Ask about compliance, violations, or generate evidence..."
-          aria-label="Ask about compliance, violations, or generate evidence"
+          placeholder={label.InputPlaceholder}
+          aria-label={label.InputAriaLabel}
           value={query}
           onchange={handleQueryChange}
           onkeypress={handleKeyPress}
           disabled={isLoading}
         />
-        <button class="send-button" onclick={handleSubmit} disabled={isLoading} aria-label="Send message">
+        <button class="send-button" onclick={handleSubmit} disabled={isLoading} aria-label={label.SendAriaLabel}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" />
           </svg>
         </button>
       </div>
-      <p class="input-hint">Press Enter to send • Powered by Elaro AI</p>
+      <p class="input-hint">{label.InputHint}</p>
     </div>
   </div>
 </template>

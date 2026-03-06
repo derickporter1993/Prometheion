@@ -1644,4 +1644,409 @@
         <shortDescription>Governor limit warning message</shortDescription>
         <value>Approaching governor limits. Processing paused and will resume.</value>
     </labels>
+    <!-- Executive KPI Dashboard Labels -->
+    <labels>
+        <fullName>EXEC_DashboardTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Executive KPI Dashboard title</shortDescription>
+        <value>Elaro Executive KPI Dashboard</value>
+    </labels>
+    <labels>
+        <fullName>EXEC_LoadingKPIs</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading KPIs spinner alt text</shortDescription>
+        <value>Loading KPIs</value>
+    </labels>
+    <labels>
+        <fullName>EXEC_TargetPrefix</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Target prefix label</shortDescription>
+        <value>Target:</value>
+    </labels>
+    <labels>
+        <fullName>EXEC_ErrorLoadingKPIs</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error loading KPIs message prefix</shortDescription>
+        <value>Error loading KPIs:</value>
+    </labels>
+    <!-- ROI Calculator Labels -->
+    <labels>
+        <fullName>ROI_Heading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ROI Calculator heading</shortDescription>
+        <value>Elaro ROI Calculator</value>
+    </labels>
+    <labels>
+        <fullName>ROI_Subtitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ROI Calculator subtitle</shortDescription>
+        <value>Calculate your annual compliance cost savings</value>
+    </labels>
+    <labels>
+        <fullName>ROI_IndustryLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Industry combobox label</shortDescription>
+        <value>Industry</value>
+    </labels>
+    <labels>
+        <fullName>ROI_OrgSizeLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Organization size input label</shortDescription>
+        <value>Organization Size (Users)</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AuditSpendLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Current annual audit spend label</shortDescription>
+        <value>Current Annual Audit Spend ($)</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AuditPrepHoursLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Current audit prep hours label</shortDescription>
+        <value>Current Audit Prep Hours/Year</value>
+    </labels>
+    <labels>
+        <fullName>ROI_HourlyRateLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance analyst hourly rate label</shortDescription>
+        <value>Compliance Analyst Hourly Rate ($)</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AnalysisHeading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ROI analysis results heading</shortDescription>
+        <value>Your ROI Analysis</value>
+    </labels>
+    <labels>
+        <fullName>ROI_TimeSavings</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Annual time savings label</shortDescription>
+        <value>Annual Time Savings</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AuditCostReduction</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Audit cost reduction label</shortDescription>
+        <value>Audit Cost Reduction</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AuditCostDetail</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Audit cost reduction detail</shortDescription>
+        <value>30% reduction in external audit costs</value>
+    </labels>
+    <labels>
+        <fullName>ROI_TotalSavings</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Total annual savings label</shortDescription>
+        <value>Total Annual Savings</value>
+    </labels>
+    <labels>
+        <fullName>ROI_ElaroCost</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Elaro annual cost label</shortDescription>
+        <value>Elaro Annual Cost</value>
+    </labels>
+    <labels>
+        <fullName>ROI_NetBenefit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Net annual benefit label</shortDescription>
+        <value>Net Annual Benefit</value>
+    </labels>
+    <labels>
+        <fullName>ROI_ROILabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ROI percentage label</shortDescription>
+        <value>ROI</value>
+    </labels>
+    <labels>
+        <fullName>ROI_AdjustInputs</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Adjust inputs message</shortDescription>
+        <value>Adjust your inputs to see potential savings</value>
+    </labels>
+    <labels>
+        <fullName>ROI_TypicalReduction</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Typical reduction message</shortDescription>
+        <value>Most organizations see 80-85% reduction in audit prep time.</value>
+    </labels>
+    <!-- Readiness Score Labels -->
+    <labels>
+        <fullName>RS_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance Readiness Score title</shortDescription>
+        <value>Compliance Readiness Score</value>
+    </labels>
+    <labels>
+        <fullName>RS_LoadingSpinner</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading readiness score spinner alt text</shortDescription>
+        <value>Loading readiness score</value>
+    </labels>
+    <labels>
+        <fullName>RS_AccessGovernance</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Access Governance label</shortDescription>
+        <value>Access Governance:</value>
+    </labels>
+    <labels>
+        <fullName>RS_ConfigHealth</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Config Health label</shortDescription>
+        <value>Config Health:</value>
+    </labels>
+    <labels>
+        <fullName>RS_AutomationSafety</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Automation Safety label</shortDescription>
+        <value>Automation Safety:</value>
+    </labels>
+    <labels>
+        <fullName>RS_Evidence</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Evidence label</shortDescription>
+        <value>Evidence:</value>
+    </labels>
+    <labels>
+        <fullName>RS_GenerateSOC2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Generate SOC2 pack button</shortDescription>
+        <value>Generate SOC2 Pack</value>
+    </labels>
+    <labels>
+        <fullName>RS_GenerateHIPAA</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Generate HIPAA pack button</shortDescription>
+        <value>Generate HIPAA Pack</value>
+    </labels>
+    <labels>
+        <fullName>RS_AuditReady</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Audit ready status</shortDescription>
+        <value>Audit Ready</value>
+    </labels>
+    <labels>
+        <fullName>RS_ActionRequired</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Action required status</shortDescription>
+        <value>Action Required</value>
+    </labels>
+    <labels>
+        <fullName>RS_CriticalRisks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Critical risks status</shortDescription>
+        <value>Critical Risks</value>
+    </labels>
+    <labels>
+        <fullName>RS_Calculating</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Calculating status</shortDescription>
+        <value>Calculating...</value>
+    </labels>
+    <labels>
+        <fullName>RS_ErrorStatus</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error status</shortDescription>
+        <value>Error</value>
+    </labels>
+    <!-- Trend Analyzer Labels -->
+    <labels>
+        <fullName>TREND_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Trend Analyzer title</shortDescription>
+        <value>Elaro Trend Analyzer</value>
+    </labels>
+    <labels>
+        <fullName>TREND_LoadingSpinner</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Analyzing trends spinner alt text</shortDescription>
+        <value>Analyzing trends</value>
+    </labels>
+    <labels>
+        <fullName>TREND_ObjectLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Object combobox label</shortDescription>
+        <value>Object</value>
+    </labels>
+    <labels>
+        <fullName>TREND_DateFieldLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Date field combobox label</shortDescription>
+        <value>Date Field</value>
+    </labels>
+    <labels>
+        <fullName>TREND_MetricFieldLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Metric field combobox label</shortDescription>
+        <value>Metric Field</value>
+    </labels>
+    <labels>
+        <fullName>TREND_GranularityLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Granularity combobox label</shortDescription>
+        <value>Granularity</value>
+    </labels>
+    <labels>
+        <fullName>TREND_MonthsBackLabel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Months back input label</shortDescription>
+        <value>Months Back</value>
+    </labels>
+    <labels>
+        <fullName>TREND_AnalyzeButton</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Analyze trend button label</shortDescription>
+        <value>Analyze Trend</value>
+    </labels>
+    <labels>
+        <fullName>TREND_AnalysisHeading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Trend analysis results heading</shortDescription>
+        <value>Trend Analysis</value>
+    </labels>
+    <labels>
+        <fullName>TREND_PeriodHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Period table header</shortDescription>
+        <value>Period</value>
+    </labels>
+    <labels>
+        <fullName>TREND_ValueHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Value table header</shortDescription>
+        <value>Value</value>
+    </labels>
+    <labels>
+        <fullName>TREND_ChangeHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Change table header</shortDescription>
+        <value>Change</value>
+    </labels>
+    <labels>
+        <fullName>TREND_PercentChangeHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Percent change table header</shortDescription>
+        <value>% Change</value>
+    </labels>
+    <!-- Executive KPI Dashboard (executiveKpiDashboard) Labels -->
+    <labels>
+        <fullName>KPI_DashboardTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Executive KPI Dashboard title</shortDescription>
+        <value>Executive KPI Dashboard</value>
+    </labels>
+    <labels>
+        <fullName>KPI_Loading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading spinner alt text</shortDescription>
+        <value>Loading</value>
+    </labels>
+    <labels>
+        <fullName>KPI_ErrorLoading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error loading KPIs message prefix</shortDescription>
+        <value>Error loading KPIs:</value>
+    </labels>
+    <labels>
+        <fullName>KPI_OverallComplianceScore</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Overall compliance score label</shortDescription>
+        <value>Overall Compliance Score</value>
+    </labels>
+    <labels>
+        <fullName>KPI_TotalGaps</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Total gaps label</shortDescription>
+        <value>Total Gaps</value>
+    </labels>
+    <labels>
+        <fullName>KPI_CriticalGaps</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Critical gaps label</shortDescription>
+        <value>Critical Gaps</value>
+    </labels>
+    <labels>
+        <fullName>KPI_CompliantFrameworks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliant frameworks label</shortDescription>
+        <value>Compliant Frameworks</value>
+    </labels>
+    <!-- Flow Execution Monitor Labels -->
+    <labels>
+        <fullName>FLOW_MonitorTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Flow Execution Monitor title</shortDescription>
+        <value>Flow Execution Monitor</value>
+    </labels>
+    <labels>
+        <fullName>FLOW_LoadingSpinner</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading flow executions spinner alt text</shortDescription>
+        <value>Loading flow executions</value>
+    </labels>
+    <labels>
+        <fullName>FLOW_EmptyState</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No flow execution data message</shortDescription>
+        <value>No flow execution data available</value>
+    </labels>
 </CustomLabels>

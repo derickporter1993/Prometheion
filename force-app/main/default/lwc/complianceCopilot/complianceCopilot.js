@@ -18,6 +18,9 @@ import INFO_TITLE from "@salesforce/label/c.Elaro_Info_Title";
 import AUTO_FIX_COMING from "@salesforce/label/c.Elaro_Auto_Fix_Coming";
 import EXPORT_COMING from "@salesforce/label/c.Elaro_Export_Coming";
 import PROCESSING_ERROR from "@salesforce/label/c.Elaro_Processing_Error";
+import CARD_TITLE from "@salesforce/label/c.COPILOT_CardTitle";
+import PROCESSING from "@salesforce/label/c.COPILOT_Processing";
+import UNEXPECTED_ERROR from "@salesforce/label/c.COPILOT_UnexpectedError";
 
 // Debounce delay in milliseconds
 const DEBOUNCE_DELAY = 300;
@@ -39,6 +42,8 @@ export default class ComplianceCopilot extends LightningElement {
     send: SEND,
     clearChat: CLEAR_CHAT,
     evidence: EVIDENCE,
+    cardTitle: CARD_TITLE,
+    processing: PROCESSING,
   };
 
   // Debounce timer
@@ -122,7 +127,7 @@ export default class ComplianceCopilot extends LightningElement {
     if (typeof error === "string") {
       return error;
     }
-    return "An unexpected error occurred. Please try again.";
+    return UNEXPECTED_ERROR;
   }
 
   handleQuickCommand(event) {

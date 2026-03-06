@@ -1,12 +1,12 @@
 <template>
-  <lightning-card title="Compliance Dashboard" icon-name="standard:audit">
+  <lightning-card title={label.cardTitle} icon-name="standard:audit">
     <div class="slds-p-around_medium">
       <template lwc:if={loading}>
-        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        <lightning-spinner alternative-text={label.loading}></lightning-spinner>
       </template>
 
       <template lwc:if={error}>
-        <div class="slds-text-color_error" role="alert">Error loading dashboard: {errorMessage}</div>
+        <div class="slds-text-color_error" role="alert">{label.errorLoadingDashboard} {errorMessage}</div>
       </template>
 
       <template lwc:if={hasData}>
@@ -29,7 +29,7 @@
             <c-compliance-gap-list gaps={recentGaps}></c-compliance-gap-list>
           </div>
           <div class="slds-col slds-size_1-of-2">
-            <lightning-card title="Recent Evidence">
+            <lightning-card title={label.recentEvidence}>
               <template for:each={recentEvidence} for:item="evidence">
                 <div key={evidence.Id} class="slds-p-around_small">
                   <div class="slds-text-heading_small">{evidence.Evidence_Type__c}</div>

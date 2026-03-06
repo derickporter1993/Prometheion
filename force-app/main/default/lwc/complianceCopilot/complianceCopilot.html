@@ -1,5 +1,5 @@
 <template>
-  <lightning-card title="Compliance Copilot" icon-name="utility:bot">
+  <lightning-card title={label.cardTitle} icon-name="utility:bot">
     <div class="slds-p-around_medium">
       <!-- Chat Container -->
       <div class="chat-container slds-scrollable_y" style="height: 500px; overflow-y: auto; border: 1px solid #d8dde6; border-radius: 4px; padding: 1rem; margin-bottom: 1rem; background-color: #fafaf9;">
@@ -85,7 +85,7 @@
               <lightning-icon icon-name="utility:bot" size="small" class="slds-m-top_x-small" aria-hidden="true"></lightning-icon>
               <div style="flex: 1">
                 <div class="slds-spinner_container">
-                  <lightning-spinner alternative-text="Processing" size="small"></lightning-spinner>
+                  <lightning-spinner alternative-text={label.processing} size="small"></lightning-spinner>
                 </div>
               </div>
             </div>

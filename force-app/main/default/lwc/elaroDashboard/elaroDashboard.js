@@ -3,8 +3,27 @@ import calculateReadinessScore from "@salesforce/apex/ElaroComplianceScorer.calc
 import getAuditPackages from "@salesforce/apex/ElaroDashboardController.getAuditPackages";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
+import DashboardTitle from "@salesforce/label/c.DASH_DashboardTitle";
+import LastUpdated from "@salesforce/label/c.DASH_LastUpdated";
+import RefreshBtn from "@salesforce/label/c.DASH_Refresh";
+import OverallScore from "@salesforce/label/c.DASH_OverallScore";
+import FrameworkCompliance from "@salesforce/label/c.DASH_FrameworkCompliance";
+import FilterByFramework from "@salesforce/label/c.DASH_FilterByFramework";
+import BackToAllFrameworks from "@salesforce/label/c.DASH_BackToAllFrameworks";
+import ComplianceScoreLabel from "@salesforce/label/c.DASH_ComplianceScore";
+import ScoreBreakdown from "@salesforce/label/c.DASH_ScoreBreakdown";
+import WeightLabel from "@salesforce/label/c.DASH_Weight";
+import ContributionLabel from "@salesforce/label/c.DASH_Contribution";
+import TopRisks from "@salesforce/label/c.DASH_TopRisks";
+import ViewDetailsBtn from "@salesforce/label/c.DASH_ViewDetails";
+import RecentAuditPackages from "@salesforce/label/c.DASH_RecentAuditPackages";
+import CreatedLabel from "@salesforce/label/c.DASH_Created";
+import GenerateSOC2 from "@salesforce/label/c.DASH_GenerateSOC2";
+import GenerateHIPAA from "@salesforce/label/c.DASH_GenerateHIPAA";
+import CalculatingScores from "@salesforce/label/c.DASH_CalculatingScores";
 
 export default class ElaroDashboard extends NavigationMixin(LightningElement) {
+  label = { DashboardTitle, LastUpdated, RefreshBtn, OverallScore, FrameworkCompliance, FilterByFramework, BackToAllFrameworks, ComplianceScoreLabel, ScoreBreakdown, WeightLabel, ContributionLabel, TopRisks, ViewDetailsBtn, RecentAuditPackages, CreatedLabel, GenerateSOC2, GenerateHIPAA, CalculatingScores };
   scoreResult = null;
   isLoading = true;
   lastUpdated = new Date();

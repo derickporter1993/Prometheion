@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Compliance Timeline" icon-name="standard:event">
+  <lightning-card title={label.cardTitle} icon-name="standard:event">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading timeline events" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.loadingTimeline} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -17,7 +17,7 @@
       <template lwc:if={isEmpty}>
         <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
           <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-          No timeline events available
+          {label.noTimelineEvents}
         </div>
       </template>
 
