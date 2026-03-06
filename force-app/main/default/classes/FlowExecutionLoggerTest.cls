@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link FlowExecutionLogger}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=FlowExecutionLogger.class)
 private class FlowExecutionLoggerTest {
     @IsTest

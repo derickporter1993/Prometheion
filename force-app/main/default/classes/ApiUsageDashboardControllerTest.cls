@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ApiUsageDashboardController}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=ApiUsageDashboardController.class)
 private class ApiUsageDashboardControllerTest {
     @IsTest

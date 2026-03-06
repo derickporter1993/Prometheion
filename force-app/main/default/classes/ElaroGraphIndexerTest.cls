@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroGraphIndexer}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
 @IsTest(testFor=ElaroGraphIndexer.class)
 private class ElaroGraphIndexerTest {
     @TestSetup

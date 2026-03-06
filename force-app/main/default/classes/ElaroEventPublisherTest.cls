@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroEventPublisher}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Event Monitoring
+ */
 @IsTest(testFor=ElaroEventPublisher.class)
 private class ElaroEventPublisherTest {
     

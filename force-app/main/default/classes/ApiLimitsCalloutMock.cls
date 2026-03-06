@@ -1,11 +1,11 @@
-@IsTest
 /**
  * HTTP callout mock for API limits endpoint testing.
  *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
- * @group Utilities
+ * @group System Monitoring
  */
+@IsTest
 global class ApiLimitsCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();

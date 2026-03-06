@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroReasoningEngine}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Features
+ */
 @IsTest(testFor=ElaroReasoningEngine.class)
 private class ElaroReasoningEngineTest {
     @TestSetup

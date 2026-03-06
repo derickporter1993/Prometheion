@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroQuickActionsService}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Quick Actions
+ */
 @IsTest(testFor=ElaroQuickActionsService.class)
 private class ElaroQuickActionsServiceTest {
     

@@ -8,9 +8,9 @@
  *
  * @see ElaroInstallHandlerTest
  *
- * Security: Uses 'without sharing' because install handlers run during package
- * installation where the installing user may not have sharing access to all
- * objects that need to be initialized (Custom Settings, Audit Logs, etc.).
+ * SECURITY: without sharing required because install handlers must initialize
+ * package data and assign permissions regardless of the installing user's
+ * record-level access.
  * @since v3.1.0 (Spring '26)
  */
 @SuppressWarnings('PMD.AvoidGlobalInstallUninstallHandlers')

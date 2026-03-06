@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroAuditTrailPoller}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
 @IsTest(testFor=ElaroAuditTrailPoller.class)
 private class ElaroAuditTrailPollerTest {
     

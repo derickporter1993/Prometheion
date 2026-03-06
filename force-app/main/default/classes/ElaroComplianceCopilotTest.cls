@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroComplianceCopilot}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Features
+ */
 @IsTest(testFor=ElaroComplianceCopilot.class)
 private class ElaroComplianceCopilotTest {
     

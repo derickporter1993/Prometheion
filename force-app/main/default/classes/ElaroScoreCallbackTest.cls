@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroScoreCallback}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
 @IsTest(testFor=ElaroScoreCallback.class)
 private class ElaroScoreCallbackTest {
     

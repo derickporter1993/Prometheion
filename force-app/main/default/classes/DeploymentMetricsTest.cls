@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link DeploymentMetrics}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=DeploymentMetrics.class)
 private class DeploymentMetricsTest {
 

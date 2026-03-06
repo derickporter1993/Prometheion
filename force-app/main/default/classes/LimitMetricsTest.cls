@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link LimitMetrics}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=LimitMetrics.class)
 private class LimitMetricsTest {
     @IsTest

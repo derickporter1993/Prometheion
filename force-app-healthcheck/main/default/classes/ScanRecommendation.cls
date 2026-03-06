@@ -5,7 +5,7 @@
  * @since v1.0.0 (Spring '26)
  * @group Health Check
  */
-public class ScanRecommendation implements Comparable {
+public inherited sharing class ScanRecommendation implements Comparable {
 
     @AuraEnabled
     public String title { get; set; }

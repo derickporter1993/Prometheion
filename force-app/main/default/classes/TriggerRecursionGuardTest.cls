@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link TriggerRecursionGuard}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Utilities
+ */
 @IsTest(testFor=TriggerRecursionGuard.class)
 private class TriggerRecursionGuardTest {
 

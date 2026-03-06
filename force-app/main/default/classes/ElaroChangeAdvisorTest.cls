@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroChangeAdvisor}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
 @IsTest(testFor=ElaroChangeAdvisor.class)
 private class ElaroChangeAdvisorTest {
     

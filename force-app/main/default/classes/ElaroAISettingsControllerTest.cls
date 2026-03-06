@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroAISettingsController}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
+ */
 @IsTest(testFor=ElaroAISettingsController.class)
 private class ElaroAISettingsControllerTest {
 

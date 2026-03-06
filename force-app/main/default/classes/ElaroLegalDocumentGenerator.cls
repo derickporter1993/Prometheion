@@ -1,3 +1,10 @@
+/**
+ * Generates legal attestation documents and evidence packs for compliance frameworks.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Export & Delivery
+ */
 public with sharing class ElaroLegalDocumentGenerator {
     private static final String RATE_LIMIT_PARTITION = 'ElaroRateLimit';
     private static final Integer RATE_LIMIT_MAX_CALLS = 10;

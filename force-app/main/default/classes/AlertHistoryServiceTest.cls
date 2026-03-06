@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link AlertHistoryService}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=AlertHistoryService.class)
 private class AlertHistoryServiceTest {
     @IsTest

@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroLegalDocumentGenerator}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Export & Delivery
+ */
 @IsTest(testFor=ElaroLegalDocumentGenerator.class)
 private class ElaroLegalDocumentGeneratorTest {
 

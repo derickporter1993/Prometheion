@@ -1,3 +1,10 @@
+/**
+ * Test class for the Elaro Alert trigger.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest
 private class ElaroAlertTriggerTest {
     @IsTest

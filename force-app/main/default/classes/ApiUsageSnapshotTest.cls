@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ApiUsageSnapshot}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 @IsTest(testFor=ApiUsageSnapshot.class)
 private class ApiUsageSnapshotTest {
     @IsTest static void testRun() {

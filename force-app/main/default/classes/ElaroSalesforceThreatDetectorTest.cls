@@ -1,3 +1,10 @@
+/**
+ * Test class for {@link ElaroSalesforceThreatDetector}.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Security
+ */
 @IsTest(testFor=ElaroSalesforceThreatDetector.class)
 private class ElaroSalesforceThreatDetectorTest {
     

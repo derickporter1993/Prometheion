@@ -4,7 +4,7 @@
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  */
-global with sharing class ElaroScheduledDelivery implements Schedulable {
+global inherited sharing class ElaroScheduledDelivery implements Schedulable {
     
     private String packageId;
     private List&lt;String&gt; recipientEmails;

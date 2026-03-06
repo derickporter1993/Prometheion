@@ -13,7 +13,8 @@
       "package": "Elaro Health Check",
       "versionName": "Spring 26",
       "versionNumber": "1.0.0.NEXT",
-      "default": false
+      "default": false,
+      "namespace": "elaroHC"
     }
   ],
   "name": "Elaro",
