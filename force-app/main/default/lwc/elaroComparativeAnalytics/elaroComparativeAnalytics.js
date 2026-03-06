@@ -2,8 +2,18 @@ import { LightningElement, wire } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getDimensionFields from "@salesforce/apex/ElaroMatrixController.getDimensionFields";
 import executeMatrixQuery from "@salesforce/apex/ElaroMatrixController.executeMatrixQuery";
+import CardTitle from "@salesforce/label/c.COMPARE_CardTitle";
+import SpinnerAlt from "@salesforce/label/c.COMPARE_SpinnerAlt";
+import ObjectLabel from "@salesforce/label/c.COMPARE_ObjectLabel";
+import RowFieldLabel from "@salesforce/label/c.COMPARE_RowFieldLabel";
+import ColumnFieldLabel from "@salesforce/label/c.COMPARE_ColumnFieldLabel";
+import AggregateLabel from "@salesforce/label/c.COMPARE_AggregateLabel";
+import GenerateMatrix from "@salesforce/label/c.COMPARE_GenerateMatrix";
+import MatrixResults from "@salesforce/label/c.COMPARE_MatrixResults";
+import TotalColumn from "@salesforce/label/c.COMPARE_Total";
 
 export default class ElaroComparativeAnalytics extends LightningElement {
+  label = { CardTitle, SpinnerAlt, ObjectLabel, RowFieldLabel, ColumnFieldLabel, AggregateLabel, GenerateMatrix, MatrixResults, TotalColumn };
   selectedObject = "";
   objectOptions = [
     { label: "Account", value: "Account" },

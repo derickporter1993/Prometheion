@@ -1,10 +1,10 @@
 <template>
-  <lightning-card title="Control Mapping Matrix" icon-name="standard:multi_select_checkbox">
+  <lightning-card title={label.CardTitle} icon-name="standard:multi_select_checkbox">
     <div slot="actions">
       <lightning-button-icon
         icon-name="utility:download"
-        alternative-text="Export"
-        title="Export Matrix"
+        alternative-text={label.ExportAlt}
+        title={label.ExportTitle}
         onclick={handleExport}
       >
       </lightning-button-icon>
@@ -16,7 +16,7 @@
         <div class="slds-col slds-size_1-of-2">
           <lightning-combobox
             name="sourceFramework"
-            label="Source Framework"
+            label={label.SourceFramework}
             value={sourceFramework}
             options={frameworkOptions}
             onchange={handleSourceChange}
@@ -26,9 +26,9 @@
         <div class="slds-col slds-size_1-of-2">
           <lightning-dual-listbox
             name="targetFrameworks"
-            label="Target Frameworks"
-            source-label="Available"
-            selected-label="Selected"
+            label={label.TargetFrameworks}
+            source-label={label.AvailableLabel}
+            selected-label={label.SelectedLabel}
             options={availableTargetFrameworks}
             value={targetFrameworks}
             onchange={handleTargetChange}
@@ -42,15 +42,15 @@
         <div class="legend slds-grid slds-grid_align-center">
           <div class="legend-item slds-var-m-right_medium">
             <span class="legend-dot direct" aria-hidden="true"></span>
-            <span class="slds-text-body_small">Direct Mapping</span>
+            <span class="slds-text-body_small">{label.DirectMapping}</span>
           </div>
           <div class="legend-item slds-var-m-right_medium">
             <span class="legend-dot partial" aria-hidden="true"></span>
-            <span class="slds-text-body_small">Partial Mapping</span>
+            <span class="slds-text-body_small">{label.PartialMapping}</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot none" aria-hidden="true"></span>
-            <span class="slds-text-body_small">No Mapping</span>
+            <span class="slds-text-body_small">{label.NoMapping}</span>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@
                   </th>
                 </template>
                 <th scope="col" class="coverage-header" role="columnheader">
-                  <div class="slds-truncate">Coverage</div>
+                  <div class="slds-truncate">{label.CoverageLabel}</div>
                 </th>
               </tr>
             </thead>
@@ -114,7 +114,7 @@
                         </div>
                       </template>
                       <template lwc:else>
-                        <span class="slds-text-color_weak" aria-label="No mapping">—</span>
+                        <span class="slds-text-color_weak" aria-label={label.NoMapping}>—</span>
                       </template>
                     </td>
                   </template>
@@ -144,25 +144,25 @@
           <div class="slds-col slds-size_1-of-4">
             <div class="stat-box" role="status" aria-label={totalControlsAriaLabel}>
               <div class="stat-value" aria-hidden="true">{totalControls}</div>
-              <div class="stat-label">Total Controls</div>
+              <div class="stat-label">{label.TotalControls}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="stat-box direct" role="status" aria-label={directMappingsAriaLabel}>
               <div class="stat-value" aria-hidden="true">{directMappings}</div>
-              <div class="stat-label">Direct Mappings</div>
+              <div class="stat-label">{label.DirectMappings}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="stat-box partial" role="status" aria-label={partialMappingsAriaLabel}>
               <div class="stat-value" aria-hidden="true">{partialMappings}</div>
-              <div class="stat-label">Partial Mappings</div>
+              <div class="stat-label">{label.PartialMappings}</div>
             </div>
           </div>
           <div class="slds-col slds-size_1-of-4">
             <div class="stat-box none" role="status" aria-label={unmappedAriaLabel}>
               <div class="stat-value" aria-hidden="true">{unmappedControls}</div>
-              <div class="stat-label">Gaps</div>
+              <div class="stat-label">{label.GapsLabel}</div>
             </div>
           </div>
         </div>
@@ -186,17 +186,17 @@
           <button
             class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
             onclick={closeMappingModal}
-            aria-label="Close mapping details modal"
-            title="Close"
+            aria-label={label.CloseAlt}
+            title={label.CloseBtn}
             type="button"
           >
             <lightning-icon
               icon-name="utility:close"
               size="small"
-              alternative-text="Close"
+              alternative-text={label.CloseBtn}
             ></lightning-icon>
           </button>
-          <h2 id="mapping-modal-heading" class="slds-modal__title">Control Mapping Details</h2>
+          <h2 id="mapping-modal-heading" class="slds-modal__title">{label.MappingDetails}</h2>
         </header>
         <div id="mapping-modal-content" class="slds-modal__content slds-var-p-around_medium">
           <template lwc:if={selectedMapping}>
@@ -207,7 +207,7 @@
                     id="source-control-heading"
                     class="slds-text-title_caps slds-var-m-bottom_small"
                   >
-                    Source Control
+                    {label.SourceControl}
                   </h3>
                   <p><strong>{selectedMapping.sourceCode}</strong></p>
                   <p class="slds-text-body_small">{selectedMapping.sourceName}</p>
@@ -222,7 +222,7 @@
                     id="target-control-heading"
                     class="slds-text-title_caps slds-var-m-bottom_small"
                   >
-                    Target Control
+                    {label.TargetControl}
                   </h3>
                   <p><strong>{selectedMapping.targetCode}</strong></p>
                   <p class="slds-text-body_small">{selectedMapping.targetName}</p>
@@ -237,16 +237,16 @@
                 id="mapping-analysis-heading"
                 class="slds-text-title_caps slds-var-m-bottom_small"
               >
-                Mapping Analysis
+                {label.MappingAnalysis}
               </h3>
               <dl class="slds-dl_horizontal">
-                <dt class="slds-dl_horizontal__label">Mapping Type:</dt>
+                <dt class="slds-dl_horizontal__label">{label.MappingType}</dt>
                 <dd class="slds-dl_horizontal__detail">
                   <lightning-badge label={selectedMapping.mappingType}></lightning-badge>
                 </dd>
-                <dt class="slds-dl_horizontal__label">Confidence:</dt>
+                <dt class="slds-dl_horizontal__label">{label.Confidence}</dt>
                 <dd class="slds-dl_horizontal__detail">{selectedMapping.confidence}%</dd>
-                <dt class="slds-dl_horizontal__label">Notes:</dt>
+                <dt class="slds-dl_horizontal__label">{label.Notes}</dt>
                 <dd class="slds-dl_horizontal__detail">{selectedMapping.notes}</dd>
               </dl>
             </section>
@@ -254,7 +254,7 @@
         </div>
         <footer class="slds-modal__footer">
           <lightning-button
-            label="Close"
+            label={label.CloseBtn}
             onclick={closeMappingModal}
           ></lightning-button>
         </footer>

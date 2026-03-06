@@ -2,8 +2,19 @@ import { LightningElement } from "lwc";
 import getAISettings from "@salesforce/apex/ElaroAISettingsController.getSettings";
 import saveAISettings from "@salesforce/apex/ElaroAISettingsController.saveSettings";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import CardTitle from "@salesforce/label/c.AI_CardTitle";
+import LoadingAlt from "@salesforce/label/c.AI_LoadingAlt";
+import EnableAIReasoning from "@salesforce/label/c.AI_EnableReasoning";
+import RequireApproval from "@salesforce/label/c.AI_RequireApproval";
+import EnableAutoRemediation from "@salesforce/label/c.AI_EnableAutoRemediation";
+import ConfidenceThreshold from "@salesforce/label/c.AI_ConfidenceThreshold";
+import BlacklistedUsersHelp from "@salesforce/label/c.AI_BlacklistedUsersHelp";
+import BlacklistedUsersLabel from "@salesforce/label/c.AI_BlacklistedUsersLabel";
+import BlacklistedUsersPlaceholder from "@salesforce/label/c.AI_BlacklistedUsersPlaceholder";
+import SaveSettings from "@salesforce/label/c.AI_SaveSettings";
 
 export default class ElaroAiSettings extends LightningElement {
+  label = { CardTitle, LoadingAlt, EnableAIReasoning, RequireApproval, EnableAutoRemediation, ConfidenceThreshold, BlacklistedUsersHelp, BlacklistedUsersLabel, BlacklistedUsersPlaceholder, SaveSettings };
   enableAI = true;
   requireApproval = true;
   autoRemediate = false;

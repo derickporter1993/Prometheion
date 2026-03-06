@@ -13,7 +13,7 @@ private class ComplianceFrameworkServiceTest {
     static void setupTestData() {
         // Create test compliance gaps for SOX framework
         List<Compliance_Gap__c> gaps = ComplianceTestDataFactory.createComplianceGaps('SOX', 5);
-        insert gaps;
+        insert as user gaps;
     }
     
     @IsTest

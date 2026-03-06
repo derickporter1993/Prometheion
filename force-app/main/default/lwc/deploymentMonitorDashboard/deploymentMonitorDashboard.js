@@ -1,17 +1,26 @@
 import { LightningElement } from "lwc";
 import getRecentDeployments from "@salesforce/apex/DeploymentMetrics.getRecentDeployments";
 import PollingManager from "c/pollingManager";
+import CardTitle from "@salesforce/label/c.DEPLOY_CardTitle";
+import CIHint from "@salesforce/label/c.DEPLOY_CIHint";
+import LoadingAlt from "@salesforce/label/c.DEPLOY_LoadingAlt";
+import NoData from "@salesforce/label/c.DEPLOY_NoData";
+import ColName from "@salesforce/label/c.DEPLOY_ColName";
+import ColStatus from "@salesforce/label/c.DEPLOY_ColStatus";
+import ColStarted from "@salesforce/label/c.DEPLOY_ColStarted";
+import ColFinished from "@salesforce/label/c.DEPLOY_ColFinished";
 
 export default class DeploymentMonitorDashboard extends LightningElement {
+  label = { CardTitle, CIHint, LoadingAlt, NoData, ColName, ColStatus, ColStarted, ColFinished };
   rows = [];
   isLoading = true;
   hasError = false;
   errorMessage = "";
   columns = [
-    { label: "Name", fieldName: "name" },
-    { label: "Status", fieldName: "status" },
-    { label: "Started", fieldName: "startedOn", type: "date" },
-    { label: "Finished", fieldName: "finishedOn", type: "date" },
+    { label: ColName, fieldName: "name" },
+    { label: ColStatus, fieldName: "status" },
+    { label: ColStarted, fieldName: "startedOn", type: "date" },
+    { label: ColFinished, fieldName: "finishedOn", type: "date" },
     { label: "Passed", fieldName: "testsPassed", type: "number" },
     { label: "Failed", fieldName: "testsFailed", type: "number" },
   ];

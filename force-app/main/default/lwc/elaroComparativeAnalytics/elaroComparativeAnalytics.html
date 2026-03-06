@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Elaro Comparative Analytics" icon-name="custom:custom63">
+  <lightning-card title={label.CardTitle} icon-name="custom:custom63">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Generating matrix" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.SpinnerAlt} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -19,7 +19,7 @@
         <div class="slds-grid slds-gutters slds-m-bottom_medium">
           <div class="slds-col slds-size_1-of-3">
             <lightning-combobox
-              label="Object"
+              label={label.ObjectLabel}
               value={selectedObject}
               options={objectOptions}
               onchange={handleObjectChange}
@@ -27,7 +27,7 @@
           </div>
           <div class="slds-col slds-size_1-of-3">
             <lightning-combobox
-              label="Row Field"
+              label={label.RowFieldLabel}
               value={rowField}
               options={dimensionFields}
               onchange={handleRowFieldChange}
@@ -35,7 +35,7 @@
           </div>
           <div class="slds-col slds-size_1-of-3">
             <lightning-combobox
-              label="Column Field"
+              label={label.ColumnFieldLabel}
               value={columnField}
               options={dimensionFields}
               onchange={handleColumnFieldChange}
@@ -45,14 +45,14 @@
 
         <div class="slds-m-bottom_medium">
           <lightning-input
-            label="Aggregate Expression (e.g., SUM(Amount))"
+            label={label.AggregateLabel}
             value={aggregateExpression}
             onchange={handleAggregateChange}
           ></lightning-input>
         </div>
 
         <lightning-button
-          label="Generate Matrix"
+          label={label.GenerateMatrix}
           onclick={handleGenerate}
           disabled={isButtonDisabled}
           variant="brand"
@@ -60,16 +60,16 @@
 
         <!-- Results Matrix -->
         <template lwc:if={hasResults}>
-          <div class="slds-m-top_large" role="region" aria-label="Matrix results">
-            <h3 class="slds-text-heading_small">Matrix Results</h3>
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer" role="table" aria-label="Comparative analytics matrix">
+          <div class="slds-m-top_large" role="region" aria-label={label.MatrixResults}>
+            <h3 class="slds-text-heading_small">{label.MatrixResults}</h3>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" role="table" aria-label={label.MatrixResults}>
               <thead>
                 <tr>
                   <th scope="col"></th>
                   <template for:each={matrixColumns} for:item="col">
                     <th key={col} scope="col">{col}</th>
                   </template>
-                  <th scope="col">Total</th>
+                  <th scope="col">{label.TotalColumn}</th>
                 </tr>
               </thead>
               <tbody>

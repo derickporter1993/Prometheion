@@ -1,5 +1,29 @@
 import { LightningElement } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import CardTitle from "@salesforce/label/c.MATRIX_CardTitle";
+import ExportAlt from "@salesforce/label/c.MATRIX_ExportAlt";
+import ExportTitle from "@salesforce/label/c.MATRIX_ExportTitle";
+import SourceFramework from "@salesforce/label/c.MATRIX_SourceFramework";
+import TargetFrameworks from "@salesforce/label/c.MATRIX_TargetFrameworks";
+import AvailableLabel from "@salesforce/label/c.MATRIX_Available";
+import SelectedLabel from "@salesforce/label/c.MATRIX_Selected";
+import DirectMapping from "@salesforce/label/c.MATRIX_DirectMapping";
+import PartialMapping from "@salesforce/label/c.MATRIX_PartialMapping";
+import NoMapping from "@salesforce/label/c.MATRIX_NoMapping";
+import CoverageLabel from "@salesforce/label/c.MATRIX_Coverage";
+import TotalControls from "@salesforce/label/c.MATRIX_TotalControls";
+import DirectMappings from "@salesforce/label/c.MATRIX_DirectMappings";
+import PartialMappings from "@salesforce/label/c.MATRIX_PartialMappings";
+import GapsLabel from "@salesforce/label/c.MATRIX_Gaps";
+import MappingDetails from "@salesforce/label/c.MATRIX_MappingDetails";
+import SourceControl from "@salesforce/label/c.MATRIX_SourceControl";
+import TargetControl from "@salesforce/label/c.MATRIX_TargetControl";
+import MappingAnalysis from "@salesforce/label/c.MATRIX_MappingAnalysis";
+import MappingType from "@salesforce/label/c.MATRIX_MappingType";
+import Confidence from "@salesforce/label/c.MATRIX_Confidence";
+import Notes from "@salesforce/label/c.MATRIX_Notes";
+import CloseBtn from "@salesforce/label/c.MATRIX_Close";
+import CloseAlt from "@salesforce/label/c.MATRIX_CloseAlt";
 
 const FRAMEWORK_OPTIONS = [
   { label: "NIST CSF 2.0", value: "NIST" },
@@ -91,6 +115,7 @@ const CONTROL_MAPPINGS = {
 };
 
 export default class ControlMappingMatrix extends LightningElement {
+  label = { CardTitle, ExportAlt, ExportTitle, SourceFramework, TargetFrameworks, AvailableLabel, SelectedLabel, DirectMapping, PartialMapping, NoMapping, CoverageLabel, TotalControls, DirectMappings, PartialMappings, GapsLabel, MappingDetails, SourceControl, TargetControl, MappingAnalysis, MappingType, Confidence, Notes, CloseBtn, CloseAlt };
   sourceFramework = "NIST";
   targetFrameworks = ["HIPAA", "SOC2", "FedRAMP"];
   mappingRows = [];

@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="AI Governance Settings" icon-name="custom:custom30">
+  <lightning-card title={label.CardTitle} icon-name="custom:custom30">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading AI settings" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -18,7 +18,7 @@
         <template lwc:if={notError}>
           <lightning-input
             type="checkbox"
-            label="Enable AI Reasoning"
+            label={label.EnableAIReasoning}
             checked={enableAI}
             onchange={handleToggleAI}
             class="slds-m-bottom_medium"
@@ -26,7 +26,7 @@
 
       <lightning-input
         type="checkbox"
-        label="Require Human Approval for HIGH+ Risk"
+        label={label.RequireApproval}
         checked={requireApproval}
         onchange={handleToggleApproval}
         class="slds-m-bottom_medium"
@@ -34,7 +34,7 @@
 
       <lightning-input
         type="checkbox"
-        label="Enable Auto-Remediation (DANGER: Bypasses human review)"
+        label={label.EnableAutoRemediation}
         checked={autoRemediate}
         onchange={handleToggleRemediation}
         class="slds-m-bottom_medium"
@@ -42,7 +42,7 @@
 
       <lightning-input
         type="number"
-        label="AI Confidence Threshold (0.0 - 1.0)"
+        label={label.ConfidenceThreshold}
         value={confidenceThreshold}
         step="0.01"
         min="0.0"
@@ -52,21 +52,20 @@
       ></lightning-input>
 
       <div id="blacklistedUsersHelp" class="slds-text-body_small slds-m-bottom_xx-small">
-        Enter one or more Salesforce User IDs, separated by commas. Example: 005xx000001Sv6z,
-        005xx000001Sv70
+        {label.BlacklistedUsersHelp}
       </div>
       <lightning-textarea
-        label="Blacklisted Users (User IDs, comma-separated)"
+        label={label.BlacklistedUsersLabel}
         value={blacklistedUsers}
         onchange={handleBlacklistChange}
-        placeholder="005xx000001Sv6z, 005xx000001Sv70"
+        placeholder={label.BlacklistedUsersPlaceholder}
         aria-describedby="blacklistedUsersHelp"
         class="slds-m-bottom_medium"
       ></lightning-textarea>
 
           <div class="slds-text-align_center slds-m-top_large">
             <lightning-button
-              label="Save Settings"
+              label={label.SaveSettings}
               variant="brand"
               onclick={handleSave}
             ></lightning-button>

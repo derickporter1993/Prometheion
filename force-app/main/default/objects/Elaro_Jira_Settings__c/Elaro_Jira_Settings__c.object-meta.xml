@@ -54,9 +54,11 @@
     <fields>
         <fullName>Webhook_Secret__c</fullName>
         <label>Webhook Secret</label>
-        <type>Text</type>
+        <type>EncryptedText</type>
         <length>255</length>
-        <description>Secret for validating incoming Jira webhooks</description>
+        <maskChar>asterisk</maskChar>
+        <maskType>all</maskType>
+        <description>Secret for validating incoming Jira webhooks. Encrypted at rest via Shield Platform Encryption.</description>
     </fields>
     <fields>
         <fullName>Sync_Enabled__c</fullName>

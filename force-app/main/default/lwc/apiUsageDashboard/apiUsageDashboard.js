@@ -2,8 +2,17 @@ import { LightningElement } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getSnapshots from "@salesforce/apex/ApiUsageDashboardController.getRecentSnapshots";
 import PollingManager from "c/pollingManager";
+import DashboardTitle from "@salesforce/label/c.API_DashboardTitle";
+import LoadingAlt from "@salesforce/label/c.API_LoadingAlt";
+import NoSnapshots from "@salesforce/label/c.API_NoSnapshots";
+import ColTakenOn from "@salesforce/label/c.API_ColTakenOn";
+import ColUsed from "@salesforce/label/c.API_ColUsed";
+import ColLimit from "@salesforce/label/c.API_ColLimit";
+import ColPercent from "@salesforce/label/c.API_ColPercent";
+import ColProjectedExhaustion from "@salesforce/label/c.API_ColProjectedExhaustion";
 
 export default class ApiUsageDashboard extends LightningElement {
+  label = { DashboardTitle, LoadingAlt, NoSnapshots, ColTakenOn, ColUsed, ColLimit, ColPercent, ColProjectedExhaustion };
   rows = [];
   isLoading = true;
   pollingManager = null;
@@ -13,11 +22,11 @@ export default class ApiUsageDashboard extends LightningElement {
   maxBackoffMultiplier = 8; // Max backoff is 8x base interval
 
   columns = [
-    { label: "Taken On", fieldName: "takenOn", type: "date" },
-    { label: "Used", fieldName: "used", type: "number" },
-    { label: "Limit", fieldName: "dailyLimit", type: "number" },
-    { label: "Percent", fieldName: "percent", type: "percent" },
-    { label: "Projected Exhaustion", fieldName: "projected", type: "date" },
+    { label: ColTakenOn, fieldName: "takenOn", type: "date" },
+    { label: ColUsed, fieldName: "used", type: "number" },
+    { label: ColLimit, fieldName: "dailyLimit", type: "number" },
+    { label: ColPercent, fieldName: "percent", type: "percent" },
+    { label: ColProjectedExhaustion, fieldName: "projected", type: "date" },
   ];
 
   connectedCallback() {

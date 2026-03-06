@@ -1,14 +1,14 @@
 <template>
-  <lightning-card title="Audit Package Wizard" icon-name="standard:work_order">
-    <div class="slds-var-p-around_medium" role="main" aria-label="Audit Package Wizard">
+  <lightning-card title={label.CardTitle} icon-name="standard:work_order">
+    <div class="slds-var-p-around_medium" role="main" aria-label={label.CardTitle}>
       <!-- Progress Indicator -->
       <nav aria-label="Wizard progress">
         <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
-          <lightning-progress-step label="Framework" value="1"></lightning-progress-step>
-          <lightning-progress-step label="Date Range" value="2"></lightning-progress-step>
-          <lightning-progress-step label="Controls" value="3"></lightning-progress-step>
-          <lightning-progress-step label="Preview" value="4"></lightning-progress-step>
-          <lightning-progress-step label="Generate" value="5"></lightning-progress-step>
+          <lightning-progress-step label={label.StepFramework} value="1"></lightning-progress-step>
+          <lightning-progress-step label={label.StepDateRange} value="2"></lightning-progress-step>
+          <lightning-progress-step label={label.StepControls} value="3"></lightning-progress-step>
+          <lightning-progress-step label={label.StepPreview} value="4"></lightning-progress-step>
+          <lightning-progress-step label={label.StepGenerate} value="5"></lightning-progress-step>
         </lightning-progress-indicator>
       </nav>
 
@@ -18,16 +18,16 @@
         <template lwc:if={isStep1}>
           <section class="step-panel" aria-labelledby="step1-heading">
             <h2 id="step1-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
-              Select Compliance Framework
+              {label.SelectFrameworkHeading}
             </h2>
             <p class="slds-text-body_regular slds-var-m-bottom_large slds-text-color_weak">
-              Choose the compliance framework for your audit package.
+              {label.SelectFrameworkDesc}
             </p>
 
             <div
               class="slds-grid slds-wrap slds-gutters"
               role="radiogroup"
-              aria-label="Select a compliance framework"
+              aria-label={label.SelectFrameworkHeading}
             >
               <template for:each={frameworks} for:item="framework">
                 <div
@@ -64,19 +64,19 @@
         <template lwc:if={isStep2}>
           <section class="step-panel" aria-labelledby="step2-heading">
             <h2 id="step2-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
-              Select Audit Period
+              {label.SelectAuditPeriod}
             </h2>
             <p class="slds-text-body_regular slds-var-m-bottom_large slds-text-color_weak">
-              Define the date range for the audit evidence collection.
+              {label.AuditPeriodDesc}
             </p>
 
             <fieldset class="slds-form-element">
-              <legend class="slds-assistive-text">Audit date range</legend>
+              <legend class="slds-assistive-text">{label.StepDateRange}</legend>
               <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_1-of-2">
                   <lightning-input
                     type="date"
-                    label="Start Date"
+                    label={label.StartDateLabel}
                     value={auditStartDate}
                     onchange={handleStartDateChange}
                     required
@@ -87,7 +87,7 @@
                 <div class="slds-col slds-size_1-of-2">
                   <lightning-input
                     type="date"
-                    label="End Date"
+                    label={label.EndDateLabel}
                     value={auditEndDate}
                     onchange={handleEndDateChange}
                     required
@@ -100,19 +100,19 @@
 
             <div class="slds-var-m-top_medium" role="group" aria-label="Quick date range selection">
               <h3 class="slds-text-title_caps slds-var-m-bottom_small" id="quick-select-label">
-                Quick Select
+                {label.QuickSelect}
               </h3>
               <lightning-button-group aria-labelledby="quick-select-label">
                 <lightning-button
-                  label="Last Month"
+                  label={label.LastMonth}
                   onclick={handleLastMonth}
                 ></lightning-button>
                 <lightning-button
-                  label="Last Quarter"
+                  label={label.LastQuarter}
                   onclick={handleLastQuarter}
                 ></lightning-button>
                 <lightning-button
-                  label="Last Year"
+                  label={label.LastYear}
                   onclick={handleLastYear}
                 ></lightning-button>
                 <lightning-button
@@ -128,24 +128,24 @@
         <template lwc:if={isStep3}>
           <section class="step-panel" aria-labelledby="step3-heading">
             <h2 id="step3-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
-              Select Controls
+              {label.SelectControlsHeading}
             </h2>
             <p class="slds-text-body_regular slds-var-m-bottom_large slds-text-color_weak">
-              Choose which controls to include in the audit package.
+              {label.SelectControlsDesc}
             </p>
 
             <div class="slds-var-m-bottom_medium" role="group" aria-label="Bulk selection options">
               <lightning-button-group>
                 <lightning-button
-                  label="Select All"
+                  label={label.SelectAll}
                   onclick={handleSelectAll}
                 ></lightning-button>
                 <lightning-button
-                  label="Clear All"
+                  label={label.ClearAll}
                   onclick={handleClearAll}
                 ></lightning-button>
                 <lightning-button
-                  label="Select Failed Only"
+                  label={label.SelectFailedOnly}
                   onclick={handleSelectFailed}
                 ></lightning-button>
               </lightning-button-group>
@@ -202,10 +202,10 @@
         <template lwc:if={isStep4}>
           <section class="step-panel" aria-labelledby="step4-heading">
             <h2 id="step4-heading" class="slds-text-heading_medium slds-var-m-bottom_medium">
-              Preview Audit Package
+              {label.PreviewHeading}
             </h2>
             <p class="slds-text-body_regular slds-var-m-bottom_large slds-text-color_weak">
-              Review the audit package configuration before generating.
+              {label.PreviewDesc}
             </p>
 
             <div
@@ -214,15 +214,15 @@
               aria-label="Package configuration summary"
             >
               <dl class="slds-dl_horizontal slds-var-m-bottom_medium">
-                <dt class="slds-dl_horizontal__label">Framework:</dt>
+                <dt class="slds-dl_horizontal__label">{label.StepFramework}:</dt>
                 <dd class="slds-dl_horizontal__detail">
                   <strong>{selectedFrameworkLabel}</strong>
                 </dd>
 
-                <dt class="slds-dl_horizontal__label">Audit Period:</dt>
+                <dt class="slds-dl_horizontal__label">{label.SelectAuditPeriod}:</dt>
                 <dd class="slds-dl_horizontal__detail">{auditStartDate} to {auditEndDate}</dd>
 
-                <dt class="slds-dl_horizontal__label">Controls:</dt>
+                <dt class="slds-dl_horizontal__label">{label.StepControls}:</dt>
                 <dd class="slds-dl_horizontal__detail">
                   {selectedControlsCount} controls selected
                 </dd>
@@ -235,7 +235,7 @@
                     onchange={handlePackageNameChange}
                     label="Package Name"
                     variant="label-hidden"
-                    placeholder="Enter package name"
+                    placeholder={label.EnterPackageName}
                     required
                   >
                   </lightning-input>
@@ -243,11 +243,11 @@
               </dl>
 
               <h3 class="slds-text-title_caps slds-var-m-bottom_small" id="output-options-label">
-                Output Options
+                {label.OutputOptions}
               </h3>
               <lightning-checkbox-group
                 name="outputOptions"
-                label="Include in Package"
+                label={label.IncludeInPackage}
                 options={outputOptions}
                 value={selectedOutputOptions}
                 onchange={handleOutputOptionsChange}
@@ -263,14 +263,14 @@
             <template lwc:if={isGenerating}>
               <div role="status" aria-live="polite" aria-busy="true">
                 <lightning-spinner
-                  alternative-text="Generating audit package"
+                  alternative-text={label.GeneratingHeading}
                   size="large"
                 ></lightning-spinner>
                 <h2
                   id="step5-heading-generating"
                   class="slds-text-heading_medium slds-var-m-top_large"
                 >
-                  Generating Audit Package...
+                  {label.GeneratingHeading}
                 </h2>
                 <p
                   class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small"
@@ -301,26 +301,26 @@
                     id="step5-heading-complete"
                     class="slds-text-heading_medium slds-var-m-top_medium"
                   >
-                    Audit Package Generated!
+                    {label.PackageGenerated}
                   </h2>
                   <p class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small">
-                    Your audit package has been created successfully.
+                    {label.PackageCreatedMsg}
                   </p>
                 </div>
                 <div class="slds-var-m-top_large" role="group" aria-label="Package actions">
                   <lightning-button
                     variant="brand"
-                    label="Download PDF"
+                    label={label.DownloadPDF}
                     onclick={handleDownloadPDF}
                     class="slds-var-m-right_small"
                   ></lightning-button>
                   <lightning-button
-                    label="View Package"
+                    label={label.ViewPackage}
                     onclick={handleViewPackage}
                     class="slds-var-m-right_small"
                   ></lightning-button>
                   <lightning-button
-                    label="Create New Package"
+                    label={label.CreateNewPackage}
                     onclick={handleReset}
                   ></lightning-button>
                 </div>
@@ -333,14 +333,14 @@
                   alternative-text="File icon"
                 ></lightning-icon>
                 <h2 id="step5-heading-ready" class="slds-text-heading_medium slds-var-m-top_medium">
-                  Ready to Generate
+                  {label.ReadyToGenerate}
                 </h2>
                 <p class="slds-text-body_regular slds-text-color_weak slds-var-m-top_small">
-                  Click the button below to generate your audit package.
+                  {label.ReadyToGenerateDesc}
                 </p>
                 <lightning-button
                   variant="brand"
-                  label="Generate Audit Package"
+                  label={label.GenerateAuditPackage}
                   onclick={handleGenerate}
                   class="slds-var-m-top_large"
                 >
@@ -354,7 +354,7 @@
       <!-- Navigation Buttons -->
       <div class="slds-var-m-top_large slds-grid slds-grid_align-spread">
         <lightning-button
-          label="Previous"
+          label={label.PreviousBtn}
           onclick={handlePrevious}
           disabled={isPreviousDisabled}
         >

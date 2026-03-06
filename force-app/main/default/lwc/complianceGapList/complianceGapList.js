@@ -1,6 +1,12 @@
 import { LightningElement, api } from "lwc";
+import CardTitle from "@salesforce/label/c.GAP_CardTitle";
+import LoadingAlt from "@salesforce/label/c.GAP_LoadingAlt";
+import NoGapsFound from "@salesforce/label/c.GAP_NoGapsFound";
+import StatusPrefix from "@salesforce/label/c.GAP_StatusPrefix";
+import RiskPrefix from "@salesforce/label/c.GAP_RiskPrefix";
 
 export default class ComplianceGapList extends LightningElement {
+  label = { CardTitle, LoadingAlt, NoGapsFound, StatusPrefix, RiskPrefix };
   @api gaps = [];
   isLoading = false;
   hasError = false;

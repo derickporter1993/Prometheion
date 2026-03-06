@@ -1,9 +1,9 @@
 <template>
-  <lightning-card title="Audit Report Generator" icon-name="standard:report">
+  <lightning-card title={label.CardTitle} icon-name="standard:report">
     <div class="slds-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Generating audit report" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.SpinnerAlt} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -18,7 +18,7 @@
         <div class="slds-grid slds-gutters">
           <div class="slds-col slds-size_1-of-3">
             <lightning-combobox
-              label="Framework"
+              label={label.FrameworkLabel}
               value={selectedFramework}
               options={frameworks}
               onchange={handleFrameworkChange}
@@ -28,7 +28,7 @@
           <div class="slds-col slds-size_1-of-3">
             <lightning-input
               type="date"
-              label="Start Date"
+              label={label.StartDateLabel}
               value={startDate}
               onchange={handleStartDateChange}
               required
@@ -37,7 +37,7 @@
           <div class="slds-col slds-size_1-of-3">
             <lightning-input
               type="date"
-              label="End Date"
+              label={label.EndDateLabel}
               value={endDate}
               onchange={handleEndDateChange}
               required
@@ -47,14 +47,14 @@
 
         <div class="slds-m-top_medium">
           <lightning-button
-            label="Generate Report"
+            label={label.GenerateReport}
             variant="brand"
             onclick={handleGenerateReport}
             disabled={isLoading}
           ></lightning-button>
           <template lwc:if={reportData}>
             <lightning-button
-              label="Export PDF"
+              label={label.ExportPDF}
               variant="neutral"
               onclick={handleExportPDF}
               disabled={isLoading}
@@ -65,26 +65,26 @@
 
         <template lwc:if={reportData}>
           <div class="slds-m-top_medium slds-box slds-theme_default">
-            <h3 class="slds-text-heading_medium slds-m-bottom_small">Report Summary</h3>
+            <h3 class="slds-text-heading_medium slds-m-bottom_small">{label.ReportSummary}</h3>
             <div class="slds-grid slds-gutters slds-wrap">
               <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
-                <span class="slds-text-title">Overall Score:</span>
+                <span class="slds-text-title">{label.OverallScore}</span>
                 <span class="slds-text-heading_small slds-m-left_x-small">{reportData.evaluation.overallScore}%</span>
               </div>
               <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
-                <span class="slds-text-title">Status:</span>
+                <span class="slds-text-title">{label.StatusLabel}</span>
                 <span class="slds-badge slds-m-left_x-small">{reportData.evaluation.status}</span>
               </div>
               <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
-                <span class="slds-text-title">Total Gaps:</span>
+                <span class="slds-text-title">{label.TotalGaps}</span>
                 <span class="slds-m-left_x-small">{reportData.totalGaps}</span>
               </div>
               <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
-                <span class="slds-text-title">Open Gaps:</span>
+                <span class="slds-text-title">{label.OpenGaps}</span>
                 <span class="slds-m-left_x-small">{reportData.openGaps}</span>
               </div>
               <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
-                <span class="slds-text-title">Total Evidence:</span>
+                <span class="slds-text-title">{label.TotalEvidence}</span>
                 <span class="slds-m-left_x-small">{reportData.totalEvidence}</span>
               </div>
             </div>

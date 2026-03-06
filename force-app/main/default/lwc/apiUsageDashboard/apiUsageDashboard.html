@@ -1,17 +1,17 @@
 <template>
-  <lightning-card title="API Usage & Forecasting">
+  <lightning-card title={label.DashboardTitle}>
     <div class="slds-var-p-around_medium">
       <template lwc:if={isLoading}>
         <div class="slds-align_absolute-center slds-var-p-around_medium">
-          <lightning-spinner alternative-text="Loading API usage data" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
         </div>
       </template>
       <template lwc:else>
         <template lwc:if={hasRows}>
-          <lightning-datatable key-field="id" data={rows} columns={columns} aria-label="API usage snapshots"></lightning-datatable>
+          <lightning-datatable key-field="id" data={rows} columns={columns} aria-label={label.DashboardTitle}></lightning-datatable>
         </template>
         <template lwc:else>
-          <p>No snapshots yet.</p>
+          <p>{label.NoSnapshots}</p>
         </template>
       </template>
     </div>

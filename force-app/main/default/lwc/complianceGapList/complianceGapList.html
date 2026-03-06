@@ -1,8 +1,8 @@
 <template>
-  <lightning-card title="Compliance Gaps">
+  <lightning-card title={label.CardTitle}>
     <template lwc:if={isLoading}>
       <div class="slds-is-relative slds-p-around_medium">
-        <lightning-spinner alternative-text="Loading compliance gaps" size="medium"></lightning-spinner>
+        <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
       </div>
     </template>
 
@@ -16,7 +16,7 @@
     <template lwc:if={isEmpty}>
       <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
         <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-        No compliance gaps found
+        {label.NoGapsFound}
       </div>
     </template>
 
@@ -31,8 +31,8 @@
                   <div class="slds-text-body_small">{gap.Severity__c}</div>
                 </div>
                 <div class="slds-col slds-size_1-of-3">
-                  <div class="slds-text-body_small">Status: {gap.Status__c}</div>
-                  <div class="slds-text-body_small">Risk: {gap.Risk_Score__c}</div>
+                  <div class="slds-text-body_small">{label.StatusPrefix} {gap.Status__c}</div>
+                  <div class="slds-text-body_small">{label.RiskPrefix} {gap.Risk_Score__c}</div>
                 </div>
               </div>
             </div>

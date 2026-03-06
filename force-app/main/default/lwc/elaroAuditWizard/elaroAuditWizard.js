@@ -1,6 +1,42 @@
 import { LightningElement } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { NavigationMixin } from "lightning/navigation";
+import CardTitle from "@salesforce/label/c.WIZARD_CardTitle";
+import StepFramework from "@salesforce/label/c.WIZARD_StepFramework";
+import StepDateRange from "@salesforce/label/c.WIZARD_StepDateRange";
+import StepControls from "@salesforce/label/c.WIZARD_StepControls";
+import StepPreview from "@salesforce/label/c.WIZARD_StepPreview";
+import StepGenerate from "@salesforce/label/c.WIZARD_StepGenerate";
+import SelectFrameworkHeading from "@salesforce/label/c.WIZARD_SelectFrameworkHeading";
+import SelectFrameworkDesc from "@salesforce/label/c.WIZARD_SelectFrameworkDesc";
+import SelectAuditPeriod from "@salesforce/label/c.WIZARD_SelectAuditPeriod";
+import AuditPeriodDesc from "@salesforce/label/c.WIZARD_AuditPeriodDesc";
+import QuickSelect from "@salesforce/label/c.WIZARD_QuickSelect";
+import LastMonth from "@salesforce/label/c.WIZARD_LastMonth";
+import LastQuarter from "@salesforce/label/c.WIZARD_LastQuarter";
+import LastYear from "@salesforce/label/c.WIZARD_LastYear";
+import SelectControlsHeading from "@salesforce/label/c.WIZARD_SelectControlsHeading";
+import SelectControlsDesc from "@salesforce/label/c.WIZARD_SelectControlsDesc";
+import SelectAll from "@salesforce/label/c.WIZARD_SelectAll";
+import ClearAll from "@salesforce/label/c.WIZARD_ClearAll";
+import SelectFailedOnly from "@salesforce/label/c.WIZARD_SelectFailedOnly";
+import PreviewHeading from "@salesforce/label/c.WIZARD_PreviewHeading";
+import PreviewDesc from "@salesforce/label/c.WIZARD_PreviewDesc";
+import OutputOptions from "@salesforce/label/c.WIZARD_OutputOptions";
+import IncludeInPackage from "@salesforce/label/c.WIZARD_IncludeInPackage";
+import GeneratingHeading from "@salesforce/label/c.WIZARD_GeneratingHeading";
+import PackageGenerated from "@salesforce/label/c.WIZARD_PackageGenerated";
+import PackageCreatedMsg from "@salesforce/label/c.WIZARD_PackageCreatedMsg";
+import DownloadPDF from "@salesforce/label/c.WIZARD_DownloadPDF";
+import ViewPackage from "@salesforce/label/c.WIZARD_ViewPackage";
+import CreateNewPackage from "@salesforce/label/c.WIZARD_CreateNewPackage";
+import ReadyToGenerate from "@salesforce/label/c.WIZARD_ReadyToGenerate";
+import ReadyToGenerateDesc from "@salesforce/label/c.WIZARD_ReadyToGenerateDesc";
+import GenerateAuditPackage from "@salesforce/label/c.WIZARD_GenerateAuditPackage";
+import PreviousBtn from "@salesforce/label/c.WIZARD_Previous";
+import StartDateLabel from "@salesforce/label/c.WIZARD_StartDate";
+import EndDateLabel from "@salesforce/label/c.WIZARD_EndDate";
+import EnterPackageName from "@salesforce/label/c.WIZARD_EnterPackageName";
 // PDF export will be implemented in future release
 // import generateAuditPackagePDF from '@salesforce/apex/ElaroPDFExporter.generateAuditPackagePDF';
 
@@ -63,6 +99,7 @@ const OUTPUT_OPTIONS = [
 ];
 
 export default class ElaroAuditWizard extends NavigationMixin(LightningElement) {
+  label = { CardTitle, StepFramework, StepDateRange, StepControls, StepPreview, StepGenerate, SelectFrameworkHeading, SelectFrameworkDesc, SelectAuditPeriod, AuditPeriodDesc, QuickSelect, LastMonth, LastQuarter, LastYear, SelectControlsHeading, SelectControlsDesc, SelectAll, ClearAll, SelectFailedOnly, PreviewHeading, PreviewDesc, OutputOptions, IncludeInPackage, GeneratingHeading, PackageGenerated, PackageCreatedMsg, DownloadPDF, ViewPackage, CreateNewPackage, ReadyToGenerate, ReadyToGenerateDesc, GenerateAuditPackage, PreviousBtn, StartDateLabel, EndDateLabel, EnterPackageName };
   currentStep = "1";
   selectedFramework = "";
   auditStartDate = "";

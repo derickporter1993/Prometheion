@@ -2,11 +2,30 @@ import { LightningElement, wire } from "lwc";
 import askCopilot from "@salesforce/apex/ElaroComplianceCopilot.askCopilot";
 import getQuickCommands from "@salesforce/apex/ElaroComplianceCopilot.getQuickCommands";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import HeaderTitle from "@salesforce/label/c.COPILOT_HeaderTitle";
+import HeaderSubtitle from "@salesforce/label/c.COPILOT_HeaderSubtitle";
+import ClearConversation from "@salesforce/label/c.COPILOT_ClearConversation";
+import WelcomeHeading from "@salesforce/label/c.COPILOT_WelcomeHeading";
+import WelcomeSubtitle from "@salesforce/label/c.COPILOT_WelcomeSubtitle";
+import EvidenceTitle from "@salesforce/label/c.COPILOT_Evidence";
+import RiskLabel from "@salesforce/label/c.COPILOT_Risk";
+import ProcessingAlt from "@salesforce/label/c.COPILOT_ProcessingAlt";
+import InputPlaceholder from "@salesforce/label/c.COPILOT_InputPlaceholder";
+import InputAriaLabel from "@salesforce/label/c.COPILOT_InputAriaLabel";
+import SendAriaLabel from "@salesforce/label/c.COPILOT_SendAriaLabel";
+import InputHint from "@salesforce/label/c.COPILOT_InputHint";
+import ErrorMsg from "@salesforce/label/c.COPILOT_ErrorMsg";
+import UnexpectedError from "@salesforce/label/c.COPILOT_UnexpectedError";
+import AutoFixComingSoon from "@salesforce/label/c.COPILOT_AutoFixComingSoon";
+import ExportComingSoon from "@salesforce/label/c.COPILOT_ExportComingSoon";
+import ComingSoonTitle from "@salesforce/label/c.COPILOT_ComingSoonTitle";
+import ErrorTitle from "@salesforce/label/c.COPILOT_ErrorTitle";
 
 // Debounce delay in milliseconds
 const DEBOUNCE_DELAY = 300;
 
 export default class ElaroCopilot extends LightningElement {
+  label = { HeaderTitle, HeaderSubtitle, ClearConversation, WelcomeHeading, WelcomeSubtitle, EvidenceTitle, RiskLabel, ProcessingAlt, InputPlaceholder, InputAriaLabel, SendAriaLabel, InputHint, ErrorMsg, UnexpectedError, AutoFixComingSoon, ExportComingSoon, ComingSoonTitle, ErrorTitle };
   query = "";
   messages = [];
   isLoading = false;
@@ -153,7 +172,7 @@ export default class ElaroCopilot extends LightningElement {
         this.showToast("Error", errorMessage, "error");
         this.addMessage(
           "assistant",
-          "I encountered an error processing your request. Please try again."
+          ErrorMsg
         );
       });
   }
@@ -169,7 +188,7 @@ export default class ElaroCopilot extends LightningElement {
     if (typeof error === "string") {
       return error;
     }
-    return "An unexpected error occurred. Please try again.";
+    return UnexpectedError;
   }
 
   handleQuickCommand(event) {
@@ -212,14 +231,14 @@ export default class ElaroCopilot extends LightningElement {
 
     if (actionType === "AUTO_FIX") {
       this.showToast(
-        "Coming Soon",
-        "Auto-fix functionality will be available in the next release.",
+        ComingSoonTitle,
+        AutoFixComingSoon,
         "info"
       );
     } else if (actionType === "EXPORT") {
       this.showToast(
-        "Coming Soon",
-        "Export functionality will be available in the next release.",
+        ComingSoonTitle,
+        ExportComingSoon,
         "info"
       );
     }

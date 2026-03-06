@@ -55,15 +55,63 @@ public with sharing class ElaroQuickActionsService {
     }
     
     /**
-     * Remediates excessive admin permissions by creating granular permission sets
+     * Remediates excessive admin permissions by creating granular permission sets.
+     *
+     * @return RemediationResult with details of users remediated
      */
     private static RemediationResult remediateExcessiveAdminPermissions() {
         RemediationResult result = new RemediationResult();
-        
-        // Find users with Modify All Data who aren't system admins
-        List<User> excessiveAdmins = new List<User>();
+
+        List<User> excessiveAdmins = queryExcessiveAdminUsers(result);
+        if (excessiveAdmins == null || excessiveAdmins.isEmpty()) {
+            return result;
+        }
+
+        PermissionSet leastPrivTemplate = createLeastPrivilegeTemplate();
+        result.permissionSetsCreated.add(leastPrivTemplate.Id);
+
+        Set<Id> adminUserIds = new Set<Id>();
+        for (User u : excessiveAdmins) {
+            adminUserIds.add(u.Id);
+        }
+
+        Map<Id, List<PermissionSetAssignment>> modAllByUser = queryModifyAllAssignments(adminUserIds, result);
+        if (modAllByUser == null) {
+            return result;
+        }
+
+        List<PermissionSetAssignment> newAssignments = new List<PermissionSetAssignment>();
+        List<PermissionSetAssignment> assignmentsToRemove = new List<PermissionSetAssignment>();
+
+        for (User u : excessiveAdmins) {
+            newAssignments.add(new PermissionSetAssignment(
+                AssigneeId = u.Id,
+                PermissionSetId = leastPrivTemplate.Id
+            ));
+            if (modAllByUser.containsKey(u.Id)) {
+                assignmentsToRemove.addAll(modAllByUser.get(u.Id));
+            }
+            result.remediatedUsers.add(u.Id);
+        }
+
+        insertReplacementAssignments(newAssignments, result);
+        deleteModifyAllAssignments(assignmentsToRemove, result);
+
+        result.messages.add('Remediated ' + excessiveAdmins.size() +
+            ' users with excessive admin permissions.');
+
+        return result;
+    }
+
+    /**
+     * Queries active users with Modify All Data who are not System Administrators.
+     *
+     * @param result RemediationResult to append messages to on failure or empty results
+     * @return List of users with excessive admin permissions, or null on security failure
+     */
+    private static List<User> queryExcessiveAdminUsers(RemediationResult result) {
         try {
-            excessiveAdmins = [
+            List<User> excessiveAdmins = [
                 SELECT Id, Username, Name, Profile.Name
                 FROM User
                 WHERE Id IN (
@@ -74,39 +122,33 @@ public with sharing class ElaroQuickActionsService {
                 AND Profile.Name != 'System Administrator'
                 AND IsActive = true
                 WITH USER_MODE
-                LIMIT 50 // Governor limit protection
+                LIMIT 50
             ];
+            if (excessiveAdmins.isEmpty()) {
+                result.messages.add('No excessive admin permissions found.');
+            }
+            return excessiveAdmins;
         } catch (SecurityException e) {
             ElaroLogger.error( '[ElaroQuickActionsService] Security exception querying excessive admins: ' + e.getMessage());
             result.messages.add('Security exception: Unable to query users. ' + e.getMessage());
-            return result;
+            return null;
         }
-        
-        if (excessiveAdmins.isEmpty()) {
-            result.messages.add('No excessive admin permissions found.');
-            return result;
-        }
-        
-        // Create a least-privilege permission set template
-        PermissionSet leastPrivTemplate = createLeastPrivilegeTemplate();
-        result.permissionSetsCreated.add(leastPrivTemplate.Id);
-        
-        // Assign to users and remove Modify All Data permission
-        List<PermissionSetAssignment> newAssignments = new List<PermissionSetAssignment>();
-        List<PermissionSetAssignment> assignmentsToRemove = new List<PermissionSetAssignment>();
+    }
 
-        // Bulk query all Modify All Data assignments for these users
-        Set<Id> adminUserIds = new Set<Id>();
-        for (User u : excessiveAdmins) {
-            adminUserIds.add(u.Id);
-        }
-
+    /**
+     * Bulk queries Modify All Data permission set assignments for the given user IDs.
+     *
+     * @param userIds Set of user IDs to query assignments for
+     * @param result RemediationResult to append messages to on failure
+     * @return Map of user ID to their Modify All Data assignments, or null on security failure
+     */
+    private static Map<Id, List<PermissionSetAssignment>> queryModifyAllAssignments(Set<Id> userIds, RemediationResult result) {
         Map<Id, List<PermissionSetAssignment>> modAllByUser = new Map<Id, List<PermissionSetAssignment>>();
         try {
             for (PermissionSetAssignment psa : [
                 SELECT Id, AssigneeId
                 FROM PermissionSetAssignment
-                WHERE AssigneeId IN :adminUserIds
+                WHERE AssigneeId IN :userIds
                 AND PermissionSet.PermissionsModifyAllData = true
                 WITH USER_MODE
             ]) {
@@ -115,56 +157,53 @@ public with sharing class ElaroQuickActionsService {
                 }
                 modAllByUser.get(psa.AssigneeId).add(psa);
             }
+            return modAllByUser;
         } catch (SecurityException e) {
             ElaroLogger.error('[ElaroQuickActionsService] Security exception querying Modify All Data assignments: ' + e.getMessage());
             result.messages.add('Security exception: Unable to query assignments. ' + e.getMessage());
-            return result;
+            return null;
         }
+    }
 
-        for (User u : excessiveAdmins) {
-            // Create new assignment
-            PermissionSetAssignment psa = new PermissionSetAssignment(
-                AssigneeId = u.Id,
-                PermissionSetId = leastPrivTemplate.Id
+    /**
+     * Inserts replacement permission set assignments with security stripping.
+     *
+     * @param assignments List of new PermissionSetAssignment records to insert
+     * @param result RemediationResult to append error messages to on failure
+     */
+    private static void insertReplacementAssignments(List<PermissionSetAssignment> assignments, RemediationResult result) {
+        if (assignments.isEmpty()) {
+            return;
+        }
+        try {
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                assignments
             );
-            newAssignments.add(psa);
+            insert as user decision.getRecords();
+        } catch (DmlException e) {
+            ElaroLogger.error( '[ElaroQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
+            result.messages.add('Error creating permission set assignments: ' + e.getMessage());
+        }
+    }
 
-            // Collect Modify All Data assignments from bulk query
-            if (modAllByUser.containsKey(u.Id)) {
-                assignmentsToRemove.addAll(modAllByUser.get(u.Id));
-            }
-
-            result.remediatedUsers.add(u.Id);
+    /**
+     * Deletes Modify All Data permission set assignments.
+     *
+     * @param assignments List of PermissionSetAssignment records to delete
+     * @param result RemediationResult to track removed assignments and error messages
+     */
+    private static void deleteModifyAllAssignments(List<PermissionSetAssignment> assignments, RemediationResult result) {
+        if (assignments.isEmpty()) {
+            return;
         }
-        
-        if (!newAssignments.isEmpty()) {
-            try {
-                // Strip inaccessible fields before insert
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.CREATABLE,
-                    newAssignments
-                );
-                insert as user decision.getRecords();
-            } catch (DmlException e) {
-                ElaroLogger.error( '[ElaroQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
-                result.messages.add('Error creating permission set assignments: ' + e.getMessage());
-            }
+        try {
+            delete as user assignments;
+            result.assignmentsRemoved.addAll(assignments);
+        } catch (DmlException e) {
+            ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting assignments: ' + e.getMessage());
+            result.messages.add('Error removing permission set assignments: ' + e.getMessage());
         }
-        
-        if (!assignmentsToRemove.isEmpty()) {
-            try {
-                delete as user assignmentsToRemove;
-                result.assignmentsRemoved.addAll(assignmentsToRemove);
-            } catch (DmlException e) {
-                ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting assignments: ' + e.getMessage());
-                result.messages.add('Error removing permission set assignments: ' + e.getMessage());
-            }
-        }
-        
-        result.messages.add('Remediated ' + excessiveAdmins.size() + 
-            ' users with excessive admin permissions.');
-        
-        return result;
     }
     
     /**
@@ -280,14 +319,38 @@ public with sharing class ElaroQuickActionsService {
     }
     
     /**
-     * Remediates excessive permission set assignments
+     * Remediates excessive permission set assignments.
+     *
+     * @return RemediationResult with details of removed assignments
      */
     private static RemediationResult remediateExcessiveAssignments() {
         RemediationResult result = new RemediationResult();
-        
-        // Find users with more than 10 permission set assignments
-        // (Industry best practice: users should have 3-5 permission sets max)
-        List<AggregateResult> excessiveAssignments = new List<AggregateResult>();
+
+        Set<Id> userIds = queryUsersWithExcessiveAssignments(result);
+        if (userIds == null || userIds.isEmpty()) {
+            return result;
+        }
+
+        List<PermissionSetAssignment> allAssignments = queryAssignmentsForUsers(userIds, result);
+        if (allAssignments == null) {
+            return result;
+        }
+
+        Map<Id, List<PermissionSetAssignment>> userAssignments = groupAssignmentsByUser(allAssignments);
+        List<PermissionSetAssignment> toRemove = buildAssignmentRemovalList(userAssignments);
+        deleteExcessiveAssignments(toRemove, result);
+
+        return result;
+    }
+
+    /**
+     * Queries users who have more than 10 permission set assignments.
+     *
+     * @param result RemediationResult to append messages to on failure or empty results
+     * @return Set of user IDs with excessive assignments, or null on security failure
+     */
+    private static Set<Id> queryUsersWithExcessiveAssignments(RemediationResult result) {
+        List<AggregateResult> excessiveAssignments;
         try {
             excessiveAssignments = [
                 SELECT AssigneeId, COUNT(Id) assignmentCount
@@ -300,38 +363,51 @@ public with sharing class ElaroQuickActionsService {
         } catch (SecurityException e) {
             ElaroLogger.error( '[ElaroQuickActionsService] Security exception querying excessive assignments: ' + e.getMessage());
             result.messages.add('Security exception: Unable to query assignments. ' + e.getMessage());
-            return result;
+            return null;
         }
-        
+
         if (excessiveAssignments.isEmpty()) {
             result.messages.add('No excessive permission set assignments found.');
-            return result;
+            return new Set<Id>();
         }
-        
+
         Set<Id> userIds = new Set<Id>();
         for (AggregateResult ar : excessiveAssignments) {
-            userIds.add((Id)ar.get('AssigneeId'));
+            userIds.add((Id) ar.get('AssigneeId'));
         }
-        
-        // Get all assignments for these users
-        List<PermissionSetAssignment> allAssignments = new List<PermissionSetAssignment>();
-        if (!userIds.isEmpty()) {
-            try {
-                allAssignments = [
-                    SELECT Id, AssigneeId, PermissionSetId, PermissionSet.Name
-                    FROM PermissionSetAssignment
-                    WHERE AssigneeId IN :userIds
-                    WITH USER_MODE
-                    ORDER BY AssigneeId
-                ];
-            } catch (SecurityException e) {
-                ElaroLogger.error( '[ElaroQuickActionsService] Security exception querying all assignments: ' + e.getMessage());
-                result.messages.add('Security exception: Unable to query assignments. ' + e.getMessage());
-                return result;
-            }
+        return userIds;
+    }
+
+    /**
+     * Queries all permission set assignments for the given user IDs.
+     *
+     * @param userIds Set of user IDs to query assignments for
+     * @param result RemediationResult to append messages to on failure
+     * @return List of assignments ordered by AssigneeId, or null on security failure
+     */
+    private static List<PermissionSetAssignment> queryAssignmentsForUsers(Set<Id> userIds, RemediationResult result) {
+        try {
+            return [
+                SELECT Id, AssigneeId, PermissionSetId, PermissionSet.Name
+                FROM PermissionSetAssignment
+                WHERE AssigneeId IN :userIds
+                WITH USER_MODE
+                ORDER BY AssigneeId
+            ];
+        } catch (SecurityException e) {
+            ElaroLogger.error( '[ElaroQuickActionsService] Security exception querying all assignments: ' + e.getMessage());
+            result.messages.add('Security exception: Unable to query assignments. ' + e.getMessage());
+            return null;
         }
-        
-        // Remove oldest assignments, keeping only the 5 most recent per user
+    }
+
+    /**
+     * Groups permission set assignments by their assignee user ID.
+     *
+     * @param allAssignments List of PermissionSetAssignment records to group
+     * @return Map of user ID to their list of assignments
+     */
+    private static Map<Id, List<PermissionSetAssignment>> groupAssignmentsByUser(List<PermissionSetAssignment> allAssignments) {
         Map<Id, List<PermissionSetAssignment>> userAssignments = new Map<Id, List<PermissionSetAssignment>>();
         for (PermissionSetAssignment psa : allAssignments) {
             if (!userAssignments.containsKey(psa.AssigneeId)) {
@@ -339,31 +415,47 @@ public with sharing class ElaroQuickActionsService {
             }
             userAssignments.get(psa.AssigneeId).add(psa);
         }
-        
+        return userAssignments;
+    }
+
+    /**
+     * Identifies assignments to remove, keeping only the first 5 per user.
+     *
+     * @param userAssignments Map of user ID to their list of assignments
+     * @return List of PermissionSetAssignment records to remove
+     */
+    private static List<PermissionSetAssignment> buildAssignmentRemovalList(Map<Id, List<PermissionSetAssignment>> userAssignments) {
         List<PermissionSetAssignment> toRemove = new List<PermissionSetAssignment>();
         for (Id userId : userAssignments.keySet()) {
             List<PermissionSetAssignment> assignments = userAssignments.get(userId);
             if (assignments.size() > 5) {
-                // Keep first 5, remove the rest
                 for (Integer i = 5; i < assignments.size(); i++) {
                     toRemove.add(assignments[i]);
                 }
             }
         }
-        
-        if (!toRemove.isEmpty()) {
-            try {
-                delete as user toRemove;
-                result.assignmentsRemoved.addAll(toRemove);
-                result.messages.add('Removed ' + toRemove.size() +
-                    ' excessive permission set assignments.');
-            } catch (DmlException e) {
-                ElaroLogger.error( '[ElaroQuickActionsService] DML exception removing assignments: ' + e.getMessage());
-                result.messages.add('Error removing excessive assignments: ' + e.getMessage());
-            }
+        return toRemove;
+    }
+
+    /**
+     * Deletes excessive permission set assignments and records results.
+     *
+     * @param toRemove List of PermissionSetAssignment records to delete
+     * @param result RemediationResult to track removed assignments and error messages
+     */
+    private static void deleteExcessiveAssignments(List<PermissionSetAssignment> toRemove, RemediationResult result) {
+        if (toRemove.isEmpty()) {
+            return;
         }
-        
-        return result;
+        try {
+            delete as user toRemove;
+            result.assignmentsRemoved.addAll(toRemove);
+            result.messages.add('Removed ' + toRemove.size() +
+                ' excessive permission set assignments.');
+        } catch (DmlException e) {
+            ElaroLogger.error( '[ElaroQuickActionsService] DML exception removing assignments: ' + e.getMessage());
+            result.messages.add('Error removing excessive assignments: ' + e.getMessage());
+        }
     }
     
     /**

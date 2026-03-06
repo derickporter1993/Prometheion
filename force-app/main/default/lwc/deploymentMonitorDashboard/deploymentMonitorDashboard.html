@@ -1,13 +1,13 @@
 <template>
-  <lightning-card title="Deployment Monitor">
+  <lightning-card title={label.CardTitle}>
     <div class="slds-var-p-around_medium">
       <p class="slds-text-color_weak slds-var-m-bottom_small">
-        Feed this via CI (create Deployment_Job__c records).
+        {label.CIHint}
       </p>
 
       <template lwc:if={isLoading}>
         <div class="slds-is-relative slds-p-around_medium">
-          <lightning-spinner alternative-text="Loading deployments" size="medium"></lightning-spinner>
+          <lightning-spinner alternative-text={label.LoadingAlt} size="medium"></lightning-spinner>
         </div>
       </template>
 
@@ -21,14 +21,14 @@
       <template lwc:if={isEmpty}>
         <div class="slds-text-color_weak slds-p-around_medium slds-text-align_center">
           <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small" aria-hidden="true"></lightning-icon>
-          No deployment data available
+          {label.NoData}
         </div>
       </template>
 
       <template lwc:if={notLoading}>
         <template lwc:if={notError}>
           <template lwc:if={hasData}>
-            <lightning-datatable key-field="name" data={rows} columns={columns} aria-label="Deployment history"></lightning-datatable>
+            <lightning-datatable key-field="name" data={rows} columns={columns} aria-label={label.CardTitle}></lightning-datatable>
           </template>
         </template>
       </template>

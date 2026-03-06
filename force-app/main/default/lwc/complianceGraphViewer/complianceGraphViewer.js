@@ -5,6 +5,39 @@ import getGraphByFramework from "@salesforce/apex/ComplianceGraphService.getGrap
 import getGraphStats from "@salesforce/apex/ComplianceGraphService.getGraphStats";
 import getNodeDetails from "@salesforce/apex/ComplianceGraphService.getNodeDetails";
 import analyzeImpact from "@salesforce/apex/ComplianceGraphService.analyzeImpact";
+import CardTitle from "@salesforce/label/c.GRAPH_CardTitle";
+import FilterByFramework from "@salesforce/label/c.GRAPH_FilterByFramework";
+import RefreshBtn from "@salesforce/label/c.GRAPH_Refresh";
+import SeverityDistribution from "@salesforce/label/c.GRAPH_SeverityDistribution";
+import LoadingGraph from "@salesforce/label/c.GRAPH_LoadingGraph";
+import FrameworkLegend from "@salesforce/label/c.GRAPH_FrameworkLegend";
+import PolicyLegend from "@salesforce/label/c.GRAPH_PolicyLegend";
+import CriticalGapLegend from "@salesforce/label/c.GRAPH_CriticalGapLegend";
+import HighGapLegend from "@salesforce/label/c.GRAPH_HighGapLegend";
+import MediumGapLegend from "@salesforce/label/c.GRAPH_MediumGapLegend";
+import EntityLegend from "@salesforce/label/c.GRAPH_EntityLegend";
+import NoGraphData from "@salesforce/label/c.GRAPH_NoGraphData";
+import NoGraphDescription from "@salesforce/label/c.GRAPH_NoGraphDescription";
+import ClickNodeHint from "@salesforce/label/c.GRAPH_ClickNodeHint";
+import CloseBtn from "@salesforce/label/c.GRAPH_Close";
+import AnalyzeImpactBtn from "@salesforce/label/c.GRAPH_AnalyzeImpact";
+import ImpactAnalysisTitle from "@salesforce/label/c.GRAPH_ImpactAnalysis";
+import CriticalLabel from "@salesforce/label/c.GRAPH_Critical";
+import HighLabel from "@salesforce/label/c.GRAPH_High";
+import MediumLabel from "@salesforce/label/c.GRAPH_Medium";
+import LowLabel from "@salesforce/label/c.GRAPH_Low";
+import TotalRiskScore from "@salesforce/label/c.GRAPH_TotalRiskScore";
+import TotalGapsAffected from "@salesforce/label/c.GRAPH_TotalGapsAffected";
+import AffectedGapsTitle from "@salesforce/label/c.GRAPH_AffectedGaps";
+import NameLabel from "@salesforce/label/c.GRAPH_NameLabel";
+import TypeLabel from "@salesforce/label/c.GRAPH_TypeLabel";
+import FrameworkLabel from "@salesforce/label/c.GRAPH_FrameworkLabel";
+import SeverityLabel from "@salesforce/label/c.GRAPH_SeverityLabel";
+import StatusLabel from "@salesforce/label/c.GRAPH_StatusLabel";
+import RiskScoreLabel from "@salesforce/label/c.GRAPH_RiskScoreLabel";
+import DescriptionLabel from "@salesforce/label/c.GRAPH_DescriptionLabel";
+import EntityTypeLabel from "@salesforce/label/c.GRAPH_EntityTypeLabel";
+import EntityIdLabel from "@salesforce/label/c.GRAPH_EntityIdLabel";
 
 const FRAMEWORK_OPTIONS = [
   { label: "All Frameworks", value: "ALL" },
@@ -19,6 +52,7 @@ const FRAMEWORK_OPTIONS = [
 ];
 
 export default class ComplianceGraphViewer extends LightningElement {
+  label = { CardTitle, FilterByFramework, RefreshBtn, SeverityDistribution, LoadingGraph, FrameworkLegend, PolicyLegend, CriticalGapLegend, HighGapLegend, MediumGapLegend, EntityLegend, NoGraphData, NoGraphDescription, ClickNodeHint, CloseBtn, AnalyzeImpactBtn, ImpactAnalysisTitle, CriticalLabel, HighLabel, MediumLabel, LowLabel, TotalRiskScore, TotalGapsAffected, AffectedGapsTitle, NameLabel, TypeLabel, FrameworkLabel, SeverityLabel, StatusLabel, RiskScoreLabel, DescriptionLabel, EntityTypeLabel, EntityIdLabel };
   graphData = null;
   stats = null;
   isLoading = true;

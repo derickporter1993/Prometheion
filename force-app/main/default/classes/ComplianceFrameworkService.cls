@@ -20,36 +20,55 @@ public with sharing class ComplianceFrameworkService {
         if (String.isBlank(framework)) {
             throw new IllegalArgumentException('Framework cannot be blank');
         }
-        
+
         FrameworkEvaluationResult result = new FrameworkEvaluationResult();
         result.framework = framework;
         result.evaluationDate = System.now();
-        
-        // Get all active policies for this framework
+
         List<Compliance_Policy__mdt> policies = [
-            SELECT DeveloperName, Policy_Description__c, Legal_Citation__c, 
+            SELECT DeveloperName, Policy_Description__c, Legal_Citation__c,
                    Risk_Weight__c, Severity__c, Entity_Types__c, Auto_Remediation_Allowed__c
             FROM Compliance_Policy__mdt
             WHERE Framework__c = :framework
             AND Is_Active__c = true
             WITH USER_MODE
         ];
-        
+
         result.totalPolicies = policies.size();
         result.evaluatedPolicies = 0;
         result.compliantPolicies = 0;
         result.gaps = new List<ComplianceGapSummary>();
 
-        Decimal totalScore = 0;
-        Decimal maxScore = 0;
-
-        // Collect all policy names for bulk query (avoid SOQL in loop)
         Set<String> policyNames = new Set<String>();
         for (Compliance_Policy__mdt policy : policies) {
             policyNames.add(policy.DeveloperName);
         }
 
-        // Query all gaps for all policies in one query
+        Map<String, List<Compliance_Gap__c>> gapsByPolicy = queryGapsByPolicy(policyNames);
+
+        Decimal totalScore = 0;
+        Decimal maxScore = 0;
+
+        for (Compliance_Policy__mdt policy : policies) {
+            List<Compliance_Gap__c> policyGaps = gapsByPolicy.get(policy.DeveloperName);
+            Decimal policyWeight = policy.Risk_Weight__c ?? 5.0;
+            maxScore += policyWeight;
+            totalScore += scorePolicy(policy, policyGaps, result);
+            result.evaluatedPolicies++;
+        }
+
+        finalizeEvaluationScore(result, totalScore, maxScore);
+
+        return result;
+    }
+
+    /**
+     * Bulk queries compliance gaps grouped by policy reference.
+     *
+     * @param policyNames Set of policy developer names to query gaps for
+     * @return Map of policy name to its list of unverified compliance gaps
+     */
+    private static Map<String, List<Compliance_Gap__c>> queryGapsByPolicy(Set<String> policyNames) {
         Map<String, List<Compliance_Gap__c>> gapsByPolicy = new Map<String, List<Compliance_Gap__c>>();
         for (Compliance_Gap__c gap : [
             SELECT Id, Policy_Reference__c, Severity__c, Status__c, Risk_Score__c
@@ -63,43 +82,53 @@ public with sharing class ComplianceFrameworkService {
             }
             gapsByPolicy.get(gap.Policy_Reference__c).add(gap);
         }
+        return gapsByPolicy;
+    }
 
-        for (Compliance_Policy__mdt policy : policies) {
-            maxScore += policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0;
+    /**
+     * Calculates the score contribution for a single policy based on its gaps.
+     *
+     * @param policy The compliance policy metadata record
+     * @param gaps List of compliance gaps for this policy (may be null)
+     * @param result FrameworkEvaluationResult to append gap summaries to
+     * @return Decimal score contribution for this policy
+     */
+    private static Decimal scorePolicy(Compliance_Policy__mdt policy, List<Compliance_Gap__c> gaps, FrameworkEvaluationResult result) {
+        Decimal policyWeight = policy.Risk_Weight__c ?? 5.0;
 
-            // Get gaps for this policy from the pre-queried map
-            List<Compliance_Gap__c> policyGaps = gapsByPolicy.get(policy.DeveloperName);
-
-            if (policyGaps == null || policyGaps.isEmpty()) {
-                result.compliantPolicies++;
-                totalScore += policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0;
-            } else {
-                // Calculate score reduction based on gaps
-                Decimal gapPenalty = 0;
-                for (Compliance_Gap__c gap : policyGaps) {
-                    Decimal gapScore = gap.Risk_Score__c != null ? gap.Risk_Score__c : 5.0;
-                    gapPenalty += gapScore;
-
-                    ComplianceGapSummary gapSummary = new ComplianceGapSummary();
-                    gapSummary.policyName = policy.DeveloperName;
-                    gapSummary.severity = gap.Severity__c;
-                    gapSummary.status = gap.Status__c;
-                    gapSummary.riskScore = gapScore;
-                    result.gaps.add(gapSummary);
-                }
-
-                Decimal policyScore = (policy.Risk_Weight__c != null ? policy.Risk_Weight__c : 5.0) - (gapPenalty / policyGaps.size());
-                totalScore += Math.max(0, policyScore);
-            }
-
-            result.evaluatedPolicies++;
+        if (gaps == null || gaps.isEmpty()) {
+            result.compliantPolicies++;
+            return policyWeight;
         }
-        
-        // Calculate overall compliance score (0-100)
+
+        Decimal gapPenalty = 0;
+        for (Compliance_Gap__c gap : gaps) {
+            Decimal gapScore = gap.Risk_Score__c ?? 5.0;
+            gapPenalty += gapScore;
+
+            ComplianceGapSummary gapSummary = new ComplianceGapSummary();
+            gapSummary.policyName = policy.DeveloperName;
+            gapSummary.severity = gap.Severity__c;
+            gapSummary.status = gap.Status__c;
+            gapSummary.riskScore = gapScore;
+            result.gaps.add(gapSummary);
+        }
+
+        Decimal policyScore = policyWeight - (gapPenalty / gaps.size());
+        return Math.max(0, policyScore);
+    }
+
+    /**
+     * Calculates the overall compliance percentage and determines status.
+     *
+     * @param result FrameworkEvaluationResult to set overallScore and status on
+     * @param totalScore Sum of all policy score contributions
+     * @param maxScore Sum of all policy weights (maximum possible score)
+     */
+    private static void finalizeEvaluationScore(FrameworkEvaluationResult result, Decimal totalScore, Decimal maxScore) {
         result.overallScore = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
         result.overallScore = result.overallScore.setScale(2);
-        
-        // Determine compliance status
+
         if (result.overallScore >= 90) {
             result.status = 'COMPLIANT';
         } else if (result.overallScore >= 70) {
@@ -107,8 +136,6 @@ public with sharing class ComplianceFrameworkService {
         } else {
             result.status = 'NON_COMPLIANT';
         }
-        
-        return result;
     }
     
     /**

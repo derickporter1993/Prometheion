@@ -8,23 +8,23 @@
     min-width: 800px;
 }
 
-/* Headers */
-.control-header {
+/* Headers — :host increases specificity to avoid !important */
+:host .control-header {
     min-width: 200px;
-    background-color: #032d60 !important;
+    background-color: #032d60;
     color: white;
 }
 
-.framework-header {
+:host .framework-header {
     min-width: 120px;
-    background-color: #032d60 !important;
+    background-color: #032d60;
     color: white;
     text-align: center;
 }
 
-.coverage-header {
+:host .coverage-header {
     min-width: 100px;
-    background-color: #032d60 !important;
+    background-color: #032d60;
     color: white;
     text-align: center;
 }
