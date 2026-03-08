@@ -76,7 +76,6 @@ export default class TrustCenterBadge extends LightningElement {
         day: "numeric",
       });
     } catch (e) {
-       
       return "--";
     }
   }
