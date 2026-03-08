@@ -203,11 +203,11 @@ describe("c-elaro-audit-wizard", () => {
       // Go back
       const prevButton = Array.from(buttons).find((btn) => btn.label === "Previous");
       expect(prevButton).toBeTruthy();
-        prevButton.click();
-        await flushPromises();
+      prevButton.click();
+      await flushPromises();
 
-        const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
-        expect(progressIndicator.currentStep).toBe("1");
+      const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
+      expect(progressIndicator.currentStep).toBe("1");
     });
 
     it("enables Previous button on step 2", async () => {
@@ -275,9 +275,9 @@ describe("c-elaro-audit-wizard", () => {
 
       // If not found, try alternative selectors
       expect(dateInputs.length === 0).toBeTruthy();
-        dateInputs = element.shadowRoot.querySelectorAll(
-          'lightning-input[label="Start Date"], lightning-input[label="End Date"]'
-        );
+      dateInputs = element.shadowRoot.querySelectorAll(
+        'lightning-input[label="Start Date"], lightning-input[label="End Date"]'
+      );
 
       // LWC rendering in Jest can be unpredictable - verify component is in correct step
       const progressIndicator = element.shadowRoot.querySelector("lightning-progress-indicator");
@@ -307,9 +307,7 @@ describe("c-elaro-audit-wizard", () => {
         (inp) => inp.type === "date" && inp.label === "Start Date"
       );
       expect(startDateInput).toBeTruthy();
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2024-01-01" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2024-01-01" } }));
       await flushPromises();
 
       expect(element).not.toBeNull();
@@ -347,11 +345,11 @@ describe("c-elaro-audit-wizard", () => {
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
       const lastMonthBtn = Array.from(buttons).find((btn) => btn.label === "Last Month");
       expect(lastMonthBtn).toBeTruthy();
-        lastMonthBtn.click();
-        await flushPromises();
+      lastMonthBtn.click();
+      await flushPromises();
 
-        // Verify dates are set (component state)
-        expect(element).not.toBeNull();
+      // Verify dates are set (component state)
+      expect(element).not.toBeNull();
     });
 
     it("sets dates when Last Quarter is clicked", async () => {
@@ -361,10 +359,10 @@ describe("c-elaro-audit-wizard", () => {
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
       const lastQuarterBtn = Array.from(buttons).find((btn) => btn.label === "Last Quarter");
       expect(lastQuarterBtn).toBeTruthy();
-        lastQuarterBtn.click();
-        await flushPromises();
+      lastQuarterBtn.click();
+      await flushPromises();
 
-        expect(element).not.toBeNull();
+      expect(element).not.toBeNull();
     });
 
     it("sets dates when Last Year is clicked", async () => {
@@ -374,10 +372,10 @@ describe("c-elaro-audit-wizard", () => {
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
       const lastYearBtn = Array.from(buttons).find((btn) => btn.label === "Last Year");
       expect(lastYearBtn).toBeTruthy();
-        lastYearBtn.click();
-        await flushPromises();
+      lastYearBtn.click();
+      await flushPromises();
 
-        expect(element).not.toBeNull();
+      expect(element).not.toBeNull();
     });
 
     it("sets dates when YTD is clicked", async () => {
@@ -387,10 +385,10 @@ describe("c-elaro-audit-wizard", () => {
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
       const ytdBtn = Array.from(buttons).find((btn) => btn.label === "YTD");
       expect(ytdBtn).toBeTruthy();
-        ytdBtn.click();
-        await flushPromises();
+      ytdBtn.click();
+      await flushPromises();
 
-        expect(element).not.toBeNull();
+      expect(element).not.toBeNull();
     });
 
     it("disables Next button when dates are not set", async () => {

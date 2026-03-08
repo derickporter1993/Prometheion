@@ -132,19 +132,19 @@ describe("c-elaro-comparative-analytics", () => {
 
       const combobox = getObjectCombobox(element);
       expect(combobox).toBeTruthy();
-        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
-        await Promise.resolve();
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
+      await Promise.resolve();
 
-        // Verify the combobox value is updated
-        expect(combobox.value).toBe("Account");
+      // Verify the combobox value is updated
+      expect(combobox.value).toBe("Account");
 
-        // When object changes, row and column fields should reset
-        const rowField = getRowFieldCombobox(element);
-        const colField = getColumnFieldCombobox(element);
-        expect(rowField).toBeTruthy();
-        expect(colField).toBeTruthy();
-        expect(rowField.value).toBe("");
-        expect(colField.value).toBe("");
+      // When object changes, row and column fields should reset
+      const rowField = getRowFieldCombobox(element);
+      const colField = getColumnFieldCombobox(element);
+      expect(rowField).toBeTruthy();
+      expect(colField).toBeTruthy();
+      expect(rowField.value).toBe("");
+      expect(colField.value).toBe("");
     });
 
     it("handles row field change", async () => {
@@ -154,10 +154,10 @@ describe("c-elaro-comparative-analytics", () => {
 
       const combobox = getRowFieldCombobox(element);
       expect(combobox).toBeTruthy();
-        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
-        await Promise.resolve();
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
+      await Promise.resolve();
 
-        expect(combobox.value).toBe("Industry");
+      expect(combobox.value).toBe("Industry");
     });
 
     it("handles column field change", async () => {
@@ -167,10 +167,10 @@ describe("c-elaro-comparative-analytics", () => {
 
       const combobox = getColumnFieldCombobox(element);
       expect(combobox).toBeTruthy();
-        combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
-        await Promise.resolve();
+      combobox.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
+      await Promise.resolve();
 
-        expect(combobox.value).toBe("Region");
+      expect(combobox.value).toBe("Region");
     });
   });
 
@@ -194,25 +194,25 @@ describe("c-elaro-comparative-analytics", () => {
       const colCombo = getColumnFieldCombobox(element);
 
       expect(objectCombo && rowCombo && colCombo).toBeTruthy();
-        objectCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
-        rowCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
-        colCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
-        await Promise.resolve();
+      objectCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Account" } }));
+      rowCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Industry" } }));
+      colCombo.dispatchEvent(new CustomEvent("change", { detail: { value: "Region" } }));
+      await Promise.resolve();
 
-        // Click generate button
-        const button = getGenerateButton(element);
-        expect(button).toBeTruthy();
-        button.click();
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
+      // Click generate button
+      const button = getGenerateButton(element);
+      expect(button).toBeTruthy();
+      button.click();
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
 
-        expect(executeMatrixQuery).toHaveBeenCalled();
+      expect(executeMatrixQuery).toHaveBeenCalled();
 
-        // Check if results table is rendered
-        const table = getResultsTable(element);
-        // Table should appear after successful query
-        expect(table).not.toBeNull();
+      // Check if results table is rendered
+      const table = getResultsTable(element);
+      // Table should appear after successful query
+      expect(table).not.toBeNull();
     });
 
     it("handles query error", async () => {
@@ -271,7 +271,7 @@ describe("c-elaro-comparative-analytics", () => {
       // The dimension fields should populate the row/column comboboxes
       const rowCombo = getRowFieldCombobox(element);
       expect(rowCombo).toBeTruthy();
-        expect(rowCombo.options).toBeDefined();
+      expect(rowCombo.options).toBeDefined();
     });
 
     it("handles wire adapter error via toast", async () => {

@@ -177,7 +177,9 @@ describe("c-remediation-suggestion-card", () => {
     await flushPromises();
     await flushPromises();
 
-    const approveButtons = element.shadowRoot.querySelectorAll('lightning-button[data-id="a03xx0000001"]');
+    const approveButtons = element.shadowRoot.querySelectorAll(
+      'lightning-button[data-id="a03xx0000001"]'
+    );
     const approveBtn = Array.from(approveButtons).find((b) => b.label === "Approve");
     expect(approveBtn).toBeTruthy();
     approveBtn.click();
@@ -193,7 +195,9 @@ describe("c-remediation-suggestion-card", () => {
     await flushPromises();
     await flushPromises();
 
-    const rejectButtons = element.shadowRoot.querySelectorAll('lightning-button[data-id="a03xx0000001"]');
+    const rejectButtons = element.shadowRoot.querySelectorAll(
+      'lightning-button[data-id="a03xx0000001"]'
+    );
     const rejectBtn = Array.from(rejectButtons).find((b) => b.label === "Reject");
     expect(rejectBtn).toBeTruthy();
     rejectBtn.click();
@@ -220,9 +224,7 @@ describe("c-remediation-suggestion-card", () => {
     await flushPromises();
 
     const allButtons = element.shadowRoot.querySelectorAll("lightning-button");
-    const executeBtn = Array.from(allButtons).find(
-      (b) => b.label === "Execute Auto-Remediation"
-    );
+    const executeBtn = Array.from(allButtons).find((b) => b.label === "Execute Auto-Remediation");
     expect(executeBtn).toBeTruthy();
     executeBtn.click();
     await flushPromises();

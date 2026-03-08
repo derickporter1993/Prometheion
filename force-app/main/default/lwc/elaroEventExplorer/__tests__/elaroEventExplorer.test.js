@@ -212,9 +212,7 @@ describe("c-elaro-event-explorer", () => {
       const inputs = element.shadowRoot.querySelectorAll("lightning-input");
       const startDateInput = Array.from(inputs).find((inp) => inp.name === "startDate");
       expect(startDateInput).toBeTruthy();
-      startDateInput.dispatchEvent(
-        new CustomEvent("change", { detail: { value: "2024-01-01" } })
-      );
+      startDateInput.dispatchEvent(new CustomEvent("change", { detail: { value: "2024-01-01" } }));
       await flushPromises();
       expect(element).not.toBeNull();
     });
@@ -420,9 +418,7 @@ describe("c-elaro-event-explorer", () => {
 
       const modal = element.shadowRoot.querySelector(".slds-modal");
       expect(opened ? modal !== null : true).toBe(true);
-      const modalContent = modal
-        ? element.shadowRoot.querySelector("#modal-content")
-        : null;
+      const modalContent = modal ? element.shadowRoot.querySelector("#modal-content") : null;
       expect(opened ? modalContent !== null : true).toBe(true);
     });
 
@@ -476,9 +472,7 @@ describe("c-elaro-event-explorer", () => {
 
       // Verify component renders; focus trapping requires open modal
       expect(element).not.toBeNull();
-      const modal = opened
-        ? element.shadowRoot.querySelector('[role="dialog"]')
-        : null;
+      const modal = opened ? element.shadowRoot.querySelector('[role="dialog"]') : null;
       const tabindex = modal ? modal.getAttribute("tabindex") : null;
       expect(opened ? tabindex : "-1").toBe("-1");
     });

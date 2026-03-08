@@ -15,15 +15,17 @@
 **Priority**: HIGHEST — everything else depends on this
 
 ### What This Is
+
 A modular async processing framework replacing Batch Apex with Cursors + Queueable (Spring '26 GA).
 All future compliance scans, rule evaluations, and data processing run through this framework.
 
 ### Build Order
+
 1. Interfaces and abstract classes (Step, CursorStep, ComputeStep, DMLStep, CalloutStep)
 2. StepContext and StepProcessor
 3. Transaction Finalizer
 4. FlowStep and NoOpStep
-5. StepLog__e Platform Event
+5. StepLog\_\_e Platform Event
 6. Test classes (test each Step in isolation)
 7. Feature flag Custom Setting
 8. Batch migration utilities
@@ -31,6 +33,7 @@ All future compliance scans, rule evaluations, and data processing run through t
 ### Core Framework Classes
 
 **1. Step.cls** (Interface)
+
 ```apex
 /**
  * Contract for all executable steps in the Elaro async processing framework.
@@ -49,6 +52,7 @@ public interface Step {
 ```
 
 **2. CursorStep.cls** (Abstract Class)
+
 ```apex
 /**
  * Abstract step that wraps Database.getCursor() for processing large datasets.
@@ -107,6 +111,7 @@ public abstract inherited sharing class CursorStep implements Step {
 ```
 
 **3. ComputeStep.cls** (Abstract) — Non-query computational steps
+
 ```apex
 public abstract inherited sharing class ComputeStep implements Step {
     public abstract Object compute(StepContext ctx);
@@ -115,6 +120,7 @@ public abstract inherited sharing class ComputeStep implements Step {
 ```
 
 **4. DMLStep.cls** (Abstract) — DML operations with auto-chunking
+
 ```apex
 public abstract inherited sharing class DMLStep implements Step {
     // Auto-chunks records into batches of 200 for DML
@@ -125,6 +131,7 @@ public abstract inherited sharing class DMLStep implements Step {
 ```
 
 **5. CalloutStep.cls** (Abstract) — HTTP callouts that respect callout-after-DML
+
 ```apex
 public abstract inherited sharing class CalloutStep implements Step {
     // Defers callout to Finalizer context if DML occurred earlier in chain
@@ -135,6 +142,7 @@ public abstract inherited sharing class CalloutStep implements Step {
 ```
 
 **6. StepContext.cls** — Carries state between steps
+
 ```apex
 /**
  * Serializable context object passed between steps in a workflow.
@@ -169,6 +177,7 @@ public inherited sharing class StepContext {
 ```
 
 **7. StepProcessor.cls** — Queueable + Finalizer orchestrator
+
 ```apex
 /**
  * Core orchestrator that executes a sequence of Steps as Queueable jobs.
@@ -254,6 +263,7 @@ public inherited sharing class StepProcessor implements Queueable, Finalizer {
 `stepName` (String), `executionTimeMs` (Long), `success` (Boolean), `errorMessage` (String), `recordsProcessed` (Integer)
 
 **9. FlowStep.cls** — Wraps Flow.Interview for declarative steps
+
 ```apex
 public inherited sharing class FlowStep implements Step {
     private String flowApiName;
@@ -268,6 +278,7 @@ public inherited sharing class FlowStep implements Step {
 ```
 
 **10. NoOpStep.cls** — Null object pattern for feature-flagged steps
+
 ```apex
 public inherited sharing class NoOpStep implements Step {
     public void execute(StepContext ctx) { /* intentionally empty */ }
@@ -279,7 +290,8 @@ public inherited sharing class NoOpStep implements Step {
 
 ### Platform Event
 
-**11. StepLog__e** (`force-app/main/default/objects/`)
+**11. StepLog\_\_e** (`force-app/main/default/objects/`)
+
 - `Step_Name__c` (Text 80)
 - `Execution_Time_Ms__c` (Number)
 - `Success__c` (Checkbox)
@@ -290,7 +302,8 @@ public inherited sharing class NoOpStep implements Step {
 
 ### Feature Flag
 
-**12. Elaro_Async_Framework_Flags__c** (Hierarchy Custom Setting)
+**12. Elaro_Async_Framework_Flags\_\_c** (Hierarchy Custom Setting)
+
 - `Use_New_Async_Framework__c` (Checkbox, default true)
 - `Max_Retry_Count__c` (Number, default 3)
 - `Max_Cursor_Fetch_Size__c` (Number, default 200)
@@ -307,7 +320,7 @@ public inherited sharing class NoOpStep implements Step {
 
 ### Permission Sets
 
-`Elaro_Async_Admin.permissionset-meta.xml`: Access to Custom Setting, StepLog__e subscribe
+`Elaro_Async_Admin.permissionset-meta.xml`: Access to Custom Setting, StepLog\_\_e subscribe
 
 ### Batch Migration Pattern (for Agents 2+)
 
@@ -347,24 +360,27 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 
 ### Custom Objects (10)
 
-**1. CMMC_Domain__c** — 14 control families (AC, AT, AU, CM, IA, IR, MA, MP, PE, PS, RA, RE, SC, SI)
+**1. CMMC_Domain\_\_c** — 14 control families (AC, AT, AU, CM, IA, IR, MA, MP, PE, PS, RA, RE, SC, SI)
+
 - `Domain_Code__c` (Text 5 — e.g., 'AC')
 - `Domain_Name__c` (Text 80 — e.g., 'Access Control')
 - `Domain_Description__c` (Long Text Area 2000)
-- `Practice_Count__c` (Rollup Summary — count of CMMC_Practice__c)
+- `Practice_Count__c` (Rollup Summary — count of CMMC_Practice\_\_c)
 
-**2. CMMC_Practice__c** — 110 L2 + 17 L1 practices
+**2. CMMC_Practice\_\_c** — 110 L2 + 17 L1 practices
+
 - `CMMC_Domain__c` (Master-Detail)
 - `Practice_Code__c` (Text 20 — e.g., 'AC.L2-3.1.1')
 - `Practice_Description__c` (Long Text Area 5000)
 - `CMMC_Level__c` (Picklist: L1/L2/L3)
 - `SPRS_Weight__c` (Number: 1, 3, or 5)
-- `POA_M_Eligible__c` (Formula Checkbox: SPRS_Weight__c = 1)
+- `POA_M_Eligible__c` (Formula Checkbox: SPRS_Weight\_\_c = 1)
 - `NIST_171_Reference__c` (Text 20 — e.g., '3.1.1')
 - `Assessment_Objectives__c` (Long Text Area 10000)
 - `Discussion__c` (Long Text Area 10000)
 
-**3. CMMC_Assessment__c**
+**3. CMMC_Assessment\_\_c**
+
 - `Assessment_Type__c` (Picklist: L1_Self/L2_Self/L2_C3PAO/L3_DIBCAC)
 - `Organization__c` (Lookup Account)
 - `SPRS_Score__c` (Number — calculated -203 to 110)
@@ -374,14 +390,16 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `Assessment_Date__c` (Date)
 - `Assessor__c` (Lookup User)
 
-**4. CMMC_Practice_Result__c** (junction)
+**4. CMMC_Practice_Result\_\_c** (junction)
+
 - `CMMC_Assessment__c` (Master-Detail)
 - `CMMC_Practice__c` (Master-Detail)
 - `Result__c` (Picklist: MET/NOT_MET/NA)
 - `Evidence_Notes__c` (Long Text Area 5000)
 - `Assessor_Comments__c` (Long Text Area 5000)
 
-**5. POA_M__c** (Plan of Action & Milestones)
+**5. POA_M\_\_c** (Plan of Action & Milestones)
+
 - `CMMC_Practice_Result__c` (Lookup)
 - `Description__c` (Long Text Area 5000)
 - `Milestone_Date__c` (Date)
@@ -390,7 +408,8 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `Status__c` (Picklist: Open/In_Progress/Completed/Overdue)
 - `180_Day_Deadline__c` (Date — max remediation window)
 
-**6. SSP__c** (System Security Plan)
+**6. SSP\_\_c** (System Security Plan)
+
 - `CMMC_Assessment__c` (Lookup)
 - `System_Name__c` (Text 80)
 - `System_Description__c` (Long Text Area 10000)
@@ -399,8 +418,9 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `Version__c` (Text 10)
 - `Last_Updated__c` (Date)
 
-**7. Evidence__c** (shared across frameworks)
-- `Related_Practice__c` (Lookup CMMC_Practice_Result__c)
+**7. Evidence\_\_c** (shared across frameworks)
+
+- `Related_Practice__c` (Lookup CMMC_Practice_Result\_\_c)
 - `File_Name__c` (Text 255)
 - `File_Size__c` (Number)
 - `Hash_Value__c` (Text 64 — SHA-256 for integrity verification)
@@ -408,7 +428,8 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `Uploaded_By__c` (Lookup User)
 - `Content_Version_Id__c` (Text 18 — reference to ContentVersion)
 
-**8. C3PAO_Assessment_Tracker__c**
+**8. C3PAO_Assessment_Tracker\_\_c**
+
 - `CMMC_Assessment__c` (Master-Detail)
 - `Phase__c` (Picklist: Pre_Assessment/Assessment/Post_Assessment/Adjudication)
 - `Phase_Start_Date__c` (Date)
@@ -416,36 +437,41 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `C3PAO_Organization__c` (Text 80)
 - `Lead_Assessor__c` (Text 80)
 
-**9. CMMC_NIST53_Mapping__c** (junction to existing NIST 800-53 controls)
+**9. CMMC_NIST53_Mapping\_\_c** (junction to existing NIST 800-53 controls)
+
 - `CMMC_Practice__c` (Lookup)
 - `NIST_Control__c` (Lookup — to existing control objects)
 - `Coverage_Type__c` (Picklist: Full/Partial/Supplemental)
 
 ### Custom Metadata
 
-**10. CMMC_Control_Definition__mdt** — All 110 L2 + 17 L1 practice definitions
+**10. CMMC_Control_Definition\_\_mdt** — All 110 L2 + 17 L1 practice definitions
 
-**11. SPRS_Weight_Config__mdt** — Weight assignments per practice
+**11. SPRS_Weight_Config\_\_mdt** — Weight assignments per practice
 
 ### Apex Classes
 
 **12. CMMCComplianceService.cls** (inherited sharing)
+
 - Implements `IComplianceModule`
 - Register in `ComplianceServiceFactory`
 - Methods: `assessCompliance()`, `calculateSPRSScore()`, `getAssessmentStatus()`
 
 **13. SPRSScoreCalculator.cls** (inherited sharing)
+
 - Calculate SPRS score: Start at 110, subtract weight for each NOT_MET practice
 - Range: -203 (all 110 L2 practices NOT_MET with max weights) to 110 (all MET)
 - POA&M practices (weight=1) can reduce penalty if documented
 
 **14. CMMCAssessmentController.cls** (with sharing)
+
 - `@AuraEnabled getAssessment(Id assessmentId)`
 - `@AuraEnabled getPracticeResults(Id assessmentId)`
 - `@AuraEnabled updatePracticeResult(Id resultId, String result, String notes)`
 - `@AuraEnabled calculateScore(Id assessmentId)`
 
 **15. CMMCDashboardController.cls** (with sharing)
+
 - `@AuraEnabled getOverview()`: Domain-level compliance heat map
 - `@AuraEnabled getPOAMs()`: Overdue and upcoming milestones
 - `@AuraEnabled getC3PAOStatus(Id assessmentId)`: Assessment phase tracking
@@ -480,7 +506,8 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 
 ### Custom Metadata Types
 
-**1. Compliance_Rule__mdt** (500-800+ rules across all frameworks)
+**1. Compliance_Rule\_\_mdt** (500-800+ rules across all frameworks)
+
 - `Rule_Name__c` (Text 80)
 - `Framework__c` (Text 40)
 - `Rule_Query__c` (Long Text Area 5000 — SOQL template with bind placeholders)
@@ -488,18 +515,20 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - `Comparison_Operator__c` (Picklist: Equals/NotEquals/GreaterThan/LessThan/Contains/IsNull/IsNotNull)
 - `Severity__c` (Picklist: Critical/High/Medium/Low/Informational)
 - `Control_Reference__c` (Text 80)
-- `Remediation_Reference__c` (Text 80 — link to Compliance_Remediation__mdt)
+- `Remediation_Reference__c` (Text 80 — link to Compliance_Remediation\_\_mdt)
 - `Is_Active__c` (Checkbox)
 - `Evaluation_Order__c` (Number)
 
-**2. Compliance_Remediation__mdt** (300-500+ remediation instructions)
+**2. Compliance_Remediation\_\_mdt** (300-500+ remediation instructions)
+
 - `Remediation_Name__c` (Text 80)
 - `Fix_Description__c` (Long Text Area 5000)
 - `Fix_Type__c` (Picklist: Manual/Auto_Remediation/Flow/Metadata_Deploy)
 - `Auto_Fix_Metadata__c` (Long Text Area 10000 — JSON metadata for auto-remediation)
 - `Verification_Query__c` (Long Text Area 2000 — SOQL to verify fix was applied)
 
-**3. Compliance_Workflow_Template__mdt** (15-25 workflow definitions)
+**3. Compliance_Workflow_Template\_\_mdt** (15-25 workflow definitions)
+
 - `Workflow_Name__c` (Text 80)
 - `Framework__c` (Text 40)
 - `Step_Order__c` (Number)
@@ -510,6 +539,7 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 ### Apex Classes
 
 **4. ComplianceRuleEvaluator.cls** (inherited sharing, CursorStep)
+
 - Loads rules from `Compliance_Rule__mdt` (cached in Platform Cache, 60-min TTL)
 - For each rule: builds SOQL from `Rule_Query__c` using `Database.queryWithBinds()`
 - Compares result against `Expected_Result__c` using `Comparison_Operator__c`
@@ -518,29 +548,34 @@ Cannot delete `@Deprecated` classes from released managed packages. Use feature 
 - MUST be idempotent: same rule + same org state = same result
 
 **5. ComplianceOrchestrationEngine.cls** (inherited sharing)
+
 - Reads `Compliance_Workflow_Template__mdt`
 - Instantiates Step classes by name using `Type.forName()`
 - Passes to `StepProcessor` for execution
 - Methods: `runWorkflow(String workflowName)`, `getWorkflowStatus(Id workflowId)`
 
 **6. RemediationService.cls** (inherited sharing)
+
 - Reads `Compliance_Remediation__mdt` for a given finding
 - For Auto_Remediation: generates metadata changes
 - For Metadata_Deploy: uses `SelfHealingDeployer` (below)
 - For Manual: returns instructions to user
 
 **7. SelfHealingDeployer.cls** (without sharing — SECURITY: system context required to deploy metadata via Metadata API; requires explicit admin approval before execution)
+
 - Generates Metadata API deploy packages from `Compliance_Remediation__mdt` instructions
 - Creates `Remediation_Deployment__c` record with before/after values
 - Requires Approval Process completion before deployment executes
 - Uses Metadata API via HttpRequest (SOAP or REST)
 
 **8. ComplianceScoreAggregator.cls** (inherited sharing, CursorStep)
+
 - Aggregates findings across frameworks
 - Calculates composite scores per framework
 - Updates compliance dashboards
 
 **9. RuleEngineController.cls** (with sharing)
+
 - `@AuraEnabled evaluateFramework(String framework)`: Triggers full evaluation
 - `@AuraEnabled getFindings(String framework, String severity)`: Returns findings
 - `@AuraEnabled getRemediationPlan(Id findingId)`: Returns remediation instructions
@@ -613,7 +648,8 @@ if (Limits.getCpuTime() >= Limits.getLimitCpuTime() - 2000) {
 
 ### Custom Objects
 
-**1. NIS2_Entity_Classification__c**
+**1. NIS2_Entity_Classification\_\_c**
+
 - `Organization__c` (Lookup Account)
 - `Entity_Type__c` (Picklist: Essential/Important)
 - `Sector__c` (Picklist per NIS2 Annex I/II)
@@ -621,8 +657,9 @@ if (Limits.getCpuTime() >= Limits.getLimitCpuTime() - 2000) {
 - `Annual_Turnover_EUR__c` (Currency)
 - `Classification_Rationale__c` (Long Text Area 5000)
 
-**2. NIS2_Incident_Report__c**
-- `Classification__c` (Lookup NIS2_Entity_Classification__c)
+**2. NIS2_Incident_Report\_\_c**
+
+- `Classification__c` (Lookup NIS2_Entity_Classification\_\_c)
 - `Stage__c` (Picklist: Early_Warning/Notification/Final_Report)
 - `Early_Warning_Deadline__c` (DateTime — detection + 24hr)
 - `Notification_Deadline__c` (DateTime — detection + 72hr)
@@ -631,7 +668,8 @@ if (Limits.getCpuTime() >= Limits.getLimitCpuTime() - 2000) {
 - `Is_Notification_Submitted__c` (Checkbox)
 - `Is_Final_Report_Submitted__c` (Checkbox)
 
-**3. ICT_Third_Party_Provider__c** (DORA register)
+**3. ICT_Third_Party_Provider\_\_c** (DORA register)
+
 - `Provider_Name__c` (Text 80)
 - `LEI__c` (Text 20 — Legal Entity Identifier)
 - `Criticality__c` (Picklist: Critical/Important/Standard)
@@ -639,8 +677,9 @@ if (Limits.getCpuTime() >= Limits.getLimitCpuTime() - 2000) {
 - `Exit_Strategy_Status__c` (Picklist: Documented/In_Progress/Not_Started)
 - `Sub_Outsourcing_Chain__c` (Long Text Area 5000)
 
-**4. ICT_Service_Contract__c** (DORA Article 30)
-- `Provider__c` (Master-Detail ICT_Third_Party_Provider__c)
+**4. ICT_Service_Contract\_\_c** (DORA Article 30)
+
+- `Provider__c` (Master-Detail ICT_Third_Party_Provider\_\_c)
 - `Contract_Start__c` (Date)
 - `Contract_End__c` (Date)
 - `SLA_Terms__c` (Long Text Area 5000)
@@ -648,7 +687,8 @@ if (Limits.getCpuTime() >= Limits.getLimitCpuTime() - 2000) {
 - `Audit_Rights__c` (Checkbox)
 - `Termination_Provisions__c` (Long Text Area 5000)
 
-**5. Resilience_Test__c** (DORA testing program)
+**5. Resilience_Test\_\_c** (DORA testing program)
+
 - `Test_Type__c` (Picklist: TLPT/Scenario/Vulnerability/Penetration)
 - `Test_Date__c` (Date)
 - `Next_Test_Date__c` (Date)
@@ -668,12 +708,14 @@ DORA-specific requirements first for financial entities, NIS2 for others.
 **7. DORAComplianceService.cls** (inherited sharing) — implements `IComplianceModule`
 
 **8. NIS2IncidentWorkflowService.cls** (inherited sharing)
+
 - Define NIS2_Incident_Response workflow template for Orchestration Engine:
   Step 1: ClassifyIncident, Step 2: PublishEarlyWarning (24hr),
   Step 3: SubmitNotification (72hr), Step 4: CompileFinalReport (1 month)
 - Deadline enforcement via scheduled Queueable checking overdue records
 
 **9. DORARegisterController.cls** (with sharing)
+
 - `@AuraEnabled getProviders()`: ICT provider list
 - `@AuraEnabled getConcentrationRisk()`: Risk analysis across providers
 - `@AuraEnabled getContractCompliance()`: Article 30 compliance status
@@ -705,7 +747,7 @@ DORA-specific requirements first for financial entities, NIS2 for others.
 ### Integration Tasks
 
 1. Expose Step interface + StepProcessor API for Team 2 ConfigDriftDetector
-2. Expose Compliance_Rule__mdt schema for Team 2 Assessment Wizard auto-scan steps
+2. Expose Compliance_Rule\_\_mdt schema for Team 2 Assessment Wizard auto-scan steps
 3. Expose ComplianceOrchestrationEngine for Team 2 Command Center one-click workflows
 4. Verify CMMC data model consumed correctly by Team 2 Assessment Wizards
 
@@ -737,4 +779,4 @@ sf apex run test --target-org elaro-dev --test-level RunLocalTests --code-covera
 - **Week 8**: Async Framework complete and tested
 - **Week 12**: CMMC data model frozen (no schema changes after this)
 - **Week 17**: Orchestration Engine + Workflow Templates available
-- **Week 22**: Rule Engine + Compliance_Rule__mdt schema stable
+- **Week 22**: Rule Engine + Compliance_Rule\_\_mdt schema stable
