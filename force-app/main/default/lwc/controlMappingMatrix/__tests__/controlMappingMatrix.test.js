@@ -174,12 +174,12 @@ describe("c-control-mapping-matrix", () => {
       // Find a cell with mapping
       const cells = element.shadowRoot.querySelectorAll(".mapping-cell.direct");
       expect(cells.length > 0).toBeTruthy();
-        cells[0].click();
-        await flushPromises();
-        await new Promise((resolve) => setTimeout(resolve, 150));
+      cells[0].click();
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-        const modal = element.shadowRoot.querySelector(".slds-modal");
-        expect(modal).not.toBeNull();
+      const modal = element.shadowRoot.querySelector(".slds-modal");
+      expect(modal).not.toBeNull();
     });
 
     it("supports keyboard activation with Enter", async () => {
@@ -187,17 +187,17 @@ describe("c-control-mapping-matrix", () => {
 
       const cells = element.shadowRoot.querySelectorAll(".mapping-cell.direct");
       expect(cells.length > 0).toBeTruthy();
-        const keyEvent = new KeyboardEvent("keydown", {
-          key: "Enter",
-          bubbles: true,
-          cancelable: true,
-        });
-        cells[0].dispatchEvent(keyEvent);
-        await flushPromises();
-        await new Promise((resolve) => setTimeout(resolve, 150));
+      const keyEvent = new KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+        cancelable: true,
+      });
+      cells[0].dispatchEvent(keyEvent);
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-        const modal = element.shadowRoot.querySelector(".slds-modal");
-        expect(modal).not.toBeNull();
+      const modal = element.shadowRoot.querySelector(".slds-modal");
+      expect(modal).not.toBeNull();
     });
 
     it("supports keyboard activation with Space", async () => {
@@ -205,17 +205,17 @@ describe("c-control-mapping-matrix", () => {
 
       const cells = element.shadowRoot.querySelectorAll(".mapping-cell.direct");
       expect(cells.length > 0).toBeTruthy();
-        const keyEvent = new KeyboardEvent("keydown", {
-          key: " ",
-          bubbles: true,
-          cancelable: true,
-        });
-        cells[0].dispatchEvent(keyEvent);
-        await flushPromises();
-        await new Promise((resolve) => setTimeout(resolve, 150));
+      const keyEvent = new KeyboardEvent("keydown", {
+        key: " ",
+        bubbles: true,
+        cancelable: true,
+      });
+      cells[0].dispatchEvent(keyEvent);
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-        const modal = element.shadowRoot.querySelector(".slds-modal");
-        expect(modal).not.toBeNull();
+      const modal = element.shadowRoot.querySelector(".slds-modal");
+      expect(modal).not.toBeNull();
     });
 
     it("cells have aria-label describing mapping", async () => {
@@ -232,9 +232,9 @@ describe("c-control-mapping-matrix", () => {
     async function openModal(element) {
       const cells = element.shadowRoot.querySelectorAll(".mapping-cell.direct");
       expect(cells.length > 0).toBeTruthy();
-        cells[0].click();
-        await flushPromises();
-        await new Promise((resolve) => setTimeout(resolve, 150));
+      cells[0].click();
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 150));
     }
 
     it("modal has proper ARIA attributes", async () => {
@@ -243,8 +243,8 @@ describe("c-control-mapping-matrix", () => {
 
       const modal = element.shadowRoot.querySelector('[role="dialog"]');
       expect(modal).toBeTruthy();
-        expect(modal.getAttribute("aria-modal")).toBe("true");
-        expect(modal.getAttribute("aria-labelledby")).toBe("mapping-modal-heading");
+      expect(modal.getAttribute("aria-modal")).toBe("true");
+      expect(modal.getAttribute("aria-labelledby")).toBe("mapping-modal-heading");
     });
 
     it("displays source and target control details", async () => {
@@ -255,8 +255,8 @@ describe("c-control-mapping-matrix", () => {
       const targetSection = element.shadowRoot.querySelector("#target-control-heading");
 
       expect(sourceSection).toBeTruthy();
-        expect(sourceSection).not.toBeNull();
-        expect(targetSection).not.toBeNull();
+      expect(sourceSection).not.toBeNull();
+      expect(targetSection).not.toBeNull();
     });
 
     it("closes modal on close button click", async () => {
@@ -265,11 +265,11 @@ describe("c-control-mapping-matrix", () => {
 
       const closeBtn = element.shadowRoot.querySelector(".slds-modal__close");
       expect(closeBtn).toBeTruthy();
-        closeBtn.click();
-        await flushPromises();
+      closeBtn.click();
+      await flushPromises();
 
-        const modal = element.shadowRoot.querySelector(".slds-modal");
-        expect(modal).toBeNull();
+      const modal = element.shadowRoot.querySelector(".slds-modal");
+      expect(modal).toBeNull();
     });
 
     it("closes modal on Escape key", async () => {
@@ -278,15 +278,15 @@ describe("c-control-mapping-matrix", () => {
 
       const modal = element.shadowRoot.querySelector('[role="dialog"]');
       expect(modal).toBeTruthy();
-        const escEvent = new KeyboardEvent("keydown", {
-          key: "Escape",
-          bubbles: true,
-        });
-        modal.dispatchEvent(escEvent);
-        await flushPromises();
+      const escEvent = new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+      });
+      modal.dispatchEvent(escEvent);
+      await flushPromises();
 
-        const modalAfter = element.shadowRoot.querySelector(".slds-modal");
-        expect(modalAfter).toBeNull();
+      const modalAfter = element.shadowRoot.querySelector(".slds-modal");
+      expect(modalAfter).toBeNull();
     });
 
     it("traps focus within modal", async () => {
@@ -295,7 +295,7 @@ describe("c-control-mapping-matrix", () => {
 
       const modal = element.shadowRoot.querySelector('[role="dialog"]');
       expect(modal).toBeTruthy();
-        expect(modal.getAttribute("tabindex")).toBe("-1");
+      expect(modal.getAttribute("tabindex")).toBe("-1");
     });
   });
 
@@ -412,12 +412,12 @@ describe("c-control-mapping-matrix", () => {
       // Open modal
       const cells = element.shadowRoot.querySelectorAll(".mapping-cell.direct");
       expect(cells.length > 0).toBeTruthy();
-        cells[0].click();
-        await flushPromises();
-        await new Promise((resolve) => setTimeout(resolve, 150));
+      cells[0].click();
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-        const closeBtn = element.shadowRoot.querySelector(".slds-modal__close");
-        expect(closeBtn.getAttribute("aria-label")).toBe("Close mapping details modal");
+      const closeBtn = element.shadowRoot.querySelector(".slds-modal__close");
+      expect(closeBtn.getAttribute("aria-label")).toBe("Close mapping details modal");
     });
 
     it("mapping icons have alternative text", async () => {

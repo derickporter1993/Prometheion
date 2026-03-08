@@ -195,9 +195,9 @@ describe("c-elaro-roi-calculator", () => {
       const resultsSection = getResultsSection(element);
       // Results may be visible with default calculation values
       expect(resultsSection).toBeTruthy();
-        const resultCards = getResultCards(element);
-        // Result cards are shown based on default calculation
-        expect(resultCards.length).toBeGreaterThanOrEqual(0);
+      const resultCards = getResultCards(element);
+      // Result cards are shown based on default calculation
+      expect(resultCards.length).toBeGreaterThanOrEqual(0);
     });
 
     it("shows results section after inputs are set", async () => {
@@ -238,13 +238,13 @@ describe("c-elaro-roi-calculator", () => {
 
       const resultsSection = getResultsSection(element);
       expect(resultsSection).toBeTruthy();
-        // Check for time savings card
-        const savingsCard = element.shadowRoot.querySelector(".result-card.savings");
-        expect(savingsCard).not.toBeNull();
+      // Check for time savings card
+      const savingsCard = element.shadowRoot.querySelector(".result-card.savings");
+      expect(savingsCard).not.toBeNull();
 
-        // Check that it contains "hours" text
-        const resultValue = savingsCard?.querySelector(".result-value");
-        expect(resultValue?.textContent).toContain("hours");
+      // Check that it contains "hours" text
+      const resultValue = savingsCard?.querySelector(".result-value");
+      expect(resultValue?.textContent).toContain("hours");
     });
 
     it("displays ROI percentage in results", async () => {
@@ -262,13 +262,13 @@ describe("c-elaro-roi-calculator", () => {
 
       const resultsSection = getResultsSection(element);
       expect(resultsSection).toBeTruthy();
-        // Check for ROI card
-        const roiCard = element.shadowRoot.querySelector(".result-card.roi");
-        expect(roiCard).not.toBeNull();
+      // Check for ROI card
+      const roiCard = element.shadowRoot.querySelector(".result-card.roi");
+      expect(roiCard).not.toBeNull();
 
-        // Check that it contains "%" text
-        const resultValue = roiCard?.querySelector(".result-value");
-        expect(resultValue?.textContent).toContain("%");
+      // Check that it contains "%" text
+      const resultValue = roiCard?.querySelector(".result-value");
+      expect(resultValue?.textContent).toContain("%");
     });
   });
 });
