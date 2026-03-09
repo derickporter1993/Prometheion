@@ -6,7 +6,7 @@
  * @author Elaro Enterprise
  * @version 1.0
  */
-@IsTest(testFor=TeamsNotifier.class)
+@IsTest
 private class TeamsNotifierTest {
     
     /**

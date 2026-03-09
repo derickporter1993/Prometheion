@@ -8,7 +8,7 @@
  * @group Event Monitoring
  * @see RuleEngineEventBridge
  */
-@IsTest(testFor=RuleEngineEventBridge.class)
+@IsTest
 private class RuleEngineEventBridgeTest {
 
     // =========================================================================

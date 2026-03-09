@@ -4,7 +4,7 @@
  * @group Tests
  * @author Elaro Team
  */
-@IsTest(testFor=BenchmarkingService.class)
+@IsTest
 private class BenchmarkingServiceTest {
     
     @testSetup

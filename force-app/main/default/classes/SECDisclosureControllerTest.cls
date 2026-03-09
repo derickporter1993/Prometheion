@@ -9,7 +9,7 @@
  * @group SEC Cybersecurity
  * @see SECDisclosureController
  */
-@IsTest(testFor=SECDisclosureController.class)
+@IsTest
 private class SECDisclosureControllerTest {
 
     @TestSetup

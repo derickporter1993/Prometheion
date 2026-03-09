@@ -6,7 +6,7 @@
  * @author Derick Porter
  * @date 2026-01-03
  */
-@IsTest(testFor=ElaroExecutiveKPIController.class)
+@IsTest
 private class ElaroExecutiveKPIControllerTest {
 
     @isTest

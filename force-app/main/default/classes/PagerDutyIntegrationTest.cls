@@ -4,7 +4,7 @@
  * @group Tests
  * @author Elaro Team
  */
-@IsTest(testFor=PagerDutyIntegration.class)
+@IsTest
 private class PagerDutyIntegrationTest {
     
     /**

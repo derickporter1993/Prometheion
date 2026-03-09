@@ -8,7 +8,7 @@
  * @group SEC Cybersecurity
  * @see IncidentTimelineService
  */
-@IsTest(testFor=IncidentTimelineService.class)
+@IsTest
 private class IncidentTimelineServiceTest {
 
     @TestSetup

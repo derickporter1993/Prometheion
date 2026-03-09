@@ -6,7 +6,7 @@
  * @group Async Framework
  * @see ComputeStep
  */
-@IsTest(testFor=ComputeStep.class)
+@IsTest
 private class ComputeStepTest {
 
     private class TestComputeStep extends ComputeStep {

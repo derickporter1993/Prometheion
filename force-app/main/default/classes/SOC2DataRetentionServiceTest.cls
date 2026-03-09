@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=SOC2DataRetentionService.class)
+@IsTest
 public class SOC2DataRetentionServiceTest {
 
     @TestSetup

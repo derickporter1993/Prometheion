@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ComplianceReportGenerator.class)
+@IsTest
 private class ComplianceReportGeneratorTest {
 
     @TestSetup

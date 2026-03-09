@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroDashboardController.class)
+@IsTest
 private class ElaroDashboardControllerTest {
     
     @TestSetup

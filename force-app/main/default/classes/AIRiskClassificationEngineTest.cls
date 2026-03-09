@@ -5,7 +5,7 @@
  * @since v1.0.0 (Spring '26)
  * @group AI Governance
  */
-@IsTest(testFor=AIRiskClassificationEngine.class)
+@IsTest
 private class AIRiskClassificationEngineTest {
 
     @IsTest

@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroLogger.class)
+@IsTest
 private class ElaroLoggerTest {
 
     @isTest

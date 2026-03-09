@@ -6,7 +6,7 @@
  * @group Rule Engine
  * @see WorkflowTemplateReader
  */
-@IsTest(testFor=WorkflowTemplateReader.class)
+@IsTest
 private class WorkflowTemplateReaderTest {
 
     @IsTest

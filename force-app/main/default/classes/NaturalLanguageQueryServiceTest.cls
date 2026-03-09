@@ -2,7 +2,7 @@
  * Unit tests for NaturalLanguageQueryService
  * @group Tests
  */
-@IsTest(testFor=NaturalLanguageQueryService.class)
+@IsTest
 private class NaturalLanguageQueryServiceTest {
     
     @testSetup

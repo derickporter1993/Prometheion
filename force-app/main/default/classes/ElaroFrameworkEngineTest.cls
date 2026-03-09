@@ -9,7 +9,7 @@
  * @group Compliance Framework
  * @see ElaroFrameworkEngine
  */
-@IsTest(testFor=ElaroFrameworkEngine.class)
+@IsTest
 private class ElaroFrameworkEngineTest {
 
     @IsTest

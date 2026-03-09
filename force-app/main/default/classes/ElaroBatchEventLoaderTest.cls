@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroBatchEventLoader.class)
+@IsTest
 private class ElaroBatchEventLoaderTest {
 
     @TestSetup

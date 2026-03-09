@@ -138,7 +138,11 @@ public inherited sharing class TrustCenterLinkService {
      */
     @TestVisible
     private String generateUuid() {
-        return Crypto.getRandomUUID().toString();
+        Blob raw = Crypto.generateAesKey(128);
+        String hex = EncodingUtil.convertToHex(raw);
+        return hex.substring(0, 8) + '-' + hex.substring(8, 12) + '-' +
+               hex.substring(12, 16) + '-' + hex.substring(16, 20) + '-' +
+               hex.substring(20, 32);
     }
 
     /**
@@ -153,8 +157,8 @@ public inherited sharing class TrustCenterLinkService {
                    Last_Accessed_Date__c, CreatedDate
             FROM Trust_Center_Link__c
             WHERE Is_Active__c = true
-            ORDER BY CreatedDate DESC
             WITH USER_MODE
+            ORDER BY CreatedDate DESC
             LIMIT 1000
         ];
     }

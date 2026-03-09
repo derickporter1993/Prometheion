@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroPCIDataMaskingService.class)
+@IsTest
 private class ElaroPCIDataMaskingServiceTest {
 
     @IsTest

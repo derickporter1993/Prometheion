@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=PCIAccessControlService.class)
+@IsTest
 private class PCIAccessControlServiceTest {
     
     @TestSetup

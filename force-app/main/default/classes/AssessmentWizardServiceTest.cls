@@ -7,7 +7,7 @@
  * @group Assessment Wizards
  * @see AssessmentWizardService
  */
-@IsTest(testFor=AssessmentWizardService.class)
+@IsTest
 private class AssessmentWizardServiceTest {
 
     @TestSetup

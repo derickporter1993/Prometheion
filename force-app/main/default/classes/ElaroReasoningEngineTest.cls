@@ -1,4 +1,4 @@
-@IsTest(testFor=ElaroReasoningEngine.class)
+@IsTest
 private class ElaroReasoningEngineTest {
     @TestSetup
     static void setup() {

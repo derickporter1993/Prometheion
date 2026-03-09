@@ -4,7 +4,7 @@
  * @group Tests
  * @author Elaro Team
  */
-@IsTest(testFor=ElaroGLBAAnnualNoticeScheduler.class)
+@IsTest
 private class ElaroGLBAAnnualNoticeSchedulerTest {
     
     @testSetup

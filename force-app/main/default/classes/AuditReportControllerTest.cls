@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=AuditReportController.class)
+@IsTest
 private class AuditReportControllerTest {
     
     @TestSetup

@@ -7,7 +7,7 @@
  * @group Assessment Wizards
  * @see AssessmentWizardController
  */
-@IsTest(testFor=AssessmentWizardController.class)
+@IsTest
 private class AssessmentWizardControllerTest {
 
     @IsTest

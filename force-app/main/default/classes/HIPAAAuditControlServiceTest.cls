@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=HIPAAAuditControlService.class)
+@IsTest
 public class HIPAAAuditControlServiceTest {
 
     @TestSetup

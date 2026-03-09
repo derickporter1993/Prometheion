@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=AccessReviewScheduler.class)
+@IsTest
 private class AccessReviewSchedulerTest {
 
     @TestSetup

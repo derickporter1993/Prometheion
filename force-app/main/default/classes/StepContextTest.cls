@@ -7,7 +7,7 @@
  * @group Async Framework
  * @see StepContext
  */
-@IsTest(testFor=StepContext.class)
+@IsTest
 private class StepContextTest {
 
     @IsTest

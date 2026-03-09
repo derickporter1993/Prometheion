@@ -1,7 +1,7 @@
 /**
  * Test class for ElaroGDPRComplianceService
  */
-@IsTest(testFor=ElaroGDPRComplianceService.class)
+@IsTest
 private class ElaroGDPRComplianceServiceTest {
     
     @IsTest

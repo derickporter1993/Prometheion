@@ -6,7 +6,7 @@
  * @group Rule Engine
  * @see ComplianceScoreAggregator
  */
-@IsTest(testFor=ComplianceScoreAggregator.class)
+@IsTest
 private class ComplianceScoreAggregatorTest {
 
     private static RuleResult createResult(Boolean passed, Decimal weight, String category) {

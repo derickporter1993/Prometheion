@@ -5,7 +5,7 @@
  * @author Elaro Enterprise
  * @version 1.1
  */
-@IsTest(testFor=WeeklyScorecardScheduler.class)
+@IsTest
 private class WeeklyScorecardSchedulerTest {
     
     /**

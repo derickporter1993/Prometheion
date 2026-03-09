@@ -5,7 +5,7 @@
  * @since v1.0.0 (Spring '26)
  * @group AI Governance
  */
-@IsTest(testFor=AIAuditTrailScanner.class)
+@IsTest
 private class AIAuditTrailScannerTest {
 
     @IsTest

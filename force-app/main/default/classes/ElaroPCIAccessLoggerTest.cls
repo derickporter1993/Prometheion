@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroPCIAccessLogger.class)
+@IsTest
 private class ElaroPCIAccessLoggerTest {
 
     @TestSetup

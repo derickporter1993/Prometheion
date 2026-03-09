@@ -7,7 +7,7 @@
  * @group Async Framework
  * @see CalloutStep
  */
-@IsTest(testFor=CalloutStep.class)
+@IsTest
 private class CalloutStepTest {
 
     private class TestCalloutStep extends CalloutStep {

@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=GDPRBreachNotificationService.class)
+@IsTest
 private class GDPRBreachNotificationServiceTest {
     
     @TestSetup

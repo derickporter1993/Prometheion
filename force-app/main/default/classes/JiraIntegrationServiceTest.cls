@@ -5,7 +5,7 @@
  * @author Elaro Development Team
  * @since 2026-01
  */
-@IsTest(testFor=JiraIntegrationService.class)
+@IsTest
 private class JiraIntegrationServiceTest {
 
     private static final String MOCK_JIRA_KEY = 'COMPLIANCE-123';

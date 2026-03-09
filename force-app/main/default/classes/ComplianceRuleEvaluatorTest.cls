@@ -6,7 +6,7 @@
  * @group Rule Engine
  * @see ComplianceRuleEvaluator
  */
-@IsTest(testFor=ComplianceRuleEvaluator.class)
+@IsTest
 private class ComplianceRuleEvaluatorTest {
 
     @IsTest

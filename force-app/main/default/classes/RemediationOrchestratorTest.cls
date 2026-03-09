@@ -4,7 +4,7 @@
  * @group Tests
  * @see RemediationOrchestrator
  */
-@IsTest(testFor=RemediationOrchestrator.class)
+@IsTest
 private class RemediationOrchestratorTest {
 
     @TestSetup

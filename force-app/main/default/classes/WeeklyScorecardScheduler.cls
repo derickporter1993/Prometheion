@@ -75,7 +75,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             String formattedError = '❌ ' + Label.Scorecard_Error.replace('{0}', errorMsg);
 
             if (channel == SLACK || channel == BOTH) {
-                SlackNotifier.notifyAsync(formattedError);
+                SlackNotifier.notifyAsyncQueueable(formattedError);
             }
             if (channel == TEAMS || channel == BOTH) {
                 TeamsNotifier.notifyAsync(formattedError);
@@ -221,7 +221,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
         attachments.add(attachment);
         payload.put('attachments', attachments);
 
-        SlackNotifier.notifyRichAsync(JSON.serialize(payload));
+        SlackNotifier.notifyRichAsyncQueueable(JSON.serialize(payload));
     }
 
     /**

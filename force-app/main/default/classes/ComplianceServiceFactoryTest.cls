@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ComplianceServiceFactory.class)
+@IsTest
 private class ComplianceServiceFactoryTest {
 
     @IsTest

@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ComplianceScoreCardController.class)
+@IsTest
 private class ComplianceScoreCardControllerTest {
     
     @TestSetup

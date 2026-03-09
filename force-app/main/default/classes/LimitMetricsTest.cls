@@ -1,4 +1,4 @@
-@IsTest(testFor=LimitMetrics.class)
+@IsTest
 private class LimitMetricsTest {
     @IsTest
     static void testFetchGovernorStats() {

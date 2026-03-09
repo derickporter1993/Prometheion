@@ -1,4 +1,4 @@
-@IsTest(testFor=ElaroComplianceScorer.class)
+@IsTest
 private class ElaroComplianceScorerTest {
     @TestSetup
     static void setup() {

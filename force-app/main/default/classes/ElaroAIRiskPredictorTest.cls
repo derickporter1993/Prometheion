@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroAIRiskPredictor.class)
+@IsTest
 private class ElaroAIRiskPredictorTest {
     
     @IsTest

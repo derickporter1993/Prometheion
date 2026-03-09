@@ -7,7 +7,7 @@
  * @group Event Monitoring
  * @see EventCorrelationEngine
  */
-@IsTest(testFor=EventCorrelationEngine.class)
+@IsTest
 private class EventCorrelationEngineTest {
 
     @IsTest

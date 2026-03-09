@@ -7,7 +7,7 @@
  * @group Async Framework
  * @see CursorStep
  */
-@IsTest(testFor=CursorStep.class)
+@IsTest
 private class CursorStepTest {
 
     /**

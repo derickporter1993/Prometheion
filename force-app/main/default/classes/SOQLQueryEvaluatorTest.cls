@@ -6,7 +6,7 @@
  * @group Rule Engine
  * @see SOQLQueryEvaluator
  */
-@IsTest(testFor=SOQLQueryEvaluator.class)
+@IsTest
 private class SOQLQueryEvaluatorTest {
 
     private static Compliance_Rule__mdt createSOQLRule(String query, String operator,

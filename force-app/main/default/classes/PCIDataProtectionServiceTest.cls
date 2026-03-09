@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=PCIDataProtectionService.class)
+@IsTest
 private class PCIDataProtectionServiceTest {
     
     @IsTest

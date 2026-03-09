@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=CCPAOptOutService.class)
+@IsTest
 private class CCPAOptOutServiceTest {
     
     @TestSetup

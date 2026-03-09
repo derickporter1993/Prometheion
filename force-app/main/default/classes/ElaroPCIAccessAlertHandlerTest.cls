@@ -4,7 +4,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroPCIAccessAlertHandler.class)
+@IsTest
 private class ElaroPCIAccessAlertHandlerTest {
 
     // ========================================

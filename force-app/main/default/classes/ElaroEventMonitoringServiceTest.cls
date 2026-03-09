@@ -9,7 +9,7 @@
  * @group Event Monitoring
  * @see ElaroEventMonitoringService
  */
-@IsTest(testFor=ElaroEventMonitoringService.class)
+@IsTest
 private class ElaroEventMonitoringServiceTest {
 
     @IsTest

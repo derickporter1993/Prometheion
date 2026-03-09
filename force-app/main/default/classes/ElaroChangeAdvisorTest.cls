@@ -1,4 +1,4 @@
-@IsTest(testFor=ElaroChangeAdvisor.class)
+@IsTest
 private class ElaroChangeAdvisorTest {
     
     @isTest

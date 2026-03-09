@@ -5,7 +5,7 @@
  * @group Tests
  * @author Elaro Team
  */
-@IsTest(testFor=FINRAModule.class)
+@IsTest
 private class FINRAModuleTest {
 
     @TestSetup

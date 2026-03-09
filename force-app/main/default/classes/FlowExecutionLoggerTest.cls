@@ -1,4 +1,4 @@
-@IsTest(testFor=FlowExecutionLogger.class)
+@IsTest
 private class FlowExecutionLoggerTest {
     @IsTest
     static void testLogInvocable() {

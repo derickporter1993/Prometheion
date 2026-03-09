@@ -4,7 +4,7 @@
  * @group Tests
  * @see ServiceNowIntegration
  */
-@IsTest(testFor=ServiceNowIntegration.class)
+@IsTest
 private class ServiceNowIntegrationTest {
 
     private class ServiceNowMock implements HttpCalloutMock {

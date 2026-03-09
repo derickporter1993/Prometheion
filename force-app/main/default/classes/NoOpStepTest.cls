@@ -6,7 +6,7 @@
  * @group Async Framework
  * @see NoOpStep
  */
-@IsTest(testFor=NoOpStep.class)
+@IsTest
 private class NoOpStepTest {
 
     @IsTest

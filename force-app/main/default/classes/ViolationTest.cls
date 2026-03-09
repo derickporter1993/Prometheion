@@ -4,7 +4,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=Violation.class)
+@IsTest
 private class ViolationTest {
 
     @IsTest

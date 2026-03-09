@@ -5,7 +5,7 @@
  * @group Tests
  * @author Elaro Team
  */
-@IsTest(testFor=SOC2Module.class)
+@IsTest
 private class SOC2ModuleTest {
 
     @TestSetup

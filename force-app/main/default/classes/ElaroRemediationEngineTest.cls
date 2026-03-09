@@ -4,7 +4,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroRemediationEngine.class)
+@IsTest
 private class ElaroRemediationEngineTest {
     
     @isTest

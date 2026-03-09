@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=GDPRDataSubjectService.class)
+@IsTest
 private class GDPRDataSubjectServiceTest {
     
     @TestSetup

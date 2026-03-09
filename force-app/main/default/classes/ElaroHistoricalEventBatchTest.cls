@@ -2,7 +2,7 @@
  * Unit tests for ElaroHistoricalEventBatch
  * @group Tests
  */
-@IsTest(testFor=ElaroHistoricalEventBatch.class)
+@IsTest
 private class ElaroHistoricalEventBatchTest {
     
     @isTest

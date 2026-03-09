@@ -3,7 +3,7 @@
  * @author Elaro Development Team
  * @since 2026-01
  */
-@IsTest(testFor=RemediationExecutor.class)
+@IsTest
 private class RemediationExecutorTest {
 
     @TestSetup

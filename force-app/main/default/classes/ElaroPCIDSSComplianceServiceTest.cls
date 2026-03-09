@@ -1,7 +1,7 @@
 /**
  * Test class for ElaroPCIDSSComplianceService
  */
-@IsTest(testFor=ElaroPCIDSSComplianceService.class)
+@IsTest
 private class ElaroPCIDSSComplianceServiceTest {
     
     @IsTest

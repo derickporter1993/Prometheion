@@ -4,7 +4,7 @@
  * @author Derick Porter
  * @date 2026-01-03
  */
-@IsTest(testFor=ElaroDrillDownController.class)
+@IsTest
 private class ElaroDrillDownControllerTest {
 
     @testSetup

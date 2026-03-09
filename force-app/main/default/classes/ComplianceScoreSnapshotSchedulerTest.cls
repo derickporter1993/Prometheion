@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ComplianceScoreSnapshotScheduler.class)
+@IsTest
 private class ComplianceScoreSnapshotSchedulerTest {
 
     @TestSetup

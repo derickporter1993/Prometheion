@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=HIPAAPrivacyRuleService.class)
+@IsTest
 public class HIPAAPrivacyRuleServiceTest {
 
     @TestSetup

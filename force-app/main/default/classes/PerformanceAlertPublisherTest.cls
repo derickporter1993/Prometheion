@@ -1,7 +1,7 @@
 /**
  * Test class for PerformanceAlertPublisher
  */
-@IsTest(testFor=PerformanceAlertPublisher.class)
+@IsTest
 private class PerformanceAlertPublisherTest {
 
     @isTest

@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=CCPAConsumerRightsService.class)
+@IsTest
 private class CCPAConsumerRightsServiceTest {
     
     @TestSetup

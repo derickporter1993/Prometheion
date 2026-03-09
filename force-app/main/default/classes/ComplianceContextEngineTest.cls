@@ -9,7 +9,7 @@
  * @see ComplianceContextEngine
  * @see OrchestrationService
  */
-@IsTest(testFor=ComplianceContextEngine.class)
+@IsTest
 private class ComplianceContextEngineTest {
 
     @TestSetup

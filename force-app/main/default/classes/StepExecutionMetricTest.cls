@@ -6,7 +6,7 @@
  * @group Async Framework
  * @see StepExecutionMetric
  */
-@IsTest(testFor=StepExecutionMetric.class)
+@IsTest
 private class StepExecutionMetricTest {
 
     @IsTest

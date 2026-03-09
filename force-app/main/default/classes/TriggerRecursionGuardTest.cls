@@ -1,4 +1,4 @@
-@IsTest(testFor=TriggerRecursionGuard.class)
+@IsTest
 private class TriggerRecursionGuardTest {
 
     @IsTest

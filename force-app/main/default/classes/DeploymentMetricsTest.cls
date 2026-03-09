@@ -1,4 +1,4 @@
-@IsTest(testFor=DeploymentMetrics.class)
+@IsTest
 private class DeploymentMetricsTest {
 
     @TestSetup

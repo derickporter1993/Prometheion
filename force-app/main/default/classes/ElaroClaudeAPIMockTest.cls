@@ -3,7 +3,7 @@
  * @group Tests
  * @see ElaroClaudeAPIMock
  */
-@IsTest(testFor=ElaroClaudeAPIMock.class)
+@IsTest
 private class ElaroClaudeAPIMockTest {
     
     @isTest

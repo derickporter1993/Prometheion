@@ -1,4 +1,4 @@
-@IsTest(testFor=ElaroEventPublisher.class)
+@IsTest
 private class ElaroEventPublisherTest {
     
     @isTest

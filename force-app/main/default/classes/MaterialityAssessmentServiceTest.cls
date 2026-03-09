@@ -8,7 +8,7 @@
  * @group SEC Cybersecurity
  * @see MaterialityAssessmentService
  */
-@IsTest(testFor=MaterialityAssessmentService.class)
+@IsTest
 private class MaterialityAssessmentServiceTest {
 
     @TestSetup

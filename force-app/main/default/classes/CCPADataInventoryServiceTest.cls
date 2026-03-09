@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 3.0
  */
-@IsTest(testFor=CCPADataInventoryService.class)
+@IsTest
 private class CCPADataInventoryServiceTest {
     
     @TestSetup

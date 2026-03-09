@@ -7,7 +7,7 @@
  * @group Event Monitoring
  * @see EventWindowService
  */
-@IsTest(testFor=EventWindowService.class)
+@IsTest
 private class EventWindowServiceTest {
 
     @IsTest

@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=SOC2ChangeManagementService.class)
+@IsTest
 public class SOC2ChangeManagementServiceTest {
 
     @TestSetup

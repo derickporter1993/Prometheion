@@ -6,7 +6,7 @@
  * @group Rule Engine
  * @see RemediationService
  */
-@IsTest(testFor=RemediationService.class)
+@IsTest
 private class RemediationServiceTest {
 
     private static RuleResult createFailedResult(String devName) {

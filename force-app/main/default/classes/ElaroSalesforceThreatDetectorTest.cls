@@ -1,4 +1,4 @@
-@IsTest(testFor=ElaroSalesforceThreatDetector.class)
+@IsTest
 private class ElaroSalesforceThreatDetectorTest {
     
     @isTest

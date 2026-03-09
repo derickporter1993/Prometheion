@@ -8,7 +8,7 @@
  * @see CommandCenterController
  * @see OrchestrationService
  */
-@IsTest(testFor=CommandCenterController.class)
+@IsTest
 private class CommandCenterControllerTest {
 
     @TestSetup

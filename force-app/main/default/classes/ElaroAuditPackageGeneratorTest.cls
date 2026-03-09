@@ -7,7 +7,7 @@
  * @group Compliance Framework
  * @see ElaroAuditPackageGenerator
  */
-@IsTest(testFor=ElaroAuditPackageGenerator.class)
+@IsTest
 private class ElaroAuditPackageGeneratorTest {
 
     @TestSetup

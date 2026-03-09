@@ -5,7 +5,7 @@
  * @since v1.0.0 (Spring '26)
  * @group Trust Center
  */
-@IsTest(testFor=TrustCenterController.class)
+@IsTest
 private class TrustCenterControllerTest {
 
     @TestSetup

@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest(testFor=ElaroISO27001QuarterlyScheduler.class)
+@IsTest
 private class ElaroISO27001QuarterlySchedulerTest {
     
     @TestSetup

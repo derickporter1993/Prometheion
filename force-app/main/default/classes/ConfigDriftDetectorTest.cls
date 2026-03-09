@@ -10,7 +10,7 @@
  * @group Event Monitoring
  * @see ConfigDriftDetector
  */
-@IsTest(testFor=ConfigDriftDetector.class)
+@IsTest
 private class ConfigDriftDetectorTest {
 
     @IsTest
