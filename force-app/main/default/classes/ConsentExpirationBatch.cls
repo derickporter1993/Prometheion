@@ -52,6 +52,50 @@ public with sharing class ConsentExpirationBatch implements Database.Batchable<S
     }
     
     public void finish(Database.BatchableContext bc) {
-        ElaroLogger.info( 'ConsentExpirationBatch completed');
+        AsyncApexJob job;
+        try {
+            job = [
+                SELECT Id, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
+                FROM AsyncApexJob
+                WHERE Id = :bc.getJobId()
+                WITH USER_MODE
+                LIMIT 1
+            ];
+        } catch (Exception e) {
+            ElaroLogger.error('ConsentExpirationBatch.finish', 'Failed to query job status: ' + e.getMessage(), e.getStackTraceString());
+            return;
+        }
+
+        String summary = 'ConsentExpirationBatch Complete - Status: ' + job.Status +
+            ', Items Processed: ' + job.JobItemsProcessed + '/' + job.TotalJobItems +
+            ', Errors: ' + job.NumberOfErrors;
+
+        if (job.NumberOfErrors > 0) {
+            ElaroLogger.error('ConsentExpirationBatch.finish', summary, '');
+            notifyOnFailure(job);
+        } else {
+            ElaroLogger.info('ConsentExpirationBatch.finish', summary);
+        }
+    }
+
+    private void notifyOnFailure(AsyncApexJob job) {
+        if (String.isBlank(job.CreatedBy?.Email)) {
+            return;
+        }
+        try {
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setToAddresses(new String[] { job.CreatedBy.Email });
+            mail.setSubject('Elaro: ConsentExpirationBatch completed with errors');
+            mail.setPlainTextBody(
+                'The ConsentExpirationBatch job completed with errors.\n\n' +
+                'Status: ' + job.Status + '\n' +
+                'Items Processed: ' + job.JobItemsProcessed + '/' + job.TotalJobItems + '\n' +
+                'Number of Errors: ' + job.NumberOfErrors
+            );
+            mail.setSaveAsActivity(false);
+            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
+        } catch (Exception e) {
+            ElaroLogger.error('ConsentExpirationBatch.notifyOnFailure', 'Failed to send failure email: ' + e.getMessage(), e.getStackTraceString());
+        }
     }
 }
