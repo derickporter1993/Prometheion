@@ -3,7 +3,7 @@
  * Note: Performance_Alert__e platform event not available due to org limits.
  * Tests use Performance_Alert_History__c instead.
  */
-@isTest
+@IsTest(testFor=PerformanceAlertEventTriggerHandler.class)
 private class PerformanceAlertEventTriggerTest {
     
     @isTest

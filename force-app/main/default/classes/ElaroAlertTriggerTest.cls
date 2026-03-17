@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(testFor=TriggerRecursionGuard.class)
 private class ElaroAlertTriggerTest {
     @IsTest
     static void testTrigger_PublishesEvent() {
