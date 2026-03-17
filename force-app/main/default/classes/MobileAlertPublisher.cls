@@ -191,32 +191,39 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled(cacheable=true)
     public static List<OnCallUser> getCurrentOnCallUsers() {
-        Datetime now = Datetime.now();
-        List<OnCallUser> result = new List<OnCallUser>();
+        try {
+            Datetime now = Datetime.now();
+            List<OnCallUser> result = new List<OnCallUser>();
 
-        List<Elaro_On_Call_Schedule__c> schedules = [
-            SELECT Id, User__c, User__r.Name, User__r.Email, Rotation_Name__c,
-                   Start_Time__c, End_Time__c, Notification_Methods__c
-            FROM Elaro_On_Call_Schedule__c
-            WHERE Start_Time__c <= :now
-            AND End_Time__c >= :now
-            AND Active__c = true
-            WITH USER_MODE
-            ORDER BY Rotation_Name__c
-        ];
+            List<Elaro_On_Call_Schedule__c> schedules = [
+                SELECT Id, User__c, User__r.Name, User__r.Email, Rotation_Name__c,
+                       Start_Time__c, End_Time__c, Notification_Methods__c
+                FROM Elaro_On_Call_Schedule__c
+                WHERE Start_Time__c <= :now
+                AND End_Time__c >= :now
+                AND Active__c = true
+                WITH USER_MODE
+                ORDER BY Rotation_Name__c
+            ];
 
-        for (Elaro_On_Call_Schedule__c schedule : schedules) {
-            OnCallUser ocu = new OnCallUser();
-            ocu.userId = schedule.User__c;
-            ocu.userName = schedule.User__r.Name;
-            ocu.userEmail = schedule.User__r.Email;
-            ocu.rotationName = schedule.Rotation_Name__c;
-            ocu.shiftEnd = schedule.End_Time__c;
-            ocu.notificationMethods = schedule.Notification_Methods__c;
-            result.add(ocu);
+            for (Elaro_On_Call_Schedule__c schedule : schedules) {
+                OnCallUser ocu = new OnCallUser();
+                ocu.userId = schedule.User__c;
+                ocu.userName = schedule.User__r.Name;
+                ocu.userEmail = schedule.User__r.Email;
+                ocu.rotationName = schedule.Rotation_Name__c;
+                ocu.shiftEnd = schedule.End_Time__c;
+                ocu.notificationMethods = schedule.Notification_Methods__c;
+                result.add(ocu);
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.getCurrentOnCallUsers', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return result;
     }
 
     /**
@@ -225,31 +232,38 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled(cacheable=true)
     public static List<EscalationPathEntry> getEscalationPath() {
-        List<EscalationPathEntry> result = new List<EscalationPathEntry>();
+        try {
+            List<EscalationPathEntry> result = new List<EscalationPathEntry>();
 
-        List<Elaro_Escalation_Path__c> paths = [
-            SELECT Id, User__c, User__r.Name, User__r.Email, Level__c,
-                   Role__c, Notification_Method__c, Escalation_Delay_Minutes__c
-            FROM Elaro_Escalation_Path__c
-            WHERE Active__c = true
-            WITH USER_MODE
-            ORDER BY Level__c ASC
-        ];
+            List<Elaro_Escalation_Path__c> paths = [
+                SELECT Id, User__c, User__r.Name, User__r.Email, Level__c,
+                       Role__c, Notification_Method__c, Escalation_Delay_Minutes__c
+                FROM Elaro_Escalation_Path__c
+                WHERE Active__c = true
+                WITH USER_MODE
+                ORDER BY Level__c ASC
+            ];
 
-        for (Elaro_Escalation_Path__c path : paths) {
-            EscalationPathEntry entry = new EscalationPathEntry();
-            entry.pathId = path.Id;
-            entry.userId = path.User__c;
-            entry.userName = path.User__r.Name;
-            entry.userEmail = path.User__r.Email;
-            entry.level = Integer.valueOf(path.Level__c);
-            entry.role = path.Role__c;
-            entry.notificationMethod = path.Notification_Method__c;
-            entry.delayMinutes = Integer.valueOf(path.Escalation_Delay_Minutes__c);
-            result.add(entry);
+            for (Elaro_Escalation_Path__c path : paths) {
+                EscalationPathEntry entry = new EscalationPathEntry();
+                entry.pathId = path.Id;
+                entry.userId = path.User__c;
+                entry.userName = path.User__r.Name;
+                entry.userEmail = path.User__r.Email;
+                entry.level = Integer.valueOf(path.Level__c);
+                entry.role = path.Role__c;
+                entry.notificationMethod = path.Notification_Method__c;
+                entry.delayMinutes = Integer.valueOf(path.Escalation_Delay_Minutes__c);
+                result.add(entry);
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.getEscalationPath', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return result;
     }
 
     // ============================================

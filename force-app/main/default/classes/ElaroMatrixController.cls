@@ -87,44 +87,51 @@ public with sharing class ElaroMatrixController {
      */
     @AuraEnabled(cacheable=true)
     public static List<DimensionField> getDimensionFields(String objectApiName) {
-        if (!ALLOWED_OBJECTS.contains(objectApiName)) {
-            throw new AuraHandledException('Object not authorized: ' + objectApiName);
-        }
+        try {
+            if (!ALLOWED_OBJECTS.contains(objectApiName)) {
+                throw new AuraHandledException('Object not authorized: ' + objectApiName);
+            }
 
-        List<DimensionField> dimensions = new List<DimensionField>();
+            List<DimensionField> dimensions = new List<DimensionField>();
 
-        SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
-        if (sType == null || !sType.getDescribe().isAccessible()) {
+            SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
+            if (sType == null || !sType.getDescribe().isAccessible()) {
+                return dimensions;
+            }
+
+            Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
+
+            for (String fieldName : fieldMap.keySet()) {
+                DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
+
+                // Only include groupable, accessible fields
+                if (!dfr.isAccessible() || !dfr.isGroupable()) {
+                    continue;
+                }
+
+                // Suitable dimension types: picklist, reference, date, boolean
+                Schema.DisplayType fieldType = dfr.getType();
+                if (fieldType == Schema.DisplayType.PICKLIST ||
+                    fieldType == Schema.DisplayType.REFERENCE ||
+                    fieldType == Schema.DisplayType.DATE ||
+                    fieldType == Schema.DisplayType.BOOLEAN ||
+                    fieldType == Schema.DisplayType.STRING) {
+
+                    DimensionField dim = new DimensionField();
+                    dim.apiName = dfr.getName();
+                    dim.label = dfr.getLabel();
+                    dim.fieldType = String.valueOf(fieldType);
+                    dimensions.add(dim);
+                }
+            }
+
             return dimensions;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroMatrixController.getDimensionFields', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
-
-        for (String fieldName : fieldMap.keySet()) {
-            DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
-
-            // Only include groupable, accessible fields
-            if (!dfr.isAccessible() || !dfr.isGroupable()) {
-                continue;
-            }
-
-            // Suitable dimension types: picklist, reference, date, boolean
-            Schema.DisplayType fieldType = dfr.getType();
-            if (fieldType == Schema.DisplayType.PICKLIST ||
-                fieldType == Schema.DisplayType.REFERENCE ||
-                fieldType == Schema.DisplayType.DATE ||
-                fieldType == Schema.DisplayType.BOOLEAN ||
-                fieldType == Schema.DisplayType.STRING) {
-
-                DimensionField dim = new DimensionField();
-                dim.apiName = dfr.getName();
-                dim.label = dfr.getLabel();
-                dim.fieldType = String.valueOf(fieldType);
-                dimensions.add(dim);
-            }
-        }
-
-        return dimensions;
     }
 
     /**

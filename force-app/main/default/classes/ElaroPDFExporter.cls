@@ -285,20 +285,27 @@ public with sharing class ElaroPDFExporter {
      */
     @AuraEnabled
     public static Id saveCSVExport(String packageId) {
-        String csvContent = generateCSVExport(packageId);
-        Elaro_Audit_Package__c pkg = queryAuditPackage(packageId);
-        
-        ContentVersion cv = new ContentVersion(
-            Title = 'Evidence Export - ' + pkg.Package_Name__c + ' - ' + Date.today().format(),
-            PathOnClient = 'EvidenceExport_' + pkg.Framework__c + '_' + Date.today().format() + '.csv',
-            VersionData = Blob.valueOf(csvContent),
-            Description = 'CSV export of audit evidence'
-        );
-        insert as user cv;
-        
-        linkContentToRecord(cv.Id, packageId);
-        
-        return cv.Id;
+        try {
+            String csvContent = generateCSVExport(packageId);
+            Elaro_Audit_Package__c pkg = queryAuditPackage(packageId);
+
+            ContentVersion cv = new ContentVersion(
+                Title = 'Evidence Export - ' + pkg.Package_Name__c + ' - ' + Date.today().format(),
+                PathOnClient = 'EvidenceExport_' + pkg.Framework__c + '_' + Date.today().format() + '.csv',
+                VersionData = Blob.valueOf(csvContent),
+                Description = 'CSV export of audit evidence'
+            );
+            insert as user cv;
+
+            linkContentToRecord(cv.Id, packageId);
+
+            return cv.Id;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroPDFExporter.saveCSVExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -308,20 +315,27 @@ public with sharing class ElaroPDFExporter {
      */
     @AuraEnabled
     public static Id saveJSONExport(String packageId) {
-        String jsonContent = generateJSONExport(packageId);
-        Elaro_Audit_Package__c pkg = queryAuditPackage(packageId);
-        
-        ContentVersion cv = new ContentVersion(
-            Title = 'Package Export - ' + pkg.Package_Name__c + ' - ' + Date.today().format(),
-            PathOnClient = 'PackageExport_' + pkg.Framework__c + '_' + Date.today().format() + '.json',
-            VersionData = Blob.valueOf(jsonContent),
-            Description = 'JSON export of audit package'
-        );
-        insert as user cv;
-        
-        linkContentToRecord(cv.Id, packageId);
-        
-        return cv.Id;
+        try {
+            String jsonContent = generateJSONExport(packageId);
+            Elaro_Audit_Package__c pkg = queryAuditPackage(packageId);
+
+            ContentVersion cv = new ContentVersion(
+                Title = 'Package Export - ' + pkg.Package_Name__c + ' - ' + Date.today().format(),
+                PathOnClient = 'PackageExport_' + pkg.Framework__c + '_' + Date.today().format() + '.json',
+                VersionData = Blob.valueOf(jsonContent),
+                Description = 'JSON export of audit package'
+            );
+            insert as user cv;
+
+            linkContentToRecord(cv.Id, packageId);
+
+            return cv.Id;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroPDFExporter.saveJSONExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

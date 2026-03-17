@@ -195,12 +195,19 @@ public with sharing class ElaroDeliveryService {
      */
     @AuraEnabled
     public static void sendToSlack(String packageId, String channel) {
-        if (String.isBlank(packageId) || String.isBlank(channel)) {
-            return;
-        }
+        try {
+            if (String.isBlank(packageId) || String.isBlank(channel)) {
+                return;
+            }
 
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new SlackDeliveryQueueable(packageId, channel));
+            if (!Test.isRunningTest()) {
+                System.enqueueJob(new SlackDeliveryQueueable(packageId, channel));
+            }
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDeliveryService.sendToSlack', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -211,46 +218,53 @@ public with sharing class ElaroDeliveryService {
      */
     @AuraEnabled(cacheable=true)
     public static List&lt;Map&lt;String, Object&gt;&gt; getDeliveryHistory(String packageId) {
-        List&lt;Map&lt;String, Object&gt;&gt; history = new List&lt;Map&lt;String, Object&gt;&gt;();
-        
-        // Query ContentDistribution records
-        List&lt;ContentDocumentLink&gt; links = [
-            SELECT ContentDocumentId
-            FROM ContentDocumentLink
-            WHERE LinkedEntityId = :packageId
-            WITH USER_MODE
-        ];
-        
-        Set&lt;Id&gt; docIds = new Set&lt;Id&gt;();
-        for (ContentDocumentLink link : links) {
-            docIds.add(link.ContentDocumentId);
-        }
-        
-        if (!docIds.isEmpty()) {
-            List&lt;ContentDistribution&gt; distributions = [
-                SELECT Id, Name, DistributionPublicUrl, ExpiryDate,
-                       FirstViewDate, LastViewDate, ViewCount, CreatedDate
-                FROM ContentDistribution
-                WHERE ContentDocumentId IN :docIds
+        try {
+            List&lt;Map&lt;String, Object&gt;&gt; history = new List&lt;Map&lt;String, Object&gt;&gt;();
+
+            // Query ContentDistribution records
+            List&lt;ContentDocumentLink&gt; links = [
+                SELECT ContentDocumentId
+                FROM ContentDocumentLink
+                WHERE LinkedEntityId = :packageId
                 WITH USER_MODE
-                ORDER BY CreatedDate DESC
             ];
-            
-            for (ContentDistribution cd : distributions) {
-                history.add(new Map&lt;String, Object&gt;{
-                    'id' =&gt; cd.Id,
-                    'name' =&gt; cd.Name,
-                    'url' =&gt; cd.DistributionPublicUrl,
-                    'expiryDate' =&gt; cd.ExpiryDate,
-                    'firstViewDate' =&gt; cd.FirstViewDate,
-                    'lastViewDate' =&gt; cd.LastViewDate,
-                    'viewCount' =&gt; cd.ViewCount,
-                    'createdDate' =&gt; cd.CreatedDate
-                });
+
+            Set&lt;Id&gt; docIds = new Set&lt;Id&gt;();
+            for (ContentDocumentLink link : links) {
+                docIds.add(link.ContentDocumentId);
             }
+
+            if (!docIds.isEmpty()) {
+                List&lt;ContentDistribution&gt; distributions = [
+                    SELECT Id, Name, DistributionPublicUrl, ExpiryDate,
+                           FirstViewDate, LastViewDate, ViewCount, CreatedDate
+                    FROM ContentDistribution
+                    WHERE ContentDocumentId IN :docIds
+                    WITH USER_MODE
+                    ORDER BY CreatedDate DESC
+                ];
+
+                for (ContentDistribution cd : distributions) {
+                    history.add(new Map&lt;String, Object&gt;{
+                        'id' =&gt; cd.Id,
+                        'name' =&gt; cd.Name,
+                        'url' =&gt; cd.DistributionPublicUrl,
+                        'expiryDate' =&gt; cd.ExpiryDate,
+                        'firstViewDate' =&gt; cd.FirstViewDate,
+                        'lastViewDate' =&gt; cd.LastViewDate,
+                        'viewCount' =&gt; cd.ViewCount,
+                        'createdDate' =&gt; cd.CreatedDate
+                    });
+                }
+            }
+
+            return history;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDeliveryService.getDeliveryHistory', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return history;
     }
     
     // ═══════════════════════════════════════════════════════════════

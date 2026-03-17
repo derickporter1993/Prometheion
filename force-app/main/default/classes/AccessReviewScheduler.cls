@@ -311,8 +311,15 @@ public with sharing class AccessReviewScheduler implements Schedulable {
      */
     @AuraEnabled
     public static void runNow() {
-        AccessReviewScheduler scheduler = new AccessReviewScheduler();
-        scheduler.performAccessReview();
+        try {
+            AccessReviewScheduler scheduler = new AccessReviewScheduler();
+            scheduler.performAccessReview();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('AccessReviewScheduler.runNow', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     // ========== Inner Classes ==========

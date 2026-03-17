@@ -149,31 +149,38 @@ public with sharing class ElaroShieldService {
      */
     @AuraEnabled(cacheable=true)
     public static List&lt;String&gt; getAvailableEventTypes() {
-        Set&lt;String&gt; availableTypes = new Set&lt;String&gt;();
-        
         try {
-            // Query distinct event types from EventLogFile
-            if (Schema.sObjectType.EventLogFile.isAccessible()) {
-                for (AggregateResult ar : [
-                    SELECT EventType
-                    FROM EventLogFile
-                    WHERE LogDate = LAST_N_DAYS:30
-                    WITH USER_MODE
-                    GROUP BY EventType
-                    LIMIT 50
-                ]) {
-                    String eventType = (String)ar.get('EventType');
-                    if (VALID_EVENT_TYPES.contains(eventType)) {
-                        availableTypes.add(eventType);
+            Set&lt;String&gt; availableTypes = new Set&lt;String&gt;();
+
+            try {
+                // Query distinct event types from EventLogFile
+                if (Schema.sObjectType.EventLogFile.isAccessible()) {
+                    for (AggregateResult ar : [
+                        SELECT EventType
+                        FROM EventLogFile
+                        WHERE LogDate = LAST_N_DAYS:30
+                        WITH USER_MODE
+                        GROUP BY EventType
+                        LIMIT 50
+                    ]) {
+                        String eventType = (String)ar.get('EventType');
+                        if (VALID_EVENT_TYPES.contains(eventType)) {
+                            availableTypes.add(eventType);
+                        }
                     }
                 }
+            } catch (Exception innerEx) {
+                // Return empty list if Shield is not available
+                ElaroLogger.warn( 'Unable to query EventLogFile: ' + innerEx.getMessage());
             }
+
+            return new List&lt;String&gt;(availableTypes);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
         } catch (Exception e) {
-            // Return empty list if Shield is not available
-            ElaroLogger.warn( 'Unable to query EventLogFile: ' + e.getMessage());
+            ElaroLogger.error('ElaroShieldService.getAvailableEventTypes', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return new List&lt;String&gt;(availableTypes);
     }
     
     /**
@@ -182,43 +189,50 @@ public with sharing class ElaroShieldService {
      */
     @AuraEnabled(cacheable=true)
     public static Map&lt;String, Object&gt; getShieldStatus() {
-        Map&lt;String, Object&gt; status = new Map&lt;String, Object&gt;{
-            'shieldEnabled' =&gt; false,
-            'eventMonitoring' =&gt; false,
-            'platformEncryption' =&gt; false,
-            'fieldAuditTrail' =&gt; false,
-            'availableEventTypes' =&gt; new List&lt;String&gt;()
-        };
-        
         try {
-            // Check if EventLogFile is accessible (indicates Event Monitoring)
-            status.put('eventMonitoring', Schema.sObjectType.EventLogFile.isAccessible());
-            
-            // If event monitoring is available, Shield is enabled
-            if ((Boolean)status.get('eventMonitoring')) {
-                status.put('shieldEnabled', true);
-                status.put('availableEventTypes', getAvailableEventTypes());
-            }
-            
-            // Check for Platform Encryption (TenantSecret object)
+            Map&lt;String, Object&gt; status = new Map&lt;String, Object&gt;{
+                'shieldEnabled' =&gt; false,
+                'eventMonitoring' =&gt; false,
+                'platformEncryption' =&gt; false,
+                'fieldAuditTrail' =&gt; false,
+                'availableEventTypes' =&gt; new List&lt;String&gt;()
+            };
+
             try {
-                // NOPMD ApexSOQLInjection - query is hardcoded, no user input
-                Integer tenantSecretCount = Database.countQuery(
-                    'SELECT COUNT() FROM TenantSecret WHERE Status = \'Active\' WITH USER_MODE'
-                );
-                status.put('platformEncryption', tenantSecretCount &gt; 0);
-            } catch (Exception e) {
-                status.put('platformEncryption', false);
+                // Check if EventLogFile is accessible (indicates Event Monitoring)
+                status.put('eventMonitoring', Schema.sObjectType.EventLogFile.isAccessible());
+
+                // If event monitoring is available, Shield is enabled
+                if ((Boolean)status.get('eventMonitoring')) {
+                    status.put('shieldEnabled', true);
+                    status.put('availableEventTypes', getAvailableEventTypes());
+                }
+
+                // Check for Platform Encryption (TenantSecret object)
+                try {
+                    // NOPMD ApexSOQLInjection - query is hardcoded, no user input
+                    Integer tenantSecretCount = Database.countQuery(
+                        'SELECT COUNT() FROM TenantSecret WHERE Status = \'Active\' WITH USER_MODE'
+                    );
+                    status.put('platformEncryption', tenantSecretCount &gt; 0);
+                } catch (Exception encEx) {
+                    status.put('platformEncryption', false);
+                }
+
+                // Check for Field Audit Trail
+                status.put('fieldAuditTrail', Schema.sObjectType.FieldHistoryArchive.isAccessible());
+
+            } catch (Exception innerEx) {
+                ElaroLogger.error( 'Error checking Shield status: ' + innerEx.getMessage());
             }
-            
-            // Check for Field Audit Trail
-            status.put('fieldAuditTrail', Schema.sObjectType.FieldHistoryArchive.isAccessible());
-            
+
+            return status;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
         } catch (Exception e) {
-            ElaroLogger.error( 'Error checking Shield status: ' + e.getMessage());
+            ElaroLogger.error('ElaroShieldService.getShieldStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return status;
     }
     
     /**
@@ -238,7 +252,14 @@ public with sharing class ElaroShieldService {
      */
     @AuraEnabled(cacheable=true)
     public static Map&lt;String, String&gt; getEventRiskLevels() {
-        return EVENT_RISK_LEVELS;
+        try {
+            return EVENT_RISK_LEVELS;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroShieldService.getEventRiskLevels', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

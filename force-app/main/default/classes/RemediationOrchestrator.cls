@@ -43,45 +43,52 @@ public with sharing class RemediationOrchestrator {
      */
     @AuraEnabled
     public static Id createRemediationCase(String eventId, String priority) {
-        if (String.isBlank(eventId)) {
-            throw new AuraHandledException('Event ID is required');
-        }
-        
-        // Query event details
-        Elaro_Evidence_Item__c event;
         try {
-            event = [
-                SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c
-                FROM Elaro_Evidence_Item__c
-                WHERE Id = :eventId
-                WITH USER_MODE
-                LIMIT 1
-            ];
-        } catch (Exception e) {
-            throw new AuraHandledException('Event not found: ' + eventId);
-        }
-        
-        // Create case
-        Case remedCase = new Case(
-            Subject = 'Compliance Remediation: ' + event.Evidence_Type__c,
-            Description = 'Remediation required for compliance event.\n\n' +
-                         'Event ID: ' + event.Name + '\n' +
-                         'Event Type: ' + event.Evidence_Type__c + '\n' +
-                         'Date: ' + event.Evidence_Date__c + '\n' +
-                         'Details: ' + event.Description__c,
-            Priority = String.isNotBlank(priority) ? priority : 'High',
-            Status = 'New',
-            Origin = 'Elaro',
-            Type = 'Compliance',
-            OwnerId = UserInfo.getUserId()
-        );
-        
-        insert as user remedCase;
+            if (String.isBlank(eventId)) {
+                throw new AuraHandledException('Event ID is required');
+            }
 
-        // Link case to event (if lookup field exists)
-        updateEventWithCase(event.Id, remedCase.Id);
-        
-        return remedCase.Id;
+            // Query event details
+            Elaro_Evidence_Item__c event;
+            try {
+                event = [
+                    SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c
+                    FROM Elaro_Evidence_Item__c
+                    WHERE Id = :eventId
+                    WITH USER_MODE
+                    LIMIT 1
+                ];
+            } catch (Exception queryEx) {
+                throw new AuraHandledException('Event not found: ' + eventId);
+            }
+
+            // Create case
+            Case remedCase = new Case(
+                Subject = 'Compliance Remediation: ' + event.Evidence_Type__c,
+                Description = 'Remediation required for compliance event.\n\n' +
+                             'Event ID: ' + event.Name + '\n' +
+                             'Event Type: ' + event.Evidence_Type__c + '\n' +
+                             'Date: ' + event.Evidence_Date__c + '\n' +
+                             'Details: ' + event.Description__c,
+                Priority = String.isNotBlank(priority) ? priority : 'High',
+                Status = 'New',
+                Origin = 'Elaro',
+                Type = 'Compliance',
+                OwnerId = UserInfo.getUserId()
+            );
+
+            insert as user remedCase;
+
+            // Link case to event (if lookup field exists)
+            updateEventWithCase(event.Id, remedCase.Id);
+
+            return remedCase.Id;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationOrchestrator.createRemediationCase', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -148,31 +155,38 @@ public with sharing class RemediationOrchestrator {
      */
     @AuraEnabled(cacheable=true)
     public static List<ActionOption> getAvailableActions(String eventType) {
-        List<ActionOption> actions = new List<ActionOption>();
-        
-        // Common actions
-        actions.add(new ActionOption('CREATE_CASE', 'Create Case', 'Create a remediation case', 'utility:case'));
-        actions.add(new ActionOption('NOTIFY_MANAGER', 'Notify Manager', 'Send notification to user\'s manager', 'utility:email'));
-        
-        // Event-specific actions
-        if (eventType == 'LoginAs' || eventType == 'PermissionSetEventLog') {
-            actions.add(new ActionOption('REVOKE_PERMISSION', 'Revoke Permission', 'Remove the permission that enabled this action', 'utility:ban'));
-            actions.add(new ActionOption('LOCK_USER', 'Lock User', 'Temporarily lock the user account', 'utility:lock'));
+        try {
+            List<ActionOption> actions = new List<ActionOption>();
+
+            // Common actions
+            actions.add(new ActionOption('CREATE_CASE', 'Create Case', 'Create a remediation case', 'utility:case'));
+            actions.add(new ActionOption('NOTIFY_MANAGER', 'Notify Manager', 'Send notification to user\'s manager', 'utility:email'));
+
+            // Event-specific actions
+            if (eventType == 'LoginAs' || eventType == 'PermissionSetEventLog') {
+                actions.add(new ActionOption('REVOKE_PERMISSION', 'Revoke Permission', 'Remove the permission that enabled this action', 'utility:ban'));
+                actions.add(new ActionOption('LOCK_USER', 'Lock User', 'Temporarily lock the user account', 'utility:lock'));
+            }
+
+            if (eventType == 'API' || eventType == 'BulkApiResult') {
+                actions.add(new ActionOption('DISABLE_API_ACCESS', 'Disable API Access', 'Revoke API-only access', 'utility:disconnect'));
+            }
+
+            if (eventType == 'Login') {
+                actions.add(new ActionOption('FORCE_LOGOUT', 'Force Logout', 'End all active sessions', 'utility:logout'));
+            }
+
+            if (eventType == 'ReportExport' || eventType == 'ContentDistribution') {
+                actions.add(new ActionOption('QUARANTINE_DATA', 'Quarantine Data', 'Restrict access to exported data', 'utility:shield'));
+            }
+
+            return actions;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationOrchestrator.getAvailableActions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        if (eventType == 'API' || eventType == 'BulkApiResult') {
-            actions.add(new ActionOption('DISABLE_API_ACCESS', 'Disable API Access', 'Revoke API-only access', 'utility:disconnect'));
-        }
-        
-        if (eventType == 'Login') {
-            actions.add(new ActionOption('FORCE_LOGOUT', 'Force Logout', 'End all active sessions', 'utility:logout'));
-        }
-        
-        if (eventType == 'ReportExport' || eventType == 'ContentDistribution') {
-            actions.add(new ActionOption('QUARANTINE_DATA', 'Quarantine Data', 'Restrict access to exported data', 'utility:shield'));
-        }
-        
-        return actions;
     }
     
     /**
@@ -182,8 +196,15 @@ public with sharing class RemediationOrchestrator {
      */
     @AuraEnabled(cacheable=true)
     public static List<RemediationResult> getRemediationHistory(String eventId) {
-        // In production, query from a custom object
-        return new List<RemediationResult>();
+        try {
+            // In production, query from a custom object
+            return new List<RemediationResult>();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationOrchestrator.getRemediationHistory', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

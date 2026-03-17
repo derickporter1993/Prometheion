@@ -95,17 +95,24 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled(cacheable=true)
     public static List<Remediation_Suggestion__c> getSuggestions(String gapId) {
-        return [
-            SELECT Id, Name, Suggestion_Type__c, Description__c, Implementation_Steps__c,
-                   Auto_Remediation_Available__c, Status__c, Confidence_Score__c,
-                   Risk_Reduction_Score__c, Effort_Estimate__c, Priority_Score__c,
-                   Framework__c, Applied_At__c, Applied_By__r.Name,
-                   Reviewed_By__r.Name, Reviewed_At__c, Rejection_Reason__c
-            FROM Remediation_Suggestion__c
-            WHERE Compliance_Gap__c = :gapId
-            WITH USER_MODE
-            ORDER BY Priority_Score__c DESC, Confidence_Score__c DESC
-        ];
+        try {
+            return [
+                SELECT Id, Name, Suggestion_Type__c, Description__c, Implementation_Steps__c,
+                       Auto_Remediation_Available__c, Status__c, Confidence_Score__c,
+                       Risk_Reduction_Score__c, Effort_Estimate__c, Priority_Score__c,
+                       Framework__c, Applied_At__c, Applied_By__r.Name,
+                       Reviewed_By__r.Name, Reviewed_At__c, Rejection_Reason__c
+                FROM Remediation_Suggestion__c
+                WHERE Compliance_Gap__c = :gapId
+                WITH USER_MODE
+                ORDER BY Priority_Score__c DESC, Confidence_Score__c DESC
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.getSuggestions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -114,32 +121,39 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled(cacheable=true)
     public static List<SuggestionWithGap> getPendingSuggestions() {
-        List<SuggestionWithGap> results = new List<SuggestionWithGap>();
+        try {
+            List<SuggestionWithGap> results = new List<SuggestionWithGap>();
 
-        List<Remediation_Suggestion__c> suggestions = [
-            SELECT Id, Name, Suggestion_Type__c, Description__c, Status__c,
-                   Confidence_Score__c, Priority_Score__c, Auto_Remediation_Available__c,
-                   Effort_Estimate__c, Risk_Reduction_Score__c, Framework__c,
-                   Compliance_Gap__c, Compliance_Gap__r.Name, Compliance_Gap__r.Severity__c,
-                   Compliance_Gap__r.Framework__c
-            FROM Remediation_Suggestion__c
-            WHERE Status__c = 'PENDING'
-            WITH USER_MODE
-            ORDER BY Priority_Score__c DESC
-            LIMIT 100
-        ];
+            List<Remediation_Suggestion__c> suggestions = [
+                SELECT Id, Name, Suggestion_Type__c, Description__c, Status__c,
+                       Confidence_Score__c, Priority_Score__c, Auto_Remediation_Available__c,
+                       Effort_Estimate__c, Risk_Reduction_Score__c, Framework__c,
+                       Compliance_Gap__c, Compliance_Gap__r.Name, Compliance_Gap__r.Severity__c,
+                       Compliance_Gap__r.Framework__c
+                FROM Remediation_Suggestion__c
+                WHERE Status__c = 'PENDING'
+                WITH USER_MODE
+                ORDER BY Priority_Score__c DESC
+                LIMIT 100
+            ];
 
-        for (Remediation_Suggestion__c suggestion : suggestions) {
-            SuggestionWithGap swg = new SuggestionWithGap();
-            swg.suggestion = suggestion;
-            swg.gapId = suggestion.Compliance_Gap__c;
-            swg.gapName = suggestion.Compliance_Gap__r.Name;
-            swg.gapSeverity = suggestion.Compliance_Gap__r.Severity__c;
-            swg.gapFramework = suggestion.Compliance_Gap__r.Framework__c;
-            results.add(swg);
+            for (Remediation_Suggestion__c suggestion : suggestions) {
+                SuggestionWithGap swg = new SuggestionWithGap();
+                swg.suggestion = suggestion;
+                swg.gapId = suggestion.Compliance_Gap__c;
+                swg.gapName = suggestion.Compliance_Gap__r.Name;
+                swg.gapSeverity = suggestion.Compliance_Gap__r.Severity__c;
+                swg.gapFramework = suggestion.Compliance_Gap__r.Framework__c;
+                results.add(swg);
+            }
+
+            return results;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.getPendingSuggestions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return results;
     }
 
     /**
@@ -148,7 +162,14 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled
     public static void approveSuggestion(String suggestionId) {
-        updateSuggestionStatus(suggestionId, 'APPROVED', null);
+        try {
+            updateSuggestionStatus(suggestionId, 'APPROVED', null);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.approveSuggestion', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -158,7 +179,14 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled
     public static void rejectSuggestion(String suggestionId, String reason) {
-        updateSuggestionStatus(suggestionId, 'REJECTED', reason);
+        try {
+            updateSuggestionStatus(suggestionId, 'REJECTED', reason);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.rejectSuggestion', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -168,18 +196,25 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled
     public static Integer bulkGenerateSuggestions(List<String> gapIds) {
-        Integer totalGenerated = 0;
+        try {
+            Integer totalGenerated = 0;
 
-        for (String gapId : gapIds) {
-            try {
-                List<Remediation_Suggestion__c> suggestions = generateSuggestions(gapId);
-                totalGenerated += suggestions.size();
-            } catch (Exception e) {
-                ElaroLogger.warn( 'Failed to generate suggestions for gap ' + gapId + ': ' + e.getMessage());
+            for (String gapId : gapIds) {
+                try {
+                    List<Remediation_Suggestion__c> suggestions = generateSuggestions(gapId);
+                    totalGenerated += suggestions.size();
+                } catch (Exception e) {
+                    ElaroLogger.warn( 'Failed to generate suggestions for gap ' + gapId + ': ' + e.getMessage());
+                }
             }
-        }
 
-        return totalGenerated;
+            return totalGenerated;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.bulkGenerateSuggestions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -187,21 +222,28 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled
     public static void recalculatePriorities() {
-        List<Remediation_Suggestion__c> suggestions = [
-            SELECT Id, Risk_Reduction_Score__c, Effort_Estimate__c
-            FROM Remediation_Suggestion__c
-            WHERE Status__c = 'PENDING'
-            WITH USER_MODE
-        ];
+        try {
+            List<Remediation_Suggestion__c> suggestions = [
+                SELECT Id, Risk_Reduction_Score__c, Effort_Estimate__c
+                FROM Remediation_Suggestion__c
+                WHERE Status__c = 'PENDING'
+                WITH USER_MODE
+            ];
 
-        for (Remediation_Suggestion__c suggestion : suggestions) {
-            suggestion.Priority_Score__c = calculatePriorityScore(
-                suggestion.Risk_Reduction_Score__c,
-                suggestion.Effort_Estimate__c
-            );
+            for (Remediation_Suggestion__c suggestion : suggestions) {
+                suggestion.Priority_Score__c = calculatePriorityScore(
+                    suggestion.Risk_Reduction_Score__c,
+                    suggestion.Effort_Estimate__c
+                );
+            }
+
+            update as user suggestions;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.recalculatePriorities', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        update as user suggestions;
     }
 
     // ============================================

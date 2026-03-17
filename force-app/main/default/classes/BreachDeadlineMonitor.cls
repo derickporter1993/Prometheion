@@ -392,8 +392,15 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
      */
     @AuraEnabled
     public static void runNow() {
-        BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
-        monitor.monitorDeadlines();
+        try {
+            BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
+            monitor.monitorDeadlines();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BreachDeadlineMonitor.runNow', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -401,16 +408,23 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
      */
     @AuraEnabled(cacheable=true)
     public static DeadlineSummary getDeadlineSummary() {
-        BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
+        try {
+            BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
 
-        DeadlineSummary summary = new DeadlineSummary();
-        summary.overdueCount = monitor.checkOverdueBreaches().size();
-        summary.criticalCount = monitor.checkCriticalDeadlines().size();
-        summary.upcomingCount = monitor.checkUpcomingDeadlines().size();
-        summary.hhsRequiredCount = monitor.checkHHSNotificationRequired().size();
-        summary.totalActiveBreaches = summary.overdueCount + summary.criticalCount + summary.upcomingCount;
+            DeadlineSummary summary = new DeadlineSummary();
+            summary.overdueCount = monitor.checkOverdueBreaches().size();
+            summary.criticalCount = monitor.checkCriticalDeadlines().size();
+            summary.upcomingCount = monitor.checkUpcomingDeadlines().size();
+            summary.hhsRequiredCount = monitor.checkHHSNotificationRequired().size();
+            summary.totalActiveBreaches = summary.overdueCount + summary.criticalCount + summary.upcomingCount;
 
-        return summary;
+            return summary;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BreachDeadlineMonitor.getDeadlineSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     // ========== Inner Classes ==========

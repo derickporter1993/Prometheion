@@ -24,35 +24,42 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled
     public static JiraIssue createIssue(String gapId, String priority) {
-        Compliance_Gap__c gap = getGapWithFields(gapId);
+        try {
+            Compliance_Gap__c gap = getGapWithFields(gapId);
 
-        if (String.isNotBlank(gap.Jira_Issue_Key__c)) {
-            throw new JiraIntegrationException('A Jira issue already exists for this gap: ' + gap.Jira_Issue_Key__c);
+            if (String.isNotBlank(gap.Jira_Issue_Key__c)) {
+                throw new JiraIntegrationException('A Jira issue already exists for this gap: ' + gap.Jira_Issue_Key__c);
+            }
+
+            JiraSettings settings = getSettings();
+            String effectivePriority = String.isNotBlank(priority) ? priority : settings.defaultPriority;
+
+            Map<String, Object> issuePayload = buildIssuePayload(gap, settings, effectivePriority);
+            HttpResponse response = makeCallout('POST', API_VERSION + '/issue', JSON.serialize(issuePayload));
+
+            if (response.getStatusCode() != 201) {
+                throw new JiraIntegrationException('Failed to create Jira issue: ' + response.getBody());
+            }
+
+            Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+            String issueKey = (String) responseBody.get('key');
+            String issueId = (String) responseBody.get('id');
+
+            // Update the gap with Jira information
+            gap.Jira_Issue_Key__c = issueKey;
+            gap.Jira_Issue_URL__c = settings.jiraInstanceUrl + '/browse/' + issueKey;
+            gap.Jira_Status__c = 'To Do';
+            gap.Jira_Last_Sync__c = Datetime.now();
+
+            update as user gap;
+
+            return buildJiraIssueFromResponse(responseBody, settings.jiraInstanceUrl);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.createIssue', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        JiraSettings settings = getSettings();
-        String effectivePriority = String.isNotBlank(priority) ? priority : settings.defaultPriority;
-
-        Map<String, Object> issuePayload = buildIssuePayload(gap, settings, effectivePriority);
-        HttpResponse response = makeCallout('POST', API_VERSION + '/issue', JSON.serialize(issuePayload));
-
-        if (response.getStatusCode() != 201) {
-            throw new JiraIntegrationException('Failed to create Jira issue: ' + response.getBody());
-        }
-
-        Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-        String issueKey = (String) responseBody.get('key');
-        String issueId = (String) responseBody.get('id');
-
-        // Update the gap with Jira information
-        gap.Jira_Issue_Key__c = issueKey;
-        gap.Jira_Issue_URL__c = settings.jiraInstanceUrl + '/browse/' + issueKey;
-        gap.Jira_Status__c = 'To Do';
-        gap.Jira_Last_Sync__c = Datetime.now();
-
-        update as user gap;
-
-        return buildJiraIssueFromResponse(responseBody, settings.jiraInstanceUrl);
     }
 
     /**
@@ -74,22 +81,29 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled(cacheable=true)
     public static JiraIssue getIssueStatus(String jiraKey) {
-        if (String.isBlank(jiraKey)) {
-            throw new JiraIntegrationException('Jira issue key is required');
-        }
-
-        JiraSettings settings = getSettings();
-        HttpResponse response = makeCallout('GET', API_VERSION + '/issue/' + jiraKey, null);
-
-        if (response.getStatusCode() != 200) {
-            if (response.getStatusCode() == 404) {
-                throw new JiraIntegrationException('Jira issue not found: ' + jiraKey);
+        try {
+            if (String.isBlank(jiraKey)) {
+                throw new JiraIntegrationException('Jira issue key is required');
             }
-            throw new JiraIntegrationException('Failed to get Jira issue: ' + response.getBody());
-        }
 
-        Map<String, Object> issueData = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-        return buildJiraIssueFromFullResponse(issueData, settings.jiraInstanceUrl);
+            JiraSettings settings = getSettings();
+            HttpResponse response = makeCallout('GET', API_VERSION + '/issue/' + jiraKey, null);
+
+            if (response.getStatusCode() != 200) {
+                if (response.getStatusCode() == 404) {
+                    throw new JiraIntegrationException('Jira issue not found: ' + jiraKey);
+                }
+                throw new JiraIntegrationException('Failed to get Jira issue: ' + response.getBody());
+            }
+
+            Map<String, Object> issueData = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+            return buildJiraIssueFromFullResponse(issueData, settings.jiraInstanceUrl);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.getIssueStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -98,25 +112,32 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled
     public static void syncIssueStatus(String gapId) {
-        Compliance_Gap__c gap = getGapWithFields(gapId);
+        try {
+            Compliance_Gap__c gap = getGapWithFields(gapId);
 
-        if (String.isBlank(gap.Jira_Issue_Key__c)) {
-            throw new JiraIntegrationException('No Jira issue linked to this gap');
+            if (String.isBlank(gap.Jira_Issue_Key__c)) {
+                throw new JiraIntegrationException('No Jira issue linked to this gap');
+            }
+
+            JiraIssue issue = getIssueStatus(gap.Jira_Issue_Key__c);
+
+            // Update gap with synced data
+            gap.Jira_Status__c = issue.status;
+            gap.Jira_Last_Sync__c = Datetime.now();
+
+            // Optionally update Salesforce status based on Jira status
+            String newStatus = mapJiraStatusToSalesforce(issue.status);
+            if (String.isNotBlank(newStatus) && newStatus != gap.Status__c) {
+                gap.Status__c = newStatus;
+            }
+
+            update as user gap;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.syncIssueStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        JiraIssue issue = getIssueStatus(gap.Jira_Issue_Key__c);
-
-        // Update gap with synced data
-        gap.Jira_Status__c = issue.status;
-        gap.Jira_Last_Sync__c = Datetime.now();
-
-        // Optionally update Salesforce status based on Jira status
-        String newStatus = mapJiraStatusToSalesforce(issue.status);
-        if (String.isNotBlank(newStatus) && newStatus != gap.Status__c) {
-            gap.Status__c = newStatus;
-        }
-
-        update as user gap;
     }
 
     /**
@@ -126,18 +147,25 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled
     public static List<JiraIssue> createBulkIssues(List<String> gapIds) {
-        List<JiraIssue> createdIssues = new List<JiraIssue>();
+        try {
+            List<JiraIssue> createdIssues = new List<JiraIssue>();
 
-        for (String gapId : gapIds) {
-            try {
-                JiraIssue issue = createIssue(gapId, null);
-                createdIssues.add(issue);
-            } catch (Exception e) {
-                ElaroLogger.warn('Failed to create issue for gap ' + gapId + ': ' + e.getMessage());
+            for (String gapId : gapIds) {
+                try {
+                    JiraIssue issue = createIssue(gapId, null);
+                    createdIssues.add(issue);
+                } catch (Exception innerEx) {
+                    ElaroLogger.warn('Failed to create issue for gap ' + gapId + ': ' + innerEx.getMessage());
+                }
             }
-        }
 
-        return createdIssues;
+            return createdIssues;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.createBulkIssues', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -147,22 +175,29 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled
     public static void addComment(String jiraKey, String comment) {
-        if (String.isBlank(jiraKey) || String.isBlank(comment)) {
-            throw new JiraIntegrationException('Jira key and comment are required');
-        }
+        try {
+            if (String.isBlank(jiraKey) || String.isBlank(comment)) {
+                throw new JiraIntegrationException('Jira key and comment are required');
+            }
 
-        Map<String, Object> commentPayload = new Map<String, Object>{
-            'body' => buildAtlassianDocumentFormat(comment)
-        };
+            Map<String, Object> commentPayload = new Map<String, Object>{
+                'body' => buildAtlassianDocumentFormat(comment)
+            };
 
-        HttpResponse response = makeCallout(
-            'POST',
-            API_VERSION + '/issue/' + jiraKey + '/comment',
-            JSON.serialize(commentPayload)
-        );
+            HttpResponse response = makeCallout(
+                'POST',
+                API_VERSION + '/issue/' + jiraKey + '/comment',
+                JSON.serialize(commentPayload)
+            );
 
-        if (response.getStatusCode() != 201) {
-            throw new JiraIntegrationException('Failed to add comment: ' + response.getBody());
+            if (response.getStatusCode() != 201) {
+                throw new JiraIntegrationException('Failed to add comment: ' + response.getBody());
+            }
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.addComment', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -173,24 +208,31 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled
     public static void transitionIssue(String jiraKey, String transitionId) {
-        if (String.isBlank(jiraKey) || String.isBlank(transitionId)) {
-            throw new JiraIntegrationException('Jira key and transition ID are required');
-        }
-
-        Map<String, Object> transitionPayload = new Map<String, Object>{
-            'transition' => new Map<String, Object>{
-                'id' => transitionId
+        try {
+            if (String.isBlank(jiraKey) || String.isBlank(transitionId)) {
+                throw new JiraIntegrationException('Jira key and transition ID are required');
             }
-        };
 
-        HttpResponse response = makeCallout(
-            'POST',
-            API_VERSION + '/issue/' + jiraKey + '/transitions',
-            JSON.serialize(transitionPayload)
-        );
+            Map<String, Object> transitionPayload = new Map<String, Object>{
+                'transition' => new Map<String, Object>{
+                    'id' => transitionId
+                }
+            };
 
-        if (response.getStatusCode() != 204) {
-            throw new JiraIntegrationException('Failed to transition issue: ' + response.getBody());
+            HttpResponse response = makeCallout(
+                'POST',
+                API_VERSION + '/issue/' + jiraKey + '/transitions',
+                JSON.serialize(transitionPayload)
+            );
+
+            if (response.getStatusCode() != 204) {
+                throw new JiraIntegrationException('Failed to transition issue: ' + response.getBody());
+            }
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.transitionIssue', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -201,29 +243,36 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled(cacheable=true)
     public static List<JiraTransition> getAvailableTransitions(String jiraKey) {
-        if (String.isBlank(jiraKey)) {
-            throw new JiraIntegrationException('Jira issue key is required');
+        try {
+            if (String.isBlank(jiraKey)) {
+                throw new JiraIntegrationException('Jira issue key is required');
+            }
+
+            HttpResponse response = makeCallout('GET', API_VERSION + '/issue/' + jiraKey + '/transitions', null);
+
+            if (response.getStatusCode() != 200) {
+                throw new JiraIntegrationException('Failed to get transitions: ' + response.getBody());
+            }
+
+            Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+            List<Object> transitions = (List<Object>) responseBody.get('transitions');
+
+            List<JiraTransition> result = new List<JiraTransition>();
+            for (Object t : transitions) {
+                Map<String, Object> transition = (Map<String, Object>) t;
+                JiraTransition jt = new JiraTransition();
+                jt.id = (String) transition.get('id');
+                jt.name = (String) transition.get('name');
+                result.add(jt);
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.getAvailableTransitions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        HttpResponse response = makeCallout('GET', API_VERSION + '/issue/' + jiraKey + '/transitions', null);
-
-        if (response.getStatusCode() != 200) {
-            throw new JiraIntegrationException('Failed to get transitions: ' + response.getBody());
-        }
-
-        Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-        List<Object> transitions = (List<Object>) responseBody.get('transitions');
-
-        List<JiraTransition> result = new List<JiraTransition>();
-        for (Object t : transitions) {
-            Map<String, Object> transition = (Map<String, Object>) t;
-            JiraTransition jt = new JiraTransition();
-            jt.id = (String) transition.get('id');
-            jt.name = (String) transition.get('name');
-            result.add(jt);
-        }
-
-        return result;
     }
 
     /**
@@ -252,15 +301,22 @@ public with sharing class JiraIntegrationService {
      */
     @AuraEnabled(cacheable=true)
     public static List<Compliance_Gap__c> getLinkedGaps() {
-        return [
-            SELECT Id, Name, Framework__c, Severity__c, Status__c, Gap_Description__c,
-                   Jira_Issue_Key__c, Jira_Issue_URL__c, Jira_Status__c, Jira_Last_Sync__c
-            FROM Compliance_Gap__c
-            WHERE Jira_Issue_Key__c != NULL
-            WITH USER_MODE
-            ORDER BY Jira_Last_Sync__c DESC
-            LIMIT 100
-        ];
+        try {
+            return [
+                SELECT Id, Name, Framework__c, Severity__c, Status__c, Gap_Description__c,
+                       Jira_Issue_Key__c, Jira_Issue_URL__c, Jira_Status__c, Jira_Last_Sync__c
+                FROM Compliance_Gap__c
+                WHERE Jira_Issue_Key__c != NULL
+                WITH USER_MODE
+                ORDER BY Jira_Last_Sync__c DESC
+                LIMIT 100
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('JiraIntegrationService.getLinkedGaps', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     // ============================================

@@ -75,41 +75,48 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
      */
     @AuraEnabled
     public static String scheduleReport(String frequencyStr, List<String> recipientEmails, String frameworkFilter) {
-        // Validate input
-        if (String.isBlank(frequencyStr)) {
-            throw new IllegalArgumentException('Frequency is required');
-        }
-
-        Frequency freq;
         try {
-            freq = Frequency.valueOf(frequencyStr.toUpperCase());
+            // Validate input
+            if (String.isBlank(frequencyStr)) {
+                throw new IllegalArgumentException('Frequency is required');
+            }
+
+            Frequency freq;
+            try {
+                freq = Frequency.valueOf(frequencyStr.toUpperCase());
+            } catch (Exception parseEx) {
+                throw new IllegalArgumentException('Invalid frequency. Use DAILY, WEEKLY, or MONTHLY');
+            }
+
+            // Validate recipients
+            List<String> validRecipients = validateEmails(recipientEmails);
+            if (validRecipients.isEmpty()) {
+                throw new IllegalArgumentException('At least one valid email recipient is required');
+            }
+
+            // Validate framework
+            String framework = String.isNotBlank(frameworkFilter) ? frameworkFilter.toUpperCase() : 'ALL';
+            if (framework != 'ALL' && !ElaroConstants.SUPPORTED_FRAMEWORKS.contains(framework)) {
+                throw new IllegalArgumentException('Invalid framework: ' + frameworkFilter);
+            }
+
+            // Generate cron expression
+            String cronExpression = getCronExpression(freq);
+            String jobName = generateJobName(freq, framework);
+
+            // Create and schedule the job
+            ComplianceReportScheduler scheduler = new ComplianceReportScheduler(freq, validRecipients, framework);
+            String jobId = System.schedule(jobName, cronExpression, scheduler);
+
+            ElaroLogger.info( LOG_PREFIX + 'Scheduled report - JobId: ' + jobId + ', Name: ' + jobName);
+
+            return jobId;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
         } catch (Exception e) {
-            throw new IllegalArgumentException('Invalid frequency. Use DAILY, WEEKLY, or MONTHLY');
+            ElaroLogger.error('ComplianceReportScheduler.scheduleReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        // Validate recipients
-        List<String> validRecipients = validateEmails(recipientEmails);
-        if (validRecipients.isEmpty()) {
-            throw new IllegalArgumentException('At least one valid email recipient is required');
-        }
-
-        // Validate framework
-        String framework = String.isNotBlank(frameworkFilter) ? frameworkFilter.toUpperCase() : 'ALL';
-        if (framework != 'ALL' && !ElaroConstants.SUPPORTED_FRAMEWORKS.contains(framework)) {
-            throw new IllegalArgumentException('Invalid framework: ' + frameworkFilter);
-        }
-
-        // Generate cron expression
-        String cronExpression = getCronExpression(freq);
-        String jobName = generateJobName(freq, framework);
-
-        // Create and schedule the job
-        ComplianceReportScheduler scheduler = new ComplianceReportScheduler(freq, validRecipients, framework);
-        String jobId = System.schedule(jobName, cronExpression, scheduler);
-
-        ElaroLogger.info( LOG_PREFIX + 'Scheduled report - JobId: ' + jobId + ', Name: ' + jobName);
-
-        return jobId;
     }
 
     /**
@@ -118,33 +125,40 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
      */
     @AuraEnabled(cacheable=true)
     public static List<ScheduledReport> getScheduledReports() {
-        List<ScheduledReport> reports = new List<ScheduledReport>();
+        try {
+            List<ScheduledReport> reports = new List<ScheduledReport>();
 
-        List<CronTrigger> jobs = [
-            SELECT Id, CronJobDetail.Name, NextFireTime, State, CronExpression
-            FROM CronTrigger
-            WHERE CronJobDetail.Name LIKE 'Elaro%Report%'
-            WITH USER_MODE
-            ORDER BY NextFireTime ASC
-            LIMIT 50
-        ];
+            List<CronTrigger> jobs = [
+                SELECT Id, CronJobDetail.Name, NextFireTime, State, CronExpression
+                FROM CronTrigger
+                WHERE CronJobDetail.Name LIKE 'Elaro%Report%'
+                WITH USER_MODE
+                ORDER BY NextFireTime ASC
+                LIMIT 50
+            ];
 
-        for (CronTrigger job : jobs) {
-            ScheduledReport report = new ScheduledReport();
-            report.jobId = job.Id;
-            report.name = job.CronJobDetail.Name;
-            report.nextRun = job.NextFireTime;
-            report.status = job.State;
-            report.cronExpression = job.CronExpression;
+            for (CronTrigger job : jobs) {
+                ScheduledReport report = new ScheduledReport();
+                report.jobId = job.Id;
+                report.name = job.CronJobDetail.Name;
+                report.nextRun = job.NextFireTime;
+                report.status = job.State;
+                report.cronExpression = job.CronExpression;
 
-            // Parse frequency and framework from job name
-            report.frequency = parseFrequencyFromJobName(job.CronJobDetail.Name);
-            report.framework = parseFrameworkFromJobName(job.CronJobDetail.Name);
+                // Parse frequency and framework from job name
+                report.frequency = parseFrequencyFromJobName(job.CronJobDetail.Name);
+                report.framework = parseFrameworkFromJobName(job.CronJobDetail.Name);
 
-            reports.add(report);
+                reports.add(report);
+            }
+
+            return reports;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceReportScheduler.getScheduledReports', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return reports;
     }
 
     /**
@@ -173,13 +187,20 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
      */
     @AuraEnabled
     public static void sendTestReport(String frameworkFilter, List<String> recipientEmails) {
-        List<String> validRecipients = validateEmails(recipientEmails);
-        if (validRecipients.isEmpty()) {
-            validRecipients.add(UserInfo.getUserEmail());
-        }
+        try {
+            List<String> validRecipients = validateEmails(recipientEmails);
+            if (validRecipients.isEmpty()) {
+                validRecipients.add(UserInfo.getUserEmail());
+            }
 
-        String framework = String.isNotBlank(frameworkFilter) ? frameworkFilter : 'ALL';
-        generateAndSendReport(framework, validRecipients);
+            String framework = String.isNotBlank(frameworkFilter) ? frameworkFilter : 'ALL';
+            generateAndSendReport(framework, validRecipients);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceReportScheduler.sendTestReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

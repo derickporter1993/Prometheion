@@ -175,102 +175,109 @@ public with sharing class RemediationExecutor {
      */
     @AuraEnabled
     public static BulkExecutionResult bulkExecute(List<String> suggestionIds) {
-        BulkExecutionResult bulkResult = new BulkExecutionResult();
-        bulkResult.results = new List<RemediationResult>();
+        try {
+            BulkExecutionResult bulkResult = new BulkExecutionResult();
+            bulkResult.results = new List<RemediationResult>();
 
-        if (suggestionIds == null || suggestionIds.isEmpty()) {
-            bulkResult.totalProcessed = 0;
-            return bulkResult;
-        }
-
-        // Single SOQL: Query all suggestions upfront
-        Map<Id, Remediation_Suggestion__c> suggestionsById = new Map<Id, Remediation_Suggestion__c>([
-            SELECT Id, Name, Suggestion_Type__c, Status__c, Auto_Remediation_Available__c,
-                   Auto_Remediation_Payload__c, Compliance_Gap__c, Framework__c
-            FROM Remediation_Suggestion__c
-            WHERE Id IN :suggestionIds
-            WITH USER_MODE
-        ]);
-
-        // Collect updates for bulk DML
-        List<Remediation_Suggestion__c> suggestionsToUpdate = new List<Remediation_Suggestion__c>();
-        Set<Id> gapIdsToRemediate = new Set<Id>();
-
-        // Process each suggestion
-        for (String suggestionId : suggestionIds) {
-            RemediationResult result = new RemediationResult();
-            result.suggestionId = suggestionId;
-
-            Remediation_Suggestion__c suggestion = suggestionsById.get(suggestionId);
-
-            if (suggestion == null) {
-                result.success = false;
-                result.errorMessage = 'Suggestion not found';
-                bulkResult.results.add(result);
-                bulkResult.failureCount++;
-                continue;
+            if (suggestionIds == null || suggestionIds.isEmpty()) {
+                bulkResult.totalProcessed = 0;
+                return bulkResult;
             }
 
-            if (suggestion.Status__c != 'APPROVED') {
-                result.success = false;
-                result.errorMessage = 'Suggestion must be approved before execution. Current status: ' + suggestion.Status__c;
-                bulkResult.results.add(result);
-                bulkResult.failureCount++;
-                continue;
-            }
+            // Single SOQL: Query all suggestions upfront
+            Map<Id, Remediation_Suggestion__c> suggestionsById = new Map<Id, Remediation_Suggestion__c>([
+                SELECT Id, Name, Suggestion_Type__c, Status__c, Auto_Remediation_Available__c,
+                       Auto_Remediation_Payload__c, Compliance_Gap__c, Framework__c
+                FROM Remediation_Suggestion__c
+                WHERE Id IN :suggestionIds
+                WITH USER_MODE
+            ]);
 
-            if (!suggestion.Auto_Remediation_Available__c) {
-                result.success = false;
-                result.errorMessage = 'Auto-remediation is not available for this suggestion type. Manual implementation required.';
-                bulkResult.results.add(result);
-                bulkResult.failureCount++;
-                continue;
-            }
+            // Collect updates for bulk DML
+            List<Remediation_Suggestion__c> suggestionsToUpdate = new List<Remediation_Suggestion__c>();
+            Set<Id> gapIdsToRemediate = new Set<Id>();
 
-            try {
-                Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(suggestion.Auto_Remediation_Payload__c);
-                String suggestionType = (String) payload.get('suggestionType');
-                result = executeRemediationByType(suggestionType, payload, suggestion);
+            // Process each suggestion
+            for (String suggestionId : suggestionIds) {
+                RemediationResult result = new RemediationResult();
+                result.suggestionId = suggestionId;
 
-                if (result.success) {
-                    suggestion.Status__c = 'APPLIED';
-                    suggestion.Applied_At__c = Datetime.now();
-                    suggestion.Applied_By__c = UserInfo.getUserId();
-                    suggestionsToUpdate.add(suggestion);
-                    if (suggestion.Compliance_Gap__c != null) {
-                        gapIdsToRemediate.add(suggestion.Compliance_Gap__c);
+                Remediation_Suggestion__c suggestion = suggestionsById.get(suggestionId);
+
+                if (suggestion == null) {
+                    result.success = false;
+                    result.errorMessage = 'Suggestion not found';
+                    bulkResult.results.add(result);
+                    bulkResult.failureCount++;
+                    continue;
+                }
+
+                if (suggestion.Status__c != 'APPROVED') {
+                    result.success = false;
+                    result.errorMessage = 'Suggestion must be approved before execution. Current status: ' + suggestion.Status__c;
+                    bulkResult.results.add(result);
+                    bulkResult.failureCount++;
+                    continue;
+                }
+
+                if (!suggestion.Auto_Remediation_Available__c) {
+                    result.success = false;
+                    result.errorMessage = 'Auto-remediation is not available for this suggestion type. Manual implementation required.';
+                    bulkResult.results.add(result);
+                    bulkResult.failureCount++;
+                    continue;
+                }
+
+                try {
+                    Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(suggestion.Auto_Remediation_Payload__c);
+                    String suggestionType = (String) payload.get('suggestionType');
+                    result = executeRemediationByType(suggestionType, payload, suggestion);
+
+                    if (result.success) {
+                        suggestion.Status__c = 'APPLIED';
+                        suggestion.Applied_At__c = Datetime.now();
+                        suggestion.Applied_By__c = UserInfo.getUserId();
+                        suggestionsToUpdate.add(suggestion);
+                        if (suggestion.Compliance_Gap__c != null) {
+                            gapIdsToRemediate.add(suggestion.Compliance_Gap__c);
+                        }
+                        bulkResult.successCount++;
+                    } else {
+                        suggestion.Status__c = 'FAILED';
+                        suggestion.Error_Message__c = result.errorMessage;
+                        suggestionsToUpdate.add(suggestion);
+                        bulkResult.failureCount++;
                     }
-                    bulkResult.successCount++;
-                } else {
+                } catch (Exception e) {
+                    result.success = false;
+                    result.errorMessage = 'Execution failed: ' + e.getMessage();
                     suggestion.Status__c = 'FAILED';
                     suggestion.Error_Message__c = result.errorMessage;
                     suggestionsToUpdate.add(suggestion);
                     bulkResult.failureCount++;
                 }
-            } catch (Exception e) {
-                result.success = false;
-                result.errorMessage = 'Execution failed: ' + e.getMessage();
-                suggestion.Status__c = 'FAILED';
-                suggestion.Error_Message__c = result.errorMessage;
-                suggestionsToUpdate.add(suggestion);
-                bulkResult.failureCount++;
+
+                bulkResult.results.add(result);
             }
 
-            bulkResult.results.add(result);
-        }
+            // Single DML: Update all suggestions
+            if (!suggestionsToUpdate.isEmpty()) {
+                update as user suggestionsToUpdate;
+            }
 
-        // Single DML: Update all suggestions
-        if (!suggestionsToUpdate.isEmpty()) {
-            update as user suggestionsToUpdate;
-        }
+            // Single SOQL + Single DML: Update all gaps
+            if (!gapIdsToRemediate.isEmpty()) {
+                bulkUpdateGapsAsRemediated(gapIdsToRemediate);
+            }
 
-        // Single SOQL + Single DML: Update all gaps
-        if (!gapIdsToRemediate.isEmpty()) {
-            bulkUpdateGapsAsRemediated(gapIdsToRemediate);
+            bulkResult.totalProcessed = suggestionIds.size();
+            return bulkResult;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationExecutor.bulkExecute', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        bulkResult.totalProcessed = suggestionIds.size();
-        return bulkResult;
     }
 
     // ============================================

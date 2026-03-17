@@ -79,24 +79,31 @@ public with sharing class RootCauseAnalysisEngine {
      */
     @AuraEnabled
     public static List&lt;RootCauseResult&gt; batchAnalyze(List&lt;String&gt; eventIds) {
-        List&lt;RootCauseResult&gt; results = new List&lt;RootCauseResult&gt;();
-        
-        if (eventIds == null || eventIds.isEmpty()) {
-            return results;
-        }
-        
-        // Limit batch size to avoid callout limits
-        Integer batchLimit = Math.min(eventIds.size(), 10);
-        
-        for (Integer i = 0; i &lt; batchLimit; i++) {
-            try {
-                results.add(analyzeRootCause(eventIds[i]));
-            } catch (Exception e) {
-                results.add(createErrorResult(eventIds[i], e.getMessage()));
+        try {
+            List&lt;RootCauseResult&gt; results = new List&lt;RootCauseResult&gt;();
+
+            if (eventIds == null || eventIds.isEmpty()) {
+                return results;
             }
+
+            // Limit batch size to avoid callout limits
+            Integer batchLimit = Math.min(eventIds.size(), 10);
+
+            for (Integer i = 0; i &lt; batchLimit; i++) {
+                try {
+                    results.add(analyzeRootCause(eventIds[i]));
+                } catch (Exception e) {
+                    results.add(createErrorResult(eventIds[i], e.getMessage()));
+                }
+            }
+
+            return results;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RootCauseAnalysisEngine.batchAnalyze', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return results;
     }
     
     /**
@@ -106,47 +113,54 @@ public with sharing class RootCauseAnalysisEngine {
      */
     @AuraEnabled(cacheable=true)
     public static AnalysisSummary getAnalysisSummary(List&lt;String&gt; eventIds) {
-        AnalysisSummary summary = new AnalysisSummary();
-        summary.totalEvents = eventIds != null ? eventIds.size() : 0;
-        summary.analyzedEvents = 0;
-        summary.commonRootCauses = new List&lt;String&gt;();
-        summary.topRemediation = new List&lt;String&gt;();
-        
-        if (eventIds == null || eventIds.isEmpty()) {
-            return summary;
-        }
-        
-        // Get cached results for these events
-        Map&lt;String, Integer&gt; causeCounts = new Map&lt;String, Integer&gt;();
-        Map&lt;String, Integer&gt; remediationCounts = new Map&lt;String, Integer&gt;();
-        
-        for (String eventId : eventIds) {
-            String cacheKey = 'rca_' + eventId;
-            RootCauseResult result = getCachedResult(cacheKey);
-            
-            if (result != null &amp;&amp; result.status == 'SUCCESS') {
-                summary.analyzedEvents++;
-                
-                // Count root causes
-                if (String.isNotBlank(result.rootCause)) {
-                    String cause = result.rootCause.left(50);
-                    causeCounts.put(cause, (causeCounts.containsKey(cause) ? causeCounts.get(cause) : 0) + 1);
-                }
-                
-                // Count remediation suggestions
-                if (result.remediation != null) {
-                    for (String rem : result.remediation) {
-                        remediationCounts.put(rem, (remediationCounts.containsKey(rem) ? remediationCounts.get(rem) : 0) + 1);
+        try {
+            AnalysisSummary summary = new AnalysisSummary();
+            summary.totalEvents = eventIds != null ? eventIds.size() : 0;
+            summary.analyzedEvents = 0;
+            summary.commonRootCauses = new List&lt;String&gt;();
+            summary.topRemediation = new List&lt;String&gt;();
+
+            if (eventIds == null || eventIds.isEmpty()) {
+                return summary;
+            }
+
+            // Get cached results for these events
+            Map&lt;String, Integer&gt; causeCounts = new Map&lt;String, Integer&gt;();
+            Map&lt;String, Integer&gt; remediationCounts = new Map&lt;String, Integer&gt;();
+
+            for (String eventId : eventIds) {
+                String cacheKey = 'rca_' + eventId;
+                RootCauseResult result = getCachedResult(cacheKey);
+
+                if (result != null &amp;&amp; result.status == 'SUCCESS') {
+                    summary.analyzedEvents++;
+
+                    // Count root causes
+                    if (String.isNotBlank(result.rootCause)) {
+                        String cause = result.rootCause.left(50);
+                        causeCounts.put(cause, (causeCounts.containsKey(cause) ? causeCounts.get(cause) : 0) + 1);
+                    }
+
+                    // Count remediation suggestions
+                    if (result.remediation != null) {
+                        for (String rem : result.remediation) {
+                            remediationCounts.put(rem, (remediationCounts.containsKey(rem) ? remediationCounts.get(rem) : 0) + 1);
+                        }
                     }
                 }
             }
+
+            // Get top causes and remediation
+            summary.commonRootCauses = getTopItems(causeCounts, 5);
+            summary.topRemediation = getTopItems(remediationCounts, 5);
+
+            return summary;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RootCauseAnalysisEngine.getAnalysisSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Get top causes and remediation
-        summary.commonRootCauses = getTopItems(causeCounts, 5);
-        summary.topRemediation = getTopItems(remediationCounts, 5);
-        
-        return summary;
     }
     
     // ═══════════════════════════════════════════════════════════════

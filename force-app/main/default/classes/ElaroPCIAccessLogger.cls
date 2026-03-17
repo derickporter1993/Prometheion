@@ -149,15 +149,22 @@ public with sharing class ElaroPCIAccessLogger {
      */
     @AuraEnabled(cacheable=true)
     public static List<AccessLogEntry> getRecentAccessLogs(Id recordId, Integer limitSize) {
-        List<AccessLogEntry> logs = new List<AccessLogEntry>();
+        try {
+            List<AccessLogEntry> logs = new List<AccessLogEntry>();
 
-        // Query Platform Events (note: limited retention, typically 72 hours)
-        // In production, consider storing in Big Object for long-term retention
+            // Query Platform Events (note: limited retention, typically 72 hours)
+            // In production, consider storing in Big Object for long-term retention
 
-        // Platform Events can't be queried directly, so this returns empty
-        // Implementation would use Event Relay or Big Object storage
+            // Platform Events can't be queried directly, so this returns empty
+            // Implementation would use Event Relay or Big Object storage
 
-        return logs;
+            return logs;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroPCIAccessLogger.getRecentAccessLogs', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
