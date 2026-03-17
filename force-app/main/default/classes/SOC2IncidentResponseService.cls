@@ -363,16 +363,23 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
      */
     @AuraEnabled
     public static Id createIncident(IncidentRequest request) {
-        SOC2IncidentResponseService service = new SOC2IncidentResponseService();
+        try {
+            SOC2IncidentResponseService service = new SOC2IncidentResponseService();
 
-        IBreachNotificationService.BreachAssessmentRequest assessmentReq = new IBreachNotificationService.BreachAssessmentRequest();
-        assessmentReq.incidentType = request.incidentType;
-        assessmentReq.description = request.description;
-        assessmentReq.recordsAffected = request.recordsAffected;
-        assessmentReq.discoveryDate = DateTime.now();
+            IBreachNotificationService.BreachAssessmentRequest assessmentReq = new IBreachNotificationService.BreachAssessmentRequest();
+            assessmentReq.incidentType = request.incidentType;
+            assessmentReq.description = request.description;
+            assessmentReq.recordsAffected = request.recordsAffected;
+            assessmentReq.discoveryDate = DateTime.now();
 
-        IBreachNotificationService.BreachAssessment assessment = service.assessBreach(assessmentReq);
-        return assessment.breachId;
+            IBreachNotificationService.BreachAssessment assessment = service.assessBreach(assessmentReq);
+            return assessment.breachId;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2IncidentResponseService.createIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -380,26 +387,33 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
      */
     @AuraEnabled
     public static void escalateIncident(Id incidentId, String reason) {
-        Security_Incident__c incident = [
-            SELECT Id, Severity__c, Status__c
-            FROM Security_Incident__c
-            WHERE Id = :incidentId
-            WITH USER_MODE
-        ];
+        try {
+            Security_Incident__c incident = [
+                SELECT Id, Severity__c, Status__c
+                FROM Security_Incident__c
+                WHERE Id = :incidentId
+                WITH USER_MODE
+            ];
 
-        // Escalate severity
-        if (incident.Severity__c == 'LOW') {
-            incident.Severity__c = 'MEDIUM';
-        } else if (incident.Severity__c == 'MEDIUM') {
-            incident.Severity__c = 'HIGH';
-        } else if (incident.Severity__c == 'HIGH') {
-            incident.Severity__c = 'CRITICAL';
+            // Escalate severity
+            if (incident.Severity__c == 'LOW') {
+                incident.Severity__c = 'MEDIUM';
+            } else if (incident.Severity__c == 'MEDIUM') {
+                incident.Severity__c = 'HIGH';
+            } else if (incident.Severity__c == 'HIGH') {
+                incident.Severity__c = 'CRITICAL';
+            }
+
+            update as user incident;
+
+            SOC2IncidentResponseService service = new SOC2IncidentResponseService();
+            service.logAuditEntry('INCIDENT_ESCALATED', 'Escalated incident to ' + incident.Severity__c + '. Reason: ' + reason, incidentId);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2IncidentResponseService.escalateIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        update as user incident;
-
-        SOC2IncidentResponseService service = new SOC2IncidentResponseService();
-        service.logAuditEntry('INCIDENT_ESCALATED', 'Escalated incident to ' + incident.Severity__c + '. Reason: ' + reason, incidentId);
     }
 
     /**
@@ -407,21 +421,28 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
      */
     @AuraEnabled
     public static void resolveIncident(Id incidentId, String resolution) {
-        Security_Incident__c incident = [
-            SELECT Id, Status__c
-            FROM Security_Incident__c
-            WHERE Id = :incidentId
-            WITH USER_MODE
-        ];
+        try {
+            Security_Incident__c incident = [
+                SELECT Id, Status__c
+                FROM Security_Incident__c
+                WHERE Id = :incidentId
+                WITH USER_MODE
+            ];
 
-        incident.Status__c = 'RESOLVED';
-        incident.Resolution__c = resolution;
-        incident.Resolved_Date__c = DateTime.now();
+            incident.Status__c = 'RESOLVED';
+            incident.Resolution__c = resolution;
+            incident.Resolved_Date__c = DateTime.now();
 
-        update as user incident;
+            update as user incident;
 
-        SOC2IncidentResponseService service = new SOC2IncidentResponseService();
-        service.logAuditEntry('INCIDENT_RESOLVED', 'Resolved incident: ' + resolution, incidentId);
+            SOC2IncidentResponseService service = new SOC2IncidentResponseService();
+            service.logAuditEntry('INCIDENT_RESOLVED', 'Resolved incident: ' + resolution, incidentId);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2IncidentResponseService.resolveIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -429,41 +450,58 @@ public with sharing class SOC2IncidentResponseService extends ComplianceServiceB
      */
     @AuraEnabled(cacheable=false)
     public static List<Security_Incident__c> getOpenIncidents(String severity) {
-        // NOPMD ApexSOQLInjection - query is hardcoded except optional bind variable for severity filter
-        String query = 'SELECT Id, Name, Incident_Type__c, Severity__c, Status__c, '
-            + 'Detected_Date__c, Affected_Records__c, Assigned_To__r.Name, Description__c '
-            + 'FROM Security_Incident__c '
-            + 'WHERE Status__c NOT IN (\'RESOLVED\', \'CLOSED\') ';
+        try {
+            // NOPMD ApexSOQLInjection - query is hardcoded except optional bind variable for severity filter
+            String query = 'SELECT Id, Name, Incident_Type__c, Severity__c, Status__c, '
+                + 'Detected_Date__c, Affected_Records__c, Assigned_To__r.Name, Description__c '
+                + 'FROM Security_Incident__c '
+                + 'WHERE Status__c NOT IN (\'RESOLVED\', \'CLOSED\') ';
 
-        Map<String, Object> binds = new Map<String, Object>();
+            Map<String, Object> binds = new Map<String, Object>();
 
-        if (String.isNotBlank(severity)) {
-            query += 'AND Severity__c = :severity ';
-            binds.put('severity', severity);
+            if (String.isNotBlank(severity)) {
+                query += 'AND Severity__c = :severity ';
+                binds.put('severity', severity);
+            }
+
+            query += 'WITH USER_MODE ORDER BY Severity__c, Detected_Date__c DESC LIMIT 200';
+
+            return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2IncidentResponseService.getOpenIncidents', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        query += 'WITH USER_MODE ORDER BY Severity__c, Detected_Date__c DESC LIMIT 200';
-
-        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
 
     /**
-     * Get incident metrics
+     * Get incident metrics for the specified time period.
+     *
+     * @param daysBack Number of days to look back for metrics
+     * @return IncidentMetrics containing totals, open/resolved counts, and MTTR
      */
     @AuraEnabled(cacheable=false)
     public static IncidentMetrics getIncidentMetrics(Integer daysBack) {
-        SOC2IncidentResponseService service = new SOC2IncidentResponseService();
-        IBreachNotificationService.BreachMetrics breachMetrics = service.getBreachMetrics(daysBack);
+        try {
+            SOC2IncidentResponseService service = new SOC2IncidentResponseService();
+            IBreachNotificationService.BreachMetrics breachMetrics = service.getBreachMetrics(daysBack);
 
-        IncidentMetrics metrics = new IncidentMetrics();
-        metrics.totalIncidents = breachMetrics.totalBreaches;
-        metrics.openIncidents = breachMetrics.openBreaches;
-        metrics.resolvedIncidents = breachMetrics.closedBreaches;
-        metrics.mttrDays = breachMetrics.averageResolutionDays;
-        metrics.bySeverity = breachMetrics.breachesBySeverity;
-        metrics.byType = breachMetrics.breachesByType;
+            IncidentMetrics metrics = new IncidentMetrics();
+            metrics.totalIncidents = breachMetrics.totalBreaches;
+            metrics.openIncidents = breachMetrics.openBreaches;
+            metrics.resolvedIncidents = breachMetrics.closedBreaches;
+            metrics.mttrDays = breachMetrics.averageResolutionDays;
+            metrics.bySeverity = breachMetrics.breachesBySeverity;
+            metrics.byType = breachMetrics.breachesByType;
 
-        return metrics;
+            return metrics;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2IncidentResponseService.getIncidentMetrics', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     // ========== Private Helper Methods ==========

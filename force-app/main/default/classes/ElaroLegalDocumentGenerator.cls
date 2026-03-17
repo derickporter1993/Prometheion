@@ -1,3 +1,12 @@
+/**
+ * Generates legal attestation documents for compliance frameworks by querying
+ * Compliance_Score__c records within a date range and producing formatted output.
+ * Includes rate limiting to prevent abuse and input validation for all parameters.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance
+ */
 public with sharing class ElaroLegalDocumentGenerator {
     private static final String RATE_LIMIT_PARTITION = 'ElaroRateLimit';
     private static final Integer RATE_LIMIT_MAX_CALLS = 10;

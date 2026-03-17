@@ -125,75 +125,82 @@ public with sharing class BlockchainVerification {
      */
     @AuraEnabled
     public static List<AnchorResult> batchAnchorEvidence(List<String> contentVersionIds) {
-        List<AnchorResult> results = new List<AnchorResult>();
-
-        if (contentVersionIds == null || contentVersionIds.isEmpty()) {
-            return results;
-        }
-
-        // Bulk query all ContentVersions
-        Map<String, ContentVersion> cvMap = new Map<String, ContentVersion>();
         try {
-            for (ContentVersion cv : [
-                SELECT Id, Title, VersionData, FileExtension, ContentSize
-                FROM ContentVersion
-                WHERE Id IN :contentVersionIds
-                WITH USER_MODE
-            ]) {
-                cvMap.put(cv.Id, cv);
+            List<AnchorResult> results = new List<AnchorResult>();
+
+            if (contentVersionIds == null || contentVersionIds.isEmpty()) {
+                return results;
             }
-        } catch (Exception e) {
+
+            // Bulk query all ContentVersions
+            Map<String, ContentVersion> cvMap = new Map<String, ContentVersion>();
+            try {
+                for (ContentVersion cv : [
+                    SELECT Id, Title, VersionData, FileExtension, ContentSize
+                    FROM ContentVersion
+                    WHERE Id IN :contentVersionIds
+                    WITH USER_MODE
+                ]) {
+                    cvMap.put(cv.Id, cv);
+                }
+            } catch (Exception e) {
+                for (String cvId : contentVersionIds) {
+                    AnchorResult errResult = new AnchorResult();
+                    errResult.contentVersionId = cvId;
+                    errResult.status = 'ERROR';
+                    errResult.errorMessage = e.getMessage();
+                    results.add(errResult);
+                }
+                return results;
+            }
+
+            // Process hashes and build verification records in memory
+            List<Elaro_Evidence_Anchor__c> anchorsToInsert = new List<Elaro_Evidence_Anchor__c>();
+
             for (String cvId : contentVersionIds) {
-                AnchorResult errResult = new AnchorResult();
-                errResult.contentVersionId = cvId;
-                errResult.status = 'ERROR';
-                errResult.errorMessage = e.getMessage();
-                results.add(errResult);
-            }
-            return results;
-        }
+                AnchorResult result = new AnchorResult();
+                result.contentVersionId = cvId;
+                result.anchoredAt = Datetime.now();
 
-        // Process hashes and build verification records in memory
-        List<Elaro_Evidence_Anchor__c> anchorsToInsert = new List<Elaro_Evidence_Anchor__c>();
+                ContentVersion cv = cvMap.get(cvId);
+                if (cv == null) {
+                    result.status = 'ERROR';
+                    result.errorMessage = 'ContentVersion not found: ' + cvId;
+                    results.add(result);
+                    continue;
+                }
 
-        for (String cvId : contentVersionIds) {
-            AnchorResult result = new AnchorResult();
-            result.contentVersionId = cvId;
-            result.anchoredAt = Datetime.now();
-
-            ContentVersion cv = cvMap.get(cvId);
-            if (cv == null) {
-                result.status = 'ERROR';
-                result.errorMessage = 'ContentVersion not found: ' + cvId;
+                Blob contentHash = Crypto.generateDigest('SHA-256', cv.VersionData);
+                result.contentHash = EncodingUtil.convertToHex(contentHash);
+                result.transactionId = generateTransactionId();
+                result.blockchainNetwork = 'Ethereum';
+                result.status = 'ANCHORED';
                 results.add(result);
-                continue;
+
+                anchorsToInsert.add(new Elaro_Evidence_Anchor__c(
+                    Name = 'ANCHOR-' + cvId.left(10),
+                    Content_Version_Id__c = cvId,
+                    Content_Hash__c = result.contentHash,
+                    Transaction_Id__c = result.transactionId,
+                    Blockchain_Network__c = result.blockchainNetwork,
+                    Anchored_At__c = result.anchoredAt,
+                    File_Name__c = cv.Title
+                ));
             }
 
-            Blob contentHash = Crypto.generateDigest('SHA-256', cv.VersionData);
-            result.contentHash = EncodingUtil.convertToHex(contentHash);
-            result.transactionId = generateTransactionId();
-            result.blockchainNetwork = 'Ethereum';
-            result.status = 'ANCHORED';
-            results.add(result);
+            // Single bulk insert for all verification records
+            if (!anchorsToInsert.isEmpty()) {
+                ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+                insert as user anchorsToInsert;
+            }
 
-            anchorsToInsert.add(new Elaro_Evidence_Anchor__c(
-                Name = 'ANCHOR-' + cvId.left(10),
-                Content_Version_Id__c = cvId,
-                Content_Hash__c = result.contentHash,
-                Transaction_Id__c = result.transactionId,
-                Blockchain_Network__c = result.blockchainNetwork,
-                Anchored_At__c = result.anchoredAt,
-                File_Name__c = cv.Title
-            ));
+            return results;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BlockchainVerification.batchAnchorEvidence', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        // Single bulk insert for all verification records
-        if (!anchorsToInsert.isEmpty()) {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert as user anchorsToInsert;
-        }
-
-        return results;
     }
     
     /**
@@ -203,58 +210,65 @@ public with sharing class BlockchainVerification {
      */
     @AuraEnabled(cacheable=true)
     public static List<VerificationRecord> getVerificationHistory(String auditPackageId) {
-        List<VerificationRecord> history = new List<VerificationRecord>();
-        
-        // Get linked content
-        List<ContentDocumentLink> links = [
-            SELECT ContentDocumentId
-            FROM ContentDocumentLink
-            WHERE LinkedEntityId = :auditPackageId
-            WITH USER_MODE
-        ];
-        
-        Set<Id> docIds = new Set<Id>();
-        for (ContentDocumentLink link : links) {
-            docIds.add(link.ContentDocumentId);
-        }
-        
-        if (docIds.isEmpty()) {
+        try {
+            List<VerificationRecord> history = new List<VerificationRecord>();
+
+            // Get linked content
+            List<ContentDocumentLink> links = [
+                SELECT ContentDocumentId
+                FROM ContentDocumentLink
+                WHERE LinkedEntityId = :auditPackageId
+                WITH USER_MODE
+            ];
+
+            Set<Id> docIds = new Set<Id>();
+            for (ContentDocumentLink link : links) {
+                docIds.add(link.ContentDocumentId);
+            }
+
+            if (docIds.isEmpty()) {
+                return history;
+            }
+
+            // Get content versions
+            List<ContentVersion> versions = [
+                SELECT Id FROM ContentVersion WHERE ContentDocumentId IN :docIds AND IsLatest = true
+                WITH USER_MODE
+            ];
+
+            Set<String> versionIds = new Set<String>();
+            for (ContentVersion cv : versions) {
+                versionIds.add(cv.Id);
+            }
+
+            // Get anchors
+            List<Elaro_Evidence_Anchor__c> anchors = [
+                SELECT Id, Name, Content_Version_Id__c, Content_Hash__c, Transaction_Id__c,
+                       Anchored_At__c, Blockchain_Network__c, File_Name__c
+                FROM Elaro_Evidence_Anchor__c
+                WHERE Content_Version_Id__c IN :versionIds
+                WITH USER_MODE
+                ORDER BY Anchored_At__c DESC
+            ];
+
+            for (Elaro_Evidence_Anchor__c anchor : anchors) {
+                VerificationRecord record = new VerificationRecord();
+                record.id = anchor.Id;
+                record.fileName = anchor.File_Name__c;
+                record.contentHash = anchor.Content_Hash__c;
+                record.transactionId = anchor.Transaction_Id__c;
+                record.anchoredAt = anchor.Anchored_At__c;
+                record.blockchainNetwork = anchor.Blockchain_Network__c;
+                history.add(record);
+            }
+
             return history;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BlockchainVerification.getVerificationHistory', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Get content versions
-        List<ContentVersion> versions = [
-            SELECT Id FROM ContentVersion WHERE ContentDocumentId IN :docIds AND IsLatest = true
-            WITH USER_MODE
-        ];
-        
-        Set<String> versionIds = new Set<String>();
-        for (ContentVersion cv : versions) {
-            versionIds.add(cv.Id);
-        }
-        
-        // Get anchors
-        List<Elaro_Evidence_Anchor__c> anchors = [
-            SELECT Id, Name, Content_Version_Id__c, Content_Hash__c, Transaction_Id__c,
-                   Anchored_At__c, Blockchain_Network__c, File_Name__c
-            FROM Elaro_Evidence_Anchor__c
-            WHERE Content_Version_Id__c IN :versionIds
-            WITH USER_MODE
-            ORDER BY Anchored_At__c DESC
-        ];
-        
-        for (Elaro_Evidence_Anchor__c anchor : anchors) {
-            VerificationRecord record = new VerificationRecord();
-            record.id = anchor.Id;
-            record.fileName = anchor.File_Name__c;
-            record.contentHash = anchor.Content_Hash__c;
-            record.transactionId = anchor.Transaction_Id__c;
-            record.anchoredAt = anchor.Anchored_At__c;
-            record.blockchainNetwork = anchor.Blockchain_Network__c;
-            history.add(record);
-        }
-        
-        return history;
     }
     
     /**
@@ -265,24 +279,31 @@ public with sharing class BlockchainVerification {
     @SuppressWarnings('PMD.AvoidHardcodedCredentialsInVarDecls')
     @AuraEnabled
     public static String generateCertificate(String contentVersionId) {
-        VerificationResult verification = verifyEvidence(contentVersionId);
-        
-        if (!verification.isVerified) {
-            throw new AuraHandledException('Cannot generate certificate - evidence not verified');
+        try {
+            VerificationResult verification = verifyEvidence(contentVersionId);
+
+            if (!verification.isVerified) {
+                throw new AuraHandledException('Cannot generate certificate - evidence not verified');
+            }
+
+            // Generate certificate content
+            String certificate = '=== CERTIFICATE OF AUTHENTICITY ===\n\n' +
+                'Document Hash: ' + verification.anchoredHash + '\n' +
+                'Blockchain TX: ' + verification.transactionId + '\n' +
+                'Anchored: ' + verification.anchoredAt.format() + '\n' +
+                'Verified: ' + verification.verifiedAt.format() + '\n' +
+                'Status: AUTHENTIC\n\n' +
+                'This certificate confirms the document has not been modified\n' +
+                'since it was anchored to the blockchain.\n\n' +
+                '=== END CERTIFICATE ===';
+
+            return certificate;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BlockchainVerification.generateCertificate', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Generate certificate content
-        String certificate = '=== CERTIFICATE OF AUTHENTICITY ===\n\n' +
-            'Document Hash: ' + verification.anchoredHash + '\n' +
-            'Blockchain TX: ' + verification.transactionId + '\n' +
-            'Anchored: ' + verification.anchoredAt.format() + '\n' +
-            'Verified: ' + verification.verifiedAt.format() + '\n' +
-            'Status: AUTHENTIC\n\n' +
-            'This certificate confirms the document has not been modified\n' +
-            'since it was anchored to the blockchain.\n\n' +
-            '=== END CERTIFICATE ===';
-        
-        return certificate;
     }
     
     // ═══════════════════════════════════════════════════════════════

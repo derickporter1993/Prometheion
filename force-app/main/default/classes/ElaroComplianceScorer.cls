@@ -124,23 +124,30 @@ public with sharing class ElaroComplianceScorer {
      */
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> calculateComplianceScore() {
-        ScoreResult result = calculateReadinessScore();
-        
-        Map<String, Object> scoreMap = new Map<String, Object>();
-        scoreMap.put('overallScore', result.overallScore);
-        scoreMap.put('hipaaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_HIPAA));
-        scoreMap.put('soc2Score', result.frameworkScores.get(ElaroConstants.FRAMEWORK_SOC2));
-        scoreMap.put('nistScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_NIST));
-        scoreMap.put('fedrampScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_FEDRAMP));
-        scoreMap.put('gdprScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_GDPR));
-        scoreMap.put('soxScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_SOX));
-        scoreMap.put('pciDssScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_PCI_DSS));
-        scoreMap.put('ccpaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_CCPA));
-        scoreMap.put('glbaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_GLBA));
-        scoreMap.put('iso27001Score', result.frameworkScores.get(ElaroConstants.FRAMEWORK_ISO27001));
-        scoreMap.put('riskLevel', result.rating);
-        
-        return scoreMap;
+        try {
+            ScoreResult result = calculateReadinessScore();
+
+            Map<String, Object> scoreMap = new Map<String, Object>();
+            scoreMap.put('overallScore', result.overallScore);
+            scoreMap.put('hipaaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_HIPAA));
+            scoreMap.put('soc2Score', result.frameworkScores.get(ElaroConstants.FRAMEWORK_SOC2));
+            scoreMap.put('nistScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_NIST));
+            scoreMap.put('fedrampScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_FEDRAMP));
+            scoreMap.put('gdprScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_GDPR));
+            scoreMap.put('soxScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_SOX));
+            scoreMap.put('pciDssScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_PCI_DSS));
+            scoreMap.put('ccpaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_CCPA));
+            scoreMap.put('glbaScore', result.frameworkScores.get(ElaroConstants.FRAMEWORK_GLBA));
+            scoreMap.put('iso27001Score', result.frameworkScores.get(ElaroConstants.FRAMEWORK_ISO27001));
+            scoreMap.put('riskLevel', result.rating);
+
+            return scoreMap;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroComplianceScorer.calculateComplianceScore', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**

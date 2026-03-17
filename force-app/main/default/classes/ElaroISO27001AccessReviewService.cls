@@ -195,32 +195,39 @@ public with sharing class ElaroISO27001AccessReviewService {
      */
     @AuraEnabled(cacheable=true)
     public static List<DormantAccountInfo> identifyDormantAccounts() {
-        List<DormantAccountInfo> dormantAccounts = new List<DormantAccountInfo>();
+        try {
+            List<DormantAccountInfo> dormantAccounts = new List<DormantAccountInfo>();
 
-        Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
+            Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
 
-        List<User> dormantUsers = [
-            SELECT Id, Name, Username, Profile.Name, LastLoginDate, ManagerId
-            FROM User
-            WHERE IsActive = true
-            AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
-            AND UserType = 'Standard'
-            WITH USER_MODE
-            LIMIT 500
-        ];
+            List<User> dormantUsers = [
+                SELECT Id, Name, Username, Profile.Name, LastLoginDate, ManagerId
+                FROM User
+                WHERE IsActive = true
+                AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
+                AND UserType = 'Standard'
+                WITH USER_MODE
+                LIMIT 500
+            ];
 
-        for (User u : dormantUsers) {
-            DormantAccountInfo info = new DormantAccountInfo();
-            info.userId = u.Id;
-            info.userName = u.Username;
-            info.profileName = u.Profile.Name;
-            info.lastLoginDate = u.LastLoginDate;
-            info.daysSinceLogin = u.LastLoginDate != null ?
-                Date.today().daysBetween(u.LastLoginDate.date()) * -1 : null;
-            dormantAccounts.add(info);
+            for (User u : dormantUsers) {
+                DormantAccountInfo info = new DormantAccountInfo();
+                info.userId = u.Id;
+                info.userName = u.Username;
+                info.profileName = u.Profile.Name;
+                info.lastLoginDate = u.LastLoginDate;
+                info.daysSinceLogin = u.LastLoginDate != null ?
+                    Date.today().daysBetween(u.LastLoginDate.date()) * -1 : null;
+                dormantAccounts.add(info);
+            }
+
+            return dormantAccounts;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroISO27001AccessReviewService.identifyDormantAccounts', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return dormantAccounts;
     }
 
     /**
@@ -272,18 +279,25 @@ public with sharing class ElaroISO27001AccessReviewService {
      */
     @AuraEnabled(cacheable=true)
     public static List<Access_Review__c> getPendingReviews(Id reviewerId) {
-        return [
-            SELECT Id, Name, User__c, User__r.Name, Review_Type__c,
-                   Due_Date__c, Is_Privileged_User__c, Risk_Level__c,
-                   Profiles_Reviewed__c, Permission_Sets_Reviewed__c,
-                   Last_Login_Date__c
-            FROM Access_Review__c
-            WHERE Reviewer__c = :reviewerId
-            AND Review_Status__c IN ('Pending', 'In Progress')
-            WITH USER_MODE
-            ORDER BY Due_Date__c ASC
-            LIMIT 100
-        ];
+        try {
+            return [
+                SELECT Id, Name, User__c, User__r.Name, Review_Type__c,
+                       Due_Date__c, Is_Privileged_User__c, Risk_Level__c,
+                       Profiles_Reviewed__c, Permission_Sets_Reviewed__c,
+                       Last_Login_Date__c
+                FROM Access_Review__c
+                WHERE Reviewer__c = :reviewerId
+                AND Review_Status__c IN ('Pending', 'In Progress')
+                WITH USER_MODE
+                ORDER BY Due_Date__c ASC
+                LIMIT 100
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroISO27001AccessReviewService.getPendingReviews', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -292,16 +306,23 @@ public with sharing class ElaroISO27001AccessReviewService {
      */
     @AuraEnabled(cacheable=true)
     public static List<Access_Review__c> getOverdueReviews() {
-        return [
-            SELECT Id, Name, User__c, User__r.Name, Reviewer__c, Reviewer__r.Name,
-                   Review_Type__c, Due_Date__c, Is_Privileged_User__c, Risk_Level__c
-            FROM Access_Review__c
-            WHERE Due_Date__c < TODAY
-            AND Review_Status__c IN ('Pending', 'In Progress')
-            WITH USER_MODE
-            ORDER BY Due_Date__c ASC
-            LIMIT 100
-        ];
+        try {
+            return [
+                SELECT Id, Name, User__c, User__r.Name, Reviewer__c, Reviewer__r.Name,
+                       Review_Type__c, Due_Date__c, Is_Privileged_User__c, Risk_Level__c
+                FROM Access_Review__c
+                WHERE Due_Date__c < TODAY
+                AND Review_Status__c IN ('Pending', 'In Progress')
+                WITH USER_MODE
+                ORDER BY Due_Date__c ASC
+                LIMIT 100
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroISO27001AccessReviewService.getOverdueReviews', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -310,84 +331,91 @@ public with sharing class ElaroISO27001AccessReviewService {
      */
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getComplianceMetrics() {
-        Map<String, Object> metrics = new Map<String, Object>();
+        try {
+            Map<String, Object> metrics = new Map<String, Object>();
 
-        // Optimized: Use separate queries (SOQL doesn't support CASE WHEN)
-        // Total reviews due
-        Integer total = [
-            SELECT COUNT()
-            FROM Access_Review__c
-            WHERE Due_Date__c < TODAY
-            WITH USER_MODE
-        ];
+            // Optimized: Use separate queries (SOQL doesn't support CASE WHEN)
+            // Total reviews due
+            Integer total = [
+                SELECT COUNT()
+                FROM Access_Review__c
+                WHERE Due_Date__c < TODAY
+                WITH USER_MODE
+            ];
 
-        // Completed reviews
-        Integer completed = [
-            SELECT COUNT()
-            FROM Access_Review__c
-            WHERE Due_Date__c < TODAY
-            AND Review_Status__c IN ('Approved', 'Revoked', 'Modified')
-            WITH USER_MODE
-        ];
+            // Completed reviews
+            Integer completed = [
+                SELECT COUNT()
+                FROM Access_Review__c
+                WHERE Due_Date__c < TODAY
+                AND Review_Status__c IN ('Approved', 'Revoked', 'Modified')
+                WITH USER_MODE
+            ];
 
-        // Overdue reviews
-        Integer overdue = [
-            SELECT COUNT()
-            FROM Access_Review__c
-            WHERE Due_Date__c < TODAY
-            AND Review_Status__c IN ('Pending', 'In Progress')
-            WITH USER_MODE
-        ];
+            // Overdue reviews
+            Integer overdue = [
+                SELECT COUNT()
+                FROM Access_Review__c
+                WHERE Due_Date__c < TODAY
+                AND Review_Status__c IN ('Pending', 'In Progress')
+                WITH USER_MODE
+            ];
 
-        // Reviews this quarter
-        Integer thisQuarter = [
-            SELECT COUNT()
-            FROM Access_Review__c
-            WHERE CreatedDate = THIS_QUARTER
-            WITH USER_MODE
-        ];
+            // Reviews this quarter
+            Integer thisQuarter = [
+                SELECT COUNT()
+                FROM Access_Review__c
+                WHERE CreatedDate = THIS_QUARTER
+                WITH USER_MODE
+            ];
 
-        metrics.put('reviewsThisQuarter', thisQuarter);
-        metrics.put('overdueCount', overdue);
-        metrics.put('completionRate', total > 0 ?
-            (Decimal.valueOf(completed) / total * 100).setScale(2) : 100);
+            metrics.put('reviewsThisQuarter', thisQuarter);
+            metrics.put('overdueCount', overdue);
+            metrics.put('completionRate', total > 0 ?
+                (Decimal.valueOf(completed) / total * 100).setScale(2) : 100);
 
-        // Privileged users count
-        Set<Id> privUserIds = new Set<Id>();
-        for (PermissionSetAssignment psa : [
-            SELECT AssigneeId FROM PermissionSetAssignment
-            WHERE PermissionSet.Name IN :PRIVILEGED_PERMISSIONS
-            WITH USER_MODE
-        ]) {
-            privUserIds.add(psa.AssigneeId);
+            // Privileged users count
+            Set<Id> privUserIds = new Set<Id>();
+            for (PermissionSetAssignment psa : [
+                SELECT AssigneeId FROM PermissionSetAssignment
+                WHERE PermissionSet.Name IN :PRIVILEGED_PERMISSIONS
+                WITH USER_MODE
+            ]) {
+                privUserIds.add(psa.AssigneeId);
+            }
+
+            // Optimized: Use separate queries for User counts (SOQL doesn't support CASE WHEN)
+            Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
+
+            // Privileged users
+            Integer privileged = [
+                SELECT COUNT()
+                FROM User
+                WHERE IsActive = true
+                AND (Profile.Name = 'System Administrator' OR Id IN :privUserIds)
+                WITH USER_MODE
+            ];
+
+            // Dormant accounts
+            Integer dormant = [
+                SELECT COUNT()
+                FROM User
+                WHERE IsActive = true
+                AND UserType = 'Standard'
+                AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
+                WITH USER_MODE
+            ];
+
+            metrics.put('privilegedUsersCount', privileged);
+            metrics.put('dormantAccountsCount', dormant);
+
+            return metrics;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroISO27001AccessReviewService.getComplianceMetrics', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        // Optimized: Use separate queries for User counts (SOQL doesn't support CASE WHEN)
-        Date dormantThreshold = Date.today().addDays(-DORMANT_ACCOUNT_DAYS);
-        
-        // Privileged users
-        Integer privileged = [
-            SELECT COUNT()
-            FROM User
-            WHERE IsActive = true
-            AND (Profile.Name = 'System Administrator' OR Id IN :privUserIds)
-            WITH USER_MODE
-        ];
-
-        // Dormant accounts
-        Integer dormant = [
-            SELECT COUNT()
-            FROM User
-            WHERE IsActive = true
-            AND UserType = 'Standard'
-            AND (LastLoginDate < :dormantThreshold OR LastLoginDate = null)
-            WITH USER_MODE
-        ];
-
-        metrics.put('privilegedUsersCount', privileged);
-        metrics.put('dormantAccountsCount', dormant);
-
-        return metrics;
     }
 
     /**

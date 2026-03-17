@@ -185,37 +185,44 @@ public with sharing class ComplianceReportGenerator {
      */
     @AuraEnabled
     public static String generateExecutiveSummary(ReportData data) {
-        if (data == null || data.scoreResult == null) {
-            return 'Unable to generate summary - no data available.';
-        }
-
-        String summary = 'Compliance Score: ' + data.scoreResult.overallScore.setScale(0) + '/100 (' + data.scoreResult.rating + ')\n\n';
-
-        // Gap summary
-        Integer criticalCount = data.gapsBySeverity.get('Critical');
-        Integer highCount = data.gapsBySeverity.get('High');
-
-        if (criticalCount > 0 || highCount > 0) {
-            summary += 'Priority Issues:\n';
-            if (criticalCount > 0) {
-                summary += '• ' + criticalCount + ' Critical gaps require immediate attention\n';
+        try {
+            if (data == null || data.scoreResult == null) {
+                return 'Unable to generate summary - no data available.';
             }
-            if (highCount > 0) {
-                summary += '• ' + highCount + ' High-priority gaps should be addressed this week\n';
+
+            String summary = 'Compliance Score: ' + data.scoreResult.overallScore.setScale(0) + '/100 (' + data.scoreResult.rating + ')\n\n';
+
+            // Gap summary
+            Integer criticalCount = data.gapsBySeverity.get('Critical');
+            Integer highCount = data.gapsBySeverity.get('High');
+
+            if (criticalCount > 0 || highCount > 0) {
+                summary += 'Priority Issues:\n';
+                if (criticalCount > 0) {
+                    summary += '• ' + criticalCount + ' Critical gaps require immediate attention\n';
+                }
+                if (highCount > 0) {
+                    summary += '• ' + highCount + ' High-priority gaps should be addressed this week\n';
+                }
+            } else {
+                summary += 'No critical or high-priority gaps at this time.\n';
             }
-        } else {
-            summary += 'No critical or high-priority gaps at this time.\n';
-        }
 
-        // Framework highlights
-        summary += '\nFramework Status:\n';
-        for (String fw : data.scoreResult.frameworkScores.keySet()) {
-            Decimal score = data.scoreResult.frameworkScores.get(fw);
-            String status = ElaroConstants.getRatingFromScore(score);
-            summary += '• ' + fw + ': ' + score.setScale(0) + '/100 (' + status + ')\n';
-        }
+            // Framework highlights
+            summary += '\nFramework Status:\n';
+            for (String fw : data.scoreResult.frameworkScores.keySet()) {
+                Decimal score = data.scoreResult.frameworkScores.get(fw);
+                String status = ElaroConstants.getRatingFromScore(score);
+                summary += '• ' + fw + ': ' + score.setScale(0) + '/100 (' + status + ')\n';
+            }
 
-        return summary;
+            return summary;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceReportGenerator.generateExecutiveSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -225,48 +232,55 @@ public with sharing class ComplianceReportGenerator {
      */
     @AuraEnabled
     public static List<String> generateRecommendations(ReportData data) {
-        List<String> recommendations = new List<String>();
+        try {
+            List<String> recommendations = new List<String>();
 
-        if (data == null || data.scoreResult == null) {
-            recommendations.add('Unable to generate recommendations - refresh report data.');
-            return recommendations;
-        }
-
-        // Score-based recommendations
-        if (data.scoreResult.overallScore < 60) {
-            recommendations.add('Overall compliance score is below acceptable threshold. Schedule an immediate compliance review.');
-        }
-
-        // Gap-based recommendations
-        Integer criticalCount = data.gapsBySeverity.get('Critical');
-        if (criticalCount > 0) {
-            recommendations.add('Address ' + criticalCount + ' critical gap(s) within 24-48 hours to maintain compliance posture.');
-        }
-
-        // Framework-specific recommendations
-        for (String fw : data.scoreResult.frameworkScores.keySet()) {
-            Decimal score = data.scoreResult.frameworkScores.get(fw);
-            if (score < 50) {
-                recommendations.add(fw + ' compliance is critically low (' + score.setScale(0) + '%). Prioritize ' + fw + '-specific controls.');
-            } else if (score < 70) {
-                recommendations.add('Improve ' + fw + ' compliance score from ' + score.setScale(0) + '% by implementing recommended controls.');
+            if (data == null || data.scoreResult == null) {
+                recommendations.add('Unable to generate recommendations - refresh report data.');
+                return recommendations;
             }
-        }
 
-        // Risk-based recommendations
-        if (data.scoreResult.topRisks != null) {
-            for (ElaroComplianceScorer.Risk risk : data.scoreResult.topRisks) {
-                if (risk.remediation != null) {
-                    recommendations.add(risk.remediation);
+            // Score-based recommendations
+            if (data.scoreResult.overallScore < 60) {
+                recommendations.add('Overall compliance score is below acceptable threshold. Schedule an immediate compliance review.');
+            }
+
+            // Gap-based recommendations
+            Integer criticalCount = data.gapsBySeverity.get('Critical');
+            if (criticalCount > 0) {
+                recommendations.add('Address ' + criticalCount + ' critical gap(s) within 24-48 hours to maintain compliance posture.');
+            }
+
+            // Framework-specific recommendations
+            for (String fw : data.scoreResult.frameworkScores.keySet()) {
+                Decimal score = data.scoreResult.frameworkScores.get(fw);
+                if (score < 50) {
+                    recommendations.add(fw + ' compliance is critically low (' + score.setScale(0) + '%). Prioritize ' + fw + '-specific controls.');
+                } else if (score < 70) {
+                    recommendations.add('Improve ' + fw + ' compliance score from ' + score.setScale(0) + '% by implementing recommended controls.');
                 }
             }
-        }
 
-        // Ensure we have at least one recommendation
-        if (recommendations.isEmpty()) {
-            recommendations.add('Maintain current compliance posture. Continue regular monitoring and reviews.');
-        }
+            // Risk-based recommendations
+            if (data.scoreResult.topRisks != null) {
+                for (ElaroComplianceScorer.Risk risk : data.scoreResult.topRisks) {
+                    if (risk.remediation != null) {
+                        recommendations.add(risk.remediation);
+                    }
+                }
+            }
 
-        return recommendations;
+            // Ensure we have at least one recommendation
+            if (recommendations.isEmpty()) {
+                recommendations.add('Maintain current compliance posture. Continue regular monitoring and reviews.');
+            }
+
+            return recommendations;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceReportGenerator.generateRecommendations', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 }

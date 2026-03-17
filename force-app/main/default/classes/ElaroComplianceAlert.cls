@@ -28,23 +28,30 @@ public with sharing class ElaroComplianceAlert {
      */
     @AuraEnabled
     public static Id configureAlert(AlertConfig config) {
-        validateAlertConfig(config);
-        
-        // Create custom metadata or custom setting record
-        Elaro_Alert_Config__c alertRecord = new Elaro_Alert_Config__c(
-            Name = config.name,
-            Alert_Type__c = config.alertType,
-            Threshold__c = config.threshold,
-            Channels__c = String.join(config.channels, ';'),
-            Severity__c = config.severity,
-            Is_Active__c = true,
-            Framework__c = config.framework,
-            Description__c = config.description
-        );
+        try {
+            validateAlertConfig(config);
 
-        ElaroSecurityUtils.validateCRUDAccess('Elaro_Alert_Config__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert as user alertRecord;
-        return alertRecord.Id;
+            // Create custom metadata or custom setting record
+            Elaro_Alert_Config__c alertRecord = new Elaro_Alert_Config__c(
+                Name = config.name,
+                Alert_Type__c = config.alertType,
+                Threshold__c = config.threshold,
+                Channels__c = String.join(config.channels, ';'),
+                Severity__c = config.severity,
+                Is_Active__c = true,
+                Framework__c = config.framework,
+                Description__c = config.description
+            );
+
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Alert_Config__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+            insert as user alertRecord;
+            return alertRecord.Id;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroComplianceAlert.configureAlert', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the alert configuration. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -265,30 +272,35 @@ public with sharing class ElaroComplianceAlert {
      */
     @AuraEnabled(cacheable=true)
     public static List<AlertSummary> getActiveAlerts() {
-        List<AlertSummary> alerts = new List<AlertSummary>();
-        
-        // Query recent platform events or custom objects
-        List<Elaro_Evidence_Item__c> recentEvents = [
-            SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c
-            FROM Elaro_Evidence_Item__c
-            WHERE CreatedDate >= LAST_N_DAYS:7
-            AND Status__c = 'Pending Review'
-            WITH USER_MODE
-            ORDER BY CreatedDate DESC
-            LIMIT 50
-        ];
-        
-        for (Elaro_Evidence_Item__c event : recentEvents) {
-            AlertSummary summary = new AlertSummary();
-            summary.id = event.Id;
-            summary.title = event.Evidence_Type__c + ' Alert';
-            summary.description = event.Description__c;
-            summary.severity = 'HIGH';
-            summary.timestamp = event.Evidence_Date__c;
-            alerts.add(summary);
+        try {
+            List<AlertSummary> alerts = new List<AlertSummary>();
+
+            // Query recent platform events or custom objects
+            List<Elaro_Evidence_Item__c> recentEvents = [
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, Status__c
+                FROM Elaro_Evidence_Item__c
+                WHERE CreatedDate >= LAST_N_DAYS:7
+                AND Status__c = 'Pending Review'
+                WITH USER_MODE
+                ORDER BY CreatedDate DESC
+                LIMIT 50
+            ];
+
+            for (Elaro_Evidence_Item__c event : recentEvents) {
+                AlertSummary summary = new AlertSummary();
+                summary.id = event.Id;
+                summary.title = event.Evidence_Type__c + ' Alert';
+                summary.description = event.Description__c;
+                summary.severity = 'HIGH';
+                summary.timestamp = event.Evidence_Date__c;
+                alerts.add(summary);
+            }
+
+            return alerts;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroComplianceAlert.getActiveAlerts', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve active alerts. Please verify you have the required permissions and try again.');
         }
-        
-        return alerts;
     }
     
     // ═══════════════════════════════════════════════════════════════

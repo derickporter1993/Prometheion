@@ -97,49 +97,56 @@ public with sharing class ElaroTrendController {
      */
     @AuraEnabled(cacheable=true)
     public static List<MetricFieldOption> getMetricFields(String objectApiName) {
-        if (!ALLOWED_OBJECTS.contains(objectApiName)) {
-            throw new AuraHandledException('Object not authorized: ' + objectApiName);
-        }
+        try {
+            if (!ALLOWED_OBJECTS.contains(objectApiName)) {
+                throw new AuraHandledException('Object not authorized: ' + objectApiName);
+            }
 
-        List<MetricFieldOption> options = new List<MetricFieldOption>();
+            List<MetricFieldOption> options = new List<MetricFieldOption>();
 
-        SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
-        if (sType == null || !sType.getDescribe().isAccessible()) {
+            SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
+            if (sType == null || !sType.getDescribe().isAccessible()) {
+                return options;
+            }
+
+            Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
+
+            for (String fieldName : fieldMap.keySet()) {
+                DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
+
+                if (!dfr.isAccessible() || !dfr.isAggregatable()) {
+                    continue;
+                }
+
+                // Only numeric fields for metrics
+                Schema.DisplayType fieldType = dfr.getType();
+                if (fieldType == Schema.DisplayType.CURRENCY ||
+                    fieldType == Schema.DisplayType.DOUBLE ||
+                    fieldType == Schema.DisplayType.INTEGER ||
+                    fieldType == Schema.DisplayType.PERCENT) {
+
+                    MetricFieldOption opt = new MetricFieldOption();
+                    opt.apiName = dfr.getName();
+                    opt.label = dfr.getLabel();
+                    opt.fieldType = String.valueOf(fieldType);
+                    options.add(opt);
+                }
+            }
+
+            // Add COUNT option
+            MetricFieldOption countOpt = new MetricFieldOption();
+            countOpt.apiName = 'Id';
+            countOpt.label = 'Record Count';
+            countOpt.fieldType = 'COUNT';
+            options.add(0, countOpt);
+
             return options;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroTrendController.getMetricFields', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
-
-        for (String fieldName : fieldMap.keySet()) {
-            DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
-
-            if (!dfr.isAccessible() || !dfr.isAggregatable()) {
-                continue;
-            }
-
-            // Only numeric fields for metrics
-            Schema.DisplayType fieldType = dfr.getType();
-            if (fieldType == Schema.DisplayType.CURRENCY ||
-                fieldType == Schema.DisplayType.DOUBLE ||
-                fieldType == Schema.DisplayType.INTEGER ||
-                fieldType == Schema.DisplayType.PERCENT) {
-
-                MetricFieldOption opt = new MetricFieldOption();
-                opt.apiName = dfr.getName();
-                opt.label = dfr.getLabel();
-                opt.fieldType = String.valueOf(fieldType);
-                options.add(opt);
-            }
-        }
-
-        // Add COUNT option
-        MetricFieldOption countOpt = new MetricFieldOption();
-        countOpt.apiName = 'Id';
-        countOpt.label = 'Record Count';
-        countOpt.fieldType = 'COUNT';
-        options.add(0, countOpt);
-
-        return options;
     }
 
     /**
@@ -147,39 +154,46 @@ public with sharing class ElaroTrendController {
      */
     @AuraEnabled(cacheable=true)
     public static List<DateFieldOption> getDateFields(String objectApiName) {
-        if (!ALLOWED_OBJECTS.contains(objectApiName)) {
-            throw new AuraHandledException('Object not authorized: ' + objectApiName);
-        }
+        try {
+            if (!ALLOWED_OBJECTS.contains(objectApiName)) {
+                throw new AuraHandledException('Object not authorized: ' + objectApiName);
+            }
 
-        List<DateFieldOption> options = new List<DateFieldOption>();
+            List<DateFieldOption> options = new List<DateFieldOption>();
 
-        SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
-        if (sType == null || !sType.getDescribe().isAccessible()) {
+            SObjectType sType = Schema.getGlobalDescribe().get(objectApiName);
+            if (sType == null || !sType.getDescribe().isAccessible()) {
+                return options;
+            }
+
+            Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
+
+            for (String fieldName : fieldMap.keySet()) {
+                DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
+
+                if (!dfr.isAccessible() || !dfr.isFilterable()) {
+                    continue;
+                }
+
+                Schema.DisplayType fieldType = dfr.getType();
+                if (fieldType == Schema.DisplayType.DATE ||
+                    fieldType == Schema.DisplayType.DATETIME) {
+
+                    DateFieldOption opt = new DateFieldOption();
+                    opt.apiName = dfr.getName();
+                    opt.label = dfr.getLabel();
+                    opt.fieldType = String.valueOf(fieldType);
+                    options.add(opt);
+                }
+            }
+
             return options;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroTrendController.getDateFields', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Map<String, SObjectField> fieldMap = sType.getDescribe().fields.getMap();
-
-        for (String fieldName : fieldMap.keySet()) {
-            DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
-
-            if (!dfr.isAccessible() || !dfr.isFilterable()) {
-                continue;
-            }
-
-            Schema.DisplayType fieldType = dfr.getType();
-            if (fieldType == Schema.DisplayType.DATE ||
-                fieldType == Schema.DisplayType.DATETIME) {
-
-                DateFieldOption opt = new DateFieldOption();
-                opt.apiName = dfr.getName();
-                opt.label = dfr.getLabel();
-                opt.fieldType = String.valueOf(fieldType);
-                options.add(opt);
-            }
-        }
-
-        return options;
     }
 
     /**

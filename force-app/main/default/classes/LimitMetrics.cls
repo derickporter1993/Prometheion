@@ -28,15 +28,22 @@ public with sharing class LimitMetrics {
      */
     @AuraEnabled(cacheable=true)
     public static GovernorStats fetchGovernorStats() {
-        GovernorStats g = new GovernorStats();
-        g.cpuMs = Limits.getCpuTime();
-        g.cpuMax = Limits.getLimitCpuTime();
-        g.soql  = Limits.getSOQLQueries();
-        g.soqlMax = Limits.getLimitSOQLQueries();
-        g.dml   = Limits.getDmlStatements();
-        g.dmlMax = Limits.getLimitDmlStatements();
-        g.heapKb = Math.round(Limits.getHeapSize() / 1024.0);
-        g.heapMaxKb = Math.round(Limits.getLimitHeapSize() / 1024.0);
-        return g;
+        try {
+            GovernorStats g = new GovernorStats();
+            g.cpuMs = Limits.getCpuTime();
+            g.cpuMax = Limits.getLimitCpuTime();
+            g.soql  = Limits.getSOQLQueries();
+            g.soqlMax = Limits.getLimitSOQLQueries();
+            g.dml   = Limits.getDmlStatements();
+            g.dmlMax = Limits.getLimitDmlStatements();
+            g.heapKb = Math.round(Limits.getHeapSize() / 1024.0);
+            g.heapMaxKb = Math.round(Limits.getLimitHeapSize() / 1024.0);
+            return g;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('LimitMetrics.fetchGovernorStats', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 }

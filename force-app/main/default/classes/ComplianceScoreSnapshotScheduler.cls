@@ -372,8 +372,15 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
      */
     @AuraEnabled
     public static void runNow() {
-        ComplianceScoreSnapshotScheduler scheduler = new ComplianceScoreSnapshotScheduler();
-        scheduler.captureSnapshots();
+        try {
+            ComplianceScoreSnapshotScheduler scheduler = new ComplianceScoreSnapshotScheduler();
+            scheduler.captureSnapshots();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceScoreSnapshotScheduler.runNow', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -381,32 +388,39 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
      */
     @AuraEnabled(cacheable=true)
     public static List<ScoreTrend> getScoreTrend(String framework, Integer days) {
-        if (days == null || days <= 0) {
-            days = 30;
+        try {
+            if (days == null || days <= 0) {
+                days = 30;
+            }
+
+            Date startDate = Date.today().addDays(-days);
+            List<ScoreTrend> trends = new List<ScoreTrend>();
+
+            List<Compliance_Score__c> scores = [
+                SELECT Score__c, Evaluation_Date__c, Status__c, Gaps_Count__c
+                FROM Compliance_Score__c
+                WHERE Framework__c = :framework
+                AND Evaluation_Date__c >= :startDate
+                WITH USER_MODE
+                ORDER BY Evaluation_Date__c ASC
+            ];
+
+            for (Compliance_Score__c score : scores) {
+                ScoreTrend trend = new ScoreTrend();
+                trend.date = score.Evaluation_Date__c.date();
+                trend.score = score.Score__c;
+                trend.status = score.Status__c;
+                trend.gapCount = score.Gaps_Count__c != null ? score.Gaps_Count__c.intValue() : 0;
+                trends.add(trend);
+            }
+
+            return trends;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ComplianceScoreSnapshotScheduler.getScoreTrend', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Date startDate = Date.today().addDays(-days);
-        List<ScoreTrend> trends = new List<ScoreTrend>();
-
-        List<Compliance_Score__c> scores = [
-            SELECT Score__c, Evaluation_Date__c, Status__c, Gaps_Count__c
-            FROM Compliance_Score__c
-            WHERE Framework__c = :framework
-            AND Evaluation_Date__c >= :startDate
-            WITH USER_MODE
-            ORDER BY Evaluation_Date__c ASC
-        ];
-
-        for (Compliance_Score__c score : scores) {
-            ScoreTrend trend = new ScoreTrend();
-            trend.date = score.Evaluation_Date__c.date();
-            trend.score = score.Score__c;
-            trend.status = score.Status__c;
-            trend.gapCount = score.Gaps_Count__c != null ? score.Gaps_Count__c.intValue() : 0;
-            trends.add(trend);
-        }
-
-        return trends;
     }
 
     // ========== Inner Classes ==========

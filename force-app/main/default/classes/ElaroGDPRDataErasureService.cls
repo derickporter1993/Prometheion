@@ -178,16 +178,23 @@ public with sharing class ElaroGDPRDataErasureService {
      */
     @AuraEnabled(cacheable=true)
     public static List<GDPR_Erasure_Request__c> getRecentErasureRequests(Integer limitSize) {
-        List<GDPR_Erasure_Request__c> requests = [
-            SELECT Id, Name, Status__c, Request_Date__c, Completion_Date__c,
-                   Contact_Email__c, Records_Deleted__c, Request_Reason__c,
-                   Requested_By__r.Name
-            FROM GDPR_Erasure_Request__c
-            WITH USER_MODE
-            ORDER BY Request_Date__c DESC
-            LIMIT :limitSize
-        ];
-        return requests;
+        try {
+            List<GDPR_Erasure_Request__c> requests = [
+                SELECT Id, Name, Status__c, Request_Date__c, Completion_Date__c,
+                       Contact_Email__c, Records_Deleted__c, Request_Reason__c,
+                       Requested_By__r.Name
+                FROM GDPR_Erasure_Request__c
+                WITH USER_MODE
+                ORDER BY Request_Date__c DESC
+                LIMIT :limitSize
+            ];
+            return requests;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroGDPRDataErasureService.getRecentErasureRequests', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

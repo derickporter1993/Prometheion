@@ -33,19 +33,26 @@ public with sharing class DataResidencyService {
      */
     @AuraEnabled(cacheable=true)
     public static ResidencyConfig getResidencyConfig() {
-        ResidencyConfig config = new ResidencyConfig();
-        
-        // Get org instance info
-        Organization org = [SELECT InstanceName, IsSandbox, Country FROM Organization WITH USER_MODE LIMIT 1];
-        
-        config.orgInstance = org.InstanceName;
-        config.isSandbox = org.IsSandbox;
-        config.orgCountry = org.Country;
-        config.primaryRegion = determineRegion(org.InstanceName);
-        config.allowedRegions = getAllowedRegions(config.primaryRegion);
-        config.dataLocationRules = getDataLocationRules();
-        
-        return config;
+        try {
+            ResidencyConfig config = new ResidencyConfig();
+
+            // Get org instance info
+            Organization org = [SELECT InstanceName, IsSandbox, Country FROM Organization WITH USER_MODE LIMIT 1];
+
+            config.orgInstance = org.InstanceName;
+            config.isSandbox = org.IsSandbox;
+            config.orgCountry = org.Country;
+            config.primaryRegion = determineRegion(org.InstanceName);
+            config.allowedRegions = getAllowedRegions(config.primaryRegion);
+            config.dataLocationRules = getDataLocationRules();
+
+            return config;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('DataResidencyService.getResidencyConfig', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -92,40 +99,47 @@ public with sharing class DataResidencyService {
      */
     @AuraEnabled(cacheable=true)
     public static LocationSummary getLocationSummary() {
-        LocationSummary summary = new LocationSummary();
-        summary.totalRecords = 0;
-        summary.recordsByRegion = new Map<String, Integer>();
-        summary.crossBorderTransfers = new List<CrossBorderTransfer>();
-        
-        ResidencyConfig config = getResidencyConfig();
-        summary.primaryRegion = String.valueOf(config.primaryRegion);
-        
-        // Count records by object
-        summary.totalRecords = [SELECT COUNT() FROM Elaro_Evidence_Item__c WITH USER_MODE];
-        
-        // In production, this would analyze actual data distribution
-        summary.recordsByRegion.put(summary.primaryRegion, summary.totalRecords);
-        
-        // Check for any cross-border indicators
-        List<Elaro_Evidence_Item__c> foreignEvents = [
-            SELECT Id, Evidence_Type__c, Description__c
-            FROM Elaro_Evidence_Item__c
-            WHERE Description__c LIKE '%international%' OR Description__c LIKE '%cross-border%'
-            WITH USER_MODE
-            LIMIT 100
-        ];
-        
-        for (Elaro_Evidence_Item__c event : foreignEvents) {
-            CrossBorderTransfer transfer = new CrossBorderTransfer();
-            transfer.recordId = event.Id;
-            transfer.sourceRegion = summary.primaryRegion;
-            transfer.targetRegion = 'Unknown';
-            transfer.dataType = event.Evidence_Type__c;
-            transfer.timestamp = Datetime.now();
-            summary.crossBorderTransfers.add(transfer);
+        try {
+            LocationSummary summary = new LocationSummary();
+            summary.totalRecords = 0;
+            summary.recordsByRegion = new Map<String, Integer>();
+            summary.crossBorderTransfers = new List<CrossBorderTransfer>();
+
+            ResidencyConfig config = getResidencyConfig();
+            summary.primaryRegion = String.valueOf(config.primaryRegion);
+
+            // Count records by object
+            summary.totalRecords = [SELECT COUNT() FROM Elaro_Evidence_Item__c WITH USER_MODE];
+
+            // In production, this would analyze actual data distribution
+            summary.recordsByRegion.put(summary.primaryRegion, summary.totalRecords);
+
+            // Check for any cross-border indicators
+            List<Elaro_Evidence_Item__c> foreignEvents = [
+                SELECT Id, Evidence_Type__c, Description__c
+                FROM Elaro_Evidence_Item__c
+                WHERE Description__c LIKE '%international%' OR Description__c LIKE '%cross-border%'
+                WITH USER_MODE
+                LIMIT 100
+            ];
+
+            for (Elaro_Evidence_Item__c event : foreignEvents) {
+                CrossBorderTransfer transfer = new CrossBorderTransfer();
+                transfer.recordId = event.Id;
+                transfer.sourceRegion = summary.primaryRegion;
+                transfer.targetRegion = 'Unknown';
+                transfer.dataType = event.Evidence_Type__c;
+                transfer.timestamp = Datetime.now();
+                summary.crossBorderTransfers.add(transfer);
+            }
+
+            return summary;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('DataResidencyService.getLocationSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return summary;
     }
     
     /**
@@ -134,28 +148,35 @@ public with sharing class DataResidencyService {
      */
     @AuraEnabled(cacheable=true)
     public static GDPRComplianceStatus checkGDPRCompliance() {
-        GDPRComplianceStatus status = new GDPRComplianceStatus();
-        
-        ResidencyConfig config = getResidencyConfig();
-        
-        status.isEUDataPresent = config.primaryRegion == Region.EU;
-        status.hasAdequacyDecision = true; // US-EU adequacy framework
-        status.sccsInPlace = true; // Standard Contractual Clauses
-        status.dpaExecuted = true; // Data Processing Agreement
-        status.transferMechanism = 'EU-US Data Privacy Framework';
-        
-        // Check for actual EU user data
-        Integer euUsers = [
-            SELECT COUNT() FROM User
-            WHERE Country IN ('Germany', 'France', 'United Kingdom', 'Ireland', 'Netherlands')
-            AND IsActive = true
-            WITH USER_MODE
-        ];
-        
-        status.euDataSubjectsCount = euUsers;
-        status.isCompliant = status.hasAdequacyDecision || status.sccsInPlace;
-        
-        return status;
+        try {
+            GDPRComplianceStatus status = new GDPRComplianceStatus();
+
+            ResidencyConfig config = getResidencyConfig();
+
+            status.isEUDataPresent = config.primaryRegion == Region.EU;
+            status.hasAdequacyDecision = true; // US-EU adequacy framework
+            status.sccsInPlace = true; // Standard Contractual Clauses
+            status.dpaExecuted = true; // Data Processing Agreement
+            status.transferMechanism = 'EU-US Data Privacy Framework';
+
+            // Check for actual EU user data
+            Integer euUsers = [
+                SELECT COUNT() FROM User
+                WHERE Country IN ('Germany', 'France', 'United Kingdom', 'Ireland', 'Netherlands')
+                AND IsActive = true
+                WITH USER_MODE
+            ];
+
+            status.euDataSubjectsCount = euUsers;
+            status.isCompliant = status.hasAdequacyDecision || status.sccsInPlace;
+
+            return status;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('DataResidencyService.checkGDPRCompliance', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

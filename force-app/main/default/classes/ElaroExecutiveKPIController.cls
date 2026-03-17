@@ -32,51 +32,58 @@ public with sharing class ElaroExecutiveKPIController {
      */
     @AuraEnabled(cacheable=true)
     public static List<KPIMetric> getKPIMetrics(String metadataRecordIds) {
-        List<KPIMetric> results = new List<KPIMetric>();
+        try {
+            List<KPIMetric> results = new List<KPIMetric>();
 
-        List<Executive_KPI__mdt> kpiConfigs = [
-            SELECT
-                DeveloperName,
-                KPI_Name__c,
-                Metric_Label__c,
-                SOQL_Query__c,
-                Format_Type__c,
-                Target_Value__c,
-                Green_Threshold__c,
-                Yellow_Threshold__c,
-                Red_Threshold__c,
-                Trend_Direction__c,
-                Sort_Order__c,
-                Description__c
-            FROM Executive_KPI__mdt
-            WHERE Is_Active__c = true
-            WITH USER_MODE
-            ORDER BY Sort_Order__c NULLS LAST
-            LIMIT 50
-        ];
+            List<Executive_KPI__mdt> kpiConfigs = [
+                SELECT
+                    DeveloperName,
+                    KPI_Name__c,
+                    Metric_Label__c,
+                    SOQL_Query__c,
+                    Format_Type__c,
+                    Target_Value__c,
+                    Green_Threshold__c,
+                    Yellow_Threshold__c,
+                    Red_Threshold__c,
+                    Trend_Direction__c,
+                    Sort_Order__c,
+                    Description__c
+                FROM Executive_KPI__mdt
+                WHERE Is_Active__c = true
+                WITH USER_MODE
+                ORDER BY Sort_Order__c NULLS LAST
+                LIMIT 50
+            ];
 
-        for (Executive_KPI__mdt config : kpiConfigs) {
-            try {
-                KPIMetric metric = executeKPIQuery(config);
-                if (metric != null) {
-                    results.add(metric);
+            for (Executive_KPI__mdt config : kpiConfigs) {
+                try {
+                    KPIMetric metric = executeKPIQuery(config);
+                    if (metric != null) {
+                        results.add(metric);
+                    }
+                } catch (Exception e) {
+                    // Log error but don't fail entire dashboard
+                    ElaroLogger.error(
+                        'KPI query failed for ' + config.DeveloperName + ': ' + e.getMessage());
+
+                    // Add placeholder with error state
+                    KPIMetric errorMetric = new KPIMetric();
+                    errorMetric.kpiName = config.KPI_Name__c;
+                    errorMetric.label = config.Metric_Label__c;
+                    errorMetric.hasError = true;
+                    errorMetric.errorMessage = 'Unable to calculate metric';
+                    results.add(errorMetric);
                 }
-            } catch (Exception e) {
-                // Log error but don't fail entire dashboard
-                ElaroLogger.error(
-                    'KPI query failed for ' + config.DeveloperName + ': ' + e.getMessage());
-
-                // Add placeholder with error state
-                KPIMetric errorMetric = new KPIMetric();
-                errorMetric.kpiName = config.KPI_Name__c;
-                errorMetric.label = config.Metric_Label__c;
-                errorMetric.hasError = true;
-                errorMetric.errorMessage = 'Unable to calculate metric';
-                results.add(errorMetric);
             }
-        }
 
-        return results;
+            return results;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroExecutiveKPIController.getKPIMetrics', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -84,36 +91,43 @@ public with sharing class ElaroExecutiveKPIController {
      */
     @AuraEnabled
     public static KPIMetric getKPIByName(String kpiName) {
-        if (String.isBlank(kpiName)) {
-            throw new AuraHandledException('KPI name is required');
+        try {
+            if (String.isBlank(kpiName)) {
+                throw new AuraHandledException('KPI name is required');
+            }
+
+            String sanitizedName = kpiName.replaceAll('[^a-zA-Z0-9_]+', '');
+
+            List<Executive_KPI__mdt> configs = [
+                SELECT
+                    DeveloperName,
+                    KPI_Name__c,
+                    Metric_Label__c,
+                    SOQL_Query__c,
+                    Format_Type__c,
+                    Target_Value__c,
+                    Green_Threshold__c,
+                    Yellow_Threshold__c,
+                    Red_Threshold__c,
+                    Trend_Direction__c
+                FROM Executive_KPI__mdt
+                WHERE KPI_Name__c = :sanitizedName
+                AND Is_Active__c = true
+                WITH USER_MODE
+                LIMIT 1
+            ];
+
+            if (configs.isEmpty()) {
+                throw new AuraHandledException('KPI not found: ' + kpiName);
+            }
+
+            return executeKPIQuery(configs[0]);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroExecutiveKPIController.getKPIByName', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        String sanitizedName = kpiName.replaceAll('[^a-zA-Z0-9_]+', '');
-
-        List<Executive_KPI__mdt> configs = [
-            SELECT
-                DeveloperName,
-                KPI_Name__c,
-                Metric_Label__c,
-                SOQL_Query__c,
-                Format_Type__c,
-                Target_Value__c,
-                Green_Threshold__c,
-                Yellow_Threshold__c,
-                Red_Threshold__c,
-                Trend_Direction__c
-            FROM Executive_KPI__mdt
-            WHERE KPI_Name__c = :sanitizedName
-            AND Is_Active__c = true
-            WITH USER_MODE
-            LIMIT 1
-        ];
-
-        if (configs.isEmpty()) {
-            throw new AuraHandledException('KPI not found: ' + kpiName);
-        }
-
-        return executeKPIQuery(configs[0]);
     }
 
     /**

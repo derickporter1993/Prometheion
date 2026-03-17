@@ -7,7 +7,7 @@
  * @group Tests
  * @see MultiOrgManager
  */
-@IsTest
+@IsTest(testFor=MultiOrgManager.class)
 private class MultiOrgManagerTest {
 
     @TestSetup

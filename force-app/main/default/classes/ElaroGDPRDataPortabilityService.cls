@@ -16,52 +16,60 @@
 public with sharing class ElaroGDPRDataPortabilityService {
 
     /**
-     * Generate complete data export for a Contact
-     * @param contactId - Contact ID to export data for
+     * Generate complete data export for a Contact.
+     *
+     * @param contactId Contact ID to export data for
      * @return JSON string containing all personal data
      */
     @AuraEnabled
     public static String exportContactData(Id contactId) {
-        Contact subject = getContactWithAllFields(contactId);
+        try {
+            Contact subject = getContactWithAllFields(contactId);
 
-        Map<String, Object> dataPackage = new Map<String, Object>();
+            Map<String, Object> dataPackage = new Map<String, Object>();
 
-        // Personal Information
-        dataPackage.put('personalInformation', buildContactData(subject));
+            // Personal Information
+            dataPackage.put('personalInformation', buildContactData(subject));
 
-        // Related Cases
-        dataPackage.put('cases', getCases(contactId));
+            // Related Cases
+            dataPackage.put('cases', getCases(contactId));
 
-        // Related Opportunities
-        dataPackage.put('opportunities', getOpportunities(contactId));
+            // Related Opportunities
+            dataPackage.put('opportunities', getOpportunities(contactId));
 
-        // Activity History
-        dataPackage.put('tasks', getTasks(contactId));
-        dataPackage.put('events', getEvents(contactId));
+            // Activity History
+            dataPackage.put('tasks', getTasks(contactId));
+            dataPackage.put('events', getEvents(contactId));
 
-        // Files and Attachments
-        dataPackage.put('files', getFiles(contactId));
+            // Files and Attachments
+            dataPackage.put('files', getFiles(contactId));
 
-        // Consent Records
-        dataPackage.put('consents', getConsents(contactId));
+            // Consent Records
+            dataPackage.put('consents', getConsents(contactId));
 
-        // GDPR Requests History
-        dataPackage.put('gdprRequests', getGDPRRequests(contactId));
+            // GDPR Requests History
+            dataPackage.put('gdprRequests', getGDPRRequests(contactId));
 
-        // Metadata
-        dataPackage.put('exportMetadata', new Map<String, Object>{
-            'exportDate' => System.now(),
-            'exportedBy' => UserInfo.getUserEmail(),
-            'dataSubjectId' => contactId,
-            'format' => 'JSON',
-            'version' => '1.0',
-            'gdprArticle' => 'Article 20 - Right to Data Portability'
-        });
+            // Metadata
+            dataPackage.put('exportMetadata', new Map<String, Object>{
+                'exportDate' => System.now(),
+                'exportedBy' => UserInfo.getUserEmail(),
+                'dataSubjectId' => contactId,
+                'format' => 'JSON',
+                'version' => '1.0',
+                'gdprArticle' => 'Article 20 - Right to Data Portability'
+            });
 
-        // Log the export request
-        logDataExport(contactId, subject.Email);
+            // Log the export request
+            logDataExport(contactId, subject.Email);
 
-        return JSON.serializePretty(dataPackage);
+            return JSON.serializePretty(dataPackage);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroGDPRDataPortabilityService.exportContactData', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

@@ -20,26 +20,33 @@ public with sharing class AnomalyDetectionService {
      */
     @AuraEnabled
     public static List<Anomaly> detectAnomalies(String framework, Integer daysBack) {
-        if (String.isBlank(framework)) {
-            throw new IllegalArgumentException('Framework is required');
+        try {
+            if (String.isBlank(framework)) {
+                throw new IllegalArgumentException('Framework is required');
+            }
+            if (daysBack == null || daysBack < 1) {
+                daysBack = 30; // Default to 30 days
+            }
+
+            List<Anomaly> anomalies = new List<Anomaly>();
+            Datetime startDate = System.now().addDays(-daysBack);
+
+            // Detect unusual permission set assignments
+            anomalies.addAll(detectUnusualPermissionAssignments(startDate));
+
+            // Detect unusual metadata changes
+            anomalies.addAll(detectUnusualMetadataChanges(startDate));
+
+            // Detect unusual access patterns
+            anomalies.addAll(detectUnusualAccessPatterns(startDate));
+
+            return anomalies;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('AnomalyDetectionService.detectAnomalies', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        if (daysBack == null || daysBack < 1) {
-            daysBack = 30; // Default to 30 days
-        }
-        
-        List<Anomaly> anomalies = new List<Anomaly>();
-        Datetime startDate = System.now().addDays(-daysBack);
-        
-        // Detect unusual permission set assignments
-        anomalies.addAll(detectUnusualPermissionAssignments(startDate));
-        
-        // Detect unusual metadata changes
-        anomalies.addAll(detectUnusualMetadataChanges(startDate));
-        
-        // Detect unusual access patterns
-        anomalies.addAll(detectUnusualAccessPatterns(startDate));
-        
-        return anomalies;
     }
     
     /**

@@ -145,19 +145,26 @@ public with sharing class PagerDutyIntegration {
      */
     @AuraEnabled
     public static String createIncident(String title, String description, String severity, String alertId) {
-        String dedupKey = 'elaro-' + (String.isNotBlank(alertId) ? alertId : String.valueOf(Datetime.now().getTime()));
-        
-        Map<String, Object> alertData = new Map<String, Object>{
-            'alertId' => alertId,
-            'eventType' => title,
-            'severity' => severity,
-            'message' => description,
-            'timestamp' => Datetime.now()
-        };
-        
-        triggerIncident(JSON.serialize(alertData));
-        
-        return dedupKey;
+        try {
+            String dedupKey = 'elaro-' + (String.isNotBlank(alertId) ? alertId : String.valueOf(Datetime.now().getTime()));
+
+            Map<String, Object> alertData = new Map<String, Object>{
+                'alertId' => alertId,
+                'eventType' => title,
+                'severity' => severity,
+                'message' => description,
+                'timestamp' => Datetime.now()
+            };
+
+            triggerIncident(JSON.serialize(alertData));
+
+            return dedupKey;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('PagerDutyIntegration.createIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -166,9 +173,16 @@ public with sharing class PagerDutyIntegration {
      */
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getRecentIncidents() {
-        // In production, this would query PagerDuty REST API
-        // For now, return empty list
-        return new List<Map<String, Object>>();
+        try {
+            // In production, this would query PagerDuty REST API
+            // For now, return empty list
+            return new List<Map<String, Object>>();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('PagerDutyIntegration.getRecentIncidents', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**

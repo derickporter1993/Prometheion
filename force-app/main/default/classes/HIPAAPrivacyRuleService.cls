@@ -60,36 +60,43 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
      */
     @AuraEnabled(cacheable=false)
     public static List<PHIObjectInfo> identifyPHIObjects() {
-        List<PHIObjectInfo> phiObjects = new List<PHIObjectInfo>();
+        try {
+            List<PHIObjectInfo> phiObjects = new List<PHIObjectInfo>();
 
-        Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
+            Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
 
-        for (String objectName : PHI_OBJECTS) {
-            if (globalDescribe.containsKey(objectName)) {
-                PHIObjectInfo info = new PHIObjectInfo();
-                info.objectName = objectName;
-                info.phiFields = new List<String>();
+            for (String objectName : PHI_OBJECTS) {
+                if (globalDescribe.containsKey(objectName)) {
+                    PHIObjectInfo info = new PHIObjectInfo();
+                    info.objectName = objectName;
+                    info.phiFields = new List<String>();
 
-                Schema.DescribeSObjectResult objDescribe = globalDescribe.get(objectName).getDescribe();
-                Map<String, Schema.SObjectField> fields = objDescribe.fields.getMap();
+                    Schema.DescribeSObjectResult objDescribe = globalDescribe.get(objectName).getDescribe();
+                    Map<String, Schema.SObjectField> fields = objDescribe.fields.getMap();
 
-                for (String fieldName : fields.keySet()) {
-                    if (isPHIField(fieldName)) {
-                        info.phiFields.add(fieldName);
+                    for (String fieldName : fields.keySet()) {
+                        if (isPHIField(fieldName)) {
+                            info.phiFields.add(fieldName);
+                        }
                     }
+
+                    info.phiFieldCount = info.phiFields.size();
+                    info.riskLevel = info.phiFieldCount > 5 ? 'HIGH' : info.phiFieldCount > 0 ? 'MEDIUM' : 'LOW';
+
+                    // Count users with access
+                    info.userAccessCount = countUsersWithAccess(objectName);
+
+                    phiObjects.add(info);
                 }
-
-                info.phiFieldCount = info.phiFields.size();
-                info.riskLevel = info.phiFieldCount > 5 ? 'HIGH' : info.phiFieldCount > 0 ? 'MEDIUM' : 'LOW';
-
-                // Count users with access
-                info.userAccessCount = countUsersWithAccess(objectName);
-
-                phiObjects.add(info);
             }
-        }
 
-        return phiObjects;
+            return phiObjects;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAPrivacyRuleService.identifyPHIObjects', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -98,35 +105,42 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
      */
     @AuraEnabled(cacheable=false)
     public static MinimumNecessaryResult evaluateMinimumNecessary() {
-        HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
-        MinimumNecessaryResult result = new MinimumNecessaryResult();
-        result.evaluationDate = DateTime.now();
-        result.recommendations = new List<String>();
+        try {
+            HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
+            MinimumNecessaryResult result = new MinimumNecessaryResult();
+            result.evaluationDate = DateTime.now();
+            result.recommendations = new List<String>();
 
-        // Get users with excessive access
-        List<ExcessiveAccessUser> excessiveUsers = service.getExcessiveAccessUsersList();
-        result.usersWithExcessAccess = excessiveUsers.size();
+            // Get users with excessive access
+            List<ExcessiveAccessUser> excessiveUsers = service.getExcessiveAccessUsersList();
+            result.usersWithExcessAccess = excessiveUsers.size();
 
-        // Calculate compliance percentage
-        Integer totalActiveUsers = [SELECT COUNT() FROM User WHERE IsActive = true WITH USER_MODE];
-        result.totalUsers = totalActiveUsers;
+            // Calculate compliance percentage
+            Integer totalActiveUsers = [SELECT COUNT() FROM User WHERE IsActive = true WITH USER_MODE];
+            result.totalUsers = totalActiveUsers;
 
-        if (totalActiveUsers > 0) {
-            result.compliancePercentage = ((Decimal)(totalActiveUsers - excessiveUsers.size()) / totalActiveUsers * 100).setScale(2);
-        } else {
-            result.compliancePercentage = 100;
+            if (totalActiveUsers > 0) {
+                result.compliancePercentage = ((Decimal)(totalActiveUsers - excessiveUsers.size()) / totalActiveUsers * 100).setScale(2);
+            } else {
+                result.compliancePercentage = 100;
+            }
+
+            result.compliant = result.compliancePercentage >= 95;
+
+            // Generate recommendations
+            if (!result.compliant) {
+                result.recommendations.add('Review and remove Modify All Data permissions from non-admin users');
+                result.recommendations.add('Implement role-based access control for PHI objects');
+                result.recommendations.add('Create specific permission sets for each job function');
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAPrivacyRuleService.evaluateMinimumNecessary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        result.compliant = result.compliancePercentage >= 95;
-
-        // Generate recommendations
-        if (!result.compliant) {
-            result.recommendations.add('Review and remove Modify All Data permissions from non-admin users');
-            result.recommendations.add('Implement role-based access control for PHI objects');
-            result.recommendations.add('Create specific permission sets for each job function');
-        }
-
-        return result;
     }
 
     /**
@@ -135,8 +149,15 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
      */
     @AuraEnabled(cacheable=false)
     public static List<ExcessiveAccessUser> getExcessiveAccessUsers() {
-        HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
-        return service.getExcessiveAccessUsersList();
+        try {
+            HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
+            return service.getExcessiveAccessUsersList();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAPrivacyRuleService.getExcessiveAccessUsers', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     // Allowed objects for PHI access audit history queries
@@ -207,42 +228,49 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
      */
     @AuraEnabled
     public static Id generateDisclosureLog(Date startDate, Date endDate) {
-        if (startDate == null) {
-            startDate = Date.today().addYears(-6); // HIPAA requires 6-year retention
+        try {
+            if (startDate == null) {
+                startDate = Date.today().addYears(-6); // HIPAA requires 6-year retention
+            }
+            if (endDate == null) {
+                endDate = Date.today();
+            }
+
+            // Query compliance evidence for disclosures
+            List<Compliance_Evidence__c> disclosures = [
+                SELECT Id, Evidence_Type__c, Evidence_Date__c, Description__c, Evidence_Data__c
+                FROM Compliance_Evidence__c
+                WHERE Framework__c = 'HIPAA'
+                AND Evidence_Type__c = 'PHI_DISCLOSURE'
+                AND Evidence_Date__c >= :startDate
+                AND Evidence_Date__c <= :endDate
+                WITH USER_MODE
+                ORDER BY Evidence_Date__c DESC
+            ];
+
+            String logContent = generateDisclosureLogContent(disclosures, startDate, endDate);
+
+            ContentVersion cv = new ContentVersion(
+                Title = 'HIPAA_Disclosure_Log_' + startDate.format() + '_to_' + endDate.format(),
+                PathOnClient = 'HIPAA_Disclosure_Log.md',
+                VersionData = Blob.valueOf(logContent),
+                Origin = 'H'
+            );
+            ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+            insert as user cv;
+
+            cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
+
+            HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
+            service.logAuditEntry('DISCLOSURE_LOG_GENERATED', 'Generated HIPAA disclosure log', cv.ContentDocumentId);
+
+            return cv.ContentDocumentId;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAPrivacyRuleService.generateDisclosureLog', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        if (endDate == null) {
-            endDate = Date.today();
-        }
-
-        // Query compliance evidence for disclosures
-        List<Compliance_Evidence__c> disclosures = [
-            SELECT Id, Evidence_Type__c, Evidence_Date__c, Description__c, Evidence_Data__c
-            FROM Compliance_Evidence__c
-            WHERE Framework__c = 'HIPAA'
-            AND Evidence_Type__c = 'PHI_DISCLOSURE'
-            AND Evidence_Date__c >= :startDate
-            AND Evidence_Date__c <= :endDate
-            WITH USER_MODE
-            ORDER BY Evidence_Date__c DESC
-        ];
-
-        String logContent = generateDisclosureLogContent(disclosures, startDate, endDate);
-
-        ContentVersion cv = new ContentVersion(
-            Title = 'HIPAA_Disclosure_Log_' + startDate.format() + '_to_' + endDate.format(),
-            PathOnClient = 'HIPAA_Disclosure_Log.md',
-            VersionData = Blob.valueOf(logContent),
-            Origin = 'H'
-        );
-        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert as user cv;
-
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
-
-        HIPAAPrivacyRuleService service = new HIPAAPrivacyRuleService();
-        service.logAuditEntry('DISCLOSURE_LOG_GENERATED', 'Generated HIPAA disclosure log', cv.ContentDocumentId);
-
-        return cv.ContentDocumentId;
     }
 
     // ========== Private Helper Methods ==========

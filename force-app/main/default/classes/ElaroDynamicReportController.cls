@@ -47,69 +47,76 @@ public with sharing class ElaroDynamicReportController {
      */
     @AuraEnabled(cacheable=true)
     public static List<FieldMetadata> getFieldMetadata(String objectApiName) {
-        // Validate object is allowed
-        if (!ALLOWED_OBJECTS.contains(objectApiName)) {
-            throw new AuraHandledException('Object not authorized: ' + objectApiName);
-        }
-
-        // Check cache first
-        String cacheKey = 'fieldMeta_' + objectApiName.replaceAll('[^a-zA-Z0-9_]+', '');
-        Cache.OrgPartition orgCache = null;
         try {
-            orgCache = Cache.Org.getPartition('local.ElaroReportCache');
-            if (orgCache != null && orgCache.contains(cacheKey)) {
-                return (List<FieldMetadata>)orgCache.get(cacheKey);
-            }
-        } catch (Cache.Org.OrgCacheException e) {
-            // Cache not configured, continue without it
-            ElaroLogger.warn( 'Cache partition not available: ' + e.getMessage());
-        } catch (Exception e) {
-            // Unexpected cache error - log but continue
-            ElaroLogger.warn( 'Unexpected cache error: ' + e.getMessage());
-        }
-
-        // Validate object exists and is accessible
-        SObjectType sobj = Schema.getGlobalDescribe().get(objectApiName);
-        if (sobj == null || !sobj.getDescribe().isAccessible()) {
-            throw new AuraHandledException('Access denied to object: ' + objectApiName);
-        }
-
-        // Build field metadata list
-        Map<String, SObjectField> fieldMap = sobj.getDescribe().fields.getMap();
-        List<FieldMetadata> result = new List<FieldMetadata>();
-
-        for (String fieldName : fieldMap.keySet()) {
-            DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
-
-            // Only include accessible fields
-            if (!dfr.isAccessible()) {
-                continue;
+            // Validate object is allowed
+            if (!ALLOWED_OBJECTS.contains(objectApiName)) {
+                throw new AuraHandledException('Object not authorized: ' + objectApiName);
             }
 
-            FieldMetadata fm = new FieldMetadata();
-            fm.label = dfr.getLabel();
-            fm.apiName = dfr.getName();
-            fm.fieldType = String.valueOf(dfr.getType());
-            fm.isFilterable = dfr.isFilterable();
-            fm.isGroupable = dfr.isGroupable();
-            fm.isSortable = dfr.isSortable();
-            result.add(fm);
-        }
-
-        result.sort();
-
-        // Cache the results
-        if (orgCache != null) {
+            // Check cache first
+            String cacheKey = 'fieldMeta_' + objectApiName.replaceAll('[^a-zA-Z0-9_]+', '');
+            Cache.OrgPartition orgCache = null;
             try {
-                orgCache.put(cacheKey, result, 86400); // 24 hour TTL
+                orgCache = Cache.Org.getPartition('local.ElaroReportCache');
+                if (orgCache != null && orgCache.contains(cacheKey)) {
+                    return (List<FieldMetadata>)orgCache.get(cacheKey);
+                }
             } catch (Cache.Org.OrgCacheException e) {
-                ElaroLogger.warn( 'Failed to cache field metadata: ' + e.getMessage());
+                // Cache not configured, continue without it
+                ElaroLogger.warn( 'Cache partition not available: ' + e.getMessage());
             } catch (Exception e) {
+                // Unexpected cache error - log but continue
                 ElaroLogger.warn( 'Unexpected cache error: ' + e.getMessage());
             }
-        }
 
-        return result;
+            // Validate object exists and is accessible
+            SObjectType sobj = Schema.getGlobalDescribe().get(objectApiName);
+            if (sobj == null || !sobj.getDescribe().isAccessible()) {
+                throw new AuraHandledException('Access denied to object: ' + objectApiName);
+            }
+
+            // Build field metadata list
+            Map<String, SObjectField> fieldMap = sobj.getDescribe().fields.getMap();
+            List<FieldMetadata> result = new List<FieldMetadata>();
+
+            for (String fieldName : fieldMap.keySet()) {
+                DescribeFieldResult dfr = fieldMap.get(fieldName).getDescribe();
+
+                // Only include accessible fields
+                if (!dfr.isAccessible()) {
+                    continue;
+                }
+
+                FieldMetadata fm = new FieldMetadata();
+                fm.label = dfr.getLabel();
+                fm.apiName = dfr.getName();
+                fm.fieldType = String.valueOf(dfr.getType());
+                fm.isFilterable = dfr.isFilterable();
+                fm.isGroupable = dfr.isGroupable();
+                fm.isSortable = dfr.isSortable();
+                result.add(fm);
+            }
+
+            result.sort();
+
+            // Cache the results
+            if (orgCache != null) {
+                try {
+                    orgCache.put(cacheKey, result, 86400); // 24 hour TTL
+                } catch (Cache.Org.OrgCacheException e) {
+                    ElaroLogger.warn( 'Failed to cache field metadata: ' + e.getMessage());
+                } catch (Exception e) {
+                    ElaroLogger.warn( 'Unexpected cache error: ' + e.getMessage());
+                }
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDynamicReportController.getFieldMetadata', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -191,19 +198,26 @@ public with sharing class ElaroDynamicReportController {
      */
     @AuraEnabled(cacheable=true)
     public static List<ObjectOption> getAvailableObjects() {
-        List<ObjectOption> options = new List<ObjectOption>();
+        try {
+            List<ObjectOption> options = new List<ObjectOption>();
 
-        for (String objName : ALLOWED_OBJECTS) {
-            SObjectType sType = Schema.getGlobalDescribe().get(objName);
-            if (sType != null && sType.getDescribe().isAccessible()) {
-                ObjectOption opt = new ObjectOption();
-                opt.label = sType.getDescribe().getLabel();
-                opt.value = objName;
-                options.add(opt);
+            for (String objName : ALLOWED_OBJECTS) {
+                SObjectType sType = Schema.getGlobalDescribe().get(objName);
+                if (sType != null && sType.getDescribe().isAccessible()) {
+                    ObjectOption opt = new ObjectOption();
+                    opt.label = sType.getDescribe().getLabel();
+                    opt.value = objName;
+                    options.add(opt);
+                }
             }
-        }
 
-        return options;
+            return options;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDynamicReportController.getAvailableObjects', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

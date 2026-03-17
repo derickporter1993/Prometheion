@@ -25,21 +25,28 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled
     public static void publishCriticalAlert(String alertId, String title, String message) {
-        List<Id> recipients = getOnCallUsers();
+        try {
+            List<Id> recipients = getOnCallUsers();
 
-        if (recipients.isEmpty()) {
-            recipients = getAdminUsers();
+            if (recipients.isEmpty()) {
+                recipients = getAdminUsers();
+            }
+
+            if (recipients.isEmpty()) {
+                ElaroLogger.warn('No recipients found for critical alert');
+                return;
+            }
+
+            publishNotification(CRITICAL_NOTIFICATION_TYPE, alertId, title, message, recipients);
+
+            // Schedule escalation check
+            scheduleEscalationCheck(alertId, getEscalationDelayMinutes(1));
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.publishCriticalAlert', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        if (recipients.isEmpty()) {
-            ElaroLogger.warn('No recipients found for critical alert');
-            return;
-        }
-
-        publishNotification(CRITICAL_NOTIFICATION_TYPE, alertId, title, message, recipients);
-
-        // Schedule escalation check
-        scheduleEscalationCheck(alertId, getEscalationDelayMinutes(1));
     }
 
     /**
@@ -50,13 +57,20 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled
     public static void publishHighAlert(String alertId, String title, String message) {
-        List<Id> recipients = getOnCallUsers();
+        try {
+            List<Id> recipients = getOnCallUsers();
 
-        if (recipients.isEmpty()) {
-            recipients = getAdminUsers();
+            if (recipients.isEmpty()) {
+                recipients = getAdminUsers();
+            }
+
+            publishNotification(CRITICAL_NOTIFICATION_TYPE, alertId, title, message, recipients);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.publishHighAlert', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        publishNotification(CRITICAL_NOTIFICATION_TYPE, alertId, title, message, recipients);
     }
 
     /**
@@ -65,27 +79,34 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled
     public static void publishAlertForGap(String gapId) {
-        List<Compliance_Gap__c> gaps = [
-            SELECT Id, Name, Framework__c, Severity__c, Gap_Description__c
-            FROM Compliance_Gap__c
-            WHERE Id = :gapId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            List<Compliance_Gap__c> gaps = [
+                SELECT Id, Name, Framework__c, Severity__c, Gap_Description__c
+                FROM Compliance_Gap__c
+                WHERE Id = :gapId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (gaps.isEmpty()) {
-            throw new MobileAlertException('Compliance gap not found');
-        }
+            if (gaps.isEmpty()) {
+                throw new MobileAlertException('Compliance gap not found');
+            }
 
-        Compliance_Gap__c gap = gaps[0];
-        String title = gap.Severity__c + ' Compliance Gap: ' + gap.Name;
-        String message = gap.Framework__c + ' - ' + (gap.Gap_Description__c != null ?
-            gap.Gap_Description__c.abbreviate(200) : 'No description');
+            Compliance_Gap__c gap = gaps[0];
+            String title = gap.Severity__c + ' Compliance Gap: ' + gap.Name;
+            String message = gap.Framework__c + ' - ' + (gap.Gap_Description__c != null ?
+                gap.Gap_Description__c.abbreviate(200) : 'No description');
 
-        if (gap.Severity__c == 'CRITICAL') {
-            publishCriticalAlert(gapId, title, message);
-        } else if (gap.Severity__c == 'HIGH') {
-            publishHighAlert(gapId, title, message);
+            if (gap.Severity__c == 'CRITICAL') {
+                publishCriticalAlert(gapId, title, message);
+            } else if (gap.Severity__c == 'HIGH') {
+                publishHighAlert(gapId, title, message);
+            }
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.publishAlertForGap', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
     }
 
@@ -95,26 +116,33 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled
     public static void acknowledgeAlert(String alertId) {
-        // Find the gap and update acknowledgment fields
-        List<Compliance_Gap__c> gaps = [
-            SELECT Id, Alert_Acknowledged__c, Alert_Acknowledged_By__c, Alert_Acknowledged_At__c
-            FROM Compliance_Gap__c
-            WHERE Id = :alertId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            // Find the gap and update acknowledgment fields
+            List<Compliance_Gap__c> gaps = [
+                SELECT Id, Alert_Acknowledged__c, Alert_Acknowledged_By__c, Alert_Acknowledged_At__c
+                FROM Compliance_Gap__c
+                WHERE Id = :alertId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (!gaps.isEmpty()) {
-            Compliance_Gap__c gap = gaps[0];
-            gap.Alert_Acknowledged__c = true;
-            gap.Alert_Acknowledged_By__c = UserInfo.getUserId();
-            gap.Alert_Acknowledged_At__c = Datetime.now();
+            if (!gaps.isEmpty()) {
+                Compliance_Gap__c gap = gaps[0];
+                gap.Alert_Acknowledged__c = true;
+                gap.Alert_Acknowledged_By__c = UserInfo.getUserId();
+                gap.Alert_Acknowledged_At__c = Datetime.now();
 
-            update as user gap;
+                update as user gap;
+            }
+
+            // Cancel any pending escalations
+            cancelEscalation(alertId);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.acknowledgeAlert', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        // Cancel any pending escalations
-        cancelEscalation(alertId);
     }
 
     /**
@@ -124,30 +152,37 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled
     public static void snoozeAlert(String alertId, Integer minutes) {
-        if (minutes == null || minutes <= 0 || minutes > 480) {
-            throw new MobileAlertException('Snooze duration must be between 1 and 480 minutes');
+        try {
+            if (minutes == null || minutes <= 0 || minutes > 480) {
+                throw new MobileAlertException('Snooze duration must be between 1 and 480 minutes');
+            }
+
+            Datetime snoozeUntil = Datetime.now().addMinutes(minutes);
+
+            List<Compliance_Gap__c> gaps = [
+                SELECT Id, Alert_Snoozed_Until__c
+                FROM Compliance_Gap__c
+                WHERE Id = :alertId
+                WITH USER_MODE
+                LIMIT 1
+            ];
+
+            if (!gaps.isEmpty()) {
+                Compliance_Gap__c gap = gaps[0];
+                gap.Alert_Snoozed_Until__c = snoozeUntil;
+
+                update as user gap;
+            }
+
+            // Cancel current escalation and schedule delayed notification
+            cancelEscalation(alertId);
+            scheduleDelayedNotification(alertId, minutes);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.snoozeAlert', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Datetime snoozeUntil = Datetime.now().addMinutes(minutes);
-
-        List<Compliance_Gap__c> gaps = [
-            SELECT Id, Alert_Snoozed_Until__c
-            FROM Compliance_Gap__c
-            WHERE Id = :alertId
-            WITH USER_MODE
-            LIMIT 1
-        ];
-
-        if (!gaps.isEmpty()) {
-            Compliance_Gap__c gap = gaps[0];
-            gap.Alert_Snoozed_Until__c = snoozeUntil;
-
-            update as user gap;
-        }
-
-        // Cancel current escalation and schedule delayed notification
-        cancelEscalation(alertId);
-        scheduleDelayedNotification(alertId, minutes);
     }
 
     /**
@@ -156,32 +191,39 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled(cacheable=true)
     public static List<OnCallUser> getCurrentOnCallUsers() {
-        Datetime now = Datetime.now();
-        List<OnCallUser> result = new List<OnCallUser>();
+        try {
+            Datetime now = Datetime.now();
+            List<OnCallUser> result = new List<OnCallUser>();
 
-        List<Elaro_On_Call_Schedule__c> schedules = [
-            SELECT Id, User__c, User__r.Name, User__r.Email, Rotation_Name__c,
-                   Start_Time__c, End_Time__c, Notification_Methods__c
-            FROM Elaro_On_Call_Schedule__c
-            WHERE Start_Time__c <= :now
-            AND End_Time__c >= :now
-            AND Active__c = true
-            WITH USER_MODE
-            ORDER BY Rotation_Name__c
-        ];
+            List<Elaro_On_Call_Schedule__c> schedules = [
+                SELECT Id, User__c, User__r.Name, User__r.Email, Rotation_Name__c,
+                       Start_Time__c, End_Time__c, Notification_Methods__c
+                FROM Elaro_On_Call_Schedule__c
+                WHERE Start_Time__c <= :now
+                AND End_Time__c >= :now
+                AND Active__c = true
+                WITH USER_MODE
+                ORDER BY Rotation_Name__c
+            ];
 
-        for (Elaro_On_Call_Schedule__c schedule : schedules) {
-            OnCallUser ocu = new OnCallUser();
-            ocu.userId = schedule.User__c;
-            ocu.userName = schedule.User__r.Name;
-            ocu.userEmail = schedule.User__r.Email;
-            ocu.rotationName = schedule.Rotation_Name__c;
-            ocu.shiftEnd = schedule.End_Time__c;
-            ocu.notificationMethods = schedule.Notification_Methods__c;
-            result.add(ocu);
+            for (Elaro_On_Call_Schedule__c schedule : schedules) {
+                OnCallUser ocu = new OnCallUser();
+                ocu.userId = schedule.User__c;
+                ocu.userName = schedule.User__r.Name;
+                ocu.userEmail = schedule.User__r.Email;
+                ocu.rotationName = schedule.Rotation_Name__c;
+                ocu.shiftEnd = schedule.End_Time__c;
+                ocu.notificationMethods = schedule.Notification_Methods__c;
+                result.add(ocu);
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.getCurrentOnCallUsers', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return result;
     }
 
     /**
@@ -190,31 +232,38 @@ public with sharing class MobileAlertPublisher {
      */
     @AuraEnabled(cacheable=true)
     public static List<EscalationPathEntry> getEscalationPath() {
-        List<EscalationPathEntry> result = new List<EscalationPathEntry>();
+        try {
+            List<EscalationPathEntry> result = new List<EscalationPathEntry>();
 
-        List<Elaro_Escalation_Path__c> paths = [
-            SELECT Id, User__c, User__r.Name, User__r.Email, Level__c,
-                   Role__c, Notification_Method__c, Escalation_Delay_Minutes__c
-            FROM Elaro_Escalation_Path__c
-            WHERE Active__c = true
-            WITH USER_MODE
-            ORDER BY Level__c ASC
-        ];
+            List<Elaro_Escalation_Path__c> paths = [
+                SELECT Id, User__c, User__r.Name, User__r.Email, Level__c,
+                       Role__c, Notification_Method__c, Escalation_Delay_Minutes__c
+                FROM Elaro_Escalation_Path__c
+                WHERE Active__c = true
+                WITH USER_MODE
+                ORDER BY Level__c ASC
+            ];
 
-        for (Elaro_Escalation_Path__c path : paths) {
-            EscalationPathEntry entry = new EscalationPathEntry();
-            entry.pathId = path.Id;
-            entry.userId = path.User__c;
-            entry.userName = path.User__r.Name;
-            entry.userEmail = path.User__r.Email;
-            entry.level = Integer.valueOf(path.Level__c);
-            entry.role = path.Role__c;
-            entry.notificationMethod = path.Notification_Method__c;
-            entry.delayMinutes = Integer.valueOf(path.Escalation_Delay_Minutes__c);
-            result.add(entry);
+            for (Elaro_Escalation_Path__c path : paths) {
+                EscalationPathEntry entry = new EscalationPathEntry();
+                entry.pathId = path.Id;
+                entry.userId = path.User__c;
+                entry.userName = path.User__r.Name;
+                entry.userEmail = path.User__r.Email;
+                entry.level = Integer.valueOf(path.Level__c);
+                entry.role = path.Role__c;
+                entry.notificationMethod = path.Notification_Method__c;
+                entry.delayMinutes = Integer.valueOf(path.Escalation_Delay_Minutes__c);
+                result.add(entry);
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MobileAlertPublisher.getEscalationPath', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return result;
     }
 
     // ============================================

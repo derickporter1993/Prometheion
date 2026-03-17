@@ -19,26 +19,33 @@ public with sharing class ElaroAIRiskPredictor {
      */
     @AuraEnabled
     public static RiskPredictionResult predictRisk(String entityType, String entityId, String framework) {
-        if (String.isBlank(entityType) || String.isBlank(entityId) || String.isBlank(framework)) {
-            throw new IllegalArgumentException('Entity type, entity ID, and framework are required');
+        try {
+            if (String.isBlank(entityType) || String.isBlank(entityId) || String.isBlank(framework)) {
+                throw new IllegalArgumentException('Entity type, entity ID, and framework are required');
+            }
+
+            RiskPredictionResult result = new RiskPredictionResult();
+            result.entityType = entityType;
+            result.entityId = entityId;
+            result.framework = framework;
+            result.predictionDate = System.now();
+
+            // Simplified prediction (in production, use Einstein Platform)
+            // For now, use rule-based scoring
+            Decimal riskScore = calculateRuleBasedRisk(entityType, framework);
+
+            result.riskScore = riskScore;
+            result.confidence = 0.75; // Rule-based confidence
+            result.isViolation = riskScore >= 7.0;
+            result.recommendation = generateRecommendation(riskScore, framework);
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroAIRiskPredictor.predictRisk', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        RiskPredictionResult result = new RiskPredictionResult();
-        result.entityType = entityType;
-        result.entityId = entityId;
-        result.framework = framework;
-        result.predictionDate = System.now();
-        
-        // Simplified prediction (in production, use Einstein Platform)
-        // For now, use rule-based scoring
-        Decimal riskScore = calculateRuleBasedRisk(entityType, framework);
-        
-        result.riskScore = riskScore;
-        result.confidence = 0.75; // Rule-based confidence
-        result.isViolation = riskScore >= 7.0;
-        result.recommendation = generateRecommendation(riskScore, framework);
-        
-        return result;
     }
     
     /**

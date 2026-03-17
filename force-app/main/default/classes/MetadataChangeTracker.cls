@@ -73,16 +73,23 @@ public with sharing class MetadataChangeTracker {
      */
     @AuraEnabled(cacheable=true)
     public static List<Metadata_Change__c> getRecentChanges(Integer limitSize) {
-        Integer recordLimit = Math.max(1, Math.min(limitSize, 100));
-        
-        return [
-            SELECT Id, Change_Type__c, Metadata_Type__c, Metadata_Name__c, 
-                   Changed_By__c, Change_Date__c, Risk_Level__c, Impact_Analysis__c
-            FROM Metadata_Change__c
-            WITH USER_MODE
-            ORDER BY Change_Date__c DESC
-            LIMIT :recordLimit
-        ];
+        try {
+            Integer recordLimit = Math.max(1, Math.min(limitSize, 100));
+
+            return [
+                SELECT Id, Change_Type__c, Metadata_Type__c, Metadata_Name__c,
+                       Changed_By__c, Change_Date__c, Risk_Level__c, Impact_Analysis__c
+                FROM Metadata_Change__c
+                WITH USER_MODE
+                ORDER BY Change_Date__c DESC
+                LIMIT :recordLimit
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MetadataChangeTracker.getRecentChanges', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

@@ -5,7 +5,7 @@
  * @author Elaro Development Team
  * @since 2026-01
  */
-@IsTest
+@IsTest(testFor=JiraWebhookHandler.class)
 private class JiraWebhookHandlerTest {
 
     private static final String MOCK_JIRA_KEY = 'COMPLIANCE-456';

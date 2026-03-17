@@ -50,29 +50,36 @@ public with sharing class BenchmarkingService {
      */
     @AuraEnabled(cacheable=true)
     public static IndustryBenchmarks getIndustryBenchmarks(String industry) {
-        IndustryBenchmarks benchmarks = new IndustryBenchmarks();
-        benchmarks.industry = industry;
-        benchmarks.lastUpdated = Date.today();
-        
-        Map<String, Decimal> industryData = INDUSTRY_BENCHMARKS.get(industry);
-        if (industryData == null) {
-            industryData = INDUSTRY_BENCHMARKS.get('Technology'); // Default
-        }
-        
-        benchmarks.avgComplianceScore = industryData.get('avgScore');
-        benchmarks.frameworkBenchmarks = new Map<String, Decimal>();
-        
-        for (String key : industryData.keySet()) {
-            if (key != 'avgScore') {
-                benchmarks.frameworkBenchmarks.put(key, industryData.get(key));
+        try {
+            IndustryBenchmarks benchmarks = new IndustryBenchmarks();
+            benchmarks.industry = industry;
+            benchmarks.lastUpdated = Date.today();
+
+            Map<String, Decimal> industryData = INDUSTRY_BENCHMARKS.get(industry);
+            if (industryData == null) {
+                industryData = INDUSTRY_BENCHMARKS.get('Technology'); // Default
             }
+
+            benchmarks.avgComplianceScore = industryData.get('avgScore');
+            benchmarks.frameworkBenchmarks = new Map<String, Decimal>();
+
+            for (String key : industryData.keySet()) {
+                if (key != 'avgScore') {
+                    benchmarks.frameworkBenchmarks.put(key, industryData.get(key));
+                }
+            }
+
+            // Get top performers (simulated)
+            benchmarks.topPerformerScore = benchmarks.avgComplianceScore + 10;
+            benchmarks.bottomPerformerScore = benchmarks.avgComplianceScore - 15;
+
+            return benchmarks;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BenchmarkingService.getIndustryBenchmarks', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Get top performers (simulated)
-        benchmarks.topPerformerScore = benchmarks.avgComplianceScore + 10;
-        benchmarks.bottomPerformerScore = benchmarks.avgComplianceScore - 15;
-        
-        return benchmarks;
     }
     
     /**
@@ -82,59 +89,66 @@ public with sharing class BenchmarkingService {
      */
     @AuraEnabled
     public static ComparisonResult compareToIndustry(String industry) {
-        ComparisonResult result = new ComparisonResult();
-        result.industry = industry;
-        result.comparedAt = Datetime.now();
-        
-        // Get current org score
-        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
-        result.orgScore = (Decimal)scoreData.get('overallScore');
-        
-        // Get industry benchmarks
-        IndustryBenchmarks benchmarks = getIndustryBenchmarks(industry);
-        result.industryAvgScore = benchmarks.avgComplianceScore;
-        
-        // Calculate percentile
-        result.percentile = calculatePercentile(result.orgScore, benchmarks);
-        
-        // Determine position
-        result.vsIndustryAvg = result.orgScore - result.industryAvgScore;
-        
-        if (result.percentile >= 90) {
-            result.position = 'Top 10%';
-            result.positionClass = 'excellent';
-        } else if (result.percentile >= 75) {
-            result.position = 'Top 25%';
-            result.positionClass = 'good';
-        } else if (result.percentile >= 50) {
-            result.position = 'Above Average';
-            result.positionClass = 'average';
-        } else if (result.percentile >= 25) {
-            result.position = 'Below Average';
-            result.positionClass = 'below';
-        } else {
-            result.position = 'Bottom 25%';
-            result.positionClass = 'poor';
+        try {
+            ComparisonResult result = new ComparisonResult();
+            result.industry = industry;
+            result.comparedAt = Datetime.now();
+
+            // Get current org score
+            Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
+            result.orgScore = (Decimal)scoreData.get('overallScore');
+
+            // Get industry benchmarks
+            IndustryBenchmarks benchmarks = getIndustryBenchmarks(industry);
+            result.industryAvgScore = benchmarks.avgComplianceScore;
+
+            // Calculate percentile
+            result.percentile = calculatePercentile(result.orgScore, benchmarks);
+
+            // Determine position
+            result.vsIndustryAvg = result.orgScore - result.industryAvgScore;
+
+            if (result.percentile >= 90) {
+                result.position = 'Top 10%';
+                result.positionClass = 'excellent';
+            } else if (result.percentile >= 75) {
+                result.position = 'Top 25%';
+                result.positionClass = 'good';
+            } else if (result.percentile >= 50) {
+                result.position = 'Above Average';
+                result.positionClass = 'average';
+            } else if (result.percentile >= 25) {
+                result.position = 'Below Average';
+                result.positionClass = 'below';
+            } else {
+                result.position = 'Bottom 25%';
+                result.positionClass = 'poor';
+            }
+
+            // Framework comparisons
+            result.frameworkComparisons = new List<FrameworkComparison>();
+            Map<String, Decimal> frameworkScores = (Map<String, Decimal>)scoreData.get('frameworkScores');
+
+            for (String framework : benchmarks.frameworkBenchmarks.keySet()) {
+                FrameworkComparison fc = new FrameworkComparison();
+                fc.framework = framework;
+                fc.industryBenchmark = benchmarks.frameworkBenchmarks.get(framework);
+                fc.orgScore = frameworkScores.containsKey(framework) ? frameworkScores.get(framework) : 75;
+                fc.difference = fc.orgScore - fc.industryBenchmark;
+                fc.status = fc.difference >= 0 ? 'Above' : 'Below';
+                result.frameworkComparisons.add(fc);
+            }
+
+            // Recommendations
+            result.recommendations = generateBenchmarkRecommendations(result);
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BenchmarkingService.compareToIndustry', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Framework comparisons
-        result.frameworkComparisons = new List<FrameworkComparison>();
-        Map<String, Decimal> frameworkScores = (Map<String, Decimal>)scoreData.get('frameworkScores');
-        
-        for (String framework : benchmarks.frameworkBenchmarks.keySet()) {
-            FrameworkComparison fc = new FrameworkComparison();
-            fc.framework = framework;
-            fc.industryBenchmark = benchmarks.frameworkBenchmarks.get(framework);
-            fc.orgScore = frameworkScores.containsKey(framework) ? frameworkScores.get(framework) : 75;
-            fc.difference = fc.orgScore - fc.industryBenchmark;
-            fc.status = fc.difference >= 0 ? 'Above' : 'Below';
-            result.frameworkComparisons.add(fc);
-        }
-        
-        // Recommendations
-        result.recommendations = generateBenchmarkRecommendations(result);
-        
-        return result;
     }
     
     /**
@@ -143,44 +157,51 @@ public with sharing class BenchmarkingService {
      */
     @AuraEnabled
     public static MaturityAssessment assessMaturity() {
-        MaturityAssessment assessment = new MaturityAssessment();
-        assessment.assessedAt = Datetime.now();
-        
-        // Get compliance score
-        Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
-        Decimal overallScore = (Decimal)scoreData.get('overallScore');
-        
-        // Determine maturity level
-        assessment.overallLevel = determineMaturityLevel(overallScore);
-        assessment.overallScore = overallScore;
-        
-        // Assess individual dimensions
-        assessment.dimensions = new List<MaturityDimension>();
-        
-        // Process Maturity
-        assessment.dimensions.add(assessDimension('Process', 
-            'Documented policies and procedures', 
-            calculateProcessMaturity()));
-        
-        // Technology Maturity
-        assessment.dimensions.add(assessDimension('Technology', 
-            'Security tools and automation', 
-            calculateTechnologyMaturity()));
-        
-        // People Maturity
-        assessment.dimensions.add(assessDimension('People', 
-            'Training and awareness', 
-            calculatePeopleMaturity()));
-        
-        // Governance Maturity
-        assessment.dimensions.add(assessDimension('Governance', 
-            'Oversight and accountability', 
-            calculateGovernanceMaturity()));
-        
-        // Generate roadmap
-        assessment.improvementRoadmap = generateMaturityRoadmap(assessment);
-        
-        return assessment;
+        try {
+            MaturityAssessment assessment = new MaturityAssessment();
+            assessment.assessedAt = Datetime.now();
+
+            // Get compliance score
+            Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
+            Decimal overallScore = (Decimal)scoreData.get('overallScore');
+
+            // Determine maturity level
+            assessment.overallLevel = determineMaturityLevel(overallScore);
+            assessment.overallScore = overallScore;
+
+            // Assess individual dimensions
+            assessment.dimensions = new List<MaturityDimension>();
+
+            // Process Maturity
+            assessment.dimensions.add(assessDimension('Process',
+                'Documented policies and procedures',
+                calculateProcessMaturity()));
+
+            // Technology Maturity
+            assessment.dimensions.add(assessDimension('Technology',
+                'Security tools and automation',
+                calculateTechnologyMaturity()));
+
+            // People Maturity
+            assessment.dimensions.add(assessDimension('People',
+                'Training and awareness',
+                calculatePeopleMaturity()));
+
+            // Governance Maturity
+            assessment.dimensions.add(assessDimension('Governance',
+                'Oversight and accountability',
+                calculateGovernanceMaturity()));
+
+            // Generate roadmap
+            assessment.improvementRoadmap = generateMaturityRoadmap(assessment);
+
+            return assessment;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BenchmarkingService.assessMaturity', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -189,7 +210,14 @@ public with sharing class BenchmarkingService {
      */
     @AuraEnabled(cacheable=true)
     public static List<String> getAvailableIndustries() {
-        return new List<String>(INDUSTRY_BENCHMARKS.keySet());
+        try {
+            return new List<String>(INDUSTRY_BENCHMARKS.keySet());
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('BenchmarkingService.getAvailableIndustries', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

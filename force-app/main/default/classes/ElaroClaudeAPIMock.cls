@@ -1,8 +1,10 @@
 /**
- * HTTP Callout Mock for Claude API
- * Provides mock responses for Anthropic Claude API testing
- * @group Utilities
+ * HTTP Callout Mock for Claude API.
+ * Provides mock responses for Anthropic Claude API testing.
+ *
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Utilities
  */
 @isTest
 public class ElaroClaudeAPIMock implements HttpCalloutMock {

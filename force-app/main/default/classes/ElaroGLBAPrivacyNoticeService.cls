@@ -190,25 +190,32 @@ public with sharing class ElaroGLBAPrivacyNoticeService {
      */
     @AuraEnabled(cacheable=true)
     public static List<Id> getContactsMissingNotices() {
-        List<Id> missingNotices = new List<Id>();
+        try {
+            List<Id> missingNotices = new List<Id>();
 
-        // Find contacts without any privacy notice
-        List<Contact> contactsWithoutNotice = [
-            SELECT Id
-            FROM Contact
-            WHERE Id NOT IN (
-                SELECT Contact__c FROM Privacy_Notice__c
-            )
-            AND CreatedDate < LAST_N_DAYS:30
-            WITH USER_MODE
-            LIMIT 1000
-        ];
+            // Find contacts without any privacy notice
+            List<Contact> contactsWithoutNotice = [
+                SELECT Id
+                FROM Contact
+                WHERE Id NOT IN (
+                    SELECT Contact__c FROM Privacy_Notice__c
+                )
+                AND CreatedDate < LAST_N_DAYS:30
+                WITH USER_MODE
+                LIMIT 1000
+            ];
 
-        for (Contact c : contactsWithoutNotice) {
-            missingNotices.add(c.Id);
+            for (Contact c : contactsWithoutNotice) {
+                missingNotices.add(c.Id);
+            }
+
+            return missingNotices;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroGLBAPrivacyNoticeService.getContactsMissingNotices', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return missingNotices;
     }
 
     /**
@@ -217,13 +224,20 @@ public with sharing class ElaroGLBAPrivacyNoticeService {
      */
     @AuraEnabled(cacheable=true)
     public static Integer getOverdueNoticeCount() {
-        return [
-            SELECT COUNT()
-            FROM Privacy_Notice__c
-            WHERE Next_Annual_Notice_Due__c < TODAY
-            AND Notice_Type__c IN ('Initial', 'Annual')
-            WITH USER_MODE
-        ];
+        try {
+            return [
+                SELECT COUNT()
+                FROM Privacy_Notice__c
+                WHERE Next_Annual_Notice_Due__c < TODAY
+                AND Notice_Type__c IN ('Initial', 'Annual')
+                WITH USER_MODE
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroGLBAPrivacyNoticeService.getOverdueNoticeCount', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -246,46 +260,53 @@ public with sharing class ElaroGLBAPrivacyNoticeService {
      */
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getComplianceMetrics() {
-        Map<String, Object> metrics = new Map<String, Object>();
+        try {
+            Map<String, Object> metrics = new Map<String, Object>();
 
-        // Total notices sent this year
-        metrics.put('totalNoticesThisYear', [
-            SELECT COUNT()
-            FROM Privacy_Notice__c
-            WHERE Sent_Date__c = THIS_YEAR
-            WITH USER_MODE
-        ]);
+            // Total notices sent this year
+            metrics.put('totalNoticesThisYear', [
+                SELECT COUNT()
+                FROM Privacy_Notice__c
+                WHERE Sent_Date__c = THIS_YEAR
+                WITH USER_MODE
+            ]);
 
-        // Opt-out rate
-        Integer totalWithOptOut = [
-            SELECT COUNT()
-            FROM Privacy_Notice__c
-            WHERE Opt_Out_Deadline__c != null
-            WITH USER_MODE
-        ];
+            // Opt-out rate
+            Integer totalWithOptOut = [
+                SELECT COUNT()
+                FROM Privacy_Notice__c
+                WHERE Opt_Out_Deadline__c != null
+                WITH USER_MODE
+            ];
 
-        Integer optedOut = [
-            SELECT COUNT()
-            FROM Privacy_Notice__c
-            WHERE Customer_Opted_Out__c = true
-            WITH USER_MODE
-        ];
+            Integer optedOut = [
+                SELECT COUNT()
+                FROM Privacy_Notice__c
+                WHERE Customer_Opted_Out__c = true
+                WITH USER_MODE
+            ];
 
-        metrics.put('optOutRate', totalWithOptOut > 0 ?
-            (Decimal.valueOf(optedOut) / totalWithOptOut * 100).setScale(2) : 0);
+            metrics.put('optOutRate', totalWithOptOut > 0 ?
+                (Decimal.valueOf(optedOut) / totalWithOptOut * 100).setScale(2) : 0);
 
-        // Overdue notices
-        metrics.put('overdueCount', getOverdueNoticeCount());
+            // Overdue notices
+            metrics.put('overdueCount', getOverdueNoticeCount());
 
-        // Pending deliveries
-        metrics.put('pendingDeliveries', [
-            SELECT COUNT()
-            FROM Privacy_Notice__c
-            WHERE Delivery_Status__c = 'Pending'
-            WITH USER_MODE
-        ]);
+            // Pending deliveries
+            metrics.put('pendingDeliveries', [
+                SELECT COUNT()
+                FROM Privacy_Notice__c
+                WHERE Delivery_Status__c = 'Pending'
+                WITH USER_MODE
+            ]);
 
-        return metrics;
+            return metrics;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroGLBAPrivacyNoticeService.getComplianceMetrics', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

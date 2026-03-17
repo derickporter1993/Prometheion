@@ -17,141 +17,170 @@
 public with sharing class ElaroCCPADataInventoryService {
 
     /**
-     * Generate CCPA data inventory report
-     * Must respond within 45 days per CCPA requirements
+     * Generate CCPA data inventory report.
+     * Must respond within 45 days per CCPA requirements.
+     *
+     * @param contactId The Contact record to generate the inventory for
+     * @return DataInventoryReport containing all personal data categories
      */
     @AuraEnabled
     public static DataInventoryReport generateInventoryReport(Id contactId) {
-        List<Contact> contacts = [
-            SELECT Id, FirstName, LastName, Email, Phone,
-                   MailingStreet, MailingCity, MailingState, MailingPostalCode,
-                   CCPA_Do_Not_Sell__c, CCPA_OptOut_Date__c
-            FROM Contact
-            WHERE Id = :contactId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            List<Contact> contacts = [
+                SELECT Id, FirstName, LastName, Email, Phone,
+                       MailingStreet, MailingCity, MailingState, MailingPostalCode,
+                       CCPA_Do_Not_Sell__c, CCPA_OptOut_Date__c
+                FROM Contact
+                WHERE Id = :contactId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (contacts.isEmpty()) {
-            throw new CCPAException('Contact not found');
+            if (contacts.isEmpty()) {
+                throw new CCPAException('Contact not found');
+            }
+
+            Contact subject = contacts[0];
+            DataInventoryReport report = new DataInventoryReport();
+            report.dataSubject = subject.Email;
+            report.reportDate = System.now();
+            report.responseDeadline = System.now().addDays(ElaroConstants.CCPA_RESPONSE_DEADLINE_DAYS);
+            report.doNotSellStatus = subject.CCPA_Do_Not_Sell__c;
+
+            // Categories of Personal Information Collected
+            report.categoriesCollected = new List<String>{
+                'Identifiers (Name, Email, Phone)',
+                'Contact Information (Address)',
+                'Commercial Information (Purchase History)',
+                'Internet Activity (Website Interactions)',
+                'Professional Information (Job Title, Company)',
+                'Geolocation Data (if collected)'
+            };
+
+            // Sources of Personal Information
+            report.sources = new List<String>{
+                'Directly from consumer (web forms, email)',
+                'Business transactions',
+                'Third-party data providers',
+                'Publicly available sources',
+                'Website analytics'
+            };
+
+            // Business Purpose for Collection
+            report.businessPurposes = new List<String>{
+                'Providing requested services',
+                'Customer relationship management',
+                'Marketing communications (with consent)',
+                'Legal compliance and fraud prevention',
+                'Service improvement and analytics'
+            };
+
+            // Third Parties Data Shared With
+            report.thirdParties = getThirdPartySharing(contactId);
+
+            // Specific Data Points
+            report.specificData = buildSpecificDataPoints(subject);
+
+            // Related record counts
+            report.relatedDataCounts = getRelatedDataCounts(contactId);
+
+            // Create CCPA request audit record
+            CCPA_Request__c auditLog = new CCPA_Request__c(
+                Contact__c = contactId,
+                Request_Type__c = 'Right to Know',
+                Request_Date__c = System.now(),
+                Status__c = 'Completed',
+                Response_Date__c = System.now()
+            );
+            Database.insert(auditLog, AccessLevel.USER_MODE);
+
+            report.requestId = auditLog.Id;
+
+            return report;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroCCPADataInventoryService.generateInventoryReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Contact subject = contacts[0];
-        DataInventoryReport report = new DataInventoryReport();
-        report.dataSubject = subject.Email;
-        report.reportDate = System.now();
-        report.responseDeadline = System.now().addDays(ElaroConstants.CCPA_RESPONSE_DEADLINE_DAYS);
-        report.doNotSellStatus = subject.CCPA_Do_Not_Sell__c;
-
-        // Categories of Personal Information Collected
-        report.categoriesCollected = new List<String>{
-            'Identifiers (Name, Email, Phone)',
-            'Contact Information (Address)',
-            'Commercial Information (Purchase History)',
-            'Internet Activity (Website Interactions)',
-            'Professional Information (Job Title, Company)',
-            'Geolocation Data (if collected)'
-        };
-
-        // Sources of Personal Information
-        report.sources = new List<String>{
-            'Directly from consumer (web forms, email)',
-            'Business transactions',
-            'Third-party data providers',
-            'Publicly available sources',
-            'Website analytics'
-        };
-
-        // Business Purpose for Collection
-        report.businessPurposes = new List<String>{
-            'Providing requested services',
-            'Customer relationship management',
-            'Marketing communications (with consent)',
-            'Legal compliance and fraud prevention',
-            'Service improvement and analytics'
-        };
-
-        // Third Parties Data Shared With
-        report.thirdParties = getThirdPartySharing(contactId);
-
-        // Specific Data Points
-        report.specificData = buildSpecificDataPoints(subject);
-
-        // Related record counts
-        report.relatedDataCounts = getRelatedDataCounts(contactId);
-
-        // Create CCPA request audit record
-        CCPA_Request__c auditLog = new CCPA_Request__c(
-            Contact__c = contactId,
-            Request_Type__c = 'Right to Know',
-            Request_Date__c = System.now(),
-            Status__c = 'Completed',
-            Response_Date__c = System.now()
-        );
-        Database.insert(auditLog, AccessLevel.USER_MODE);
-
-        report.requestId = auditLog.Id;
-
-        return report;
     }
 
     /**
-     * Process Do Not Sell opt-out request
+     * Process Do Not Sell opt-out request per CCPA Section 1798.120.
+     *
+     * @param contactId The Contact record to process the opt-out for
+     * @return true if the opt-out was successfully processed
      */
     @AuraEnabled
     public static Boolean processDoNotSellRequest(Id contactId) {
-        List<Contact> contacts = [
-            SELECT Id, Email, CCPA_Do_Not_Sell__c
-            FROM Contact
-            WHERE Id = :contactId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            List<Contact> contacts = [
+                SELECT Id, Email, CCPA_Do_Not_Sell__c
+                FROM Contact
+                WHERE Id = :contactId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (contacts.isEmpty()) {
-            throw new CCPAException('Contact not found');
+            if (contacts.isEmpty()) {
+                throw new CCPAException('Contact not found');
+            }
+
+            Contact subject = contacts[0];
+            subject.CCPA_Do_Not_Sell__c = true;
+            subject.CCPA_OptOut_Date__c = System.today();
+            Database.update(subject, AccessLevel.USER_MODE);
+
+            // Create CCPA request audit record
+            CCPA_Request__c auditLog = new CCPA_Request__c(
+                Contact__c = contactId,
+                Request_Type__c = 'Do Not Sell',
+                Request_Date__c = System.now(),
+                Status__c = 'Completed',
+                Response_Date__c = System.now()
+            );
+            Database.insert(auditLog, AccessLevel.USER_MODE);
+
+            // Publish Platform Event
+            EventBus.publish(new CCPA_Request_Event__e(
+                Contact_Id__c = contactId,
+                Request_Type__c = 'Do Not Sell',
+                Request_Date__c = String.valueOf(System.now())
+            ));
+
+            return true;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroCCPADataInventoryService.processDoNotSellRequest', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Contact subject = contacts[0];
-        subject.CCPA_Do_Not_Sell__c = true;
-        subject.CCPA_OptOut_Date__c = System.today();
-        Database.update(subject, AccessLevel.USER_MODE);
-
-        // Create CCPA request audit record
-        CCPA_Request__c auditLog = new CCPA_Request__c(
-            Contact__c = contactId,
-            Request_Type__c = 'Do Not Sell',
-            Request_Date__c = System.now(),
-            Status__c = 'Completed',
-            Response_Date__c = System.now()
-        );
-        Database.insert(auditLog, AccessLevel.USER_MODE);
-
-        // Publish Platform Event
-        EventBus.publish(new CCPA_Request_Event__e(
-            Contact_Id__c = contactId,
-            Request_Type__c = 'Do Not Sell',
-            Request_Date__c = String.valueOf(System.now())
-        ));
-
-        return true;
     }
 
     /**
-     * Get pending CCPA requests that need response
+     * Get pending CCPA requests that need response within the 45-day SLA.
+     *
+     * @return List of CCPA_Request__c records with Pending or In Progress status
      */
     @AuraEnabled(cacheable=true)
     public static List<CCPA_Request__c> getPendingRequests() {
-        List<CCPA_Request__c> requests = [
-            SELECT Id, Name, Contact__c, Contact__r.Name, Contact__r.Email,
-                   Request_Type__c, Request_Date__c, Status__c,
-                   Response_Deadline__c
-            FROM CCPA_Request__c
-            WHERE Status__c IN ('Pending', 'In Progress')
-            WITH USER_MODE
-            ORDER BY Response_Deadline__c ASC
-        ];
-        return requests;
+        try {
+            List<CCPA_Request__c> requests = [
+                SELECT Id, Name, Contact__c, Contact__r.Name, Contact__r.Email,
+                       Request_Type__c, Request_Date__c, Status__c,
+                       Response_Deadline__c
+                FROM CCPA_Request__c
+                WHERE Status__c IN ('Pending', 'In Progress')
+                WITH USER_MODE
+                ORDER BY Response_Deadline__c ASC
+            ];
+            return requests;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroCCPADataInventoryService.getPendingRequests', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

@@ -21,26 +21,33 @@ public with sharing class ElaroEventMonitoringService {
      */
     @AuraEnabled
     public static List<Map<String, Object>> queryEventMonitoring(String eventType, Date startDate, Date endDate) {
-        if (String.isBlank(eventType)) {
-            throw new AuraHandledException('Event type cannot be blank');
+        try {
+            if (String.isBlank(eventType)) {
+                throw new AuraHandledException('Event type cannot be blank');
+            }
+            if (startDate == null || endDate == null) {
+                throw new AuraHandledException('Start date and end date are required');
+            }
+
+            // Use Named Credential for Event Monitoring API
+            // In production, this would make REST callout to Event Monitoring API
+            List<Map<String, Object>> events = new List<Map<String, Object>>();
+
+            // Placeholder - actual implementation would query Event Monitoring API
+            // Example: HttpRequest req = new HttpRequest();
+            // req.setEndpoint('callout:EventMonitoringAPI/...');
+            // req.setMethod('GET');
+            // Http http = new Http();
+            // HttpResponse res = http.send(req);
+            // Parse response and return events
+
+            return events;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroEventMonitoringService.queryEventMonitoring', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        if (startDate == null || endDate == null) {
-            throw new AuraHandledException('Start date and end date are required');
-        }
-        
-        // Use Named Credential for Event Monitoring API
-        // In production, this would make REST callout to Event Monitoring API
-        List<Map<String, Object>> events = new List<Map<String, Object>>();
-        
-        // Placeholder - actual implementation would query Event Monitoring API
-        // Example: HttpRequest req = new HttpRequest();
-        // req.setEndpoint('callout:EventMonitoringAPI/...');
-        // req.setMethod('GET');
-        // Http http = new Http();
-        // HttpResponse res = http.send(req);
-        // Parse response and return events
-        
-        return events;
     }
     
     /**
@@ -53,8 +60,15 @@ public with sharing class ElaroEventMonitoringService {
      */
     @AuraEnabled
     public static String startBatchEventLoad(String eventType, Date startDate, Date endDate, String framework) {
-        ElaroBatchEventLoader batch = new ElaroBatchEventLoader(
-            eventType, startDate, endDate, framework);
-        return Database.executeBatch(batch, 200);
+        try {
+            ElaroBatchEventLoader batch = new ElaroBatchEventLoader(
+                eventType, startDate, endDate, framework);
+            return Database.executeBatch(batch, 200);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroEventMonitoringService.startBatchEventLoad', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 }

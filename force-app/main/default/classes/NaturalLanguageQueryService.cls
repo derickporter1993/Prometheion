@@ -102,31 +102,38 @@ public with sharing class NaturalLanguageQueryService {
      */
     @AuraEnabled(cacheable=true)
     public static List&lt;String&gt; getQuerySuggestions(String partialQuery) {
-        List&lt;String&gt; suggestions = new List&lt;String&gt;();
-        
-        if (String.isBlank(partialQuery)) {
-            // Return example queries
-            return EXAMPLE_QUERIES;
-        }
-        
-        String lowerQuery = partialQuery.toLowerCase();
-        
-        // Filter examples that match
-        for (String example : EXAMPLE_QUERIES) {
-            if (example.toLowerCase().contains(lowerQuery)) {
-                suggestions.add(example);
+        try {
+            List&lt;String&gt; suggestions = new List&lt;String&gt;();
+
+            if (String.isBlank(partialQuery)) {
+                // Return example queries
+                return EXAMPLE_QUERIES;
             }
+
+            String lowerQuery = partialQuery.toLowerCase();
+
+            // Filter examples that match
+            for (String example : EXAMPLE_QUERIES) {
+                if (example.toLowerCase().contains(lowerQuery)) {
+                    suggestions.add(example);
+                }
+            }
+
+            // Add context-aware suggestions
+            suggestions.addAll(getContextualSuggestions(partialQuery));
+
+            // Limit results
+            if (suggestions.size() &gt; 10) {
+                suggestions = new List&lt;String&gt;(suggestions.subList(0, 10));
+            }
+
+            return suggestions;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('NaturalLanguageQueryService.getQuerySuggestions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Add context-aware suggestions
-        suggestions.addAll(getContextualSuggestions(partialQuery));
-        
-        // Limit results
-        if (suggestions.size() &gt; 10) {
-            suggestions = new List&lt;String&gt;(suggestions.subList(0, 10));
-        }
-        
-        return suggestions;
     }
     
     /**
@@ -136,34 +143,41 @@ public with sharing class NaturalLanguageQueryService {
      */
     @AuraEnabled
     public static ValidationResult validateQuery(String query) {
-        ValidationResult result = new ValidationResult();
-        result.isValid = false;
-        result.originalQuery = query;
-        
-        if (String.isBlank(query)) {
-            result.message = 'Query cannot be empty';
-            return result;
-        }
-        
         try {
-            String generatedSOQL = generateSOQL(query);
-            result.generatedSOQL = generatedSOQL;
-            
-            if (!isSOQLSafe(generatedSOQL)) {
-                result.message = 'Query targets unauthorized objects or fields';
+            ValidationResult result = new ValidationResult();
+            result.isValid = false;
+            result.originalQuery = query;
+
+            if (String.isBlank(query)) {
+                result.message = 'Query cannot be empty';
                 return result;
             }
-            
-            // Estimate row count
-            result.estimatedRowCount = estimateRowCount(generatedSOQL);
-            result.isValid = true;
-            result.message = 'Query is valid and ready to execute';
-            
+
+            try {
+                String generatedSOQL = generateSOQL(query);
+                result.generatedSOQL = generatedSOQL;
+
+                if (!isSOQLSafe(generatedSOQL)) {
+                    result.message = 'Query targets unauthorized objects or fields';
+                    return result;
+                }
+
+                // Estimate row count
+                result.estimatedRowCount = estimateRowCount(generatedSOQL);
+                result.isValid = true;
+                result.message = 'Query is valid and ready to execute';
+
+            } catch (Exception innerEx) {
+                result.message = 'Unable to parse query: ' + innerEx.getMessage();
+            }
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
         } catch (Exception e) {
-            result.message = 'Unable to parse query: ' + e.getMessage();
+            ElaroLogger.error('NaturalLanguageQueryService.validateQuery', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return result;
     }
     
     /**
@@ -172,9 +186,16 @@ public with sharing class NaturalLanguageQueryService {
      */
     @AuraEnabled(cacheable=true)
     public static List&lt;String&gt; getRecentQueries() {
-        // In production, this would query a custom object storing query history
-        // For now, return empty list
-        return new List&lt;String&gt;();
+        try {
+            // In production, this would query a custom object storing query history
+            // For now, return empty list
+            return new List&lt;String&gt;();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('NaturalLanguageQueryService.getRecentQueries', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

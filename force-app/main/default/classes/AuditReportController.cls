@@ -19,78 +19,85 @@ public with sharing class AuditReportController {
      */
     @AuraEnabled
     public static AuditReport generateAuditReport(String framework, Date startDate, Date endDate) {
-        if (String.isBlank(framework)) {
-            throw new IllegalArgumentException('Framework cannot be blank');
-        }
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException('Start date and end date are required');
-        }
-        
-        AuditReport report = new AuditReport();
-        report.framework = framework;
-        report.startDate = startDate;
-        report.endDate = endDate;
-        report.generatedDate = System.now();
-        report.generatedBy = UserInfo.getName();
-        
-        // Get framework evaluation
-        report.evaluation = ComplianceFrameworkService.evaluateFramework(framework);
-        
-        // Get gaps in date range
-        List<Compliance_Gap__c> gaps = [
-            SELECT Id, Policy_Reference__c, Gap_Description__c, Severity__c, Status__c,
-                   Risk_Score__c, Detected_Date__c, Remediation_Plan__c, Remediation_Owner__c,
-                   Target_Remediation_Date__c, Actual_Remediation_Date__c
-            FROM Compliance_Gap__c
-            WHERE Framework__c = :framework
-            AND Detected_Date__c >= :startDate
-            AND Detected_Date__c <= :endDate
-            WITH USER_MODE
-            ORDER BY Risk_Score__c DESC NULLS LAST
-        ];
-        report.gaps = (List<Compliance_Gap__c>) ElaroSecurityUtils.stripInaccessibleFields(
-            AccessType.READABLE,
-            gaps
-        );
+        try {
+            if (String.isBlank(framework)) {
+                throw new IllegalArgumentException('Framework cannot be blank');
+            }
+            if (startDate == null || endDate == null) {
+                throw new IllegalArgumentException('Start date and end date are required');
+            }
 
-        // Get evidence in date range
-        List<Compliance_Evidence__c> evidence = [
-            SELECT Id, Evidence_Type__c, Evidence_Date__c, Status__c, Compliance_Score__c,
-                   Description__c, Reviewed_By__c, Reviewed_Date__c
-            FROM Compliance_Evidence__c
-            WHERE Framework__c = :framework
-            AND Evidence_Date__c >= :startDate
-            AND Evidence_Date__c <= :endDate
-            WITH USER_MODE
-            ORDER BY Evidence_Date__c DESC
-        ];
-        report.evidence = (List<Compliance_Evidence__c>) ElaroSecurityUtils.stripInaccessibleFields(
-            AccessType.READABLE,
-            evidence
-        );
-        
-        // Calculate summary statistics
-        report.totalGaps = report.gaps.size();
-        report.openGaps = 0;
-        report.remediatedGaps = 0;
-        report.totalEvidence = report.evidence.size();
-        report.approvedEvidence = 0;
-        
-        for (Compliance_Gap__c gap : report.gaps) {
-            if (gap.Status__c == 'REMEDIATED' || gap.Status__c == 'VERIFIED') {
-                report.remediatedGaps++;
-            } else {
-                report.openGaps++;
+            AuditReport report = new AuditReport();
+            report.framework = framework;
+            report.startDate = startDate;
+            report.endDate = endDate;
+            report.generatedDate = System.now();
+            report.generatedBy = UserInfo.getName();
+
+            // Get framework evaluation
+            report.evaluation = ComplianceFrameworkService.evaluateFramework(framework);
+
+            // Get gaps in date range
+            List<Compliance_Gap__c> gaps = [
+                SELECT Id, Policy_Reference__c, Gap_Description__c, Severity__c, Status__c,
+                       Risk_Score__c, Detected_Date__c, Remediation_Plan__c, Remediation_Owner__c,
+                       Target_Remediation_Date__c, Actual_Remediation_Date__c
+                FROM Compliance_Gap__c
+                WHERE Framework__c = :framework
+                AND Detected_Date__c >= :startDate
+                AND Detected_Date__c <= :endDate
+                WITH USER_MODE
+                ORDER BY Risk_Score__c DESC NULLS LAST
+            ];
+            report.gaps = (List<Compliance_Gap__c>) ElaroSecurityUtils.stripInaccessibleFields(
+                AccessType.READABLE,
+                gaps
+            );
+
+            // Get evidence in date range
+            List<Compliance_Evidence__c> evidence = [
+                SELECT Id, Evidence_Type__c, Evidence_Date__c, Status__c, Compliance_Score__c,
+                       Description__c, Reviewed_By__c, Reviewed_Date__c
+                FROM Compliance_Evidence__c
+                WHERE Framework__c = :framework
+                AND Evidence_Date__c >= :startDate
+                AND Evidence_Date__c <= :endDate
+                WITH USER_MODE
+                ORDER BY Evidence_Date__c DESC
+            ];
+            report.evidence = (List<Compliance_Evidence__c>) ElaroSecurityUtils.stripInaccessibleFields(
+                AccessType.READABLE,
+                evidence
+            );
+
+            // Calculate summary statistics
+            report.totalGaps = report.gaps.size();
+            report.openGaps = 0;
+            report.remediatedGaps = 0;
+            report.totalEvidence = report.evidence.size();
+            report.approvedEvidence = 0;
+
+            for (Compliance_Gap__c gap : report.gaps) {
+                if (gap.Status__c == 'REMEDIATED' || gap.Status__c == 'VERIFIED') {
+                    report.remediatedGaps++;
+                } else {
+                    report.openGaps++;
+                }
             }
-        }
-        
-        for (Compliance_Evidence__c ev : report.evidence) {
-            if (ev.Status__c == 'APPROVED') {
-                report.approvedEvidence++;
+
+            for (Compliance_Evidence__c ev : report.evidence) {
+                if (ev.Status__c == 'APPROVED') {
+                    report.approvedEvidence++;
+                }
             }
+
+            return report;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('AuditReportController.generateAuditReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return report;
     }
     
     /**

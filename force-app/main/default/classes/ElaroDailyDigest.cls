@@ -38,21 +38,28 @@ public with sharing class ElaroDailyDigest implements Schedulable {
      */
     @AuraEnabled
     public static Id scheduleDigest(String cronExpression) {
-        if (String.isBlank(cronExpression)) {
-            // Default to 6 AM every day
-            cronExpression = '0 0 6 * * ?';
+        try {
+            if (String.isBlank(cronExpression)) {
+                // Default to 6 AM every day
+                cronExpression = '0 0 6 * * ?';
+            }
+
+            String jobName = 'Elaro_Daily_Digest_' + UserInfo.getUserId();
+
+            List<CronTrigger> existingJobs = [
+                SELECT Id FROM CronTrigger WHERE CronJobDetail.Name = :jobName WITH USER_MODE
+            ];
+            for (CronTrigger ct : existingJobs) {
+                System.abortJob(ct.Id);
+            }
+
+            return System.schedule(jobName, cronExpression, new ElaroDailyDigest());
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDailyDigest.scheduleDigest', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to schedule the daily digest. Please verify you have the required permissions and try again.');
         }
-        
-        String jobName = 'Elaro_Daily_Digest_' + UserInfo.getUserId();
-        
-        List<CronTrigger> existingJobs = [
-            SELECT Id FROM CronTrigger WHERE CronJobDetail.Name = :jobName WITH USER_MODE
-        ];
-        for (CronTrigger ct : existingJobs) {
-            System.abortJob(ct.Id);
-        }
-        
-        return System.schedule(jobName, cronExpression, new ElaroDailyDigest());
     }
     
     /**
@@ -60,9 +67,16 @@ public with sharing class ElaroDailyDigest implements Schedulable {
      */
     @AuraEnabled
     public static void generateAndSendDigest() {
-        DigestData digest = compileDigestData();
-        sendDigestEmail(digest);
-        sendDigestToSlack(digest);
+        try {
+            DigestData digest = compileDigestData();
+            sendDigestEmail(digest);
+            sendDigestToSlack(digest);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDailyDigest.generateAndSendDigest', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate and send the daily digest. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -71,7 +85,14 @@ public with sharing class ElaroDailyDigest implements Schedulable {
      */
     @AuraEnabled(cacheable=true)
     public static DigestData getDigestPreview() {
-        return compileDigestData();
+        try {
+            return compileDigestData();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDailyDigest.getDigestPreview', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve the digest preview. Please verify you have the required permissions and try again.');
+        }
     }
     
     // ═══════════════════════════════════════════════════════════════

@@ -84,25 +84,32 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static AuditComplianceResult evaluateAuditCompliance() {
-        HIPAAAuditControlService service = new HIPAAAuditControlService();
-        AuditComplianceResult result = new AuditComplianceResult();
-        result.evaluationDate = DateTime.now();
+        try {
+            HIPAAAuditControlService service = new HIPAAAuditControlService();
+            AuditComplianceResult result = new AuditComplianceResult();
+            result.evaluationDate = DateTime.now();
 
-        // Evaluate all audit controls
-        result.coverageResult = service.evaluateAuditCoverage();
-        result.accessPatternResult = service.analyzeAccessPatterns();
-        result.retentionCompliant = service.checkRetentionCompliance();
+            // Evaluate all audit controls
+            result.coverageResult = service.evaluateAuditCoverage();
+            result.accessPatternResult = service.analyzeAccessPatterns();
+            result.retentionCompliant = service.checkRetentionCompliance();
 
-        // Calculate overall score
-        Decimal coverageScore = result.coverageResult.compliant ? 100 : 70;
-        Decimal patternScore = result.accessPatternResult.suspiciousCount == 0 ? 100 :
-            Math.max(50, 100 - (result.accessPatternResult.suspiciousCount * 10));
-        Decimal retentionScore = result.retentionCompliant ? 100 : 80;
+            // Calculate overall score
+            Decimal coverageScore = result.coverageResult.compliant ? 100 : 70;
+            Decimal patternScore = result.accessPatternResult.suspiciousCount == 0 ? 100 :
+                Math.max(50, 100 - (result.accessPatternResult.suspiciousCount * 10));
+            Decimal retentionScore = result.retentionCompliant ? 100 : 80;
 
-        result.overallScore = ((coverageScore + patternScore + retentionScore) / 3).setScale(2);
-        result.compliant = result.overallScore >= 80;
+            result.overallScore = ((coverageScore + patternScore + retentionScore) / 3).setScale(2);
+            result.compliant = result.overallScore >= 80;
 
-        return result;
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.evaluateAuditCompliance', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to evaluate audit compliance. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -110,30 +117,37 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=true)
     public static List<PHIAccessLog> getPHIAccessLogs(Date startDate, Date endDate) {
-        List<PHIAccessLog> logs = new List<PHIAccessLog>();
+        try {
+            List<PHIAccessLog> logs = new List<PHIAccessLog>();
 
-        // Query audit logs (using Login History and Setup Audit Trail as proxies)
-        List<LoginHistory> logins = [
-            SELECT Id, UserId, LoginTime, SourceIp, Status, Application, Browser
-            FROM LoginHistory
-            WHERE LoginTime >= :startDate AND LoginTime <= :endDate
-            WITH USER_MODE
-            ORDER BY LoginTime DESC
-            LIMIT 1000
-        ];
+            // Query audit logs (using Login History and Setup Audit Trail as proxies)
+            List<LoginHistory> logins = [
+                SELECT Id, UserId, LoginTime, SourceIp, Status, Application, Browser
+                FROM LoginHistory
+                WHERE LoginTime >= :startDate AND LoginTime <= :endDate
+                WITH USER_MODE
+                ORDER BY LoginTime DESC
+                LIMIT 1000
+            ];
 
-        for (LoginHistory login : logins) {
-            PHIAccessLog log = new PHIAccessLog();
-            log.userId = login.UserId;
-            log.accessTime = login.LoginTime;
-            log.sourceIp = login.SourceIp;
-            log.accessType = 'Login';
-            log.status = login.Status;
-            log.application = login.Application;
-            logs.add(log);
+            for (LoginHistory login : logins) {
+                PHIAccessLog log = new PHIAccessLog();
+                log.userId = login.UserId;
+                log.accessTime = login.LoginTime;
+                log.sourceIp = login.SourceIp;
+                log.accessType = 'Login';
+                log.status = login.Status;
+                log.application = login.Application;
+                logs.add(log);
+            }
+
+            return logs;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.getPHIAccessLogs', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve PHI access logs. Please verify you have the required permissions and try again.');
         }
-
-        return logs;
     }
 
     /**
@@ -141,55 +155,62 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=true)
     public static List<UserAccessStats> getUserAccessStats(Integer days) {
-        if (days == null || days <= 0) {
-            days = 30;
+        try {
+            if (days == null || days <= 0) {
+                days = 30;
+            }
+
+            List<UserAccessStats> stats = new List<UserAccessStats>();
+            DateTime startTime = DateTime.now().addDays(-days);
+
+            List<AggregateResult> results = [
+                SELECT UserId, COUNT(Id) cnt, MAX(LoginTime) lastAccess
+                FROM LoginHistory
+                WHERE LoginTime >= :startTime
+                WITH USER_MODE
+                GROUP BY UserId
+                ORDER BY COUNT(Id) DESC
+                LIMIT 100
+            ];
+
+            Set<Id> userIds = new Set<Id>();
+            Map<Id, AggregateResult> resultMap = new Map<Id, AggregateResult>();
+
+            for (AggregateResult ar : results) {
+                Id userId = (Id) ar.get('UserId');
+                userIds.add(userId);
+                resultMap.put(userId, ar);
+            }
+
+            Map<Id, User> users = new Map<Id, User>([
+                SELECT Id, Name, Username, Profile.Name
+                FROM User
+                WHERE Id IN :userIds
+                WITH USER_MODE
+            ]);
+
+            for (Id userId : userIds) {
+                AggregateResult ar = resultMap.get(userId);
+                User u = users.get(userId);
+
+                UserAccessStats stat = new UserAccessStats();
+                stat.userId = userId;
+                stat.userName = u != null ? u.Name : 'Unknown';
+                stat.profileName = u != null && u.Profile != null ? u.Profile.Name : 'Unknown';
+                stat.accessCount = (Integer) ar.get('cnt');
+                stat.lastAccess = (DateTime) ar.get('lastAccess');
+                stat.riskLevel = stat.accessCount > SUSPICIOUS_ACCESS_THRESHOLD ? 'High' : 'Normal';
+
+                stats.add(stat);
+            }
+
+            return stats;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.getUserAccessStats', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve user access statistics. Please verify you have the required permissions and try again.');
         }
-
-        List<UserAccessStats> stats = new List<UserAccessStats>();
-        DateTime startTime = DateTime.now().addDays(-days);
-
-        List<AggregateResult> results = [
-            SELECT UserId, COUNT(Id) cnt, MAX(LoginTime) lastAccess
-            FROM LoginHistory
-            WHERE LoginTime >= :startTime
-            WITH USER_MODE
-            GROUP BY UserId
-            ORDER BY COUNT(Id) DESC
-            LIMIT 100
-        ];
-
-        Set<Id> userIds = new Set<Id>();
-        Map<Id, AggregateResult> resultMap = new Map<Id, AggregateResult>();
-
-        for (AggregateResult ar : results) {
-            Id userId = (Id) ar.get('UserId');
-            userIds.add(userId);
-            resultMap.put(userId, ar);
-        }
-
-        Map<Id, User> users = new Map<Id, User>([
-            SELECT Id, Name, Username, Profile.Name
-            FROM User
-            WHERE Id IN :userIds
-            WITH USER_MODE
-        ]);
-
-        for (Id userId : userIds) {
-            AggregateResult ar = resultMap.get(userId);
-            User u = users.get(userId);
-
-            UserAccessStats stat = new UserAccessStats();
-            stat.userId = userId;
-            stat.userName = u != null ? u.Name : 'Unknown';
-            stat.profileName = u != null && u.Profile != null ? u.Profile.Name : 'Unknown';
-            stat.accessCount = (Integer) ar.get('cnt');
-            stat.lastAccess = (DateTime) ar.get('lastAccess');
-            stat.riskLevel = stat.accessCount > SUSPICIOUS_ACCESS_THRESHOLD ? 'High' : 'Normal';
-
-            stats.add(stat);
-        }
-
-        return stats;
     }
 
     /**
@@ -197,8 +218,15 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static List<SuspiciousAccess> detectSuspiciousAccessPatterns() {
-        HIPAAAuditControlService service = new HIPAAAuditControlService();
-        return service.detectSuspiciousAccess();
+        try {
+            HIPAAAuditControlService service = new HIPAAAuditControlService();
+            return service.detectSuspiciousAccess();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.detectSuspiciousAccessPatterns', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to detect suspicious access patterns. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -206,77 +234,84 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled
     public static Id generateAuditReport(Date startDate, Date endDate) {
-        if (startDate == null) {
-            startDate = Date.today().addDays(-30);
-        }
-        if (endDate == null) {
-            endDate = Date.today();
-        }
-
-        HIPAAAuditControlService service = new HIPAAAuditControlService();
-
-        // Build report content
-        String reportContent = 'HIPAA Audit Control Report\n';
-        reportContent += '=' .repeat(50) + '\n\n';
-        reportContent += 'Report Period: ' + startDate.format() + ' to ' + endDate.format() + '\n';
-        reportContent += 'Generated: ' + DateTime.now().format() + '\n\n';
-
-        // Audit coverage section
-        reportContent += 'AUDIT COVERAGE\n';
-        reportContent += '-'.repeat(30) + '\n';
-        AuditCoverageResult coverage = service.evaluateAuditCoverage();
-        reportContent += 'Compliant: ' + coverage.compliant + '\n';
-        reportContent += 'Objects Tracked: ' + coverage.objectsWithTracking + '/' + coverage.totalPHIObjects + '\n';
-        if (!coverage.gaps.isEmpty()) {
-            reportContent += 'Gaps:\n';
-            for (String gap : coverage.gaps) {
-                reportContent += '  - ' + gap + '\n';
+        try {
+            if (startDate == null) {
+                startDate = Date.today().addDays(-30);
             }
-        }
-        reportContent += '\n';
-
-        // Access pattern section
-        reportContent += 'ACCESS PATTERNS\n';
-        reportContent += '-'.repeat(30) + '\n';
-        List<UserAccessStats> stats = getUserAccessStats(
-            startDate.daysBetween(endDate)
-        );
-        reportContent += 'Total Users with Access: ' + stats.size() + '\n';
-        Integer highRiskUsers = 0;
-        for (UserAccessStats stat : stats) {
-            if (stat.riskLevel == 'High') {
-                highRiskUsers++;
+            if (endDate == null) {
+                endDate = Date.today();
             }
-        }
-        reportContent += 'High Risk Users: ' + highRiskUsers + '\n\n';
 
-        // Suspicious access section
-        reportContent += 'SUSPICIOUS ACCESS DETECTED\n';
-        reportContent += '-'.repeat(30) + '\n';
-        List<SuspiciousAccess> suspicious = service.detectSuspiciousAccess();
-        if (suspicious.isEmpty()) {
-            reportContent += 'No suspicious access patterns detected.\n';
-        } else {
-            for (SuspiciousAccess sa : suspicious) {
-                reportContent += '  - ' + sa.userName + ': ' + sa.reason + '\n';
+            HIPAAAuditControlService service = new HIPAAAuditControlService();
+
+            // Build report content
+            String reportContent = 'HIPAA Audit Control Report\n';
+            reportContent += '=' .repeat(50) + '\n\n';
+            reportContent += 'Report Period: ' + startDate.format() + ' to ' + endDate.format() + '\n';
+            reportContent += 'Generated: ' + DateTime.now().format() + '\n\n';
+
+            // Audit coverage section
+            reportContent += 'AUDIT COVERAGE\n';
+            reportContent += '-'.repeat(30) + '\n';
+            AuditCoverageResult coverage = service.evaluateAuditCoverage();
+            reportContent += 'Compliant: ' + coverage.compliant + '\n';
+            reportContent += 'Objects Tracked: ' + coverage.objectsWithTracking + '/' + coverage.totalPHIObjects + '\n';
+            if (!coverage.gaps.isEmpty()) {
+                reportContent += 'Gaps:\n';
+                for (String gap : coverage.gaps) {
+                    reportContent += '  - ' + gap + '\n';
+                }
             }
+            reportContent += '\n';
+
+            // Access pattern section
+            reportContent += 'ACCESS PATTERNS\n';
+            reportContent += '-'.repeat(30) + '\n';
+            List<UserAccessStats> stats = getUserAccessStats(
+                startDate.daysBetween(endDate)
+            );
+            reportContent += 'Total Users with Access: ' + stats.size() + '\n';
+            Integer highRiskUsers = 0;
+            for (UserAccessStats stat : stats) {
+                if (stat.riskLevel == 'High') {
+                    highRiskUsers++;
+                }
+            }
+            reportContent += 'High Risk Users: ' + highRiskUsers + '\n\n';
+
+            // Suspicious access section
+            reportContent += 'SUSPICIOUS ACCESS DETECTED\n';
+            reportContent += '-'.repeat(30) + '\n';
+            List<SuspiciousAccess> suspicious = service.detectSuspiciousAccess();
+            if (suspicious.isEmpty()) {
+                reportContent += 'No suspicious access patterns detected.\n';
+            } else {
+                for (SuspiciousAccess sa : suspicious) {
+                    reportContent += '  - ' + sa.userName + ': ' + sa.reason + '\n';
+                }
+            }
+
+            // Create ContentVersion
+            ContentVersion cv = new ContentVersion();
+            cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
+            cv.PathOnClient = cv.Title + '.txt';
+            cv.VersionData = Blob.valueOf(reportContent);
+            ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+            insert as user cv;
+
+            // Get ContentDocumentId
+            cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
+
+            service.logAuditEntry('HIPAA_Audit_Report_Generated', cv.ContentDocumentId,
+                'Audit report generated for ' + startDate.format() + ' to ' + endDate.format());
+
+            return cv.ContentDocumentId;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.generateAuditReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the audit report. Please verify you have the required permissions and try again.');
         }
-
-        // Create ContentVersion
-        ContentVersion cv = new ContentVersion();
-        cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
-        cv.PathOnClient = cv.Title + '.txt';
-        cv.VersionData = Blob.valueOf(reportContent);
-        ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert as user cv;
-
-        // Get ContentDocumentId
-        cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
-
-        service.logAuditEntry('HIPAA_Audit_Report_Generated', cv.ContentDocumentId,
-            'Audit report generated for ' + startDate.format() + ' to ' + endDate.format());
-
-        return cv.ContentDocumentId;
     }
 
     /**
@@ -284,33 +319,40 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=true)
     public static RetentionStatus getRetentionStatus() {
-        HIPAAAuditControlService service = new HIPAAAuditControlService();
+        try {
+            HIPAAAuditControlService service = new HIPAAAuditControlService();
 
-        RetentionStatus status = new RetentionStatus();
-        status.requiredYears = DEFAULT_RETENTION_YEARS;
-        status.compliant = service.checkRetentionCompliance();
+            RetentionStatus status = new RetentionStatus();
+            status.requiredYears = DEFAULT_RETENTION_YEARS;
+            status.compliant = service.checkRetentionCompliance();
 
-        // Get oldest audit record
-        List<SetupAuditTrail> oldest = [
-            SELECT CreatedDate
-            FROM SetupAuditTrail
-            WITH USER_MODE
-            ORDER BY CreatedDate ASC
-            LIMIT 1
-        ];
+            // Get oldest audit record
+            List<SetupAuditTrail> oldest = [
+                SELECT CreatedDate
+                FROM SetupAuditTrail
+                WITH USER_MODE
+                ORDER BY CreatedDate ASC
+                LIMIT 1
+            ];
 
-        if (!oldest.isEmpty()) {
-            status.oldestRecordDate = oldest[0].CreatedDate.date();
-            status.currentRetentionDays = status.oldestRecordDate.daysBetween(Date.today());
+            if (!oldest.isEmpty()) {
+                status.oldestRecordDate = oldest[0].CreatedDate.date();
+                status.currentRetentionDays = status.oldestRecordDate.daysBetween(Date.today());
+            }
+
+            // Salesforce retains Setup Audit Trail for 180 days by default
+            // Field Audit Trail can be configured for longer retention
+            status.configuredRetentionDays = 180; // Default Salesforce retention
+            status.recommendation = status.compliant ? 'Retention policy meets HIPAA requirements' :
+                'Enable Field Audit Trail with extended retention for HIPAA compliance';
+
+            return status;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAAAuditControlService.getRetentionStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve retention status. Please verify you have the required permissions and try again.');
         }
-
-        // Salesforce retains Setup Audit Trail for 180 days by default
-        // Field Audit Trail can be configured for longer retention
-        status.configuredRetentionDays = 180; // Default Salesforce retention
-        status.recommendation = status.compliant ? 'Retention policy meets HIPAA requirements' :
-            'Enable Field Audit Trail with extended retention for HIPAA compliance';
-
-        return status;
     }
 
     // ========== Private Helper Methods ==========

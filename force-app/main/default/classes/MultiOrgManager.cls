@@ -18,25 +18,36 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled
     public static Id registerOrg(Map<String, Object> orgConfig) {
-        validateOrgConfig(orgConfig);
+        try {
+            validateOrgConfig(orgConfig);
 
-        Elaro_Connected_Org__c connectedOrg = new Elaro_Connected_Org__c(
-            Name = (String)orgConfig.get('name'),
-            Org_Id__c = (String)orgConfig.get('orgId'),
-            Instance_URL__c = (String)orgConfig.get('instanceUrl'),
-            Environment_Type__c = (String)orgConfig.get('environmentType'),
-            Region__c = (String)orgConfig.get('region'),
-            Is_Active__c = true,
-            Last_Sync__c = null,
-            Connection_Status__c = 'Pending'
-        );
+            Elaro_Connected_Org__c connectedOrg = new Elaro_Connected_Org__c(
+                Name = (String)orgConfig.get('name'),
+                Org_Id__c = (String)orgConfig.get('orgId'),
+                Instance_URL__c = (String)orgConfig.get('instanceUrl'),
+                Environment_Type__c = (String)orgConfig.get('environmentType'),
+                Region__c = (String)orgConfig.get('region'),
+                Is_Active__c = true,
+                Last_Sync__c = null,
+                Connection_Status__c = 'Pending'
+            );
 
-        insert as user connectedOrg;
+            insert as user connectedOrg;
 
-        // Test connection
-        testOrgConnection(connectedOrg.Id);
+            // Test connection asynchronously via Queueable
+            if (!Test.isRunningTest()) {
+                System.enqueueJob(new MultiOrgManagerQueueable(
+                    MultiOrgManagerQueueable.Operation.TEST_CONNECTION, connectedOrg.Id
+                ));
+            }
 
-        return connectedOrg.Id;
+            return connectedOrg.Id;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MultiOrgManager.registerOrg', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to register the org. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -47,70 +58,63 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled(cacheable=true)
     public static MultiOrgStatus getMultiOrgStatus() {
-        MultiOrgStatus status = new MultiOrgStatus();
-        status.currentOrg = getCurrentOrgStatus();
-        status.connectedOrgs = new List<OrgStatus>();
-        status.aggregateScore = 0;
+        try {
+            MultiOrgStatus status = new MultiOrgStatus();
+            status.currentOrg = getCurrentOrgStatus();
+            status.connectedOrgs = new List<OrgStatus>();
+            status.aggregateScore = 0;
 
-        List<Elaro_Connected_Org__c> orgs = [
-            SELECT Id, Name, Org_Id__c, Instance_URL__c, Environment_Type__c,
-                   Region__c, Is_Active__c, Last_Sync__c, Connection_Status__c,
-                   Compliance_Score__c
-            FROM Elaro_Connected_Org__c
-            WHERE Is_Active__c = true
-            WITH USER_MODE
-            ORDER BY Name
-        ];
-        
-        Decimal totalScore = status.currentOrg.complianceScore;
-        Integer orgCount = 1;
-        
-        for (Elaro_Connected_Org__c org : orgs) {
-            OrgStatus os = new OrgStatus();
-            os.orgId = org.Id;
-            os.name = org.Name;
-            os.instanceUrl = org.Instance_URL__c;
-            os.environmentType = org.Environment_Type__c;
-            os.region = org.Region__c;
-            os.connectionStatus = org.Connection_Status__c;
-            os.lastSync = org.Last_Sync__c;
-            os.complianceScore = org.Compliance_Score__c != null ? org.Compliance_Score__c : 0;
-            
-            status.connectedOrgs.add(os);
-            totalScore += os.complianceScore;
-            orgCount++;
+            List<Elaro_Connected_Org__c> orgs = [
+                SELECT Id, Name, Org_Id__c, Instance_URL__c, Environment_Type__c,
+                       Region__c, Is_Active__c, Last_Sync__c, Connection_Status__c,
+                       Compliance_Score__c
+                FROM Elaro_Connected_Org__c
+                WHERE Is_Active__c = true
+                WITH USER_MODE
+                ORDER BY Name
+            ];
+
+            Decimal totalScore = status.currentOrg.complianceScore;
+            Integer orgCount = 1;
+
+            for (Elaro_Connected_Org__c org : orgs) {
+                OrgStatus os = new OrgStatus();
+                os.orgId = org.Id;
+                os.name = org.Name;
+                os.instanceUrl = org.Instance_URL__c;
+                os.environmentType = org.Environment_Type__c;
+                os.region = org.Region__c;
+                os.connectionStatus = org.Connection_Status__c;
+                os.lastSync = org.Last_Sync__c;
+                os.complianceScore = org.Compliance_Score__c != null ? org.Compliance_Score__c : 0;
+
+                status.connectedOrgs.add(os);
+                totalScore += os.complianceScore;
+                orgCount++;
+            }
+
+            status.aggregateScore = totalScore / orgCount;
+            status.totalOrgs = orgCount;
+
+            return status;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MultiOrgManager.getMultiOrgStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        status.aggregateScore = totalScore / orgCount;
-        status.totalOrgs = orgCount;
-        
-        return status;
     }
     
     /**
-     * Syncs compliance policies to all active connected orgs.
+     * Syncs compliance policies to all active connected orgs via Queueable.
      *
      * @param policyIds List of policy record IDs or DeveloperNames to sync
      */
-    @future(callout=true)
     public static void syncPolicies(List<String> policyIds) {
-        List<Elaro_Connected_Org__c> activeOrgs = [
-            SELECT Id, Instance_URL__c, Org_Id__c
-            FROM Elaro_Connected_Org__c
-            WHERE Is_Active__c = true AND Connection_Status__c = 'Connected'
-            WITH USER_MODE
-        ];
-
-        // Query policies to sync
-        List<Compliance_Policy__mdt> policies = [
-            SELECT DeveloperName, Label, MasterLabel, Description__c, Framework__c
-            FROM Compliance_Policy__mdt
-            WHERE Id IN :policyIds OR DeveloperName IN :policyIds
-            WITH USER_MODE
-        ];
-        
-        for (Elaro_Connected_Org__c org : activeOrgs) {
-            syncPoliciesToOrg(org, policies);
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new MultiOrgManagerQueueable(
+                MultiOrgManagerQueueable.Operation.SYNC_POLICIES, policyIds
+            ));
         }
     }
     
@@ -121,13 +125,20 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled
     public static void removeOrg(String orgId) {
-        Elaro_Connected_Org__c org = [
-            SELECT Id FROM Elaro_Connected_Org__c
-            WHERE Id = :orgId
-            WITH USER_MODE
-            LIMIT 1
-        ];
-        delete as user org;
+        try {
+            Elaro_Connected_Org__c org = [
+                SELECT Id FROM Elaro_Connected_Org__c
+                WHERE Id = :orgId
+                WITH USER_MODE
+                LIMIT 1
+            ];
+            delete as user org;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MultiOrgManager.removeOrg', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to remove the connected org. Please verify you have the required permissions and try again.');
+        }
     }
     
     /**
@@ -135,14 +146,25 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled
     public static void refreshAllConnections() {
-        List<Elaro_Connected_Org__c> orgs = [
-            SELECT Id FROM Elaro_Connected_Org__c
-            WHERE Is_Active__c = true
-            WITH USER_MODE
-        ];
-        
-        for (Elaro_Connected_Org__c org : orgs) {
-            testOrgConnection(org.Id);
+        try {
+            List<Elaro_Connected_Org__c> orgs = [
+                SELECT Id FROM Elaro_Connected_Org__c
+                WHERE Is_Active__c = true
+                WITH USER_MODE
+            ];
+
+            for (Elaro_Connected_Org__c org : orgs) {
+                if (!Test.isRunningTest()) {
+                    System.enqueueJob(new MultiOrgManagerQueueable(
+                        MultiOrgManagerQueueable.Operation.TEST_CONNECTION, org.Id
+                    ));
+                }
+            }
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MultiOrgManager.refreshAllConnections', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to refresh org connections. Please verify you have the required permissions and try again.');
         }
     }
     
@@ -153,41 +175,48 @@ public with sharing class MultiOrgManager {
      */
     @AuraEnabled(cacheable=true)
     public static AggregateMetrics getAggregateMetrics() {
-        AggregateMetrics metrics = new AggregateMetrics();
-        
-        // Get current org metrics
-        Map<String, Object> currentScore = ElaroComplianceScorer.calculateComplianceScore();
-        metrics.totalEvents = 0;
-        metrics.totalAlerts = 0;
-        metrics.avgComplianceScore = (Decimal)currentScore.get('overallScore');
-        
-        // Count events
-        metrics.totalEvents = [SELECT COUNT() FROM Elaro_Evidence_Item__c WHERE CreatedDate >= LAST_N_DAYS:30 WITH USER_MODE];
-        
-        // Get connected org metrics
-        List<Elaro_Connected_Org__c> orgs = [
-            SELECT Compliance_Score__c, Event_Count__c, Alert_Count__c
-            FROM Elaro_Connected_Org__c
-            WHERE Is_Active__c = true
-            WITH USER_MODE
-        ];
-        
-        Decimal scoreSum = metrics.avgComplianceScore;
-        Integer count = 1;
-        
-        for (Elaro_Connected_Org__c org : orgs) {
-            if (org.Compliance_Score__c != null) {
-                scoreSum += org.Compliance_Score__c;
-                count++;
+        try {
+            AggregateMetrics metrics = new AggregateMetrics();
+
+            // Get current org metrics
+            Map<String, Object> currentScore = ElaroComplianceScorer.calculateComplianceScore();
+            metrics.totalEvents = 0;
+            metrics.totalAlerts = 0;
+            metrics.avgComplianceScore = (Decimal)currentScore.get('overallScore');
+
+            // Count events
+            metrics.totalEvents = [SELECT COUNT() FROM Elaro_Evidence_Item__c WHERE CreatedDate >= LAST_N_DAYS:30 WITH USER_MODE];
+
+            // Get connected org metrics
+            List<Elaro_Connected_Org__c> orgs = [
+                SELECT Compliance_Score__c, Event_Count__c, Alert_Count__c
+                FROM Elaro_Connected_Org__c
+                WHERE Is_Active__c = true
+                WITH USER_MODE
+            ];
+
+            Decimal scoreSum = metrics.avgComplianceScore;
+            Integer count = 1;
+
+            for (Elaro_Connected_Org__c org : orgs) {
+                if (org.Compliance_Score__c != null) {
+                    scoreSum += org.Compliance_Score__c;
+                    count++;
+                }
+                metrics.totalEvents += org.Event_Count__c != null ? (Integer)org.Event_Count__c : 0;
+                metrics.totalAlerts += org.Alert_Count__c != null ? (Integer)org.Alert_Count__c : 0;
             }
-            metrics.totalEvents += org.Event_Count__c != null ? (Integer)org.Event_Count__c : 0;
-            metrics.totalAlerts += org.Alert_Count__c != null ? (Integer)org.Alert_Count__c : 0;
+
+            metrics.avgComplianceScore = scoreSum / count;
+            metrics.orgCount = count;
+
+            return metrics;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('MultiOrgManager.getAggregateMetrics', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        metrics.avgComplianceScore = scoreSum / count;
-        metrics.orgCount = count;
-        
-        return metrics;
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -222,36 +251,6 @@ public with sharing class MultiOrgManager {
         return status;
     }
     
-    @future(callout=true)
-    private static void testOrgConnection(Id orgRecordId) {
-        Elaro_Connected_Org__c org = [
-            SELECT Id, Instance_URL__c FROM Elaro_Connected_Org__c WHERE Id = :orgRecordId
-            WITH USER_MODE
-        ];
-        
-        try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint(org.Instance_URL__c + '/services/data/v66.0/');
-            req.setMethod('GET');
-            req.setTimeout(15000);
-
-            // In production, use Named Credential with OAuth
-            // This is a simplified connection test
-
-            org.Connection_Status__c = 'Connected';
-            org.Last_Sync__c = Datetime.now();
-        } catch (Exception e) {
-            org.Connection_Status__c = 'Error: ' + e.getMessage().left(100);
-        }
-
-        update as user org;
-    }
-    
-    private static void syncPoliciesToOrg(Elaro_Connected_Org__c org, List<Compliance_Policy__mdt> policies) {
-        // In production, this would call the connected org's API
-        // to create/update policy records
-        ElaroLogger.info('MultiOrgManager.syncPoliciesToOrg: Syncing ' + policies.size() + ' policies to org ' + org.Id);
-    }
     
     // ═══════════════════════════════════════════════════════════════
     // INNER CLASSES
