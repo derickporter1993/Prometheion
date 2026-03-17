@@ -1,12 +1,18 @@
-public with sharing class SlackNotifier {
-
-    /**
-     * Send Slack notification using Queueable (recommended approach)
-     * Provides retry logic, error handling, and better monitoring
+/**
+ * Sends Slack notifications for compliance events and alerts via Queueable jobs.
+ * Provides rate limiting, retry logic, correlation IDs, and structured error logging
+ * for reliable integration with Slack webhooks.
+ *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  * @group Integration
  */
+public with sharing class SlackNotifier {
+
+    /**
+     * Send Slack notification using Queueable (recommended approach).
+     * Provides retry logic, error handling, and better monitoring.
+     */
     public static void notifyAsyncQueueable(String text) {
         if (String.isBlank(text)) {
             ElaroLogger.warn( 'SlackNotifier: Empty text provided, skipping notification');

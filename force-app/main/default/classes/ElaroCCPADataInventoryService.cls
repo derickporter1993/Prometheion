@@ -156,16 +156,23 @@ public with sharing class ElaroCCPADataInventoryService {
      */
     @AuraEnabled(cacheable=true)
     public static List<CCPA_Request__c> getPendingRequests() {
-        List<CCPA_Request__c> requests = [
-            SELECT Id, Name, Contact__c, Contact__r.Name, Contact__r.Email,
-                   Request_Type__c, Request_Date__c, Status__c,
-                   Response_Deadline__c
-            FROM CCPA_Request__c
-            WHERE Status__c IN ('Pending', 'In Progress')
-            WITH USER_MODE
-            ORDER BY Response_Deadline__c ASC
-        ];
-        return requests;
+        try {
+            List<CCPA_Request__c> requests = [
+                SELECT Id, Name, Contact__c, Contact__r.Name, Contact__r.Email,
+                       Request_Type__c, Request_Date__c, Status__c,
+                       Response_Deadline__c
+                FROM CCPA_Request__c
+                WHERE Status__c IN ('Pending', 'In Progress')
+                WITH USER_MODE
+                ORDER BY Response_Deadline__c ASC
+            ];
+            return requests;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroCCPADataInventoryService.getPendingRequests', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
