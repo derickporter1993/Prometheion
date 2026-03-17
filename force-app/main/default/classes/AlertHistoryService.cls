@@ -31,28 +31,35 @@ public with sharing class AlertHistoryService {
      */
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> getRecentAlerts(Integer limitSize) {
-        // Validate read access
-        if (!ElaroSecurityUtils.hasReadAccess('Performance_Alert_History__c')) {
-            throw new AuraHandledException('Insufficient access to Performance Alert History');
+        try {
+            // Validate read access
+            if (!ElaroSecurityUtils.hasReadAccess('Performance_Alert_History__c')) {
+                throw new AuraHandledException('Insufficient access to Performance Alert History');
+            }
+
+            // Validate FLS for queried fields
+            List<String> queriedFields = new List<String>{
+                'Metric__c', 'Value__c', 'Threshold__c', 'Context_Record__c', 'CreatedDate'
+            };
+            ElaroSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
+
+            Integer recordLimit = Math.max(1, limitSize);
+            List<AlertRow> out = new List<AlertRow>();
+            for (Performance_Alert_History__c r : [
+                SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
+                FROM Performance_Alert_History__c
+                WITH USER_MODE
+                ORDER BY CreatedDate DESC
+                LIMIT :recordLimit
+            ]) {
+                out.add(new AlertRow(r));
+            }
+            return out;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('AlertHistoryService.getRecentAlerts', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Validate FLS for queried fields
-        List<String> queriedFields = new List<String>{
-            'Metric__c', 'Value__c', 'Threshold__c', 'Context_Record__c', 'CreatedDate'
-        };
-        ElaroSecurityUtils.validateFLSAccess('Performance_Alert_History__c', queriedFields, false);
-        
-        Integer recordLimit = Math.max(1, limitSize);
-        List<AlertRow> out = new List<AlertRow>();
-        for (Performance_Alert_History__c r : [
-            SELECT Metric__c, Value__c, Threshold__c, Context_Record__c, CreatedDate
-            FROM Performance_Alert_History__c
-            WITH USER_MODE
-            ORDER BY CreatedDate DESC
-            LIMIT :recordLimit
-        ]) {
-            out.add(new AlertRow(r));
-        }
-        return out;
     }
 }

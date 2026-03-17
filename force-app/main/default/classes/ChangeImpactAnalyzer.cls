@@ -17,34 +17,41 @@ public with sharing class ChangeImpactAnalyzer {
      */
     @AuraEnabled
     public static ImpactAnalysisResult analyzeImpact(List<MetadataChange> changes) {
-        if (changes == null || changes.isEmpty()) {
-            throw new IllegalArgumentException('Changes list cannot be null or empty');
-        }
-        
-        ImpactAnalysisResult result = new ImpactAnalysisResult();
-        result.analyzedDate = System.now();
-        result.totalChanges = changes.size();
-        result.risks = new List<RiskFinding>();
-        result.complianceImpact = new Map<String, String>();
-        
-        for (MetadataChange change : changes) {
-            // Analyze each change
-            RiskFinding risk = analyzeChange(change);
-            if (risk != null) {
-                result.risks.add(risk);
+        try {
+            if (changes == null || changes.isEmpty()) {
+                throw new IllegalArgumentException('Changes list cannot be null or empty');
             }
-            
-            // Check compliance impact
-            String complianceImpact = checkComplianceImpact(change);
-            if (String.isNotBlank(complianceImpact)) {
-                result.complianceImpact.put(change.metadataName, complianceImpact);
+
+            ImpactAnalysisResult result = new ImpactAnalysisResult();
+            result.analyzedDate = System.now();
+            result.totalChanges = changes.size();
+            result.risks = new List<RiskFinding>();
+            result.complianceImpact = new Map<String, String>();
+
+            for (MetadataChange change : changes) {
+                // Analyze each change
+                RiskFinding risk = analyzeChange(change);
+                if (risk != null) {
+                    result.risks.add(risk);
+                }
+
+                // Check compliance impact
+                String complianceImpact = checkComplianceImpact(change);
+                if (String.isNotBlank(complianceImpact)) {
+                    result.complianceImpact.put(change.metadataName, complianceImpact);
+                }
             }
+
+            // Calculate overall risk level
+            result.overallRiskLevel = calculateOverallRisk(result.risks);
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ChangeImpactAnalyzer.analyzeImpact', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        // Calculate overall risk level
-        result.overallRiskLevel = calculateOverallRisk(result.risks);
-        
-        return result;
     }
     
     /**

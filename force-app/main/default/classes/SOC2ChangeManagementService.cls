@@ -60,48 +60,55 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
      */
     @AuraEnabled(cacheable=false)
     public static ChangeControlResult evaluateChangeControls() {
-        SOC2ChangeManagementService service = new SOC2ChangeManagementService();
-        ChangeControlResult result = new ChangeControlResult();
-        result.evaluationDate = DateTime.now();
-        result.controlResults = new List<ControlResult>();
+        try {
+            SOC2ChangeManagementService service = new SOC2ChangeManagementService();
+            ChangeControlResult result = new ChangeControlResult();
+            result.evaluationDate = DateTime.now();
+            result.controlResults = new List<ControlResult>();
 
-        // CC6.1 - Logical Access
-        ControlResult cc61 = new ControlResult();
-        cc61.controlId = 'CC6.1';
-        cc61.controlName = 'Logical Access Security';
-        cc61.violations = service.evaluateLogicalAccessChanges();
-        cc61.compliant = cc61.violations.isEmpty();
-        cc61.score = cc61.compliant ? 100 : Math.max(0, 100 - (cc61.violations.size() * 10));
-        result.controlResults.add(cc61);
+            // CC6.1 - Logical Access
+            ControlResult cc61 = new ControlResult();
+            cc61.controlId = 'CC6.1';
+            cc61.controlName = 'Logical Access Security';
+            cc61.violations = service.evaluateLogicalAccessChanges();
+            cc61.compliant = cc61.violations.isEmpty();
+            cc61.score = cc61.compliant ? 100 : Math.max(0, 100 - (cc61.violations.size() * 10));
+            result.controlResults.add(cc61);
 
-        // CC6.6 - System Changes
-        ControlResult cc66 = new ControlResult();
-        cc66.controlId = 'CC6.6';
-        cc66.controlName = 'System Changes';
-        cc66.violations = service.evaluateSystemChanges();
-        cc66.compliant = cc66.violations.isEmpty();
-        cc66.score = cc66.compliant ? 100 : Math.max(0, 100 - (cc66.violations.size() * 10));
-        result.controlResults.add(cc66);
+            // CC6.6 - System Changes
+            ControlResult cc66 = new ControlResult();
+            cc66.controlId = 'CC6.6';
+            cc66.controlName = 'System Changes';
+            cc66.violations = service.evaluateSystemChanges();
+            cc66.compliant = cc66.violations.isEmpty();
+            cc66.score = cc66.compliant ? 100 : Math.max(0, 100 - (cc66.violations.size() * 10));
+            result.controlResults.add(cc66);
 
-        // CC6.8 - Change Testing
-        ControlResult cc68 = new ControlResult();
-        cc68.controlId = 'CC6.8';
-        cc68.controlName = 'Change Testing';
-        cc68.violations = service.evaluateChangeTestingControls();
-        cc68.compliant = cc68.violations.isEmpty();
-        cc68.score = cc68.compliant ? 100 : Math.max(0, 100 - (cc68.violations.size() * 10));
-        result.controlResults.add(cc68);
+            // CC6.8 - Change Testing
+            ControlResult cc68 = new ControlResult();
+            cc68.controlId = 'CC6.8';
+            cc68.controlName = 'Change Testing';
+            cc68.violations = service.evaluateChangeTestingControls();
+            cc68.compliant = cc68.violations.isEmpty();
+            cc68.score = cc68.compliant ? 100 : Math.max(0, 100 - (cc68.violations.size() * 10));
+            result.controlResults.add(cc68);
 
-        // Calculate overall
-        Decimal totalScore = 0;
-        for (ControlResult cr : result.controlResults) {
-            totalScore += cr.score;
+            // Calculate overall
+            Decimal totalScore = 0;
+            for (ControlResult cr : result.controlResults) {
+                totalScore += cr.score;
+            }
+            result.overallScore = result.controlResults.size() > 0 ?
+                (totalScore / result.controlResults.size()).setScale(2) : 0;
+            result.overallCompliant = result.overallScore >= 80;
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2ChangeManagementService.evaluateChangeControls', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        result.overallScore = result.controlResults.size() > 0 ?
-            (totalScore / result.controlResults.size()).setScale(2) : 0;
-        result.overallCompliant = result.overallScore >= 80;
-
-        return result;
     }
 
     /**
@@ -111,41 +118,48 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
      */
     @AuraEnabled(cacheable=false)
     public static List<UnauthorizedChange> getUnauthorizedChanges(Integer daysBack) {
-        List<UnauthorizedChange> changes = new List<UnauthorizedChange>();
+        try {
+            List<UnauthorizedChange> changes = new List<UnauthorizedChange>();
 
-        if (daysBack == null || daysBack <= 0) {
-            daysBack = HIGH_RISK_CHANGE_LOOKBACK_DAYS;
+            if (daysBack == null || daysBack <= 0) {
+                daysBack = HIGH_RISK_CHANGE_LOOKBACK_DAYS;
+            }
+
+            Date cutoffDate = Date.today().addDays(-daysBack);
+
+            // Query metadata changes without ticket references
+            List<Metadata_Change__c> metadataChanges = [
+                SELECT Id, Name, Entity_Type__c, Entity_Name__c, Change_Type__c,
+                       Changed_By__c, Changed_Date__c, Change_Details__c,
+                       Ticket_Reference__c, Risk_Score__c
+                FROM Metadata_Change__c
+                WHERE Changed_Date__c >= :cutoffDate
+                AND (Ticket_Reference__c = null OR Ticket_Reference__c = '')
+                WITH USER_MODE
+                ORDER BY Changed_Date__c DESC
+                LIMIT 500
+            ];
+
+            for (Metadata_Change__c mc : metadataChanges) {
+                UnauthorizedChange uc = new UnauthorizedChange();
+                uc.changeId = mc.Id;
+                uc.entityType = mc.Entity_Type__c;
+                uc.entityName = mc.Entity_Name__c;
+                uc.changeType = mc.Change_Type__c;
+                uc.changedBy = mc.Changed_By__c;
+                uc.changedDate = mc.Changed_Date__c;
+                uc.riskScore = mc.Risk_Score__c != null ? mc.Risk_Score__c : 5.0;
+                uc.isHighRisk = HIGH_RISK_CHANGE_TYPES.contains(mc.Entity_Type__c);
+                changes.add(uc);
+            }
+
+            return changes;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2ChangeManagementService.getUnauthorizedChanges', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Date cutoffDate = Date.today().addDays(-daysBack);
-
-        // Query metadata changes without ticket references
-        List<Metadata_Change__c> metadataChanges = [
-            SELECT Id, Name, Entity_Type__c, Entity_Name__c, Change_Type__c,
-                   Changed_By__c, Changed_Date__c, Change_Details__c,
-                   Ticket_Reference__c, Risk_Score__c
-            FROM Metadata_Change__c
-            WHERE Changed_Date__c >= :cutoffDate
-            AND (Ticket_Reference__c = null OR Ticket_Reference__c = '')
-            WITH USER_MODE
-            ORDER BY Changed_Date__c DESC
-            LIMIT 500
-        ];
-
-        for (Metadata_Change__c mc : metadataChanges) {
-            UnauthorizedChange uc = new UnauthorizedChange();
-            uc.changeId = mc.Id;
-            uc.entityType = mc.Entity_Type__c;
-            uc.entityName = mc.Entity_Name__c;
-            uc.changeType = mc.Change_Type__c;
-            uc.changedBy = mc.Changed_By__c;
-            uc.changedDate = mc.Changed_Date__c;
-            uc.riskScore = mc.Risk_Score__c != null ? mc.Risk_Score__c : 5.0;
-            uc.isHighRisk = HIGH_RISK_CHANGE_TYPES.contains(mc.Entity_Type__c);
-            changes.add(uc);
-        }
-
-        return changes;
     }
 
     /**
@@ -155,23 +169,30 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
      */
     @AuraEnabled
     public static void linkChangeToTicket(Id changeId, String ticketRef) {
-        if (String.isBlank(ticketRef)) {
-            throw new ComplianceServiceException('Ticket reference cannot be blank');
+        try {
+            if (String.isBlank(ticketRef)) {
+                throw new ComplianceServiceException('Ticket reference cannot be blank');
+            }
+
+            Metadata_Change__c change = [
+                SELECT Id, Ticket_Reference__c
+                FROM Metadata_Change__c
+                WHERE Id = :changeId
+                WITH USER_MODE
+                LIMIT 1
+            ];
+
+            change.Ticket_Reference__c = ticketRef;
+            update as user change;
+
+            SOC2ChangeManagementService service = new SOC2ChangeManagementService();
+            service.logAuditEntry('CHANGE_LINKED', 'Linked change ' + changeId + ' to ticket ' + ticketRef, changeId);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2ChangeManagementService.linkChangeToTicket', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Metadata_Change__c change = [
-            SELECT Id, Ticket_Reference__c
-            FROM Metadata_Change__c
-            WHERE Id = :changeId
-            WITH USER_MODE
-            LIMIT 1
-        ];
-
-        change.Ticket_Reference__c = ticketRef;
-        update as user change;
-
-        SOC2ChangeManagementService service = new SOC2ChangeManagementService();
-        service.logAuditEntry('CHANGE_LINKED', 'Linked change ' + changeId + ' to ticket ' + ticketRef, changeId);
     }
 
     /**
@@ -180,17 +201,24 @@ public with sharing class SOC2ChangeManagementService extends ComplianceServiceB
      */
     @AuraEnabled(cacheable=false)
     public static List<Metadata_Change__c> getChangesRequiringApproval() {
-        return [
-            SELECT Id, Name, Entity_Type__c, Entity_Name__c, Change_Type__c,
-                   Changed_By__c, Changed_Date__c, Change_Details__c,
-                   Ticket_Reference__c, Risk_Score__c, Approval_Status__c
-            FROM Metadata_Change__c
-            WHERE Risk_Score__c >= 7.0
-            AND (Approval_Status__c = null OR Approval_Status__c = 'PENDING')
-            WITH USER_MODE
-            ORDER BY Risk_Score__c DESC
-            LIMIT 100
-        ];
+        try {
+            return [
+                SELECT Id, Name, Entity_Type__c, Entity_Name__c, Change_Type__c,
+                       Changed_By__c, Changed_Date__c, Change_Details__c,
+                       Ticket_Reference__c, Risk_Score__c, Approval_Status__c
+                FROM Metadata_Change__c
+                WHERE Risk_Score__c >= 7.0
+                AND (Approval_Status__c = null OR Approval_Status__c = 'PENDING')
+                WITH USER_MODE
+                ORDER BY Risk_Score__c DESC
+                LIMIT 100
+            ];
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2ChangeManagementService.getChangesRequiringApproval', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**

@@ -15,14 +15,21 @@ public with sharing class ElaroAISettingsController {
 
     @AuraEnabled(cacheable=true)
     public static Elaro_AI_Settings__c getSettings() {
-        Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getInstance();
+        try {
+            Elaro_AI_Settings__c settings = Elaro_AI_Settings__c.getInstance();
 
-        // If no org default exists, create and persist one
-        if (settings == null) {
-            settings = createAndPersistDefaults();
+            // If no org default exists, create and persist one
+            if (settings == null) {
+                settings = createAndPersistDefaults();
+            }
+
+            return settings;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroAISettingsController.getSettings', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return settings;
     }
 
     /**

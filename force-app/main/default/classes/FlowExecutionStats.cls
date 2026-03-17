@@ -22,45 +22,52 @@ public with sharing class FlowExecutionStats {
 
     @AuraEnabled(cacheable=true)
     public static List<ExecAgg> getTopFlows(Integer limitSize) {
-        Integer recordLimit = Math.max(1, limitSize);
-        // SOQL doesn't support CASE WHEN in aggregate queries, so we'll count faults separately
-        List<AggregateResult> ars = [
-            SELECT Flow_Name__c fn,
-                   COUNT(Id) runs,
-                   MAX(Run_Time__c) lastRun
-            FROM Flow_Execution__c
-            WITH USER_MODE
-            GROUP BY Flow_Name__c
-            ORDER BY COUNT(Id) DESC
-            LIMIT :recordLimit
-        ];
-
-        // Count faults separately for each flow
-        Set<String> flowNames = new Set<String>();
-        for (AggregateResult ar : ars) {
-            flowNames.add((String)ar.get('fn'));
-        }
-
-        Map<String, Integer> faultCounts = new Map<String, Integer>();
-        if (!flowNames.isEmpty()) {
-            List<AggregateResult> faultArs = [
-                SELECT Flow_Name__c fn, COUNT(Id) faultCount
+        try {
+            Integer recordLimit = Math.max(1, limitSize);
+            // SOQL doesn't support CASE WHEN in aggregate queries, so we'll count faults separately
+            List<AggregateResult> ars = [
+                SELECT Flow_Name__c fn,
+                       COUNT(Id) runs,
+                       MAX(Run_Time__c) lastRun
                 FROM Flow_Execution__c
-                WHERE Flow_Name__c IN :flowNames AND Status__c = 'Fault'
                 WITH USER_MODE
                 GROUP BY Flow_Name__c
+                ORDER BY COUNT(Id) DESC
+                LIMIT :recordLimit
             ];
-            for (AggregateResult fa : faultArs) {
-                faultCounts.put((String)fa.get('fn'), (Integer)fa.get('faultCount'));
+
+            // Count faults separately for each flow
+            Set<String> flowNames = new Set<String>();
+            for (AggregateResult ar : ars) {
+                flowNames.add((String)ar.get('fn'));
             }
+
+            Map<String, Integer> faultCounts = new Map<String, Integer>();
+            if (!flowNames.isEmpty()) {
+                List<AggregateResult> faultArs = [
+                    SELECT Flow_Name__c fn, COUNT(Id) faultCount
+                    FROM Flow_Execution__c
+                    WHERE Flow_Name__c IN :flowNames AND Status__c = 'Fault'
+                    WITH USER_MODE
+                    GROUP BY Flow_Name__c
+                ];
+                for (AggregateResult fa : faultArs) {
+                    faultCounts.put((String)fa.get('fn'), (Integer)fa.get('faultCount'));
+                }
+            }
+            List<ExecAgg> out = new List<ExecAgg>();
+            for (AggregateResult ar : ars) {
+                ExecAgg agg = new ExecAgg(ar);
+                agg.faults = faultCounts.containsKey(agg.flowName) ? faultCounts.get(agg.flowName) : 0;
+                out.add(agg);
+            }
+            return out;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('FlowExecutionStats.getTopFlows', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        List<ExecAgg> out = new List<ExecAgg>();
-        for (AggregateResult ar : ars) {
-            ExecAgg agg = new ExecAgg(ar);
-            agg.faults = faultCounts.containsKey(agg.flowName) ? faultCounts.get(agg.flowName) : 0;
-            out.add(agg);
-        }
-        return out;
     }
     
 }
