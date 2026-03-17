@@ -790,13 +790,20 @@ public with sharing class ElaroComplianceCopilot {
      */
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getQuickCommands() {
-        return new List<Map<String, String>>{
-            new Map<String, String>{'command' => 'Why did my score drop?', 'icon' => 'utility:trending_down'},
-            new Map<String, String>{'command' => 'Show me risky Flows', 'icon' => 'utility:flow'},
-            new Map<String, String>{'command' => 'Generate HIPAA evidence', 'icon' => 'utility:file'},
-            new Map<String, String>{'command' => 'Who has elevated access?', 'icon' => 'utility:user'},
-            new Map<String, String>{'command' => 'SOC2 compliance status', 'icon' => 'utility:shield'},
-            new Map<String, String>{'command' => 'Show recent violations', 'icon' => 'utility:warning'}
-        };
+        try {
+            return new List<Map<String, String>>{
+                new Map<String, String>{'command' => 'Why did my score drop?', 'icon' => 'utility:trending_down'},
+                new Map<String, String>{'command' => 'Show me risky Flows', 'icon' => 'utility:flow'},
+                new Map<String, String>{'command' => 'Generate HIPAA evidence', 'icon' => 'utility:file'},
+                new Map<String, String>{'command' => 'Who has elevated access?', 'icon' => 'utility:user'},
+                new Map<String, String>{'command' => 'SOC2 compliance status', 'icon' => 'utility:shield'},
+                new Map<String, String>{'command' => 'Show recent violations', 'icon' => 'utility:warning'}
+            };
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroComplianceCopilot.getQuickCommands', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 }

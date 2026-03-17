@@ -41,31 +41,38 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static TechnicalSafeguardResult evaluateTechnicalSafeguards() {
-        HIPAASecurityRuleService service = new HIPAASecurityRuleService();
-        TechnicalSafeguardResult result = new TechnicalSafeguardResult();
-        result.evaluationDate = DateTime.now();
+        try {
+            HIPAASecurityRuleService service = new HIPAASecurityRuleService();
+            TechnicalSafeguardResult result = new TechnicalSafeguardResult();
+            result.evaluationDate = DateTime.now();
 
-        result.accessControlResult = service.checkAccessControls();
-        result.auditControlResult = service.checkAuditControls();
-        result.integrityControlResult = service.checkIntegrityControls();
-        result.transmissionResult = service.checkTransmissionSecurity();
+            result.accessControlResult = service.checkAccessControls();
+            result.auditControlResult = service.checkAuditControls();
+            result.integrityControlResult = service.checkIntegrityControls();
+            result.transmissionResult = service.checkTransmissionSecurity();
 
-        // Calculate overall score
-        Decimal totalScore = result.accessControlResult.score +
-                            result.auditControlResult.score +
-                            result.integrityControlResult.score +
-                            result.transmissionResult.score;
-        result.overallScore = (totalScore / 4).setScale(2);
-        result.overallCompliant = result.overallScore >= 80;
+            // Calculate overall score
+            Decimal totalScore = result.accessControlResult.score +
+                                result.auditControlResult.score +
+                                result.integrityControlResult.score +
+                                result.transmissionResult.score;
+            result.overallScore = (totalScore / 4).setScale(2);
+            result.overallCompliant = result.overallScore >= 80;
 
-        // Collect all gaps
-        result.gaps = new List<String>();
-        result.gaps.addAll(result.accessControlResult.gaps);
-        result.gaps.addAll(result.auditControlResult.gaps);
-        result.gaps.addAll(result.integrityControlResult.gaps);
-        result.gaps.addAll(result.transmissionResult.gaps);
+            // Collect all gaps
+            result.gaps = new List<String>();
+            result.gaps.addAll(result.accessControlResult.gaps);
+            result.gaps.addAll(result.auditControlResult.gaps);
+            result.gaps.addAll(result.integrityControlResult.gaps);
+            result.gaps.addAll(result.transmissionResult.gaps);
 
-        return result;
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.evaluateTechnicalSafeguards', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -73,8 +80,15 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static AccessControlResult checkAccessControls() {
-        HIPAASecurityRuleService service = new HIPAASecurityRuleService();
-        return service.evaluateAccessControls();
+        try {
+            HIPAASecurityRuleService service = new HIPAASecurityRuleService();
+            return service.evaluateAccessControls();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.checkAccessControls', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -82,8 +96,15 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static AuditControlResult checkAuditControls() {
-        HIPAASecurityRuleService service = new HIPAASecurityRuleService();
-        return service.evaluateAuditControls();
+        try {
+            HIPAASecurityRuleService service = new HIPAASecurityRuleService();
+            return service.evaluateAuditControls();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.checkAuditControls', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -91,8 +112,15 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static IntegrityControlResult checkIntegrityControls() {
-        HIPAASecurityRuleService service = new HIPAASecurityRuleService();
-        return service.evaluateIntegrityControls();
+        try {
+            HIPAASecurityRuleService service = new HIPAASecurityRuleService();
+            return service.evaluateIntegrityControls();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.checkIntegrityControls', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -100,8 +128,15 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static TransmissionResult checkTransmissionSecurity() {
-        HIPAASecurityRuleService service = new HIPAASecurityRuleService();
-        return service.evaluateTransmissionSecurity();
+        try {
+            HIPAASecurityRuleService service = new HIPAASecurityRuleService();
+            return service.evaluateTransmissionSecurity();
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.checkTransmissionSecurity', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -109,41 +144,48 @@ public with sharing class HIPAASecurityRuleService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static Map<String, EncryptionInfo> getEncryptionStatus() {
-        Map<String, EncryptionInfo> status = new Map<String, EncryptionInfo>();
+        try {
+            Map<String, EncryptionInfo> status = new Map<String, EncryptionInfo>();
 
-        Set<String> phiObjects = new Set<String>{'Contact', 'Lead', 'Account', 'Case'};
+            Set<String> phiObjects = new Set<String>{'Contact', 'Lead', 'Account', 'Case'};
 
-        for (String objectName : phiObjects) {
-            EncryptionInfo info = new EncryptionInfo();
-            info.objectName = objectName;
-            info.encryptedFields = new List<String>();
-            info.unencryptedPHIFields = new List<String>();
+            for (String objectName : phiObjects) {
+                EncryptionInfo info = new EncryptionInfo();
+                info.objectName = objectName;
+                info.encryptedFields = new List<String>();
+                info.unencryptedPHIFields = new List<String>();
 
-            // Check for encrypted fields using Shield
-            try {
-                Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
-                if (objType != null) {
-                    Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
-                    for (String fieldName : fields.keySet()) {
-                        Schema.DescribeFieldResult fieldDesc = fields.get(fieldName).getDescribe();
-                        if (fieldDesc.isEncrypted()) {
-                            info.encryptedFields.add(fieldName);
-                        } else if (isPHIFieldName(fieldName)) {
-                            info.unencryptedPHIFields.add(fieldName);
+                // Check for encrypted fields using Shield
+                try {
+                    Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
+                    if (objType != null) {
+                        Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
+                        for (String fieldName : fields.keySet()) {
+                            Schema.DescribeFieldResult fieldDesc = fields.get(fieldName).getDescribe();
+                            if (fieldDesc.isEncrypted()) {
+                                info.encryptedFields.add(fieldName);
+                            } else if (isPHIFieldName(fieldName)) {
+                                info.unencryptedPHIFields.add(fieldName);
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    ElaroLogger.error( 'Error checking encryption: ' + e.getMessage());
                 }
-            } catch (Exception e) {
-                ElaroLogger.error( 'Error checking encryption: ' + e.getMessage());
+
+                info.shieldEnabled = !info.encryptedFields.isEmpty();
+                info.compliant = info.unencryptedPHIFields.isEmpty();
+
+                status.put(objectName, info);
             }
 
-            info.shieldEnabled = !info.encryptedFields.isEmpty();
-            info.compliant = info.unencryptedPHIFields.isEmpty();
-
-            status.put(objectName, info);
+            return status;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('HIPAASecurityRuleService.getEncryptionStatus', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return status;
     }
 
     // ========== Private Evaluation Methods ==========

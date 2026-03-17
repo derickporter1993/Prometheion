@@ -86,36 +86,43 @@ public with sharing class RemediationExecutor {
      */
     @AuraEnabled
     public static void markAsManuallyApplied(String suggestionId, String notes) {
-        List<Remediation_Suggestion__c> suggestions = [
-            SELECT Id, Status__c, Compliance_Gap__c
-            FROM Remediation_Suggestion__c
-            WHERE Id = :suggestionId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            List<Remediation_Suggestion__c> suggestions = [
+                SELECT Id, Status__c, Compliance_Gap__c
+                FROM Remediation_Suggestion__c
+                WHERE Id = :suggestionId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (suggestions.isEmpty()) {
-            throw new RemediationSuggestionService.RemediationException('Suggestion not found');
+            if (suggestions.isEmpty()) {
+                throw new RemediationSuggestionService.RemediationException('Suggestion not found');
+            }
+
+            Remediation_Suggestion__c suggestion = suggestions[0];
+
+            if (suggestion.Status__c != 'APPROVED') {
+                throw new RemediationSuggestionService.RemediationException('Suggestion must be approved before marking as applied');
+            }
+
+            suggestion.Status__c = 'APPLIED';
+            suggestion.Applied_At__c = Datetime.now();
+            suggestion.Applied_By__c = UserInfo.getUserId();
+
+            if (String.isNotBlank(notes)) {
+                suggestion.Implementation_Steps__c += '\n\n--- Manual Implementation Notes ---\n' + notes;
+            }
+
+            update as user suggestion;
+
+            // Update the related gap
+            updateGapAsRemediated(suggestion.Compliance_Gap__c);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationExecutor.markAsManuallyApplied', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Remediation_Suggestion__c suggestion = suggestions[0];
-
-        if (suggestion.Status__c != 'APPROVED') {
-            throw new RemediationSuggestionService.RemediationException('Suggestion must be approved before marking as applied');
-        }
-
-        suggestion.Status__c = 'APPLIED';
-        suggestion.Applied_At__c = Datetime.now();
-        suggestion.Applied_By__c = UserInfo.getUserId();
-
-        if (String.isNotBlank(notes)) {
-            suggestion.Implementation_Steps__c += '\n\n--- Manual Implementation Notes ---\n' + notes;
-        }
-
-        update as user suggestion;
-
-        // Update the related gap
-        updateGapAsRemediated(suggestion.Compliance_Gap__c);
     }
 
     /**
@@ -124,34 +131,41 @@ public with sharing class RemediationExecutor {
      */
     @AuraEnabled(cacheable=true)
     public static List<ExecutionHistory> getExecutionHistory() {
-        List<ExecutionHistory> history = new List<ExecutionHistory>();
+        try {
+            List<ExecutionHistory> history = new List<ExecutionHistory>();
 
-        List<Remediation_Suggestion__c> executed = [
-            SELECT Id, Name, Suggestion_Type__c, Status__c, Applied_At__c,
-                   Applied_By__r.Name, Error_Message__c, Framework__c,
-                   Compliance_Gap__r.Name
-            FROM Remediation_Suggestion__c
-            WHERE Status__c IN ('APPLIED', 'FAILED')
-            WITH USER_MODE
-            ORDER BY Applied_At__c DESC
-            LIMIT 50
-        ];
+            List<Remediation_Suggestion__c> executed = [
+                SELECT Id, Name, Suggestion_Type__c, Status__c, Applied_At__c,
+                       Applied_By__r.Name, Error_Message__c, Framework__c,
+                       Compliance_Gap__r.Name
+                FROM Remediation_Suggestion__c
+                WHERE Status__c IN ('APPLIED', 'FAILED')
+                WITH USER_MODE
+                ORDER BY Applied_At__c DESC
+                LIMIT 50
+            ];
 
-        for (Remediation_Suggestion__c suggestion : executed) {
-            ExecutionHistory item = new ExecutionHistory();
-            item.suggestionId = suggestion.Id;
-            item.suggestionName = suggestion.Name;
-            item.suggestionType = suggestion.Suggestion_Type__c;
-            item.status = suggestion.Status__c;
-            item.appliedAt = suggestion.Applied_At__c;
-            item.appliedBy = suggestion.Applied_By__r != null ? suggestion.Applied_By__r.Name : null;
-            item.errorMessage = suggestion.Error_Message__c;
-            item.framework = suggestion.Framework__c;
-            item.gapName = suggestion.Compliance_Gap__r.Name;
-            history.add(item);
+            for (Remediation_Suggestion__c suggestion : executed) {
+                ExecutionHistory item = new ExecutionHistory();
+                item.suggestionId = suggestion.Id;
+                item.suggestionName = suggestion.Name;
+                item.suggestionType = suggestion.Suggestion_Type__c;
+                item.status = suggestion.Status__c;
+                item.appliedAt = suggestion.Applied_At__c;
+                item.appliedBy = suggestion.Applied_By__r != null ? suggestion.Applied_By__r.Name : null;
+                item.errorMessage = suggestion.Error_Message__c;
+                item.framework = suggestion.Framework__c;
+                item.gapName = suggestion.Compliance_Gap__r.Name;
+                history.add(item);
+            }
+
+            return history;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationExecutor.getExecutionHistory', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        return history;
     }
 
     /**

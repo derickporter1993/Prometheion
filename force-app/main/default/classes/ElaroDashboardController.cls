@@ -67,63 +67,70 @@ public with sharing class ElaroDashboardController {
      */
     @AuraEnabled(cacheable=true)
     public static AuditPackageStats getAuditPackageStats(String packageId) {
-        if (String.isBlank(packageId)) {
-            throw new AuraHandledException('Package ID cannot be blank');
-        }
-        
-        List<Elaro_Audit_Package__c> pkgList = [
-            SELECT Id, Package_Name__c, Framework__c, Status__c,
-                   Audit_Period_Start__c, Audit_Period_End__c,
-                   Created_By__r.Name, LastModifiedDate
-            FROM Elaro_Audit_Package__c
-            WHERE Id = :packageId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            if (String.isBlank(packageId)) {
+                throw new AuraHandledException('Package ID cannot be blank');
+            }
 
-        if (pkgList.isEmpty()) {
-            throw new AuraHandledException('Audit package not found');
-        }
+            List<Elaro_Audit_Package__c> pkgList = [
+                SELECT Id, Package_Name__c, Framework__c, Status__c,
+                       Audit_Period_Start__c, Audit_Period_End__c,
+                       Created_By__r.Name, LastModifiedDate
+                FROM Elaro_Audit_Package__c
+                WHERE Id = :packageId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        // Strip inaccessible fields for FLS security
-        pkgList = (List<Elaro_Audit_Package__c>) ElaroSecurityUtils.stripInaccessibleFields(
-            AccessType.READABLE,
-            pkgList
-        );
+            if (pkgList.isEmpty()) {
+                throw new AuraHandledException('Audit package not found');
+            }
 
-        Elaro_Audit_Package__c pkg = pkgList[0];
-        
-        // Count framework mappings
-        Integer mappingCount = [
-            SELECT COUNT()
-            FROM Elaro_Framework_Mapping__c
-            WHERE Audit_Package__c = :packageId
-            WITH USER_MODE
-        ];
-        
-        // Count evidence items
-        Integer evidenceCount = [
-            SELECT COUNT()
-            FROM Elaro_Evidence_Item__c
-            WHERE Audit_Package__c = :packageId
-            WITH USER_MODE
-        ];
-        
-        // Count by status
-        AggregateResult[] statusCounts = [
-            SELECT Status__c, COUNT(Id) cnt
-            FROM Elaro_Evidence_Item__c
-            WHERE Audit_Package__c = :packageId
-            WITH USER_MODE
-            GROUP BY Status__c
-        ];
-        
-        Map<String, Integer> statusMap = new Map<String, Integer>();
-        for (AggregateResult ar : statusCounts) {
-            statusMap.put((String)ar.get('Status__c'), (Integer)ar.get('cnt'));
+            // Strip inaccessible fields for FLS security
+            pkgList = (List<Elaro_Audit_Package__c>) ElaroSecurityUtils.stripInaccessibleFields(
+                AccessType.READABLE,
+                pkgList
+            );
+
+            Elaro_Audit_Package__c pkg = pkgList[0];
+
+            // Count framework mappings
+            Integer mappingCount = [
+                SELECT COUNT()
+                FROM Elaro_Framework_Mapping__c
+                WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
+            ];
+
+            // Count evidence items
+            Integer evidenceCount = [
+                SELECT COUNT()
+                FROM Elaro_Evidence_Item__c
+                WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
+            ];
+
+            // Count by status
+            AggregateResult[] statusCounts = [
+                SELECT Status__c, COUNT(Id) cnt
+                FROM Elaro_Evidence_Item__c
+                WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
+                GROUP BY Status__c
+            ];
+
+            Map<String, Integer> statusMap = new Map<String, Integer>();
+            for (AggregateResult ar : statusCounts) {
+                statusMap.put((String)ar.get('Status__c'), (Integer)ar.get('cnt'));
+            }
+
+            return new AuditPackageStats(pkg, mappingCount, evidenceCount, statusMap);
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('ElaroDashboardController.getAuditPackageStats', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-        
-        return new AuditPackageStats(pkg, mappingCount, evidenceCount, statusMap);
     }
     
     /**

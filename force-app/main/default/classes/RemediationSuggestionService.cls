@@ -40,45 +40,52 @@ public with sharing class RemediationSuggestionService {
      */
     @AuraEnabled
     public static List<Remediation_Suggestion__c> generateSuggestions(String gapId) {
-        List<Compliance_Gap__c> gaps = [
-            SELECT Id, Name, Framework__c, Severity__c, Status__c,
-                   Gap_Description__c, Entity_Type__c, Entity_Id__c,
-                   Policy_Reference__c, Risk_Score__c
-            FROM Compliance_Gap__c
-            WHERE Id = :gapId
-            WITH USER_MODE
-            LIMIT 1
-        ];
+        try {
+            List<Compliance_Gap__c> gaps = [
+                SELECT Id, Name, Framework__c, Severity__c, Status__c,
+                       Gap_Description__c, Entity_Type__c, Entity_Id__c,
+                       Policy_Reference__c, Risk_Score__c
+                FROM Compliance_Gap__c
+                WHERE Id = :gapId
+                WITH USER_MODE
+                LIMIT 1
+            ];
 
-        if (gaps.isEmpty()) {
-            throw new RemediationException('Compliance gap not found');
+            if (gaps.isEmpty()) {
+                throw new RemediationException('Compliance gap not found');
+            }
+
+            Compliance_Gap__c gap = gaps[0];
+            List<Remediation_Suggestion__c> suggestions = new List<Remediation_Suggestion__c>();
+
+            // Generate primary suggestion based on entity type
+            Remediation_Suggestion__c primarySuggestion = generatePrimarySuggestion(gap);
+            if (primarySuggestion != null) {
+                suggestions.add(primarySuggestion);
+            }
+
+            // Generate framework-specific suggestions
+            List<Remediation_Suggestion__c> frameworkSuggestions = generateFrameworkSuggestions(gap);
+            suggestions.addAll(frameworkSuggestions);
+
+            // Generate generic compliance suggestions
+            Remediation_Suggestion__c genericSuggestion = generateGenericSuggestion(gap);
+            if (genericSuggestion != null) {
+                suggestions.add(genericSuggestion);
+            }
+
+            // Insert suggestions
+            if (!suggestions.isEmpty()) {
+                insert as user suggestions;
+            }
+
+            return suggestions;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('RemediationSuggestionService.generateSuggestions', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        Compliance_Gap__c gap = gaps[0];
-        List<Remediation_Suggestion__c> suggestions = new List<Remediation_Suggestion__c>();
-
-        // Generate primary suggestion based on entity type
-        Remediation_Suggestion__c primarySuggestion = generatePrimarySuggestion(gap);
-        if (primarySuggestion != null) {
-            suggestions.add(primarySuggestion);
-        }
-
-        // Generate framework-specific suggestions
-        List<Remediation_Suggestion__c> frameworkSuggestions = generateFrameworkSuggestions(gap);
-        suggestions.addAll(frameworkSuggestions);
-
-        // Generate generic compliance suggestions
-        Remediation_Suggestion__c genericSuggestion = generateGenericSuggestion(gap);
-        if (genericSuggestion != null) {
-            suggestions.add(genericSuggestion);
-        }
-
-        // Insert suggestions
-        if (!suggestions.isEmpty()) {
-            insert as user suggestions;
-        }
-
-        return suggestions;
     }
 
     /**

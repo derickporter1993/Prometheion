@@ -59,30 +59,37 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static RetentionEvaluationResult evaluateRetentionPolicies() {
-        SOC2DataRetentionService service = new SOC2DataRetentionService();
-        RetentionEvaluationResult result = new RetentionEvaluationResult();
-        result.evaluationDate = DateTime.now();
-        result.objectResults = new List<ObjectRetentionResult>();
+        try {
+            SOC2DataRetentionService service = new SOC2DataRetentionService();
+            RetentionEvaluationResult result = new RetentionEvaluationResult();
+            result.evaluationDate = DateTime.now();
+            result.objectResults = new List<ObjectRetentionResult>();
 
-        Integer compliantCount = 0;
-        Integer totalCount = 0;
+            Integer compliantCount = 0;
+            Integer totalCount = 0;
 
-        for (String objectName : SENSITIVE_OBJECTS) {
-            ObjectRetentionResult objResult = service.evaluateObjectRetention(objectName);
-            result.objectResults.add(objResult);
-            totalCount++;
-            if (objResult.isCompliant) {
-                compliantCount++;
+            for (String objectName : SENSITIVE_OBJECTS) {
+                ObjectRetentionResult objResult = service.evaluateObjectRetention(objectName);
+                result.objectResults.add(objResult);
+                totalCount++;
+                if (objResult.isCompliant) {
+                    compliantCount++;
+                }
             }
+
+            result.totalObjects = totalCount;
+            result.compliantObjects = compliantCount;
+            result.compliancePercentage = totalCount > 0 ?
+                (Decimal.valueOf(compliantCount) / Decimal.valueOf(totalCount) * 100).setScale(2) : 0;
+            result.overallCompliant = result.compliancePercentage >= 80;
+
+            return result;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2DataRetentionService.evaluateRetentionPolicies', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
         }
-
-        result.totalObjects = totalCount;
-        result.compliantObjects = compliantCount;
-        result.compliancePercentage = totalCount > 0 ?
-            (Decimal.valueOf(compliantCount) / Decimal.valueOf(totalCount) * 100).setScale(2) : 0;
-        result.overallCompliant = result.compliancePercentage >= 80;
-
-        return result;
     }
 
     /**
@@ -91,15 +98,22 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static List<String> getObjectsWithoutRetention() {
-        List<String> objectsWithoutRetention = new List<String>();
+        try {
+            List<String> objectsWithoutRetention = new List<String>();
 
-        for (String objectName : SENSITIVE_OBJECTS) {
-            if (!hasFieldHistoryEnabled(objectName)) {
-                objectsWithoutRetention.add(objectName);
+            for (String objectName : SENSITIVE_OBJECTS) {
+                if (!hasFieldHistoryEnabled(objectName)) {
+                    objectsWithoutRetention.add(objectName);
+                }
             }
-        }
 
-        return objectsWithoutRetention;
+            return objectsWithoutRetention;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2DataRetentionService.getObjectsWithoutRetention', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -108,23 +122,30 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
      */
     @AuraEnabled(cacheable=false)
     public static List<RetentionViolation> getRetentionViolations() {
-        SOC2DataRetentionService service = new SOC2DataRetentionService();
-        List<RetentionViolation> violations = new List<RetentionViolation>();
+        try {
+            SOC2DataRetentionService service = new SOC2DataRetentionService();
+            List<RetentionViolation> violations = new List<RetentionViolation>();
 
-        for (String objectName : SENSITIVE_OBJECTS) {
-            ObjectRetentionResult objResult = service.evaluateObjectRetention(objectName);
-            if (!objResult.isCompliant) {
-                RetentionViolation violation = new RetentionViolation();
-                violation.objectName = objectName;
-                violation.expectedRetentionDays = DEFAULT_RETENTION_DAYS;
-                violation.actualRetentionDays = objResult.fieldHistoryDays;
-                violation.issue = objResult.issue;
-                violation.severity = objResult.fieldHistoryEnabled ? 'MEDIUM' : 'HIGH';
-                violations.add(violation);
+            for (String objectName : SENSITIVE_OBJECTS) {
+                ObjectRetentionResult objResult = service.evaluateObjectRetention(objectName);
+                if (!objResult.isCompliant) {
+                    RetentionViolation violation = new RetentionViolation();
+                    violation.objectName = objectName;
+                    violation.expectedRetentionDays = DEFAULT_RETENTION_DAYS;
+                    violation.actualRetentionDays = objResult.fieldHistoryDays;
+                    violation.issue = objResult.issue;
+                    violation.severity = objResult.fieldHistoryEnabled ? 'MEDIUM' : 'HIGH';
+                    violations.add(violation);
+                }
             }
-        }
 
-        return violations;
+            return violations;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2DataRetentionService.getRetentionViolations', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
@@ -134,14 +155,21 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
      */
     @AuraEnabled
     public static Id scheduleRetentionCheck(String cronExpression) {
-        if (String.isBlank(cronExpression)) {
-            // Default: Run weekly on Sundays at 2 AM
-            cronExpression = '0 0 2 ? * SUN';
-        }
+        try {
+            if (String.isBlank(cronExpression)) {
+                // Default: Run weekly on Sundays at 2 AM
+                cronExpression = '0 0 2 ? * SUN';
+            }
 
-        // Note: This would require a schedulable class implementation
-        // For now, return null as placeholder
-        return null;
+            // Note: This would require a schedulable class implementation
+            // For now, return null as placeholder
+            return null;
+        } catch (AuraHandledException ahe) {
+            throw ahe;
+        } catch (Exception e) {
+            ElaroLogger.error('SOC2DataRetentionService.scheduleRetentionCheck', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to complete the operation. Please verify you have the required permissions and try again.');
+        }
     }
 
     /**
